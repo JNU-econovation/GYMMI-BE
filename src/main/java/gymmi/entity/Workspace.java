@@ -21,6 +21,9 @@ public class Workspace {
     @Column(nullable = false)
     private String password;
 
+    @Column
+    private String description;
+
     @Enumerated(EnumType.STRING)
     private WorkspaceStatus status;
 
