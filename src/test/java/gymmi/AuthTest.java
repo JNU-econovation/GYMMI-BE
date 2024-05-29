@@ -1,11 +1,15 @@
 package gymmi;
 
+import gymmi.request.LoginRequest;
 import gymmi.request.RegistrationRequest;
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import static gymmi.Steps.로그인_요청;
 import static gymmi.Steps.회원_가입_요청;
 
 public class AuthTest extends IntegrationTest {
@@ -59,5 +63,80 @@ public class AuthTest extends IntegrationTest {
                     .body("message", Matchers.equalTo("이미 등록된 아이디 입니다."));
         }
 
+        @Nested
+        class 로그인 extends IntegrationTest {
+
+            @Test
+            void 로그인을_성공한다_200() {
+                // given
+                RegistrationRequest step = RegistrationRequest.builder()
+                        .loginId("gymmi1")
+                        .password("password1!")
+                        .nickname("지미지미")
+                        .email(null)
+                        .build();
+
+                회원_가입_요청(step).then().log().all();
+
+                LoginRequest request = new LoginRequest(step.getLoginId(), step.getPassword());
+
+                // when
+                Response response = 로그인_요청(request);
+
+                // then
+                response.then().log().all()
+                        .statusCode(200)
+                        .body(
+                                "accessToken", Matchers.notNullValue(),
+                                "refreshToken", Matchers.notNullValue()
+                        );
+            }
+            
+            @Test
+            void 아이디가_일치하지_않는_경우_로그인을_실패한다_400() {
+                RegistrationRequest step = RegistrationRequest.builder()
+                        .loginId("gymmi1")
+                        .password("password1!")
+                        .nickname("지미지미")
+                        .email(null)
+                        .build();
+
+                회원_가입_요청(step).then().log().all();
+
+                LoginRequest request = new LoginRequest("abcdefg1", step.getPassword());
+
+                // when
+                Response response = 로그인_요청(request);
+
+                // then
+                response.then().log().all()
+                        .statusCode(400);
+
+            }
+
+            @Test
+            void 비밀번호가_일치하지_않는_경우_로그인을_실패한다_400() {
+                RegistrationRequest step = RegistrationRequest.builder()
+                        .loginId("gymmi1")
+                        .password("password1!")
+                        .nickname("지미지미")
+                        .email(null)
+                        .build();
+
+                회원_가입_요청(step).then().log().all();
+
+                LoginRequest request = new LoginRequest(step.getLoginId(), "passwodasd!");
+
+                // when
+                Response response = 로그인_요청(request);
+
+                // then
+                response.then().log().all()
+                        .statusCode(400);
+
+            }
+
+        }
     }
+
 }

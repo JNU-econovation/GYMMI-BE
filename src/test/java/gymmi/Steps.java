@@ -1,5 +1,6 @@
 package gymmi;
 
+import gymmi.request.LoginRequest;
 import gymmi.request.RegistrationRequest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -16,6 +17,15 @@ public final class Steps {
                 .contentType(ContentType.JSON)
                 .body(request)
                 .when().post("/auth/join");
+        return response;
+    }
+
+    public static Response 로그인_요청 (LoginRequest request) {
+        Response response = RestAssured
+                .given().log().all()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when().post("/auth/welcome");
         return response;
     }
 }

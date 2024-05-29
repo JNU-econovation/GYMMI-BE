@@ -1,6 +1,8 @@
 package gymmi.controller;
 
+import gymmi.request.LoginRequest;
 import gymmi.request.RegistrationRequest;
+import gymmi.response.LoginResponse;
 import gymmi.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,12 @@ public class AuthController {
     public ResponseEntity<Void> registerUser(@Validated @RequestBody RegistrationRequest request) {
         authService.registerUser(request);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/auth/welcome")
+    public ResponseEntity<LoginResponse> login(@Validated @RequestBody LoginRequest request) {
+        LoginResponse response = authService.login(request);
+        return ResponseEntity.ok().body(response);
     }
 
 }

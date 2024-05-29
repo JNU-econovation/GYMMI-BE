@@ -1,6 +1,5 @@
 package gymmi.exception;
 
-import lombok.Builder;
 import lombok.Getter;
 
 @Getter

@@ -1,6 +1,7 @@
 package gymmi.entity;
 
 import gymmi.exception.InvalidPatternException;
+import gymmi.exception.NotMatchedException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -62,5 +63,18 @@ public class User {
         if (!matcher.matches()) {
             throw new InvalidPatternException("닉네임은 한글(초성), 영문, 숫자만 가능합니다.");
         }
+    }
+
+    public void authenticate(String loginId, String plainPassword) {
+        if (!this.loginId.equals(loginId)) {
+            throw new NotMatchedException("아이디와 비빌번호를 확인해주세요");
+        }
+        if (!BCrypt.checkpw(plainPassword, password)) {
+            throw new NotMatchedException("아이디와 비빌번호를 확인해주세요");
+        }
+    }
+
+    public Long getId() {
+        return id;
     }
 }

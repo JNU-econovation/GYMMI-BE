@@ -1,0 +1,6 @@
+jwt:
+  token:
+    secret-key: ${SECRET_KEY}
+    access-expiration-time: ${ACCESS_EXPIRATION_TIME}
+    refresh-expiration-time: ${REFRESH_EXPIRATION_TIME}
+
