@@ -8,7 +8,7 @@ import gymmi.repository.LoginedRepository;
 import gymmi.repository.UserRepository;
 import gymmi.request.LoginRequest;
 import gymmi.request.RegistrationRequest;
-import gymmi.response.LoginResponse;
+import gymmi.response.TokensResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -34,15 +34,22 @@ public class AuthService {
         loginedRepository.save(new Logined(savedUser));
     }
 
-    public LoginResponse login(LoginRequest request) {
+    public TokensResponse login(LoginRequest request) {
         User user = userRepository.findByLoginId(request.getLoginId())
-                .orElseThrow(() -> new NotMatchedException("아이디와 비밀번호를 확인해 주세요"));
-        user.authenticate(request.getLoginId(), request.getPassword());
+                .orElseThrow(() -> new NotMatchedException("아이디와 비밀번호를 확인해 주세요."));
 
+        if (!user.canAuthenticate(request.getLoginId(), request.getPassword())) {
+            throw new NotMatchedException("아이디와 비밀번호를 확인해 주세요.");
+        }
+        return generateAndSaveTokensAbout(user);
+    }
+
+    private TokensResponse generateAndSaveTokensAbout(User user) {
         String accessToken = tokenProcessor.generateAccessToken(user.getId());
         String refreshToken = tokenProcessor.generateRefreshToken(user.getId());
         Logined logined = loginedRepository.getByUserId(user.getId());
         logined.saveRefreshToken(refreshToken);
-        return new LoginResponse(accessToken, refreshToken);
+        return new TokensResponse(accessToken, refreshToken);
     }
+
 }

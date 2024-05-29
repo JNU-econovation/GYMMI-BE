@@ -21,9 +21,9 @@ public class AuthTest extends IntegrationTest {
         void 회원_가입을_성공한다_200() {
             // given
             RegistrationRequest request = RegistrationRequest.builder()
-                    .loginId("asdasd1")
-                    .password("12314124")
-                    .nickname("닉네임")
+                    .loginId(Fixtures.SATISFIED_LOGIN_ID)
+                    .password(Fixtures.SATISFIED_PASSWORD)
+                    .nickname(Fixtures.SATISFIED_NICKNAME)
                     .email(null)
                     .build();
 
@@ -39,16 +39,16 @@ public class AuthTest extends IntegrationTest {
         void 이미_존재하는_아이디인_경우_실패한다_400() {
             // given
             RegistrationRequest step = RegistrationRequest.builder()
-                    .loginId("asdasd1")
-                    .password("12314124")
-                    .nickname("닉네임")
+                    .loginId(Fixtures.SATISFIED_LOGIN_ID)
+                    .password(Fixtures.SATISFIED_PASSWORD)
+                    .nickname(Fixtures.SATISFIED_NICKNAME)
                     .email(null)
                     .build();
 
             RegistrationRequest request = RegistrationRequest.builder()
-                    .loginId("asdasd1")
-                    .password("12314124")
-                    .nickname("닉네임")
+                    .loginId(Fixtures.SATISFIED_LOGIN_ID)
+                    .password(Fixtures.SATISFIED_PASSWORD)
+                    .nickname(Fixtures.SATISFIED_NICKNAME)
                     .email(null)
                     .build();
 
@@ -70,9 +70,9 @@ public class AuthTest extends IntegrationTest {
             void 로그인을_성공한다_200() {
                 // given
                 RegistrationRequest step = RegistrationRequest.builder()
-                        .loginId("gymmi1")
-                        .password("password1!")
-                        .nickname("지미지미")
+                        .loginId(Fixtures.SATISFIED_LOGIN_ID)
+                        .password(Fixtures.SATISFIED_PASSWORD)
+                        .nickname(Fixtures.SATISFIED_NICKNAME)
                         .email(null)
                         .build();
 
@@ -95,9 +95,9 @@ public class AuthTest extends IntegrationTest {
             @Test
             void 아이디가_일치하지_않는_경우_로그인을_실패한다_400() {
                 RegistrationRequest step = RegistrationRequest.builder()
-                        .loginId("gymmi1")
-                        .password("password1!")
-                        .nickname("지미지미")
+                        .loginId(Fixtures.SATISFIED_LOGIN_ID)
+                        .password(Fixtures.SATISFIED_PASSWORD)
+                        .nickname(Fixtures.SATISFIED_NICKNAME)
                         .email(null)
                         .build();
 
@@ -117,9 +117,9 @@ public class AuthTest extends IntegrationTest {
             @Test
             void 비밀번호가_일치하지_않는_경우_로그인을_실패한다_400() {
                 RegistrationRequest step = RegistrationRequest.builder()
-                        .loginId("gymmi1")
-                        .password("password1!")
-                        .nickname("지미지미")
+                        .loginId(Fixtures.SATISFIED_LOGIN_ID)
+                        .password(Fixtures.SATISFIED_PASSWORD)
+                        .nickname(Fixtures.SATISFIED_NICKNAME)
                         .email(null)
                         .build();
 
