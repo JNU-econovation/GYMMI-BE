@@ -30,4 +30,12 @@ public class Logined {
     public void destroyRefreshToken() {
         this.refreshToken = null;
     }
+
+    public boolean isActivatedRefreshToken(String refreshToken) {
+        if (this.refreshToken == null) {
+            return false;
+        }
+        return this.refreshToken.equals(refreshToken);
+    }
+
 }

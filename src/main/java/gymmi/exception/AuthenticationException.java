@@ -8,4 +8,8 @@ public class AuthenticationException extends GymmiException {
     public AuthenticationException(String message) {
         super(message, ERROR_CODE, ERROR_DESCRIPTION);
     }
+
+    public AuthenticationException(String message, Throwable cause) {
+        super(message, cause, ERROR_CODE, ERROR_DESCRIPTION);
+    }
 }

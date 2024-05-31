@@ -1,5 +1,8 @@
 package gymmi.service;
 
+import gymmi.exception.AuthenticationException;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,6 +15,7 @@ import java.util.Date;
 @Service
 public final class TokenProcessor {
 
+    private static final String CLAIM_USER_ID = "userId";
     private final SecretKey secretKey;
     private final Long accessExpiredTime;
     private final Long refreshExpiredTime;
@@ -33,7 +37,7 @@ public final class TokenProcessor {
                 .add("alg", "HS256")
                 .type("jwt").and()
                 .claims()
-                .add("userId", String.valueOf(userId))
+                .add(CLAIM_USER_ID, String.valueOf(userId))
                 .issuedAt(new Date(now))
                 .expiration(new Date(now + expiredTime)).and()
                 .signWith(secretKey)
@@ -49,4 +53,20 @@ public final class TokenProcessor {
         return generateToken(userId, refreshExpiredTime);
     }
 
+    public Long parseToken(String token) {
+        try {
+            String userId = Jwts.parser()
+                    .verifyWith(secretKey)
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload()
+                    .get(CLAIM_USER_ID, String.class);
+            return Long.valueOf(userId);
+        } catch (ExpiredJwtException e) {
+            throw new AuthenticationException("토큰이 만료되었습니다.", e);
+        } catch (JwtException e) {
+            throw new JwtException("토큰 관련 에러", e);
+        }
+    }
 }
+

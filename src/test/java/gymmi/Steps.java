@@ -2,6 +2,7 @@ package gymmi;
 
 import gymmi.request.LoginRequest;
 import gymmi.request.RegistrationRequest;
+import gymmi.request.ReissueRequest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
@@ -20,12 +21,21 @@ public final class Steps {
         return response;
     }
 
-    public static Response 로그인_요청 (LoginRequest request) {
+    public static Response 로그인_요청(LoginRequest request) {
         Response response = RestAssured
                 .given().log().all()
                 .contentType(ContentType.JSON)
                 .body(request)
                 .when().post("/auth/welcome");
+        return response;
+    }
+
+    public static Response 재발급_요청(ReissueRequest request) {
+        Response response = RestAssured
+                .given().log().all()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when().post("/auth/reissue");
         return response;
     }
 }
