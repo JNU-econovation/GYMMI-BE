@@ -6,6 +6,9 @@ import gymmi.request.ReissueRequest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+import org.springframework.http.HttpHeaders;
+
+import static gymmi.Fixtures.AUTHORIZATION_TYPE_BEARER;
 
 public final class Steps {
 
@@ -18,6 +21,7 @@ public final class Steps {
                 .contentType(ContentType.JSON)
                 .body(request)
                 .when().post("/auth/join");
+        response.then().log().all();
         return response;
     }
 
@@ -27,6 +31,7 @@ public final class Steps {
                 .contentType(ContentType.JSON)
                 .body(request)
                 .when().post("/auth/welcome");
+        response.then().log().all();
         return response;
     }
 
@@ -36,6 +41,17 @@ public final class Steps {
                 .contentType(ContentType.JSON)
                 .body(request)
                 .when().post("/auth/reissue");
+        response.then().log().all();
+        return response;
+    }
+
+    public static Response 로그아웃_요청(String accessToken) {
+        Response response = RestAssured
+                .given().log().all()
+                .contentType(ContentType.JSON)
+                .header(HttpHeaders.AUTHORIZATION, AUTHORIZATION_TYPE_BEARER + accessToken)
+                .when().post("/auth/goodbye");
+        response.then().log();
         return response;
     }
 }

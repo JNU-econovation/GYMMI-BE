@@ -1,5 +1,7 @@
 package gymmi.controller;
 
+import gymmi.entity.User;
+import gymmi.global.Logined;
 import gymmi.request.LoginRequest;
 import gymmi.request.RegistrationRequest;
 import gymmi.request.ReissueRequest;
@@ -34,6 +36,12 @@ public class AuthController {
     public ResponseEntity<TokensResponse> reissue(@Validated @RequestBody ReissueRequest request) {
         TokensResponse response = authService.reissue(request);
         return ResponseEntity.ok().body(response);
+    }
+
+    @PostMapping("/auth/goodbye")
+    public ResponseEntity<Void> logout(@Logined User user) {
+        authService.logout(user);
+        return ResponseEntity.ok().build();
     }
 
 }

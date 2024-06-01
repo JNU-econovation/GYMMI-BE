@@ -71,4 +71,9 @@ public class AuthService {
         return new TokensResponse(accessToken, refreshToken);
     }
 
+    @Transactional
+    public void logout(User loginedUser) {
+        Logined logined = loginedRepository.getByUserId(loginedUser.getId());
+        logined.destroyRefreshToken();
+    }
 }

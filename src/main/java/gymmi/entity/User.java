@@ -54,17 +54,17 @@ public class User {
         this.email = email;
     }
 
-    private void validatePassword(String plainPassowrd) {
-        if (!REGEX_PASSWORD.matcher(plainPassowrd).matches()) {
+    private void validatePassword(String plainPassword) {
+        if (!REGEX_PASSWORD.matcher(plainPassword).matches()) {
             throw new InvalidPatternException("비밀번호는 영문+숫자+특수문자 조합으로 구성해주세요.");
         }
-        if (!REGEX_ENGLISH.matcher(plainPassowrd).find()) {
+        if (!REGEX_ENGLISH.matcher(plainPassword).find()) {
             throw new InvalidPatternException("영문을 포함해주세요");
         }
-        if (!REGEX_NUMBER.matcher(plainPassowrd).find()) {
+        if (!REGEX_NUMBER.matcher(plainPassword).find()) {
             throw new InvalidPatternException("숫자를 포함해주세요.");
         }
-        if (!REGEX_SPECIAL_CHARACTER.matcher(plainPassowrd).find()) {
+        if (!REGEX_SPECIAL_CHARACTER.matcher(plainPassword).find()) {
             throw new InvalidPatternException("특수문자를 포함해주세요.");
         }
     }

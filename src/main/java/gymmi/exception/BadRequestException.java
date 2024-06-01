@@ -9,6 +9,10 @@ public class BadRequestException extends GymmiException {
         super(message, errorCode, errorDescription);
     }
 
+    public BadRequestException(String message, Throwable cause, String errorCode, String errorDescription) {
+        super(message, cause, errorCode, errorDescription);
+    }
+
     public BadRequestException(String message) {
         this(message, ERROR_CODE, ERROR_DESCRIPTION);
     }

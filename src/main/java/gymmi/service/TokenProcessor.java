@@ -73,7 +73,7 @@ public final class TokenProcessor {
                     .parseSignedClaims(token)
                     .getPayload();
             if (!payload.getSubject().equals(subject)) {
-                throw new JwtException("토큰 관련 에러");
+                throw new AuthenticationException("토큰 제목을 확인해 주세요.");
             }
             String userId = payload
                     .get(CLAIM_KEY_USER_ID, String.class);
@@ -81,7 +81,7 @@ public final class TokenProcessor {
         } catch (ExpiredJwtException e) {
             throw new AuthenticationException("토큰이 만료되었습니다.", e);
         } catch (JwtException e) {
-            throw new AuthenticationException("토큰 관련 에러 발생", e);
+            throw new AuthenticationException("토큰 관련 에러 발생.", e);
         }
     }
 
