@@ -1,6 +1,6 @@
 package gymmi.exception;
 
-public class AuthenticationException extends GymmiException {
+public class AuthenticationException extends BadRequestException {
 
     public static final String ERROR_CODE = "AUTHENTICATION";
     public static final String ERROR_DESCRIPTION = "인증에 실패한 경우";

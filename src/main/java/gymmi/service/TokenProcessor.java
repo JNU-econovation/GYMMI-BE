@@ -1,6 +1,7 @@
 package gymmi.service;
 
 import gymmi.exception.AuthenticationException;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -15,7 +16,9 @@ import java.util.Date;
 @Service
 public final class TokenProcessor {
 
-    private static final String CLAIM_USER_ID = "userId";
+    private static final String CLAIM_KEY_USER_ID = "userId";
+    private static final String SUBJECT_VALUE_ACCESS_TOKEN = "AT";
+    private static final String SUBJECT_VALUE_REFRESH_TOKEN = "RT";
     private final SecretKey secretKey;
     private final Long accessExpiredTime;
     private final Long refreshExpiredTime;
@@ -30,14 +33,15 @@ public final class TokenProcessor {
         this.refreshExpiredTime = refreshExpiredTime;
     }
 
-    private String generateToken(Long userId, Long expiredTime) {
+    private String generateToken(Long userId, Long expiredTime, String subject) {
         long now = System.currentTimeMillis();
         String jwt = Jwts.builder()
                 .header()
                 .add("alg", "HS256")
                 .type("jwt").and()
                 .claims()
-                .add(CLAIM_USER_ID, String.valueOf(userId))
+                .add(CLAIM_KEY_USER_ID, String.valueOf(userId))
+                .subject(subject)
                 .issuedAt(new Date(now))
                 .expiration(new Date(now + expiredTime)).and()
                 .signWith(secretKey)
@@ -46,27 +50,40 @@ public final class TokenProcessor {
     }
 
     public String generateAccessToken(Long userId) {
-        return generateToken(userId, accessExpiredTime);
+        return generateToken(userId, accessExpiredTime, SUBJECT_VALUE_ACCESS_TOKEN);
     }
 
     public String generateRefreshToken(Long userId) {
-        return generateToken(userId, refreshExpiredTime);
+        return generateToken(userId, refreshExpiredTime, SUBJECT_VALUE_REFRESH_TOKEN);
     }
 
-    public Long parseToken(String token) {
+    public Long parseAccessToken(String accessToken) {
+        return parseToken(accessToken, SUBJECT_VALUE_ACCESS_TOKEN);
+    }
+
+    public Long parseRefreshToken(String refreshToken) {
+        return parseToken(refreshToken, SUBJECT_VALUE_REFRESH_TOKEN);
+    }
+
+    private Long parseToken(String token, String subject) {
         try {
-            String userId = Jwts.parser()
+            Claims payload = Jwts.parser()
                     .verifyWith(secretKey)
                     .build()
                     .parseSignedClaims(token)
-                    .getPayload()
-                    .get(CLAIM_USER_ID, String.class);
+                    .getPayload();
+            if (!payload.getSubject().equals(subject)) {
+                throw new JwtException("토큰 관련 에러");
+            }
+            String userId = payload
+                    .get(CLAIM_KEY_USER_ID, String.class);
             return Long.valueOf(userId);
         } catch (ExpiredJwtException e) {
             throw new AuthenticationException("토큰이 만료되었습니다.", e);
         } catch (JwtException e) {
-            throw new JwtException("토큰 관련 에러", e);
+            throw new AuthenticationException("토큰 관련 에러 발생", e);
         }
     }
+
 }
 
