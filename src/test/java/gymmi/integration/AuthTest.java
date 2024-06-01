@@ -1,5 +1,6 @@
-package gymmi;
+package gymmi.integration;
 
+import gymmi.Fixtures;
 import gymmi.request.LoginRequest;
 import gymmi.request.RegistrationRequest;
 import gymmi.request.ReissueRequest;
