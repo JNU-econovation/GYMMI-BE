@@ -15,6 +15,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("select u from User u where u.id = :userId")
     Optional<User> findByUserId(Long userId);
 
+    @Query("select u from User u where u.nickname = :nickname")
+    Optional<User> findByNickname(String nickname);
+
     default User getByUserId(Long userId) {
         return findByUserId(userId)
                 .orElseThrow(() -> new NotFoundResourcesException("존재하지 않는 사용자입니다."));

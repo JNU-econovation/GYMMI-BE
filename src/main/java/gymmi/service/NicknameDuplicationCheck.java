@@ -7,17 +7,17 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class LoginIdDuplicationCheck implements DuplicationCheck {
+public class NicknameDuplicationCheck implements DuplicationCheck {
 
     private final UserRepository userRepository;
 
     @Override
     public boolean supports(DuplicationCheckType type) {
-        return type == DuplicationCheckType.LOGIN_ID;
+        return type == DuplicationCheckType.NICKNAME;
     }
 
     @Override
     public boolean isDuplicate(String value) {
-        return userRepository.findByLoginId(value).isPresent();
+        return userRepository.findByNickname(value).isPresent();
     }
 }
