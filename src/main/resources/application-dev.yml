@@ -1,0 +1,27 @@
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    database-platform: org.hibernate.dialect.MySQLDialect
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${DEV_DATASOURCE_URL}
+    username: ${DEV_USERNAME}
+    password: ${DEV_PASSWORD}
+
+  sql:
+    init:
+      mode: never
+
+jwt:
+  token:
+    secret-key: ${SECRET_KEY}
+    access-expiration-time: ${ACCESS_EXPIRATION_TIME}
+    refresh-expiration-time: ${REFRESH_EXPIRATION_TIME}
+
+
