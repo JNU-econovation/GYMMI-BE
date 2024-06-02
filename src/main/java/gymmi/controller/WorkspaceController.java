@@ -14,12 +14,12 @@ public class WorkspaceController {
         return null;
     }
 
-    @GetMapping("/workspaces")
+    @GetMapping("/workspaces1")
     public ResponseEntity<Void> seeJoinedWorkspaces() {
         return null;
     }
 
-    @GetMapping("/workspaces")
+    @GetMapping("/workspaces2")
     public ResponseEntity<Void> seeAllWorkspaces() {
         return null;
     }

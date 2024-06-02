@@ -1,0 +1,12 @@
+spring:
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true
+
+jwt:
+  token:
+    secret-key: asdasdasdasdasdsadsasdadsadasdsadsa
+    access-expiration-time: 1000000000
+    refresh-expiration-time: 100000000
