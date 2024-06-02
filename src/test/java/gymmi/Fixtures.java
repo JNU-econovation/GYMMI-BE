@@ -13,7 +13,6 @@ public final class Fixtures {
     public static final String SATISFIED_PASSWORD = "password1!";
 
 
-
     private Fixtures() {
     }
 }

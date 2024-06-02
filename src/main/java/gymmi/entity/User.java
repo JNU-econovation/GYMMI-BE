@@ -1,7 +1,6 @@
 package gymmi.entity;
 
 import gymmi.exception.InvalidPatternException;
-import gymmi.exception.NotMatchedException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
