@@ -71,8 +71,9 @@ public class DuplicationCheckTest extends IntegrationTest {
                 .when().get("/check-duplication");
 
         // when
-        response.then()
-                .statusCode(404)
+        response.then().log().all()
+//                .statusCode(404)
+                .statusCode(600)
                 .body(JSON_KEY_MESSAGE, Matchers.equalTo("해당 type은 존재하지 않는 type 입니다."));
     }
 
