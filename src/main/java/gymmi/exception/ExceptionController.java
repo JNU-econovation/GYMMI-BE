@@ -39,7 +39,7 @@ public class ExceptionController {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
 
-    private void log(GymmiException e, String requestURI) {
+    private void log(Exception e, String requestURI) {
         log.warn(System.lineSeparator() +
                         "[에러 발생 로그]" + System.lineSeparator() +
                         "request-url : {}" + System.lineSeparator() +
@@ -47,4 +47,10 @@ public class ExceptionController {
                 requestURI, e.getMessage(), e);
     }
 
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> handleException(Exception e, HttpServletRequest request) {
+        ErrorResponse response = new ErrorResponse("에러 처리 준비중", e.getMessage());
+        log(e, request.getRequestURI());
+        return ResponseEntity.status(600).body(response);
+    }
 }
