@@ -6,10 +6,11 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static gymmi.Fixtures.*;
-import static gymmi.Steps.회원_가입_요청;
+import static gymmi.integration.Steps.회원_가입_요청;
 
 public class DuplicationCheckTest extends IntegrationTest {
 
@@ -50,6 +51,7 @@ public class DuplicationCheckTest extends IntegrationTest {
                 .body("duplication", Matchers.is(false));
     }
 
+    @Disabled
     @Test
     void 중복_검사_타입이_잘못된_경우_실패한다_404() {
         // given

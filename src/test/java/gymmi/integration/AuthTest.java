@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 
 import static gymmi.Fixtures.*;
-import static gymmi.Steps.*;
+import static gymmi.integration.Steps.*;
 
 public class AuthTest extends IntegrationTest {
 
