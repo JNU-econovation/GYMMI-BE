@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -45,7 +46,7 @@ public class LoginedUserResolver implements HandlerMethodArgumentResolver {
     }
 
     private void validate(String authorizationHeader) {
-        if (authorizationHeader.isBlank()) {
+        if (!StringUtils.hasText(authorizationHeader)) {
             throw new AuthenticationException("인증 헤더의 값이 비어있습니다.");
         }
         if (!authorizationHeader.startsWith(AUTHORIZATION_TYPE_BEARER)) {

@@ -2,8 +2,12 @@ package gymmi.entity;
 
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Worker {
 
     @Id
@@ -21,4 +25,10 @@ public class Worker {
     @Column(nullable = false)
     private Integer score;
 
+    @Builder
+    public Worker(User user, Workspace workspace) {
+        this.user = user;
+        this.workspace = workspace;
+        this.score = 0;
+    }
 }

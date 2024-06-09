@@ -1,17 +1,28 @@
 package gymmi.controller;
 
+import gymmi.entity.User;
+import gymmi.global.Logined;
+import gymmi.request.CreatingWorkspaceRequest;
+import gymmi.response.IdResponse;
+import gymmi.service.WorkspaceService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequiredArgsConstructor
 public class WorkspaceController {
 
+    private final WorkspaceService workspaceService;
+
     @PostMapping("/workspaces")
-    public ResponseEntity<Void> createWorkspace() {
-        return null;
+    public ResponseEntity<IdResponse> createWorkspace(
+            @Logined User user,
+            @Validated @RequestBody CreatingWorkspaceRequest request
+    ) {
+        Long workspaceId = workspaceService.createWorkspace(user, request);
+        return ResponseEntity.ok().body(new IdResponse(workspaceId));
     }
 
     @GetMapping("/workspaces1")
