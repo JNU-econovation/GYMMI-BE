@@ -20,7 +20,7 @@ import static gymmi.integration.Steps.*;
 public class AuthTest extends IntegrationTest {
 
     @Nested
-    class 회원_가입 extends IntegrationTest {
+    class 회원_가입  {
 
         @Test
         void 회원_가입을_성공한다_200() {
@@ -65,7 +65,7 @@ public class AuthTest extends IntegrationTest {
     }
 
     @Nested
-    class 로그인 extends IntegrationTest {
+    class 로그인  {
 
         @Test
         void 로그인을_성공한다_200() {
@@ -139,7 +139,7 @@ public class AuthTest extends IntegrationTest {
     }
 
     @Nested
-    class 토큰_재발급 extends IntegrationTest {
+    class 토큰_재발급  {
 
         @Autowired
         TokenProcessor tokenProcessor;
@@ -175,7 +175,7 @@ public class AuthTest extends IntegrationTest {
         }
 
         @Test
-        void 비활성화된_리프레시_토큰으로_엑세스토큰과_리프레시토큰을_재발급_하는_경우_실패한다_403() throws InterruptedException {
+        void 비활성화된_리프레시_토큰으로_엑세스토큰과_리프레시토큰을_재발급_하는_경우_실패한다_401() throws InterruptedException {
             // given
             RegistrationRequest step = RegistrationRequest.builder()
                     .loginId(Fixtures.SATISFIED_LOGIN_ID)
@@ -201,7 +201,7 @@ public class AuthTest extends IntegrationTest {
 
             // then
             response.then()
-                    .statusCode(403)
+                    .statusCode(401)
                     .body(JSON_KEY_MESSAGE, Matchers.equalTo("잘못된 접근입니다. 다시 로그인 해주세요."));
         }
     }
@@ -233,10 +233,10 @@ public class AuthTest extends IntegrationTest {
     }
 
     @Nested
-    class 엑세스_토큰으로_api_요청 extends IntegrationTest {
+    class 엑세스_토큰으로_api_요청 {
 
         @Test
-        void Authorization_헤더에_엑세스_토큰이_비어있는_경우_실패_한다_403() {
+        void Authorization_헤더에_엑세스_토큰이_비어있는_경우_실패_한다_401() {
             // given
             RegistrationRequest step = RegistrationRequest.builder()
                     .loginId(Fixtures.SATISFIED_LOGIN_ID)
@@ -261,11 +261,11 @@ public class AuthTest extends IntegrationTest {
 
             // then
             response.then()
-                    .statusCode(403);
+                    .statusCode(401);
         }
 
         @Test
-        void Authorization에서_타입이_Bearer이_아닌_경우_실패한다_403() {
+        void Authorization에서_타입이_Bearer이_아닌_경우_실패한다_401() {
             // given
             RegistrationRequest step = RegistrationRequest.builder()
                     .loginId(Fixtures.SATISFIED_LOGIN_ID)
@@ -290,11 +290,11 @@ public class AuthTest extends IntegrationTest {
 
             // then
             response.then()
-                    .statusCode(403);
+                    .statusCode(401);
         }
 
         @Test
-        void 엑세스_토큰_대신_리프레시_토큰으로_요청하는_경우_실패한다_403() {
+        void 엑세스_토큰_대신_리프레시_토큰으로_요청하는_경우_실패한다_401() {
             // given
             RegistrationRequest step = RegistrationRequest.builder()
                     .loginId(Fixtures.SATISFIED_LOGIN_ID)
@@ -319,7 +319,7 @@ public class AuthTest extends IntegrationTest {
 
             // then
             response.then()
-                    .statusCode(403)
+                    .statusCode(401)
                     .body(JSON_KEY_MESSAGE, Matchers.equalTo("토큰 제목을 확인해 주세요."));
         }
     }
