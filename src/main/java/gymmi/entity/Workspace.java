@@ -108,7 +108,7 @@ public class Workspace {
         return password.toString();
     }
 
-    public boolean matches(String password) {
+    public boolean matchesPassword(String password) {
         return this.password.equals(password);
     }
 

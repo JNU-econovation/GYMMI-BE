@@ -4,7 +4,9 @@ import gymmi.entity.User;
 import gymmi.global.Logined;
 import gymmi.request.CreatingWorkspaceRequest;
 import gymmi.request.JoiningWorkspaceRequest;
+import gymmi.request.MatchingWorkspacePasswordRequest;
 import gymmi.response.IdResponse;
+import gymmi.response.MatchingWorkspacePasswordResponse;
 import gymmi.response.WorkspacePasswordResponse;
 import gymmi.service.WorkspaceService;
 import lombok.RequiredArgsConstructor;
@@ -46,6 +48,16 @@ public class WorkspaceController {
         return ResponseEntity.ok().body(response);
     }
 
+    @GetMapping("/workspaces/{workspaceId}/match-password")
+    public ResponseEntity<MatchingWorkspacePasswordResponse> matchWorkspacePassword(
+//            @Logined User user, login intercept 추가
+            @PathVariable Long workspaceId,
+            @Validated @RequestBody MatchingWorkspacePasswordRequest request
+    ) {
+        MatchingWorkspacePasswordResponse response = workspaceService.matchesWorkspacePassword(workspaceId, request.getPassword());
+        return ResponseEntity.ok().body(response);
+    }
+
     @GetMapping("/workspaces1")
     public ResponseEntity<Void> seeJoinedWorkspaces() {
         return null;
@@ -53,11 +65,6 @@ public class WorkspaceController {
 
     @GetMapping("/workspaces2")
     public ResponseEntity<Void> seeAllWorkspaces() {
-        return null;
-    }
-
-    @PostMapping("/workspaces/{workspaceId}/join/task")
-    public ResponseEntity<Void> writeTaskInWorkspace() {
         return null;
     }
 

@@ -1,7 +1,6 @@
 package gymmi;
 
 import gymmi.entity.User;
-import gymmi.request.MissionDTO;
 
 public final class Fixtures {
 
@@ -34,6 +33,8 @@ public final class Fixtures {
             .email(null)
             .build();
 
+
+    public static final String WORKSPACE_DISSATISFIED_PASSWORD = "!!!!";
 
     public static final class Workspace {
         public static final String SATISFIED_NAME = "지미";

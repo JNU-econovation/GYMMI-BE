@@ -3,16 +3,16 @@ package gymmi.integration;
 import gymmi.exception.AlreadyExistException;
 import gymmi.exception.InvalidStateException;
 import gymmi.exception.NotMatchedException;
-import gymmi.request.CreatingWorkspaceRequest;
-import gymmi.request.JoiningWorkspaceRequest;
-import gymmi.request.MissionDTO;
-import gymmi.request.RegistrationRequest;
+import gymmi.request.*;
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpHeaders;
 
 import java.util.List;
 
@@ -226,7 +226,7 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                     .jsonPath()
                     .getLong(JSON_KEY_ID);
 
-            JoiningWorkspaceRequest request = new JoiningWorkspaceRequest("!!!!", DEFAULT_TASK);
+            JoiningWorkspaceRequest request = new JoiningWorkspaceRequest(WORKSPACE_DISSATISFIED_PASSWORD, DEFAULT_TASK);
 
             // when
             Response response = 워크스페이스_참여_요청(user1Token, workspaceId, request);
@@ -236,6 +236,32 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                     .statusCode(400)
                     .body(JSON_KEY_ERROR_CODE, Matchers.equalTo(NotMatchedException.ERROR_CODE));
         }
+    }
+
+    @Test
+    void 워크스페이스의_비밀번호_일치_여부_확인을_성공한다_200() {
+        // given
+        CreatingWorkspaceRequest step = 워크스페이스_생성_REQUEST_DEFAULT_WORKSPACE;
+
+        long workspaceId = 워크스페이스_생성_요청(defaultUserToken, step)
+                .jsonPath()
+                .getLong(JSON_KEY_ID);
+
+        MatchingWorkspacePasswordRequest request = new MatchingWorkspacePasswordRequest(WORKSPACE_DISSATISFIED_PASSWORD);
+
+        // when
+        Response response = RestAssured
+                .given().log().all()
+                .contentType(ContentType.JSON)
+                .header(HttpHeaders.AUTHORIZATION, AUTHORIZATION_TYPE_BEARER + defaultUserToken)
+                .pathParam("workspaceId", workspaceId)
+                .body(request)
+                .when().get("/workspaces/{workspaceId}/match-password");
+
+        // then
+        response.then()
+                .statusCode(200)
+                .body("sameness", Matchers.equalTo(false));
     }
 
 }

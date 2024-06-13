@@ -12,6 +12,7 @@ import gymmi.repository.WorkspaceRepository;
 import gymmi.request.CreatingWorkspaceRequest;
 import gymmi.request.JoiningWorkspaceRequest;
 import gymmi.request.MissionDTO;
+import gymmi.response.MatchingWorkspacePasswordResponse;
 import gymmi.response.WorkspacePasswordResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -64,7 +65,7 @@ public class WorkspaceService {
     @Transactional
     public void joinWorkspace(User loginedUser, Long workspaceId, JoiningWorkspaceRequest request) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
-        if (!workspace.matches(request.getPassword())) {
+        if (!workspace.matchesPassword(request.getPassword())) {
             throw new NotMatchedException("비밀번호가 일치하지 않습니다.");
         }
         enterWorkspace(loginedUser, workspace);
@@ -110,6 +111,12 @@ public class WorkspaceService {
             throw new NotHavePermissionException("해당 워크스페이스의 참여자가 아닙니다.");
         }
         return new WorkspacePasswordResponse(workspace.getPassword());
+    }
+
+    public MatchingWorkspacePasswordResponse matchesWorkspacePassword(Long workspaceId, String workspacePassword) {
+        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
+        boolean matchingResult = workspace.matchesPassword(workspacePassword);
+        return new MatchingWorkspacePasswordResponse(matchingResult);
     }
 
 }
