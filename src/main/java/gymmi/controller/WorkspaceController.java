@@ -3,7 +3,9 @@ package gymmi.controller;
 import gymmi.entity.User;
 import gymmi.global.Logined;
 import gymmi.request.CreatingWorkspaceRequest;
+import gymmi.request.JoiningWorkspaceRequest;
 import gymmi.response.IdResponse;
+import gymmi.response.WorkspacePasswordResponse;
 import gymmi.service.WorkspaceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +27,25 @@ public class WorkspaceController {
         return ResponseEntity.ok().body(new IdResponse(workspaceId));
     }
 
+    @PostMapping("/workspaces/{workspaceId}/join")
+    public ResponseEntity<Void> joinWorkspace(
+            @Logined User user,
+            @Validated @RequestBody JoiningWorkspaceRequest request,
+            @PathVariable Long workspaceId
+    ) {
+        workspaceService.joinWorkspace(user, workspaceId, request);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/workspaces/{workspaceId}/password")
+    public ResponseEntity<WorkspacePasswordResponse> seeWorkspacePassword(
+            @Logined User user,
+            @PathVariable Long workspaceId
+    ) {
+        WorkspacePasswordResponse response = workspaceService.getWorkspacePassword(user, workspaceId);
+        return ResponseEntity.ok().body(response);
+    }
+
     @GetMapping("/workspaces1")
     public ResponseEntity<Void> seeJoinedWorkspaces() {
         return null;
@@ -32,11 +53,6 @@ public class WorkspaceController {
 
     @GetMapping("/workspaces2")
     public ResponseEntity<Void> seeAllWorkspaces() {
-        return null;
-    }
-
-    @PostMapping("/workspaces/{workspaceId}/join")
-    public ResponseEntity<Void> joinWorkspaces() {
         return null;
     }
 

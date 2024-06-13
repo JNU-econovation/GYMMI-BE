@@ -28,7 +28,7 @@ class WorkspaceTest {
 
         // then
         assertThat(workspace.getPassword().length()).isEqualTo(4);
-        assertThat(workspace.getStatus()).isEqualTo(WorkspaceStatus.READY);
+        assertThat(workspace.getStatus()).isEqualTo(WorkspaceStatus.PREPARING);
     }
 
     @Test

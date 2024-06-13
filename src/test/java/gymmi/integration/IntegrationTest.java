@@ -6,9 +6,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.annotation.DirtiesContext;
 
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-//@NestedTestConfiguration(NestedTestConfiguration.EnclosingConfiguration.OVERRIDE)
 public class IntegrationTest {
     @LocalServerPort
     int port;

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "workspace_id"})})
 public class Worker {
 
     @Id

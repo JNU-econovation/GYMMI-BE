@@ -1,7 +1,7 @@
 package gymmi.entity;
 
 public enum WorkspaceStatus {
-    READY,
+    PREPARING,
     IN_PROGRESS,
     COMPLETED,
     ;

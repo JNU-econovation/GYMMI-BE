@@ -68,7 +68,7 @@ public class Workspace {
 
         this.password = generatePassword();
         this.createdAt = LocalDateTime.now();
-        this.status = WorkspaceStatus.READY;
+        this.status = WorkspaceStatus.PREPARING;
     }
 
     private String validateName(String name) {
@@ -106,6 +106,18 @@ public class Workspace {
             password.append(random.nextInt(10));
         }
         return password.toString();
+    }
+
+    public boolean matches(String password) {
+        return this.password.equals(password);
+    }
+
+    public boolean isPreparing() {
+        return this.status == WorkspaceStatus.PREPARING;
+    }
+
+    public boolean isFull(Integer headCount){
+        return this.headCount <= headCount;
     }
 
     public Long getId() {

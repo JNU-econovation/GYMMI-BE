@@ -8,9 +8,11 @@ public final class Fixtures {
     // 클래스 이름_..._...
 
     public static final String JSON_KEY_MESSAGE = "message";
+    public static final String JSON_KEY_ERROR_CODE = "errorCode";
     public static final String JSON_KEY_ID = "id";
     public static final String JSON_KEY_ACCESS_TOKEN = "accessToken";
     public static final String JSON_KEY_REFRESH_TOKEN = "refreshToken";
+    public static final String JSON_KEY_PASSWORD = "password";
 
     public static final String PARAMETER_KEY_TYPE = "type";
     public static final String PARAMETER_KEY_VALUE = "value";
