@@ -10,37 +10,36 @@ import org.springframework.http.HttpHeaders;
 import java.util.List;
 
 import static gymmi.Fixtures.*;
-import static gymmi.Fixtures.Workspace.*;
 
 public final class Steps {
 
-    public static final RegistrationRequest 회원_가입_REQUEST_DEFAULT_USER = RegistrationRequest.builder()
-            .loginId(Fixtures.SATISFIED_LOGIN_ID)
-            .password(Fixtures.SATISFIED_PASSWORD)
-            .nickname(Fixtures.SATISFIED_NICKNAME)
+    public static final RegistrationRequest 회원_가입__DEFAULT_USER_REQUEST = RegistrationRequest.builder()
+            .loginId(Fixtures.USER__SATISFIED_LOGIN_ID)
+            .password(Fixtures.USER__SATISFIED_PASSWORD)
+            .nickname(Fixtures.USER__SATISFIED_NICKNAME)
             .email(null)
             .build();
 
-    public static final RegistrationRequest 회원_가입_REQUEST_USER_1 = RegistrationRequest.builder()
+    public static final RegistrationRequest 회원_가입__USER_1_REQUEST = RegistrationRequest.builder()
             .loginId("useruser1")
-            .password(SATISFIED_PASSWORD)
+            .password(USER__SATISFIED_PASSWORD)
             .nickname("user1")
             .email(null)
             .build();
 
-    public static final RegistrationRequest 회원_가입_REQUEST_USER_2 = RegistrationRequest.builder()
+    public static final RegistrationRequest 회원_가입__USER_2_REQUEST = RegistrationRequest.builder()
             .loginId("useruser2")
-            .password(SATISFIED_PASSWORD)
+            .password(USER__SATISFIED_PASSWORD)
             .nickname("user2")
             .email(null)
             .build();
 
-    public static final CreatingWorkspaceRequest 워크스페이스_생성_REQUEST_DEFAULT_WORKSPACE = CreatingWorkspaceRequest.builder()
-            .goalScore(SATISFIED_GOAL_SCORE)
-            .headCount(SATISFIED_HEAD_COUNT)
-            .name(SATISFIED_NAME)
-            .task(DEFAULT_TASK)
-            .missionBoard(List.of(new MissionDTO(SATISFIED_MISSION_NAME, SATISFIED_MISSION_SCORE)))
+    public static final CreatingWorkspaceRequest 워크스페이스_생성__DEFAULT_WORKSPACE_REQUEST = CreatingWorkspaceRequest.builder()
+            .goalScore(WORKSPACE__SATISFIED_GOAL_SCORE)
+            .headCount(WORKSPACE__SATISFIED_HEAD_COUNT)
+            .name(WORKSPACE__SATISFIED_NAME)
+            .task(TASK__DEFAULT_TASK)
+            .missionBoard(List.of(new MissionDTO(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE)))
             .build();
 
 

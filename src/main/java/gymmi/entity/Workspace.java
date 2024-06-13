@@ -9,13 +9,17 @@ import lombok.NoArgsConstructor;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.util.regex.Pattern;
 
-import static gymmi.utils.Regexpressions.Workspace.REGEX_WORKSPACE_NAME;
-import static gymmi.utils.Regexpressions.Workspace.REGEX_WORKSPACE_TAG;
+import static gymmi.utils.Regexpressions.REGEX_영어_한글_만;
+import static gymmi.utils.Regexpressions.REGEX_영어_한글_숫자_만;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Workspace {
+
+    private static final Pattern REGEX_WORKSPACE_NAME = REGEX_영어_한글_숫자_만;
+    private static final Pattern REGEX_WORKSPACE_TAG = REGEX_영어_한글_만;
 
     private final static SecureRandom random = new SecureRandom();
 
@@ -116,7 +120,7 @@ public class Workspace {
         return this.status == WorkspaceStatus.PREPARING;
     }
 
-    public boolean isFull(Integer headCount){
+    public boolean isFull(Integer headCount) {
         return this.headCount <= headCount;
     }
 

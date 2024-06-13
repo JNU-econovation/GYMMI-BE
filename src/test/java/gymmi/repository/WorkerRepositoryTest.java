@@ -12,6 +12,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.Optional;
 
+import static gymmi.Fixtures.*;
+
 @DataJpaTest
 class WorkerRepositoryTest {
 
@@ -24,13 +26,13 @@ class WorkerRepositoryTest {
     @Test
     void 워커를_찾는다() {
         // given
-        User defaultUser = Fixtures.USER_DEFAULT;
+        User defaultUser = Fixtures.USER__DEFAULT_USER;
 
         Workspace workspace = Workspace.builder()
                 .creator(defaultUser)
-                .name(Fixtures.Workspace.SATISFIED_NAME)
-                .headCount(Fixtures.Workspace.SATISFIED_HEAD_COUNT)
-                .goalScore(Fixtures.Workspace.SATISFIED_GOAL_SCORE)
+                .name(WORKSPACE__SATISFIED_NAME)
+                .headCount(WORKSPACE__SATISFIED_HEAD_COUNT)
+                .goalScore(WORKSPACE__SATISFIED_GOAL_SCORE)
                 .description(null)
                 .tag(null)
                 .build();

@@ -7,13 +7,20 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 import org.mindrot.jbcrypt.BCrypt;
 
+import java.util.regex.Pattern;
+
 import static gymmi.utils.Regexpressions.*;
-import static gymmi.utils.Regexpressions.User.*;
 
 @Entity
 @Table(name = "uuser")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User {
+
+    private static final Pattern REGEX_LOGIN_ID = REGEX_영어_숫자_만;
+    private static final Pattern REGEX_PASSWORD = Pattern.compile("^[a-zA-Z0-9" + SPECIAL_CHARACTER + "]+$");
+    private static final Pattern REGEX_NICKNAME = REGEX_영어_한글_초성_숫자_만;
+    private static final Pattern REGEX_SPECIAL_CHARACTER = Pattern.compile("[" + SPECIAL_CHARACTER + "]");
+    private static final Pattern REGEX_EMAIL = Pattern.compile("^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]*$");
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

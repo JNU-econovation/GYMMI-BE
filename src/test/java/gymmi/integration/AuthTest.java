@@ -26,9 +26,9 @@ public class AuthTest extends IntegrationTest {
         void 회원_가입을_성공한다_200() {
             // given
             RegistrationRequest request = RegistrationRequest.builder()
-                    .loginId(Fixtures.SATISFIED_LOGIN_ID)
-                    .password(Fixtures.SATISFIED_PASSWORD)
-                    .nickname(Fixtures.SATISFIED_NICKNAME)
+                    .loginId(Fixtures.USER__SATISFIED_LOGIN_ID)
+                    .password(Fixtures.USER__SATISFIED_PASSWORD)
+                    .nickname(Fixtures.USER__SATISFIED_NICKNAME)
                     .email(null)
                     .build();
 
@@ -44,9 +44,9 @@ public class AuthTest extends IntegrationTest {
         void 이미_존재하는_아이디인_경우_실패한다_400() {
             // given
             RegistrationRequest step = RegistrationRequest.builder()
-                    .loginId(Fixtures.SATISFIED_LOGIN_ID)
-                    .password(Fixtures.SATISFIED_PASSWORD)
-                    .nickname(Fixtures.SATISFIED_NICKNAME)
+                    .loginId(Fixtures.USER__SATISFIED_LOGIN_ID)
+                    .password(Fixtures.USER__SATISFIED_PASSWORD)
+                    .nickname(Fixtures.USER__SATISFIED_NICKNAME)
                     .email(null)
                     .build();
 
@@ -71,9 +71,9 @@ public class AuthTest extends IntegrationTest {
         void 로그인을_성공한다_200() {
             // given
             RegistrationRequest step = RegistrationRequest.builder()
-                    .loginId(Fixtures.SATISFIED_LOGIN_ID)
-                    .password(Fixtures.SATISFIED_PASSWORD)
-                    .nickname(Fixtures.SATISFIED_NICKNAME)
+                    .loginId(Fixtures.USER__SATISFIED_LOGIN_ID)
+                    .password(Fixtures.USER__SATISFIED_PASSWORD)
+                    .nickname(Fixtures.USER__SATISFIED_NICKNAME)
                     .email(null)
                     .build();
 
@@ -96,9 +96,9 @@ public class AuthTest extends IntegrationTest {
         @Test
         void 아이디가_일치하지_않는_경우_로그인을_실패한다_400() {
             RegistrationRequest step = RegistrationRequest.builder()
-                    .loginId(Fixtures.SATISFIED_LOGIN_ID)
-                    .password(Fixtures.SATISFIED_PASSWORD)
-                    .nickname(Fixtures.SATISFIED_NICKNAME)
+                    .loginId(Fixtures.USER__SATISFIED_LOGIN_ID)
+                    .password(Fixtures.USER__SATISFIED_PASSWORD)
+                    .nickname(Fixtures.USER__SATISFIED_NICKNAME)
                     .email(null)
                     .build();
 
@@ -118,9 +118,9 @@ public class AuthTest extends IntegrationTest {
         @Test
         void 비밀번호가_일치하지_않는_경우_로그인을_실패한다_400() {
             RegistrationRequest step = RegistrationRequest.builder()
-                    .loginId(Fixtures.SATISFIED_LOGIN_ID)
-                    .password(Fixtures.SATISFIED_PASSWORD)
-                    .nickname(Fixtures.SATISFIED_NICKNAME)
+                    .loginId(Fixtures.USER__SATISFIED_LOGIN_ID)
+                    .password(Fixtures.USER__SATISFIED_PASSWORD)
+                    .nickname(Fixtures.USER__SATISFIED_NICKNAME)
                     .email(null)
                     .build();
 
@@ -148,9 +148,9 @@ public class AuthTest extends IntegrationTest {
         void 리프레시_토큰으로_엑세스토큰과_리프레시토큰_재발급을_성공한다_200() {
             // given
             RegistrationRequest step = RegistrationRequest.builder()
-                    .loginId(Fixtures.SATISFIED_LOGIN_ID)
-                    .password(Fixtures.SATISFIED_PASSWORD)
-                    .nickname(Fixtures.SATISFIED_NICKNAME)
+                    .loginId(Fixtures.USER__SATISFIED_LOGIN_ID)
+                    .password(Fixtures.USER__SATISFIED_PASSWORD)
+                    .nickname(Fixtures.USER__SATISFIED_NICKNAME)
                     .email(null)
                     .build();
 
@@ -178,9 +178,9 @@ public class AuthTest extends IntegrationTest {
         void 비활성화된_리프레시_토큰으로_엑세스토큰과_리프레시토큰을_재발급_하는_경우_실패한다_401() throws InterruptedException {
             // given
             RegistrationRequest step = RegistrationRequest.builder()
-                    .loginId(Fixtures.SATISFIED_LOGIN_ID)
-                    .password(Fixtures.SATISFIED_PASSWORD)
-                    .nickname(Fixtures.SATISFIED_NICKNAME)
+                    .loginId(Fixtures.USER__SATISFIED_LOGIN_ID)
+                    .password(Fixtures.USER__SATISFIED_PASSWORD)
+                    .nickname(Fixtures.USER__SATISFIED_NICKNAME)
                     .email(null)
                     .build();
 
@@ -210,9 +210,9 @@ public class AuthTest extends IntegrationTest {
     void 로그아웃을_성공한다_200() {
         // given
         RegistrationRequest step = RegistrationRequest.builder()
-                .loginId(Fixtures.SATISFIED_LOGIN_ID)
-                .password(Fixtures.SATISFIED_PASSWORD)
-                .nickname(Fixtures.SATISFIED_NICKNAME)
+                .loginId(Fixtures.USER__SATISFIED_LOGIN_ID)
+                .password(Fixtures.USER__SATISFIED_PASSWORD)
+                .nickname(Fixtures.USER__SATISFIED_NICKNAME)
                 .email(null)
                 .build();
 
@@ -239,9 +239,9 @@ public class AuthTest extends IntegrationTest {
         void Authorization_헤더에_엑세스_토큰이_비어있는_경우_실패_한다_401() {
             // given
             RegistrationRequest step = RegistrationRequest.builder()
-                    .loginId(Fixtures.SATISFIED_LOGIN_ID)
-                    .password(Fixtures.SATISFIED_PASSWORD)
-                    .nickname(Fixtures.SATISFIED_NICKNAME)
+                    .loginId(Fixtures.USER__SATISFIED_LOGIN_ID)
+                    .password(Fixtures.USER__SATISFIED_PASSWORD)
+                    .nickname(Fixtures.USER__SATISFIED_NICKNAME)
                     .email(null)
                     .build();
 
@@ -268,9 +268,9 @@ public class AuthTest extends IntegrationTest {
         void Authorization에서_타입이_Bearer이_아닌_경우_실패한다_401() {
             // given
             RegistrationRequest step = RegistrationRequest.builder()
-                    .loginId(Fixtures.SATISFIED_LOGIN_ID)
-                    .password(Fixtures.SATISFIED_PASSWORD)
-                    .nickname(Fixtures.SATISFIED_NICKNAME)
+                    .loginId(Fixtures.USER__SATISFIED_LOGIN_ID)
+                    .password(Fixtures.USER__SATISFIED_PASSWORD)
+                    .nickname(Fixtures.USER__SATISFIED_NICKNAME)
                     .email(null)
                     .build();
 
@@ -297,9 +297,9 @@ public class AuthTest extends IntegrationTest {
         void 엑세스_토큰_대신_리프레시_토큰으로_요청하는_경우_실패한다_401() {
             // given
             RegistrationRequest step = RegistrationRequest.builder()
-                    .loginId(Fixtures.SATISFIED_LOGIN_ID)
-                    .password(Fixtures.SATISFIED_PASSWORD)
-                    .nickname(Fixtures.SATISFIED_NICKNAME)
+                    .loginId(Fixtures.USER__SATISFIED_LOGIN_ID)
+                    .password(Fixtures.USER__SATISFIED_PASSWORD)
+                    .nickname(Fixtures.USER__SATISFIED_NICKNAME)
                     .email(null)
                     .build();
 

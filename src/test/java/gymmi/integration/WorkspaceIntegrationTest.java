@@ -17,7 +17,6 @@ import org.springframework.http.HttpHeaders;
 import java.util.List;
 
 import static gymmi.Fixtures.*;
-import static gymmi.Fixtures.Workspace.*;
 import static gymmi.integration.Steps.*;
 
 public class WorkspaceIntegrationTest extends IntegrationTest {
@@ -27,9 +26,9 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
 
     @BeforeEach
     void 인증_인가() {
-        RegistrationRequest request = 회원_가입_REQUEST_DEFAULT_USER;
+        RegistrationRequest request = 회원_가입__DEFAULT_USER_REQUEST;
         this.defaultUserToken = 회원가입_및_로그인_요청(request);
-        RegistrationRequest request1 = 회원_가입_REQUEST_USER_1;
+        RegistrationRequest request1 = 회원_가입__USER_1_REQUEST;
         this.user1Token = 회원가입_및_로그인_요청(request1);
     }
 
@@ -40,11 +39,11 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
         void 워크스페이스를_생성을_성공한다_200() {
             // given
             CreatingWorkspaceRequest request = CreatingWorkspaceRequest.builder()
-                    .goalScore(SATISFIED_GOAL_SCORE)
-                    .headCount(SATISFIED_HEAD_COUNT)
-                    .name(SATISFIED_NAME)
-                    .task(DEFAULT_TASK)
-                    .missionBoard(List.of(new MissionDTO(SATISFIED_MISSION_NAME, SATISFIED_MISSION_SCORE)))
+                    .goalScore(WORKSPACE__SATISFIED_GOAL_SCORE)
+                    .headCount(WORKSPACE__SATISFIED_HEAD_COUNT)
+                    .name(WORKSPACE__SATISFIED_NAME)
+                    .task(TASK__DEFAULT_TASK)
+                    .missionBoard(List.of(new MissionDTO(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE)))
                     .build();
 
             // when
@@ -60,19 +59,19 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
         void 워크스페이스_이름이_이미_존재하는_경우_실패한다_400() {
             // given
             CreatingWorkspaceRequest step = CreatingWorkspaceRequest.builder()
-                    .goalScore(SATISFIED_GOAL_SCORE)
-                    .headCount(SATISFIED_HEAD_COUNT)
-                    .name(SATISFIED_NAME)
-                    .task(DEFAULT_TASK)
-                    .missionBoard(List.of(new MissionDTO(SATISFIED_MISSION_NAME, SATISFIED_MISSION_SCORE)))
+                    .goalScore(WORKSPACE__SATISFIED_GOAL_SCORE)
+                    .headCount(WORKSPACE__SATISFIED_HEAD_COUNT)
+                    .name(WORKSPACE__SATISFIED_NAME)
+                    .task(TASK__DEFAULT_TASK)
+                    .missionBoard(List.of(new MissionDTO(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE)))
                     .build();
 
             CreatingWorkspaceRequest request = CreatingWorkspaceRequest.builder()
-                    .goalScore(SATISFIED_GOAL_SCORE)
-                    .headCount(SATISFIED_HEAD_COUNT)
-                    .name(SATISFIED_NAME)
-                    .task(DEFAULT_TASK)
-                    .missionBoard(List.of(new MissionDTO(SATISFIED_MISSION_NAME, SATISFIED_MISSION_SCORE)))
+                    .goalScore(WORKSPACE__SATISFIED_GOAL_SCORE)
+                    .headCount(WORKSPACE__SATISFIED_HEAD_COUNT)
+                    .name(WORKSPACE__SATISFIED_NAME)
+                    .task(TASK__DEFAULT_TASK)
+                    .missionBoard(List.of(new MissionDTO(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE)))
                     .build();
             워크스페이스_생성_요청(defaultUserToken, step);
 
@@ -91,7 +90,7 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
         @Test
         void 워크스페이스의_비밀번호를_확인한다() {
             // given
-            CreatingWorkspaceRequest step = 워크스페이스_생성_REQUEST_DEFAULT_WORKSPACE;
+            CreatingWorkspaceRequest step = 워크스페이스_생성__DEFAULT_WORKSPACE_REQUEST;
             long workspaceId = 워크스페이스_생성_요청(defaultUserToken, step)
                     .jsonPath()
                     .getLong(JSON_KEY_ID);
@@ -107,7 +106,7 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
         @Test
         void 워크스페이스_참여자가_아닌_경우_실패한다_403() {
             // given
-            CreatingWorkspaceRequest step = 워크스페이스_생성_REQUEST_DEFAULT_WORKSPACE;
+            CreatingWorkspaceRequest step = 워크스페이스_생성__DEFAULT_WORKSPACE_REQUEST;
             long workspaceId = 워크스페이스_생성_요청(defaultUserToken, step)
                     .jsonPath()
                     .getLong(JSON_KEY_ID);
@@ -127,7 +126,7 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
         @Test
         void 워크스페이스_참여에_성공한다_200() {
             // given
-            CreatingWorkspaceRequest step = 워크스페이스_생성_REQUEST_DEFAULT_WORKSPACE;
+            CreatingWorkspaceRequest step = 워크스페이스_생성__DEFAULT_WORKSPACE_REQUEST;
 
             long workspaceId = 워크스페이스_생성_요청(defaultUserToken, step)
                     .jsonPath()
@@ -137,7 +136,7 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                     .jsonPath()
                     .getString(JSON_KEY_PASSWORD);
 
-            JoiningWorkspaceRequest request = new JoiningWorkspaceRequest(password, DEFAULT_TASK);
+            JoiningWorkspaceRequest request = new JoiningWorkspaceRequest(password, TASK__DEFAULT_TASK);
 
             // when
             Response response = 워크스페이스_참여_요청(user1Token, workspaceId, request);
@@ -150,7 +149,7 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
         @Test
         void 워크스페이스에_이미_참여한_경우_실패한다_400() {
             // given
-            CreatingWorkspaceRequest step = 워크스페이스_생성_REQUEST_DEFAULT_WORKSPACE;
+            CreatingWorkspaceRequest step = 워크스페이스_생성__DEFAULT_WORKSPACE_REQUEST;
 
             long workspaceId = 워크스페이스_생성_요청(defaultUserToken, step)
                     .jsonPath()
@@ -160,7 +159,7 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                     .jsonPath()
                     .getString(JSON_KEY_PASSWORD);
 
-            JoiningWorkspaceRequest request = new JoiningWorkspaceRequest(password, DEFAULT_TASK);
+            JoiningWorkspaceRequest request = new JoiningWorkspaceRequest(password, TASK__DEFAULT_TASK);
 
             워크스페이스_참여_요청(user1Token, workspaceId, request);
 
@@ -177,11 +176,11 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
         void 워크스페이스_인원이_꽉_찬_경우_실패한다_400() {
             // given
             CreatingWorkspaceRequest step = CreatingWorkspaceRequest.builder()
-                    .goalScore(SATISFIED_GOAL_SCORE)
+                    .goalScore(WORKSPACE__SATISFIED_GOAL_SCORE)
                     .headCount(2)
-                    .name(SATISFIED_NAME)
-                    .task(DEFAULT_TASK)
-                    .missionBoard(List.of(new MissionDTO(SATISFIED_MISSION_NAME, SATISFIED_MISSION_SCORE)))
+                    .name(WORKSPACE__SATISFIED_NAME)
+                    .task(TASK__DEFAULT_TASK)
+                    .missionBoard(List.of(new MissionDTO(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE)))
                     .build();
 
             Long workspaceId = 워크스페이스_생성_요청(defaultUserToken, step)
@@ -192,10 +191,10 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                     .jsonPath()
                     .getString(JSON_KEY_PASSWORD);
 
-            JoiningWorkspaceRequest step1 = new JoiningWorkspaceRequest(password, DEFAULT_TASK);
+            JoiningWorkspaceRequest step1 = new JoiningWorkspaceRequest(password, TASK__DEFAULT_TASK);
             워크스페이스_참여_요청(user1Token, workspaceId, step1);
 
-            RegistrationRequest step2 = 회원_가입_REQUEST_USER_2;
+            RegistrationRequest step2 = 회원_가입__USER_2_REQUEST;
             String user2Token = 회원가입_및_로그인_요청(step2);
 
             // when
@@ -220,13 +219,13 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
         @Test
         void 비밀번호가_일치하지_않는_경우_실패한다_400() {
             // given
-            CreatingWorkspaceRequest step = 워크스페이스_생성_REQUEST_DEFAULT_WORKSPACE;
+            CreatingWorkspaceRequest step = 워크스페이스_생성__DEFAULT_WORKSPACE_REQUEST;
 
             long workspaceId = 워크스페이스_생성_요청(defaultUserToken, step)
                     .jsonPath()
                     .getLong(JSON_KEY_ID);
 
-            JoiningWorkspaceRequest request = new JoiningWorkspaceRequest(WORKSPACE_DISSATISFIED_PASSWORD, DEFAULT_TASK);
+            JoiningWorkspaceRequest request = new JoiningWorkspaceRequest(WORKSPACE__DISSATISFIED_PASSWORD, TASK__DEFAULT_TASK);
 
             // when
             Response response = 워크스페이스_참여_요청(user1Token, workspaceId, request);
@@ -241,13 +240,13 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
     @Test
     void 워크스페이스의_비밀번호_일치_여부_확인을_성공한다_200() {
         // given
-        CreatingWorkspaceRequest step = 워크스페이스_생성_REQUEST_DEFAULT_WORKSPACE;
+        CreatingWorkspaceRequest step = 워크스페이스_생성__DEFAULT_WORKSPACE_REQUEST;
 
         long workspaceId = 워크스페이스_생성_요청(defaultUserToken, step)
                 .jsonPath()
                 .getLong(JSON_KEY_ID);
 
-        MatchingWorkspacePasswordRequest request = new MatchingWorkspacePasswordRequest(WORKSPACE_DISSATISFIED_PASSWORD);
+        MatchingWorkspacePasswordRequest request = new MatchingWorkspacePasswordRequest(WORKSPACE__DISSATISFIED_PASSWORD);
 
         // when
         Response response = RestAssured
