@@ -31,6 +31,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addFormatters(FormatterRegistry registry) {
-        registry.addConverter(new StringToDuplicationCheckType());
+        registry.addConverter(new StringToDuplicationCheckTypeConverter());
     }
 }
