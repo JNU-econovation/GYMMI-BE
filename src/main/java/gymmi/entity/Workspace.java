@@ -135,4 +135,32 @@ public class Workspace {
     public WorkspaceStatus getStatus() {
         return status;
     }
+
+    public User getCreator() {
+        return creator;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public Integer getGoalScore() {
+        return goalScore;
+    }
+
+    public Integer getHeadCount() {
+        return headCount;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public String getTag() {
+        return tag;
+    }
 }

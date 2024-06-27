@@ -263,4 +263,25 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                 .body("sameness", Matchers.equalTo(false));
     }
 
+    @Test
+    void 참여한_워크스페이스_목록_확인을_성공한다_200() {
+        // given
+        CreatingWorkspaceRequest step = 워크스페이스_생성__DEFAULT_WORKSPACE_REQUEST;
+
+        워크스페이스_생성_요청(defaultUserToken, step);
+
+        // when
+        Response response = RestAssured
+                .given().log().all()
+                .contentType(ContentType.JSON)
+                .header(HttpHeaders.AUTHORIZATION, AUTHORIZATION_TYPE_BEARER + defaultUserToken)
+                .queryParam("page", 0)
+                .when().get("/workspaces/my");
+
+        // then
+        response.then().log().all()
+                .body("[0]", Matchers.notNullValue());
+
+    }
+
 }

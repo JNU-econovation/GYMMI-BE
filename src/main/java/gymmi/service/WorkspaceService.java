@@ -12,12 +12,14 @@ import gymmi.repository.WorkspaceRepository;
 import gymmi.request.CreatingWorkspaceRequest;
 import gymmi.request.JoiningWorkspaceRequest;
 import gymmi.request.MissionDTO;
+import gymmi.response.JoinedWorkspaceResponse;
 import gymmi.response.MatchingWorkspacePasswordResponse;
 import gymmi.response.WorkspacePasswordResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -117,6 +119,26 @@ public class WorkspaceService {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
         boolean matchingResult = workspace.matchesPassword(workspacePassword);
         return new MatchingWorkspacePasswordResponse(matchingResult);
+    }
+
+    public List<JoinedWorkspaceResponse> getJoinedWorkspaces(User loginedUser, int pageNumber) {
+        List<Workspace> joinedWorkspaces = workspaceRepository.getJoinedWorkspacesByUserId(loginedUser.getId(), pageNumber);
+        List<JoinedWorkspaceResponse> responses = new ArrayList<>();
+        for (Workspace workspace : joinedWorkspaces) {
+            Integer achievementScore = workspaceRepository.getAchievementScore(workspace.getId());
+            JoinedWorkspaceResponse response = JoinedWorkspaceResponse.builder()
+                    .id(workspace.getId())
+                    .name(workspace.getName())
+                    .creator(workspace.getCreator().getNickname())
+                    .status(workspace.getStatus().name())
+                    .tag(workspace.getTag())
+                    .createdAt(workspace.getCreatedAt())
+                    .goalScore(workspace.getGoalScore())
+                    .achievementScore(achievementScore)
+                    .build();
+            responses.add(response);
+        }
+        return responses;
     }
 
 }

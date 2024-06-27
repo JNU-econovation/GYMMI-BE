@@ -6,6 +6,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "workspace_id"})})
@@ -26,10 +28,14 @@ public class Worker {
     @Column(nullable = false)
     private Integer score;
 
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
     @Builder
     public Worker(User user, Workspace workspace) {
         this.user = user;
         this.workspace = workspace;
         this.score = 0;
+        this.createdAt = LocalDateTime.now();
     }
 }

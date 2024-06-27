@@ -6,6 +6,7 @@ import gymmi.request.CreatingWorkspaceRequest;
 import gymmi.request.JoiningWorkspaceRequest;
 import gymmi.request.MatchingWorkspacePasswordRequest;
 import gymmi.response.IdResponse;
+import gymmi.response.JoinedWorkspaceResponse;
 import gymmi.response.MatchingWorkspacePasswordResponse;
 import gymmi.response.WorkspacePasswordResponse;
 import gymmi.service.WorkspaceService;
@@ -13,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -58,9 +61,13 @@ public class WorkspaceController {
         return ResponseEntity.ok().body(response);
     }
 
-    @GetMapping("/workspaces1")
-    public ResponseEntity<Void> seeJoinedWorkspaces() {
-        return null;
+    @GetMapping("/workspaces/my")
+    public ResponseEntity<List<JoinedWorkspaceResponse>> seeJoinedWorkspaces(
+            @Logined User user,
+            @RequestParam("page") int pageNumber
+    ) {
+        List<JoinedWorkspaceResponse> responses = workspaceService.getJoinedWorkspaces(user, pageNumber);
+        return ResponseEntity.ok().body(responses);
     }
 
     @GetMapping("/workspaces2")
