@@ -15,6 +15,7 @@ import gymmi.request.MissionDTO;
 import gymmi.response.JoinedWorkspaceResponse;
 import gymmi.response.MatchingWorkspacePasswordResponse;
 import gymmi.response.WorkspacePasswordResponse;
+import gymmi.response.WorkspaceResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -83,8 +84,8 @@ public class WorkspaceService {
             throw new InvalidStateException("준비중인 워크스페이스에만 참여할 수 있습니다.");
         }
 
-        int wokerCount = workerRepository.countAllByWorkspaceId(workspace.getId());
-        if (workspace.isFull(wokerCount)) {
+        int workerCount = workerRepository.countAllByWorkspaceId(workspace.getId());
+        if (workspace.isFull(workerCount)) {
             throw new InvalidStateException("워크스페이스 인원이 가득 찼습니다.");
         }
 
@@ -141,4 +142,22 @@ public class WorkspaceService {
         return responses;
     }
 
+    public List<WorkspaceResponse> getAllWorkspaces() {
+        List<Workspace> workspaces = workspaceRepository.getAllWorkspaces();
+        List<WorkspaceResponse> responses = new ArrayList<>();
+        for (Workspace workspace : workspaces) {
+            Integer achievementScore = workspaceRepository.getAchievementScore(workspace.getId());
+            WorkspaceResponse response = WorkspaceResponse.builder()
+                    .id(workspace.getId())
+                    .name(workspace.getName())
+                    .status(workspace.getStatus().name())
+                    .goalScore(workspace.getGoalScore())
+                    .createdAt(workspace.getCreatedAt())
+                    .achievementScore(achievementScore)
+                    .build();
+            responses.add(response);
+        }
+        return responses;
+    }
 }
+

@@ -1,14 +1,12 @@
 package gymmi.controller;
 
 import gymmi.entity.User;
+import gymmi.entity.WorkspaceStatus;
 import gymmi.global.Logined;
 import gymmi.request.CreatingWorkspaceRequest;
 import gymmi.request.JoiningWorkspaceRequest;
 import gymmi.request.MatchingWorkspacePasswordRequest;
-import gymmi.response.IdResponse;
-import gymmi.response.JoinedWorkspaceResponse;
-import gymmi.response.MatchingWorkspacePasswordResponse;
-import gymmi.response.WorkspacePasswordResponse;
+import gymmi.response.*;
 import gymmi.service.WorkspaceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -70,9 +68,15 @@ public class WorkspaceController {
         return ResponseEntity.ok().body(responses);
     }
 
-    @GetMapping("/workspaces2")
-    public ResponseEntity<Void> seeAllWorkspaces() {
-        return null;
+    @GetMapping("/workspaces")
+    public ResponseEntity<List<WorkspaceResponse>> seeAllWorkspaces(
+            //@Logined User user,
+            @RequestParam(required = false) WorkspaceStatus status,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(value = "page") int pageNumber
+    ) {
+        List<WorkspaceResponse> responses = workspaceService.getAllWorkspaces();
+        return ResponseEntity.ok().body(responses);
     }
 
     @PatchMapping("/workspaces/{workspaceId}/start")
