@@ -166,6 +166,7 @@ public class WorkspaceService {
         return responses;
     }
 
+    @Transactional
     public void startWorkspace(User loginedUser, Long workspaceId) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
         validateIfWorker(loginedUser.getId(), workspaceId);

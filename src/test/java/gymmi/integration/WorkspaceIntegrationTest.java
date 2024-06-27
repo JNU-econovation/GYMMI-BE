@@ -10,7 +10,6 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
@@ -207,14 +206,38 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                     .body(JSON_KEY_ERROR_CODE, Matchers.equalTo(InvalidStateException.ERROR_CODE));
         }
 
-        @Disabled
         @Test
         void 워크스페이스가_준비중이_아닌_경우_실패한다_400() {
-            // given
+            CreatingWorkspaceRequest step = CreatingWorkspaceRequest.builder()
+                    .goalScore(WORKSPACE__SATISFIED_GOAL_SCORE)
+                    .headCount(3)
+                    .name(WORKSPACE__SATISFIED_NAME)
+                    .task(TASK__DEFAULT_TASK)
+                    .missionBoard(List.of(new MissionDTO(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE)))
+                    .build();
+
+            Long workspaceId = 워크스페이스_생성_요청(defaultUserToken, step)
+                    .jsonPath()
+                    .getLong(JSON_KEY_ID);
+
+            String password = 워크스페이스_비밀번호_보기_요청(defaultUserToken, workspaceId)
+                    .jsonPath()
+                    .getString(JSON_KEY_PASSWORD);
+
+            JoiningWorkspaceRequest step1 = new JoiningWorkspaceRequest(password, TASK__DEFAULT_TASK);
+            워크스페이스_참여_요청(user1Token, workspaceId, step1);
+            워크스페이스_시작_요청(defaultUserToken, workspaceId);
+
+            RegistrationRequest step3 = 회원_가입__USER_2_REQUEST;
+            String user2Token = 회원가입_및_로그인_요청(step3);
 
             // when
+            Response response = 워크스페이스_참여_요청(user2Token, workspaceId, step1);
 
             // then
+            response.then()
+                    .statusCode(400)
+                    .body(JSON_KEY_ERROR_CODE, Matchers.equalTo(InvalidStateException.ERROR_CODE));
         }
 
         @Test
@@ -237,6 +260,7 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                     .body(JSON_KEY_ERROR_CODE, Matchers.equalTo(NotMatchedException.ERROR_CODE));
         }
     }
+
 
     @Test
     void 워크스페이스의_비밀번호_일치_여부_확인을_성공한다_200() {
