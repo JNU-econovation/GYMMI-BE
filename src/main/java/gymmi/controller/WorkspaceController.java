@@ -80,8 +80,12 @@ public class WorkspaceController {
     }
 
     @PatchMapping("/workspaces/{workspaceId}/start")
-    public ResponseEntity<Void> startWorkspace() {
-        return null;
+    public ResponseEntity<Void> startWorkspace(
+            @Logined User user,
+            @PathVariable Long workspaceId
+    ) {
+        workspaceService.startWorkspace(user, workspaceId);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/workspaces/{workspaceId}")

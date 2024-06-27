@@ -60,8 +60,6 @@ public class Workspace {
             User creator, String name, String description,
             Integer goalScore, Integer headCount, String tag
     ) {
-
-
         this.creator = creator;
         this.name = validateName(name);
         this.goalScore = validateGoalScore(goalScore);
@@ -90,8 +88,7 @@ public class Workspace {
     }
 
     public void changeTag(String tag) {
-        validateTag(tag);
-        this.tag = tag;
+        this.tag = validateTag(tag);
     }
 
     private String validateTag(String tag) {
@@ -122,6 +119,14 @@ public class Workspace {
 
     public boolean isFull(Integer headCount) {
         return this.headCount <= headCount;
+    }
+
+    public boolean isCreator(User user) {
+        return this.creator.equals(user);
+    }
+
+    public void start() {
+        this.status = WorkspaceStatus.IN_PROGRESS;
     }
 
     public Long getId() {

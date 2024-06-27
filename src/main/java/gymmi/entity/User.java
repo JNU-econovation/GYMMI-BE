@@ -4,6 +4,7 @@ import gymmi.exception.InvalidPatternException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -14,6 +15,7 @@ import static gymmi.utils.Regexpressions.*;
 @Entity
 @Table(name = "uuser")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@EqualsAndHashCode(of = {"id"})
 public class User {
 
     private static final Pattern REGEX_LOGIN_ID = REGEX_영어_숫자_만;

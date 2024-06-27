@@ -75,6 +75,7 @@ public class WorkspaceService {
         setTask(loginedUser, workspace, request.getTask());
     }
 
+
     private void enterWorkspace(User loginedUser, Workspace workspace) {
         if (workerRepository.findByUserIdAndWorkspaceId(loginedUser.getId(), workspace.getId()).isPresent()) {
             throw new AlreadyExistException("이미 참여한 워크스페이스 입니다.");
@@ -87,6 +88,7 @@ public class WorkspaceService {
         int workerCount = workerRepository.countAllByWorkspaceId(workspace.getId());
         if (workspace.isFull(workerCount)) {
             throw new InvalidStateException("워크스페이스 인원이 가득 찼습니다.");
+            // 동시에 참여하는 경우?? 검증로직 피할수도? 락사용
         }
 
         Worker worker = Worker.builder()
@@ -110,10 +112,14 @@ public class WorkspaceService {
 
     public WorkspacePasswordResponse getWorkspacePassword(User loginedUser, Long workspaceId) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
-        if (workerRepository.findByUserIdAndWorkspaceId(loginedUser.getId(), workspaceId).isEmpty()) {
+        validateIfWorker(loginedUser.getId(), workspaceId);
+        return new WorkspacePasswordResponse(workspace.getPassword());
+    }
+
+    private void validateIfWorker(Long userId, Long workspaceId) {
+        if (workerRepository.findByUserIdAndWorkspaceId(userId, workspaceId).isEmpty()) {
             throw new NotHavePermissionException("해당 워크스페이스의 참여자가 아닙니다.");
         }
-        return new WorkspacePasswordResponse(workspace.getPassword());
     }
 
     public MatchingWorkspacePasswordResponse matchesWorkspacePassword(Long workspaceId, String workspacePassword) {
@@ -158,6 +164,19 @@ public class WorkspaceService {
             responses.add(response);
         }
         return responses;
+    }
+
+    public void startWorkspace(User loginedUser, Long workspaceId) {
+        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
+        validateIfWorker(loginedUser.getId(), workspaceId);
+        if (!workspace.isCreator(loginedUser)) {
+            throw new NotHavePermissionException("방장이 아닙니다.");
+        }
+        int workerCount = workerRepository.countAllByWorkspaceId(workspace.getId());
+        if (workerCount < 2) {
+            throw new InvalidStateException("최소 인원인 2명을 채워주세요.");
+        }
+        workspace.start();
     }
 }
 

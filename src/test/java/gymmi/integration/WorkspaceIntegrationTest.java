@@ -2,6 +2,7 @@ package gymmi.integration;
 
 import gymmi.exception.AlreadyExistException;
 import gymmi.exception.InvalidStateException;
+import gymmi.exception.NotHavePermissionException;
 import gymmi.exception.NotMatchedException;
 import gymmi.request.*;
 import io.restassured.RestAssured;
@@ -303,4 +304,71 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                 .body("[0]", Matchers.notNullValue());
     }
 
+    @Nested
+    class 워크스페이스_시작 {
+        @Test
+        void 워크스페이스_시작을_성공한다_200() {
+            // given
+            CreatingWorkspaceRequest step = 워크스페이스_생성__DEFAULT_WORKSPACE_REQUEST;
+
+            Long workspaceId = 워크스페이스_생성_요청(defaultUserToken, step)
+                    .jsonPath()
+                    .getLong(JSON_KEY_ID);
+
+            String password = 워크스페이스_비밀번호_보기_요청(defaultUserToken, workspaceId)
+                    .jsonPath()
+                    .getString(JSON_KEY_PASSWORD);
+
+            워크스페이스_참여_요청(user1Token, workspaceId, new JoiningWorkspaceRequest(password, TASK__DEFAULT_TASK));
+
+            // when
+            Response response = 워크스페이스_시작_요청(defaultUserToken, workspaceId);
+
+            // then
+            response.then()
+                    .statusCode(200);
+        }
+
+        @Test
+        void 방장이_아닌_경우_실패한다_403() {
+            //given
+            CreatingWorkspaceRequest step = 워크스페이스_생성__DEFAULT_WORKSPACE_REQUEST;
+
+            Long workspaceId = 워크스페이스_생성_요청(defaultUserToken, step)
+                    .jsonPath()
+                    .getLong(JSON_KEY_ID);
+
+            String password = 워크스페이스_비밀번호_보기_요청(defaultUserToken, workspaceId)
+                    .jsonPath()
+                    .getString(JSON_KEY_PASSWORD);
+
+            워크스페이스_참여_요청(user1Token, workspaceId, new JoiningWorkspaceRequest(password, TASK__DEFAULT_TASK));
+
+            // when
+            Response response = 워크스페이스_시작_요청(user1Token, workspaceId);
+
+            // then
+            response.then()
+                    .statusCode(403)
+                    .body(JSON_KEY_ERROR_CODE, Matchers.equalTo(NotHavePermissionException.ERROR_CODE));
+        }
+
+        @Test
+        void 참여자가_1명인_경우_실패한다_400() {
+            // given
+            CreatingWorkspaceRequest step = 워크스페이스_생성__DEFAULT_WORKSPACE_REQUEST;
+
+            Long workspaceId = 워크스페이스_생성_요청(defaultUserToken, step)
+                    .jsonPath()
+                    .getLong(JSON_KEY_ID);
+
+            // when
+            Response response = 워크스페이스_시작_요청(defaultUserToken, workspaceId);
+
+            // then
+            response.then()
+                    .statusCode(400)
+                    .body(JSON_KEY_ERROR_CODE, Matchers.equalTo(InvalidStateException.ERROR_CODE));
+        }
+    }
 }
