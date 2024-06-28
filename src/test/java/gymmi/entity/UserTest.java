@@ -1,12 +1,14 @@
 package gymmi.entity;
 
+import static gymmi.Fixtures.USER__SATISFIED_LOGIN_ID;
+import static gymmi.Fixtures.USER__SATISFIED_NICKNAME;
+import static gymmi.Fixtures.USER__SATISFIED_PASSWORD;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import gymmi.exception.InvalidPatternException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-
-import static gymmi.Fixtures.*;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class UserTest {
 
@@ -15,9 +17,9 @@ class UserTest {
     void 회원을_생성한다() {
         // given, when, then
         User user = User.builder()
-                .loginId(SATISFIED_LOGIN_ID)
-                .plainPassword(SATISFIED_PASSWORD)
-                .nickname(SATISFIED_NICKNAME)
+                .loginId(USER__SATISFIED_LOGIN_ID)
+                .plainPassword(USER__SATISFIED_PASSWORD)
+                .nickname(USER__SATISFIED_NICKNAME)
                 .email(null)
                 .build();
     }
@@ -28,8 +30,8 @@ class UserTest {
         // given, when, then
         assertThatThrownBy(() -> User.builder()
                 .loginId(loginId)
-                .plainPassword(SATISFIED_PASSWORD)
-                .nickname(SATISFIED_NICKNAME)
+                .plainPassword(USER__SATISFIED_PASSWORD)
+                .nickname(USER__SATISFIED_NICKNAME)
                 .email(null)
                 .build())
                 .isInstanceOf(InvalidPatternException.class)
@@ -42,9 +44,9 @@ class UserTest {
     void 비밀번호_조건이_잘못된_경우_예외가_발생한다(String password) {
         // given, when, then
         assertThatThrownBy(() -> User.builder()
-                .loginId(SATISFIED_LOGIN_ID)
+                .loginId(USER__SATISFIED_LOGIN_ID)
                 .plainPassword(password)
-                .nickname(SATISFIED_NICKNAME)
+                .nickname(USER__SATISFIED_NICKNAME)
                 .email(null)
                 .build())
                 .isInstanceOf(InvalidPatternException.class)
@@ -57,8 +59,8 @@ class UserTest {
     void 닉네임_조건이_잘못된_경우_예외가_발생한다(String nickname) {
         // given, when, then
         assertThatThrownBy(() -> User.builder()
-                .loginId(SATISFIED_LOGIN_ID)
-                .plainPassword(SATISFIED_PASSWORD)
+                .loginId(USER__SATISFIED_LOGIN_ID)
+                .plainPassword(USER__SATISFIED_PASSWORD)
                 .nickname(nickname)
                 .email(null)
                 .build())

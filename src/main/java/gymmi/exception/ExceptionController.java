@@ -19,7 +19,14 @@ public class ExceptionController {
     }
 
     @ExceptionHandler
-    public ResponseEntity<ErrorResponse> handle403Exception(AuthenticationException e, HttpServletRequest request) {
+    public ResponseEntity<ErrorResponse> handle401Exception(AuthenticationException e, HttpServletRequest request) {
+        ErrorResponse response = new ErrorResponse(e.getErrorCode(), e.getMessage());
+        log(e, request.getRequestURI());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> handle403Exception(NotHavePermissionException e, HttpServletRequest request) {
         ErrorResponse response = new ErrorResponse(e.getErrorCode(), e.getMessage());
         log(e, request.getRequestURI());
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);

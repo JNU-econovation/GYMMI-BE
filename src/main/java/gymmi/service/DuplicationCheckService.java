@@ -3,10 +3,9 @@ package gymmi.service;
 import gymmi.exception.PreparingException;
 import gymmi.global.DuplicationCheckType;
 import gymmi.response.DuplicationResponse;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
