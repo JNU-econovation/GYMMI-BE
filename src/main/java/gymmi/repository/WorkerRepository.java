@@ -2,6 +2,7 @@ package gymmi.repository;
 
 import gymmi.entity.Worker;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
@@ -13,6 +14,10 @@ public interface WorkerRepository extends JpaRepository<Worker, Long> {
 
     @Query("select count(w) from Worker w where w.workspace.id = :workspaceId")
     Integer countAllByWorkspaceId(Long workspaceId);
+
+    @Modifying(clearAutomatically = true)
+    @Query("delete from Worker w where w.user.id = :userId and w.workspace.id = :workspaceId")
+    void deleteByUserIdAndWorkspaceId(Long userId, Long workspaceId);
 
 
 //  boolean으로 가능?? ->

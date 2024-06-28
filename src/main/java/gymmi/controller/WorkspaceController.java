@@ -88,6 +88,15 @@ public class WorkspaceController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/workspaces/{workspaceId}/leave")
+    public ResponseEntity<Void> leaveWorkspace(
+            @Logined User user,
+            @PathVariable Long workspaceId
+    ) {
+        workspaceService.leaveWorkspace(user, workspaceId);
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/workspaces/{workspaceId}")
     public ResponseEntity<Void> enterWorkspace() {
         return null;

@@ -394,5 +394,78 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                     .statusCode(400)
                     .body(JSON_KEY_ERROR_CODE, Matchers.equalTo(InvalidStateException.ERROR_CODE));
         }
+
+
+        @Nested
+        class 워크스페이스_나가기 {
+            @Test
+            void 워크스페이스_나가기를_성공한다_200() {
+                // given
+                CreatingWorkspaceRequest step = 워크스페이스_생성__DEFAULT_WORKSPACE_REQUEST;
+
+                Long workspaceId = 워크스페이스_생성_요청(defaultUserToken, step)
+                        .jsonPath()
+                        .getLong(JSON_KEY_ID);
+
+                // when
+                Response response = 워크스페이스_나가기_요청(defaultUserToken, workspaceId);
+
+                // then
+                response.then()
+                        .statusCode(200);
+            }
+
+
+            @Test
+            void 방장일때_참여자가_존재하는_경우_실패한다_400() {
+                // given
+                CreatingWorkspaceRequest step = 워크스페이스_생성__DEFAULT_WORKSPACE_REQUEST;
+
+                Long workspaceId = 워크스페이스_생성_요청(defaultUserToken, step)
+                        .jsonPath()
+                        .getLong(JSON_KEY_ID);
+
+                String password = 워크스페이스_비밀번호_보기_요청(defaultUserToken, workspaceId)
+                        .jsonPath()
+                        .getString(JSON_KEY_PASSWORD);
+
+                JoiningWorkspaceRequest step1 = new JoiningWorkspaceRequest(password, TASK__DEFAULT_TASK);
+                워크스페이스_참여_요청(user1Token, workspaceId, step1);
+
+                // when
+                Response response = 워크스페이스_나가기_요청(defaultUserToken, workspaceId);
+
+                // then
+                response.then()
+                        .statusCode(400);
+            }
+
+            @Test
+            void 준비중이_아닌경우_실패한다_400() {
+                // given
+                CreatingWorkspaceRequest step = 워크스페이스_생성__DEFAULT_WORKSPACE_REQUEST;
+
+                Long workspaceId = 워크스페이스_생성_요청(defaultUserToken, step)
+                        .jsonPath()
+                        .getLong(JSON_KEY_ID);
+
+                String password = 워크스페이스_비밀번호_보기_요청(defaultUserToken, workspaceId)
+                        .jsonPath()
+                        .getString(JSON_KEY_PASSWORD);
+
+                JoiningWorkspaceRequest step1 = new JoiningWorkspaceRequest(password, TASK__DEFAULT_TASK);
+                워크스페이스_참여_요청(user1Token, workspaceId, step1);
+                워크스페이스_시작_요청(defaultUserToken, workspaceId);
+
+                // when
+                Response response = 워크스페이스_나가기_요청(defaultUserToken, workspaceId);
+
+                // then
+                response.then()
+                        .statusCode(400)
+                        .body(JSON_KEY_MESSAGE, Matchers.equalTo("준비 단계에서만 나갈 수 있습니다."));
+            }
+
+        }
     }
 }
