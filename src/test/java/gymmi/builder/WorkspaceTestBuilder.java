@@ -3,9 +3,8 @@ package gymmi.builder;
 import gymmi.entity.User;
 import gymmi.entity.Workspace;
 import gymmi.entity.WorkspaceStatus;
-import org.springframework.test.util.ReflectionTestUtils;
-
 import java.time.LocalDateTime;
+import org.springframework.test.util.ReflectionTestUtils;
 
 public class WorkspaceTestBuilder {
 

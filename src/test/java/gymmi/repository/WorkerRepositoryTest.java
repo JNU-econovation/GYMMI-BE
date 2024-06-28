@@ -1,18 +1,19 @@
 package gymmi.repository;
 
+import static gymmi.Fixtures.WORKSPACE__SATISFIED_GOAL_SCORE;
+import static gymmi.Fixtures.WORKSPACE__SATISFIED_HEAD_COUNT;
+import static gymmi.Fixtures.WORKSPACE__SATISFIED_NAME;
+
 import gymmi.Fixtures;
 import gymmi.entity.User;
 import gymmi.entity.Worker;
 import gymmi.entity.Workspace;
 import jakarta.persistence.EntityManager;
+import java.util.Optional;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-
-import java.util.Optional;
-
-import static gymmi.Fixtures.*;
 
 @DataJpaTest
 class WorkerRepositoryTest {

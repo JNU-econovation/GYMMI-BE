@@ -1,11 +1,10 @@
 package gymmi.repository;
 
 import gymmi.entity.Worker;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-
-import java.util.Optional;
 
 public interface WorkerRepository extends JpaRepository<Worker, Long> {
 
@@ -18,7 +17,6 @@ public interface WorkerRepository extends JpaRepository<Worker, Long> {
     @Modifying(clearAutomatically = true)
     @Query("delete from Worker w where w.user.id = :userId and w.workspace.id = :workspaceId")
     void deleteByUserIdAndWorkspaceId(Long userId, Long workspaceId);
-
 
 //  boolean으로 가능?? ->
 //    @Query(value = "select * from worker w", nativeQuery = true)

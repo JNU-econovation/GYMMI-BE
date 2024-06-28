@@ -1,10 +1,9 @@
 package gymmi.global;
 
 import gymmi.exception.NotFoundResourcesException;
-import org.springframework.core.convert.converter.Converter;
-
 import java.util.HashMap;
 import java.util.Map;
+import org.springframework.core.convert.converter.Converter;
 
 public class StringToDuplicationCheckTypeConverter implements Converter<String, DuplicationCheckType> {
 

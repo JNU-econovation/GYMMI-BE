@@ -1,12 +1,15 @@
 package gymmi.entity;
 
+import static gymmi.Fixtures.USER__DEFAULT_USER;
+import static gymmi.Fixtures.WORKSPACE__SATISFIED_GOAL_SCORE;
+import static gymmi.Fixtures.WORKSPACE__SATISFIED_HEAD_COUNT;
+import static gymmi.Fixtures.WORKSPACE__SATISFIED_NAME;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import gymmi.exception.InvalidNumberException;
 import gymmi.exception.InvalidPatternException;
 import org.junit.jupiter.api.Test;
-
-import static gymmi.Fixtures.*;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class WorkspaceTest {
 

@@ -1,9 +1,8 @@
 package gymmi.response;
 
+import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
-
-import java.time.LocalDateTime;
 
 @Getter
 public class JoinedWorkspaceResponse {
@@ -18,7 +17,8 @@ public class JoinedWorkspaceResponse {
     private final Integer achievementScore;
 
     @Builder
-    public JoinedWorkspaceResponse(Long id, String name, String creator, String status, String tag, LocalDateTime createdAt, Integer goalScore, Integer achievementScore) {
+    public JoinedWorkspaceResponse(Long id, String name, String creator, String status, String tag,
+                                   LocalDateTime createdAt, Integer goalScore, Integer achievementScore) {
         this.id = id;
         this.name = name;
         this.creator = creator;

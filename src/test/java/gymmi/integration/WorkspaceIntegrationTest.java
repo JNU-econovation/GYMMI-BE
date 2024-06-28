@@ -1,23 +1,46 @@
 package gymmi.integration;
 
+import static gymmi.Fixtures.AUTHORIZATION_TYPE_BEARER;
+import static gymmi.Fixtures.JSON_KEY_ERROR_CODE;
+import static gymmi.Fixtures.JSON_KEY_ID;
+import static gymmi.Fixtures.JSON_KEY_MESSAGE;
+import static gymmi.Fixtures.JSON_KEY_PASSWORD;
+import static gymmi.Fixtures.MISSION__SATISFIED_MISSION_NAME;
+import static gymmi.Fixtures.MISSION__SATISFIED_MISSION_SCORE;
+import static gymmi.Fixtures.TASK__DEFAULT_TASK;
+import static gymmi.Fixtures.WORKSPACE__DISSATISFIED_PASSWORD;
+import static gymmi.Fixtures.WORKSPACE__SATISFIED_GOAL_SCORE;
+import static gymmi.Fixtures.WORKSPACE__SATISFIED_HEAD_COUNT;
+import static gymmi.Fixtures.WORKSPACE__SATISFIED_NAME;
+import static gymmi.integration.Steps.워크스페이스_나가기_요청;
+import static gymmi.integration.Steps.워크스페이스_비밀번호_보기_요청;
+import static gymmi.integration.Steps.워크스페이스_생성__DEFAULT_WORKSPACE_REQUEST;
+import static gymmi.integration.Steps.워크스페이스_생성_요청;
+import static gymmi.integration.Steps.워크스페이스_시작_요청;
+import static gymmi.integration.Steps.워크스페이스_참여_요청;
+import static gymmi.integration.Steps.회원_가입__DEFAULT_USER_REQUEST;
+import static gymmi.integration.Steps.회원_가입__USER_1_REQUEST;
+import static gymmi.integration.Steps.회원_가입__USER_2_REQUEST;
+import static gymmi.integration.Steps.회원가입_및_로그인_요청;
+
 import gymmi.exception.AlreadyExistException;
 import gymmi.exception.InvalidStateException;
 import gymmi.exception.NotHavePermissionException;
 import gymmi.exception.NotMatchedException;
-import gymmi.request.*;
+import gymmi.request.CreatingWorkspaceRequest;
+import gymmi.request.JoiningWorkspaceRequest;
+import gymmi.request.MatchingWorkspacePasswordRequest;
+import gymmi.request.MissionDTO;
+import gymmi.request.RegistrationRequest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+import java.util.List;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
-
-import java.util.List;
-
-import static gymmi.Fixtures.*;
-import static gymmi.integration.Steps.*;
 
 public class WorkspaceIntegrationTest extends IntegrationTest {
 
@@ -43,7 +66,8 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                     .headCount(WORKSPACE__SATISFIED_HEAD_COUNT)
                     .name(WORKSPACE__SATISFIED_NAME)
                     .task(TASK__DEFAULT_TASK)
-                    .missionBoard(List.of(new MissionDTO(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE)))
+                    .missionBoard(
+                            List.of(new MissionDTO(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE)))
                     .build();
 
             // when
@@ -63,7 +87,8 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                     .headCount(WORKSPACE__SATISFIED_HEAD_COUNT)
                     .name(WORKSPACE__SATISFIED_NAME)
                     .task(TASK__DEFAULT_TASK)
-                    .missionBoard(List.of(new MissionDTO(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE)))
+                    .missionBoard(
+                            List.of(new MissionDTO(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE)))
                     .build();
 
             CreatingWorkspaceRequest request = CreatingWorkspaceRequest.builder()
@@ -71,7 +96,8 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                     .headCount(WORKSPACE__SATISFIED_HEAD_COUNT)
                     .name(WORKSPACE__SATISFIED_NAME)
                     .task(TASK__DEFAULT_TASK)
-                    .missionBoard(List.of(new MissionDTO(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE)))
+                    .missionBoard(
+                            List.of(new MissionDTO(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE)))
                     .build();
             워크스페이스_생성_요청(defaultUserToken, step);
 
@@ -180,7 +206,8 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                     .headCount(2)
                     .name(WORKSPACE__SATISFIED_NAME)
                     .task(TASK__DEFAULT_TASK)
-                    .missionBoard(List.of(new MissionDTO(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE)))
+                    .missionBoard(
+                            List.of(new MissionDTO(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE)))
                     .build();
 
             Long workspaceId = 워크스페이스_생성_요청(defaultUserToken, step)
@@ -213,7 +240,8 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                     .headCount(3)
                     .name(WORKSPACE__SATISFIED_NAME)
                     .task(TASK__DEFAULT_TASK)
-                    .missionBoard(List.of(new MissionDTO(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE)))
+                    .missionBoard(
+                            List.of(new MissionDTO(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE)))
                     .build();
 
             Long workspaceId = 워크스페이스_생성_요청(defaultUserToken, step)
@@ -249,7 +277,8 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                     .jsonPath()
                     .getLong(JSON_KEY_ID);
 
-            JoiningWorkspaceRequest request = new JoiningWorkspaceRequest(WORKSPACE__DISSATISFIED_PASSWORD, TASK__DEFAULT_TASK);
+            JoiningWorkspaceRequest request = new JoiningWorkspaceRequest(WORKSPACE__DISSATISFIED_PASSWORD,
+                    TASK__DEFAULT_TASK);
 
             // when
             Response response = 워크스페이스_참여_요청(user1Token, workspaceId, request);
@@ -271,7 +300,8 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                 .jsonPath()
                 .getLong(JSON_KEY_ID);
 
-        MatchingWorkspacePasswordRequest request = new MatchingWorkspacePasswordRequest(WORKSPACE__DISSATISFIED_PASSWORD);
+        MatchingWorkspacePasswordRequest request = new MatchingWorkspacePasswordRequest(
+                WORKSPACE__DISSATISFIED_PASSWORD);
 
         // when
         Response response = RestAssured

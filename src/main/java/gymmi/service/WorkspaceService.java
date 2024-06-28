@@ -1,6 +1,10 @@
 package gymmi.service;
 
-import gymmi.entity.*;
+import gymmi.entity.Mission;
+import gymmi.entity.Task;
+import gymmi.entity.User;
+import gymmi.entity.Worker;
+import gymmi.entity.Workspace;
 import gymmi.exception.AlreadyExistException;
 import gymmi.exception.InvalidStateException;
 import gymmi.exception.NotHavePermissionException;
@@ -16,12 +20,11 @@ import gymmi.response.JoinedWorkspaceResponse;
 import gymmi.response.MatchingWorkspacePasswordResponse;
 import gymmi.response.WorkspacePasswordResponse;
 import gymmi.response.WorkspaceResponse;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -129,7 +132,8 @@ public class WorkspaceService {
     }
 
     public List<JoinedWorkspaceResponse> getJoinedWorkspaces(User loginedUser, int pageNumber) {
-        List<Workspace> joinedWorkspaces = workspaceRepository.getJoinedWorkspacesByUserId(loginedUser.getId(), pageNumber);
+        List<Workspace> joinedWorkspaces = workspaceRepository.getJoinedWorkspacesByUserId(loginedUser.getId(),
+                pageNumber);
         List<JoinedWorkspaceResponse> responses = new ArrayList<>();
         for (Workspace workspace : joinedWorkspaces) {
             Integer achievementScore = workspaceRepository.getAchievementScore(workspace.getId());

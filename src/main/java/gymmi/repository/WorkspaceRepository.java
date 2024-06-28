@@ -3,11 +3,10 @@ package gymmi.repository;
 
 import gymmi.entity.Workspace;
 import gymmi.exception.NotFoundResourcesException;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 public interface WorkspaceRepository extends JpaRepository<Workspace, Long> {
 
@@ -23,7 +22,8 @@ public interface WorkspaceRepository extends JpaRepository<Workspace, Long> {
     //    @Query("select ws from Workspace ws inner join Worker w on ws.id = w.workspace.id where w.user.id = :userId order by w.createdAt DESC, field ")
 //    List<Workspace> getJoinedWorkspacesByUserId(Long userId, Pageable pageable);
     @Query(value = "select ws.id, ws.creator, ws.created_at, ws.head_count, ws.description, " +
-            "ws.goal_score, ws.tag, ws.name, ws.password, ws.status from workspace ws inner join worker w on ws.id = w.workspace_id where w.user_id = :userId " +
+            "ws.goal_score, ws.tag, ws.name, ws.password, ws.status from workspace ws inner join worker w on ws.id = w.workspace_id where w.user_id = :userId "
+            +
             "order by case " +
             "when ws.status = 'PREPARING' then 1 " +
             "when ws.status = 'IN_PROGRESS' then 2 " +

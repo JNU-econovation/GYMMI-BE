@@ -6,14 +6,23 @@ import gymmi.global.Logined;
 import gymmi.request.CreatingWorkspaceRequest;
 import gymmi.request.JoiningWorkspaceRequest;
 import gymmi.request.MatchingWorkspacePasswordRequest;
-import gymmi.response.*;
+import gymmi.response.IdResponse;
+import gymmi.response.JoinedWorkspaceResponse;
+import gymmi.response.MatchingWorkspacePasswordResponse;
+import gymmi.response.WorkspacePasswordResponse;
+import gymmi.response.WorkspaceResponse;
 import gymmi.service.WorkspaceService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
@@ -55,7 +64,8 @@ public class WorkspaceController {
             @PathVariable Long workspaceId,
             @Validated @RequestBody MatchingWorkspacePasswordRequest request
     ) {
-        MatchingWorkspacePasswordResponse response = workspaceService.matchesWorkspacePassword(workspaceId, request.getPassword());
+        MatchingWorkspacePasswordResponse response = workspaceService.matchesWorkspacePassword(workspaceId,
+                request.getPassword());
         return ResponseEntity.ok().body(response);
     }
 

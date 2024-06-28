@@ -1,5 +1,14 @@
 package gymmi.integration;
 
+import static gymmi.Fixtures.AUTHORIZATION_TYPE_BEARER;
+import static gymmi.Fixtures.JSON_KEY_ACCESS_TOKEN;
+import static gymmi.Fixtures.JSON_KEY_MESSAGE;
+import static gymmi.Fixtures.JSON_KEY_REFRESH_TOKEN;
+import static gymmi.integration.Steps.로그아웃_요청;
+import static gymmi.integration.Steps.로그인_요청;
+import static gymmi.integration.Steps.재발급_요청;
+import static gymmi.integration.Steps.회원_가입_요청;
+
 import gymmi.Fixtures;
 import gymmi.request.LoginRequest;
 import gymmi.request.RegistrationRequest;
@@ -14,13 +23,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 
-import static gymmi.Fixtures.*;
-import static gymmi.integration.Steps.*;
-
 public class AuthTest extends IntegrationTest {
 
     @Nested
-    class 회원_가입  {
+    class 회원_가입 {
 
         @Test
         void 회원_가입을_성공한다_200() {
@@ -65,7 +71,7 @@ public class AuthTest extends IntegrationTest {
     }
 
     @Nested
-    class 로그인  {
+    class 로그인 {
 
         @Test
         void 로그인을_성공한다_200() {
@@ -139,7 +145,7 @@ public class AuthTest extends IntegrationTest {
     }
 
     @Nested
-    class 토큰_재발급  {
+    class 토큰_재발급 {
 
         @Autowired
         TokenProcessor tokenProcessor;

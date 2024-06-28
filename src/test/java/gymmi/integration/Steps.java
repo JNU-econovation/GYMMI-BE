@@ -1,15 +1,27 @@
 package gymmi.integration;
 
+import static gymmi.Fixtures.AUTHORIZATION_TYPE_BEARER;
+import static gymmi.Fixtures.JSON_KEY_ACCESS_TOKEN;
+import static gymmi.Fixtures.MISSION__SATISFIED_MISSION_NAME;
+import static gymmi.Fixtures.MISSION__SATISFIED_MISSION_SCORE;
+import static gymmi.Fixtures.TASK__DEFAULT_TASK;
+import static gymmi.Fixtures.USER__SATISFIED_PASSWORD;
+import static gymmi.Fixtures.WORKSPACE__SATISFIED_GOAL_SCORE;
+import static gymmi.Fixtures.WORKSPACE__SATISFIED_HEAD_COUNT;
+import static gymmi.Fixtures.WORKSPACE__SATISFIED_NAME;
+
 import gymmi.Fixtures;
-import gymmi.request.*;
+import gymmi.request.CreatingWorkspaceRequest;
+import gymmi.request.JoiningWorkspaceRequest;
+import gymmi.request.LoginRequest;
+import gymmi.request.MissionDTO;
+import gymmi.request.RegistrationRequest;
+import gymmi.request.ReissueRequest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
-import org.springframework.http.HttpHeaders;
-
 import java.util.List;
-
-import static gymmi.Fixtures.*;
+import org.springframework.http.HttpHeaders;
 
 public final class Steps {
 
