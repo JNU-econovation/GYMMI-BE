@@ -5,7 +5,8 @@ import gymmi.global.Logined;
 import gymmi.request.LoginRequest;
 import gymmi.request.RegistrationRequest;
 import gymmi.request.ReissueRequest;
-import gymmi.response.TokensResponse;
+import gymmi.response.LoginResponse;
+import gymmi.response.TokenResponse;
 import gymmi.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -27,14 +28,14 @@ public class AuthController {
     }
 
     @PostMapping("/auth/welcome")
-    public ResponseEntity<TokensResponse> login(@Validated @RequestBody LoginRequest request) {
-        TokensResponse response = authService.login(request);
+    public ResponseEntity<LoginResponse> login(@Validated @RequestBody LoginRequest request) {
+        LoginResponse response = authService.login(request);
         return ResponseEntity.ok().body(response);
     }
 
     @PostMapping("/auth/reissue")
-    public ResponseEntity<TokensResponse> reissue(@Validated @RequestBody ReissueRequest request) {
-        TokensResponse response = authService.reissue(request);
+    public ResponseEntity<TokenResponse> reissue(@Validated @RequestBody ReissueRequest request) {
+        TokenResponse response = authService.reissue(request);
         return ResponseEntity.ok().body(response);
     }
 
