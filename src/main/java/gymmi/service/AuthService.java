@@ -10,7 +10,8 @@ import gymmi.repository.UserRepository;
 import gymmi.request.LoginRequest;
 import gymmi.request.RegistrationRequest;
 import gymmi.request.ReissueRequest;
-import gymmi.response.TokensResponse;
+import gymmi.response.LoginResponse;
+import gymmi.response.TokenResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,18 +40,26 @@ public class AuthService {
     }
 
     @Transactional
-    public TokensResponse login(LoginRequest request) {
+    public LoginResponse login(LoginRequest request) {
         User user = userRepository.findByLoginId(request.getLoginId())
                 .orElseThrow(() -> new NotMatchedException("아이디와 비밀번호를 확인해 주세요."));
 
         if (!user.canAuthenticate(request.getLoginId(), request.getPassword())) {
             throw new NotMatchedException("아이디와 비밀번호를 확인해 주세요.");
         }
-        return generateAndSaveTokensAbout(user);
+
+        TokenResponse tokenResponse = generateAndSaveTokensAbout(user);
+        return LoginResponse.builder()
+                .userId(user.getId())
+                .nickname(user.getNickname())
+                .profileURL("")
+                .refreshToken(tokenResponse.getRefreshToken())
+                .accessToken(tokenResponse.getAccessToken())
+                .build();
     }
 
     @Transactional
-    public TokensResponse reissue(ReissueRequest request) {
+    public TokenResponse reissue(ReissueRequest request) {
         Long userId = tokenProcessor.parseRefreshToken(request.getRefreshToken());
         User user = userRepository.getByUserId(userId);
         Logined logined = loginedRepository.getByUserId(userId);
@@ -63,12 +72,12 @@ public class AuthService {
         return generateAndSaveTokensAbout(user);
     }
 
-    private TokensResponse generateAndSaveTokensAbout(User user) {
+    private TokenResponse generateAndSaveTokensAbout(User user) {
         String accessToken = tokenProcessor.generateAccessToken(user.getId());
         String refreshToken = tokenProcessor.generateRefreshToken(user.getId());
         Logined logined = loginedRepository.getByUserId(user.getId());
         logined.saveRefreshToken(refreshToken);
-        return new TokensResponse(accessToken, refreshToken);
+        return new TokenResponse(accessToken, refreshToken);
     }
 
     @Transactional
