@@ -61,7 +61,7 @@ public class WorkspaceController {
 
     @GetMapping("/workspaces/{workspaceId}/match-password")
     public ResponseEntity<MatchingWorkspacePasswordResponse> matchWorkspacePassword(
-//            @Logined User user, login intercept 추가
+            @Logined User user,
             @PathVariable Long workspaceId,
             @Validated @RequestBody MatchingWorkspacePasswordRequest request
     ) {
@@ -81,7 +81,7 @@ public class WorkspaceController {
 
     @GetMapping("/workspaces")
     public ResponseEntity<List<WorkspaceResponse>> seeAllWorkspaces(
-            //@Logined User user,
+            @Logined User user,
             @RequestParam(required = false) WorkspaceStatus status,
             @RequestParam(required = false) String keyword,
             @RequestParam(value = "page") int pageNumber

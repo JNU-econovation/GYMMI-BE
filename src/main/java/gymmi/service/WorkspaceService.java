@@ -188,6 +188,7 @@ public class WorkspaceService {
     @Transactional
     public void leaveWorkspace(User loginedUser, Long workspaceId) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
+        validateIfWorker(loginedUser.getId(), workspaceId);
         if (!workspace.isPreparing()) {
             throw new InvalidStateException("준비 단계에서만 나갈 수 있습니다.");
         }
