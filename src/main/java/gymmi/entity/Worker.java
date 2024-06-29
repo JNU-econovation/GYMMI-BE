@@ -26,7 +26,7 @@ public class Worker {
     private Long id;
 
     @JoinColumn(name = "user_id", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private User user;
 
     @JoinColumn(name = "workspace_id", nullable = false)
@@ -45,5 +45,21 @@ public class Worker {
         this.workspace = workspace;
         this.score = 0;
         this.createdAt = LocalDateTime.now();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public String getNickname() {
+        return user.getNickname();
+    }
+
+    public Integer getScore() {
+        return score;
     }
 }

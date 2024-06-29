@@ -7,6 +7,7 @@ import gymmi.request.CreatingWorkspaceRequest;
 import gymmi.request.JoiningWorkspaceRequest;
 import gymmi.request.MatchingWorkspacePasswordRequest;
 import gymmi.response.IdResponse;
+import gymmi.response.InsideWorkspaceResponse;
 import gymmi.response.JoinedWorkspaceResponse;
 import gymmi.response.MatchingWorkspacePasswordResponse;
 import gymmi.response.MissionResponse;
@@ -109,8 +110,12 @@ public class WorkspaceController {
     }
 
     @GetMapping("/workspaces/{workspaceId}")
-    public ResponseEntity<Void> enterWorkspace() {
-        return null;
+    public ResponseEntity<InsideWorkspaceResponse> enterWorkspace(
+            @Logined User user,
+            @PathVariable Long workspaceId
+    ) {
+        InsideWorkspaceResponse response = workspaceService.enterWorkspace(user, workspaceId);
+        return ResponseEntity.ok().body(response);
     }
 
     @GetMapping("/workspaces/{workspaceId}/missions")
