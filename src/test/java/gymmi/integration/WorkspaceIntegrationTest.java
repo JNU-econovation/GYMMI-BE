@@ -13,6 +13,7 @@ import static gymmi.Fixtures.WORKSPACE__SATISFIED_GOAL_SCORE;
 import static gymmi.Fixtures.WORKSPACE__SATISFIED_HEAD_COUNT;
 import static gymmi.Fixtures.WORKSPACE__SATISFIED_NAME;
 import static gymmi.integration.Steps.워크스페이스_나가기_요청;
+import static gymmi.integration.Steps.워크스페이스_미션_보기_요청;
 import static gymmi.integration.Steps.워크스페이스_비밀번호_보기_요청;
 import static gymmi.integration.Steps.워크스페이스_생성__DEFAULT_WORKSPACE_REQUEST;
 import static gymmi.integration.Steps.워크스페이스_생성_요청;
@@ -495,7 +496,24 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                         .statusCode(400)
                         .body(JSON_KEY_MESSAGE, Matchers.equalTo("준비 단계에서만 나갈 수 있습니다."));
             }
-
         }
+    }
+
+    @Test
+    void 워크스페이스에서_수행_가능한_미션목록_확인을_성공한다_200() {
+        // given
+        CreatingWorkspaceRequest step = 워크스페이스_생성__DEFAULT_WORKSPACE_REQUEST;
+
+        Long workspaceId = 워크스페이스_생성_요청(defaultUserToken, step)
+                .jsonPath()
+                .getLong(JSON_KEY_ID);
+
+        // when
+        Response response = 워크스페이스_미션_보기_요청(defaultUserToken, workspaceId);
+
+        // then
+        response.then()
+                .statusCode(200)
+                .body("[0]", Matchers.notNullValue());
     }
 }

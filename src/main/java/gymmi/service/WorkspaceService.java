@@ -18,6 +18,7 @@ import gymmi.request.JoiningWorkspaceRequest;
 import gymmi.request.MissionDTO;
 import gymmi.response.JoinedWorkspaceResponse;
 import gymmi.response.MatchingWorkspacePasswordResponse;
+import gymmi.response.MissionResponse;
 import gymmi.response.WorkspacePasswordResponse;
 import gymmi.response.WorkspaceResponse;
 import java.util.ArrayList;
@@ -212,6 +213,14 @@ public class WorkspaceService {
     private void deleteTaskAndWorker(User loginedUser, Long workspaceId) {
         taskRepository.deleteByUserIdAndWorkspaceId(loginedUser.getId(), workspaceId);
         workerRepository.deleteByUserIdAndWorkspaceId(loginedUser.getId(), workspaceId);
+    }
+
+    public List<MissionResponse> getMissionsInWorkspace(User loginedUser, Long workspaceId) {
+        validateIfWorker(loginedUser.getId(), workspaceId);
+        List<Mission> missions = missionRepository.getAllByWorkspaceId(workspaceId);
+        return missions.stream()
+                .map(MissionResponse::new)
+                .toList();
     }
 }
 
