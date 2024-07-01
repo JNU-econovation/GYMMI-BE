@@ -1,7 +1,7 @@
 package gymmi.entity;
 
-import static gymmi.utils.Regexpressions.REGEX_영어_한글_만;
 import static gymmi.utils.Regexpressions.REGEX_영어_한글_숫자_만;
+import static gymmi.utils.Regexpressions.REGEX_영어_한글_쉼표_만;
 
 import gymmi.exception.InvalidNumberException;
 import gymmi.exception.InvalidPatternException;
@@ -27,7 +27,8 @@ import lombok.NoArgsConstructor;
 public class Workspace {
 
     private static final Pattern REGEX_WORKSPACE_NAME = REGEX_영어_한글_숫자_만;
-    private static final Pattern REGEX_WORKSPACE_TAG = REGEX_영어_한글_만;
+    private static final Pattern REGEX_WORKSPACE_TAG = REGEX_영어_한글_쉼표_만;
+
 
     private final static SecureRandom random = new SecureRandom();
 
@@ -101,7 +102,7 @@ public class Workspace {
 
     private String validateTag(String tag) {
         if (tag == null) {
-            return tag;
+            return null;
         }
         if (!REGEX_WORKSPACE_TAG.matcher(tag).matches()) {
             throw new InvalidPatternException("태그는 한글, 영어만 가능합니다.");
