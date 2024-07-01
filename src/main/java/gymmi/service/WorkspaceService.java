@@ -198,16 +198,21 @@ public class WorkspaceService {
         }
 
         if (workspace.isCreator(loginedUser)) {
-            int workerCount = workerRepository.countAllByWorkspaceId(workspace.getId());
-            if (workerCount != 1) {
-                throw new InvalidStateException("방장 이외에 참여자가 존재합니다.");
-            }
+            validateIfWorkerExistsExcludeCreator(workspace);
+
             deleteTaskAndWorker(loginedUser, workspaceId);
             deleteMissionsAndWorkspace(workspaceId, workspace);
             return;
         }
 
         deleteTaskAndWorker(loginedUser, workspaceId);
+    }
+
+    private void validateIfWorkerExistsExcludeCreator(Workspace workspace) {
+        int workerCount = workerRepository.countAllByWorkspaceId(workspace.getId());
+        if (workerCount != 1) {
+            throw new InvalidStateException("방장 이외에 참여자가 존재합니다.");
+        }
     }
 
     private void deleteMissionsAndWorkspace(Long workspaceId, Workspace workspace) {
