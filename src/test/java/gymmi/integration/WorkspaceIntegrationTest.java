@@ -13,10 +13,12 @@ import static gymmi.Fixtures.WORKSPACE__SATISFIED_GOAL_SCORE;
 import static gymmi.Fixtures.WORKSPACE__SATISFIED_HEAD_COUNT;
 import static gymmi.Fixtures.WORKSPACE__SATISFIED_NAME;
 import static gymmi.integration.Steps.워크스페이스_나가기_요청;
+import static gymmi.integration.Steps.워크스페이스_미션_보기_요청;
 import static gymmi.integration.Steps.워크스페이스_비밀번호_보기_요청;
 import static gymmi.integration.Steps.워크스페이스_생성__DEFAULT_WORKSPACE_REQUEST;
 import static gymmi.integration.Steps.워크스페이스_생성_요청;
 import static gymmi.integration.Steps.워크스페이스_시작_요청;
+import static gymmi.integration.Steps.워크스페이스_입장_요청;
 import static gymmi.integration.Steps.워크스페이스_참여_요청;
 import static gymmi.integration.Steps.회원_가입__DEFAULT_USER_REQUEST;
 import static gymmi.integration.Steps.회원_가입__USER_1_REQUEST;
@@ -495,7 +497,55 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                         .statusCode(400)
                         .body(JSON_KEY_MESSAGE, Matchers.equalTo("준비 단계에서만 나갈 수 있습니다."));
             }
-
         }
+    }
+
+    @Test
+    void 워크스페이스_입장에_성공한다_200() {
+        // given
+        CreatingWorkspaceRequest step = 워크스페이스_생성__DEFAULT_WORKSPACE_REQUEST;
+
+        Long workspaceId = 워크스페이스_생성_요청(defaultUserToken, step)
+                .jsonPath()
+                .getLong(JSON_KEY_ID);
+
+        String password = 워크스페이스_비밀번호_보기_요청(defaultUserToken, workspaceId)
+                .jsonPath()
+                .getString(JSON_KEY_PASSWORD);
+
+        JoiningWorkspaceRequest step1 = new JoiningWorkspaceRequest(password, TASK__DEFAULT_TASK);
+        워크스페이스_참여_요청(user1Token, workspaceId, step1);
+
+        // when
+        Response response = 워크스페이스_입장_요청(user1Token, workspaceId);
+
+        // then
+        response.then()
+                .statusCode(200)
+                .body("workers[0].rank", Matchers.equalTo(1))
+                .body("workers[1].rank", Matchers.equalTo(1))
+                .body("workers[0].isCreator", Matchers.equalTo(true))
+                .body("workers[1].isCreator", Matchers.equalTo(false))
+                .body("workers[0].isMyself", Matchers.equalTo(false))
+                .body("workers[1].isMyself", Matchers.equalTo(true));
+
+    }
+
+    @Test
+    void 워크스페이스에서_수행_가능한_미션목록_확인을_성공한다_200() {
+        // given
+        CreatingWorkspaceRequest step = 워크스페이스_생성__DEFAULT_WORKSPACE_REQUEST;
+
+        Long workspaceId = 워크스페이스_생성_요청(defaultUserToken, step)
+                .jsonPath()
+                .getLong(JSON_KEY_ID);
+
+        // when
+        Response response = 워크스페이스_미션_보기_요청(defaultUserToken, workspaceId);
+
+        // then
+        response.then()
+                .statusCode(200)
+                .body("[0]", Matchers.notNullValue());
     }
 }

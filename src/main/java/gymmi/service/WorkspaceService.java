@@ -16,12 +16,17 @@ import gymmi.repository.WorkspaceRepository;
 import gymmi.request.CreatingWorkspaceRequest;
 import gymmi.request.JoiningWorkspaceRequest;
 import gymmi.request.MissionDTO;
+import gymmi.response.InsideWorkspaceResponse;
 import gymmi.response.JoinedWorkspaceResponse;
 import gymmi.response.MatchingWorkspacePasswordResponse;
+import gymmi.response.MissionResponse;
 import gymmi.response.WorkspacePasswordResponse;
 import gymmi.response.WorkspaceResponse;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,7 +67,7 @@ public class WorkspaceService {
         }
 
         setTask(loginedUser, savedWorkspace, request.getTask());
-        enterWorkspace(loginedUser, savedWorkspace);
+        participateInWorkspace(loginedUser, savedWorkspace);
 
         return savedWorkspace.getId();
     }
@@ -74,12 +79,12 @@ public class WorkspaceService {
         if (!workspace.matchesPassword(request.getPassword())) {
             throw new NotMatchedException("비밀번호가 일치하지 않습니다.");
         }
-        enterWorkspace(loginedUser, workspace);
+        participateInWorkspace(loginedUser, workspace);
         setTask(loginedUser, workspace, request.getTask());
     }
 
 
-    private void enterWorkspace(User loginedUser, Workspace workspace) {
+    private void participateInWorkspace(User loginedUser, Workspace workspace) {
         if (workerRepository.findByUserIdAndWorkspaceId(loginedUser.getId(), workspace.getId()).isPresent()) {
             throw new AlreadyExistException("이미 참여한 워크스페이스 입니다.");
         }
@@ -187,21 +192,27 @@ public class WorkspaceService {
     @Transactional
     public void leaveWorkspace(User loginedUser, Long workspaceId) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
+        validateIfWorker(loginedUser.getId(), workspaceId);
         if (!workspace.isPreparing()) {
             throw new InvalidStateException("준비 단계에서만 나갈 수 있습니다.");
         }
 
         if (workspace.isCreator(loginedUser)) {
-            int workerCount = workerRepository.countAllByWorkspaceId(workspace.getId());
-            if (workerCount != 1) {
-                throw new InvalidStateException("방장 이외에 참여자가 존재합니다.");
-            }
+            validateIfWorkerExistsExcludeCreator(workspace);
+
             deleteTaskAndWorker(loginedUser, workspaceId);
             deleteMissionsAndWorkspace(workspaceId, workspace);
             return;
         }
 
         deleteTaskAndWorker(loginedUser, workspaceId);
+    }
+
+    private void validateIfWorkerExistsExcludeCreator(Workspace workspace) {
+        int workerCount = workerRepository.countAllByWorkspaceId(workspace.getId());
+        if (workerCount != 1) {
+            throw new InvalidStateException("방장 이외에 참여자가 존재합니다.");
+        }
     }
 
     private void deleteMissionsAndWorkspace(Long workspaceId, Workspace workspace) {
@@ -212,6 +223,54 @@ public class WorkspaceService {
     private void deleteTaskAndWorker(User loginedUser, Long workspaceId) {
         taskRepository.deleteByUserIdAndWorkspaceId(loginedUser.getId(), workspaceId);
         workerRepository.deleteByUserIdAndWorkspaceId(loginedUser.getId(), workspaceId);
+    }
+
+    public InsideWorkspaceResponse enterWorkspace(User logiendUser, Long workspaceId) {
+        validateIfWorker(logiendUser.getId(), workspaceId);
+
+        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
+        List<Worker> sortedWorkers = workerRepository.getAllByWorkspaceId(workspaceId)
+                .stream()
+                .sorted(Comparator.comparing(Worker::getScore).reversed())
+                .toList();
+
+        List<Integer> workerRanks = rankTied(sortedWorkers);
+        Integer achievementScore = workspaceRepository.getAchievementScore(workspaceId);
+
+        return InsideWorkspaceResponse.builder()
+                .workspace(workspace)
+                .achievementScore(achievementScore)
+                .sortedWorkers(sortedWorkers)
+                .workerRanks(workerRanks)
+                .loginedUser(logiendUser)
+                .build();
+    }
+
+    private List<Integer> rankTied(List<Worker> sortedWorker) {
+        Queue<Integer> rankBuffer = new LinkedList<>();
+        List<Integer> workerRanks = new ArrayList<>();
+
+        Integer previousScore = sortedWorker.get(0).getScore();
+        for (int i = 0; i < sortedWorker.size(); i++) {
+            rankBuffer.add(i + 1);
+            Integer workerScore = sortedWorker.get(i).getScore();
+            if (workerScore == previousScore) {
+                workerRanks.add(rankBuffer.element());
+                continue;
+            }
+            previousScore = workerScore;
+            rankBuffer.remove();
+            workerRanks.add(rankBuffer.element());
+        }
+        return workerRanks;
+    }
+
+    public List<MissionResponse> getMissionsInWorkspace(User loginedUser, Long workspaceId) {
+        validateIfWorker(loginedUser.getId(), workspaceId);
+        List<Mission> missions = missionRepository.getAllByWorkspaceId(workspaceId);
+        return missions.stream()
+                .map(MissionResponse::new)
+                .toList();
     }
 }
 

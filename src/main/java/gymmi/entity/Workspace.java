@@ -81,7 +81,7 @@ public class Workspace {
         this.status = WorkspaceStatus.PREPARING;
     }
 
-    private String validateName(String name) {
+    public static String validateName(String name) {
         if (!REGEX_WORKSPACE_NAME.matcher(name).matches()) {
             throw new InvalidPatternException("이름은 한글, 영문, 숫자만 가능합니다.");
         }

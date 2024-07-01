@@ -34,4 +34,16 @@ public class Mission {
         this.name = name;
         this.score = score;
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Integer getScore() {
+        return score;
+    }
 }
