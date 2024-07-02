@@ -1,15 +1,17 @@
 package gymmi.response;
 
 import gymmi.entity.Mission;
-import lombok.Builder;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MissionResponse {
 
-    private final Long id;
-    private final String mission;
-    private final Integer score;
+    private Long id;
+    private String mission;
+    private Integer score;
 
     public MissionResponse(Mission mission) {
         this.id = mission.getId();

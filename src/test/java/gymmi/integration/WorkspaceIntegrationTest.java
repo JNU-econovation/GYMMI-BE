@@ -12,6 +12,7 @@ import static gymmi.Fixtures.WORKSPACE__DISSATISFIED_PASSWORD;
 import static gymmi.Fixtures.WORKSPACE__SATISFIED_GOAL_SCORE;
 import static gymmi.Fixtures.WORKSPACE__SATISFIED_HEAD_COUNT;
 import static gymmi.Fixtures.WORKSPACE__SATISFIED_NAME;
+import static gymmi.integration.Steps.미션_수행_요청;
 import static gymmi.integration.Steps.워크스페이스_나가기_요청;
 import static gymmi.integration.Steps.워크스페이스_미션_보기_요청;
 import static gymmi.integration.Steps.워크스페이스_비밀번호_보기_요청;
@@ -27,6 +28,7 @@ import static gymmi.integration.Steps.회원가입_및_로그인_요청;
 
 import gymmi.exception.AlreadyExistException;
 import gymmi.exception.InvalidStateException;
+import gymmi.exception.NotFoundResourcesException;
 import gymmi.exception.NotHavePermissionException;
 import gymmi.exception.NotMatchedException;
 import gymmi.request.CreatingWorkspaceRequest;
@@ -34,14 +36,19 @@ import gymmi.request.JoiningWorkspaceRequest;
 import gymmi.request.MatchingWorkspacePasswordRequest;
 import gymmi.request.MissionDTO;
 import gymmi.request.RegistrationRequest;
+import gymmi.request.WorkingMissionInWorkspaceRequest;
+import gymmi.response.MissionResponse;
 import io.restassured.RestAssured;
+import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import java.util.List;
+import java.util.Map;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 
 public class WorkspaceIntegrationTest extends IntegrationTest {
@@ -547,5 +554,108 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
         response.then()
                 .statusCode(200)
                 .body("[0]", Matchers.notNullValue());
+    }
+
+    @Nested
+    class 미션_수행 {
+        @Test
+        void 다른_워크스페이스에_등록된_미션을_수행하는_경우_실패한다_400() {
+            // given
+            CreatingWorkspaceRequest step = 워크스페이스_생성__DEFAULT_WORKSPACE_REQUEST;
+            Long workspaceId = 워크스페이스_생성_요청(defaultUserToken, step)
+                    .jsonPath()
+                    .getLong(JSON_KEY_ID);
+            String password = 워크스페이스_비밀번호_보기_요청(defaultUserToken, workspaceId)
+                    .jsonPath()
+                    .getString(JSON_KEY_PASSWORD);
+            JoiningWorkspaceRequest step1 = new JoiningWorkspaceRequest(password, TASK__DEFAULT_TASK);
+            워크스페이스_참여_요청(user1Token, workspaceId, step1);
+            워크스페이스_시작_요청(defaultUserToken, workspaceId);
+
+            CreatingWorkspaceRequest step2 = CreatingWorkspaceRequest.builder()
+                    .goalScore(WORKSPACE__SATISFIED_GOAL_SCORE)
+                    .headCount(WORKSPACE__SATISFIED_HEAD_COUNT)
+                    .name("지미지미")
+                    .task(TASK__DEFAULT_TASK)
+                    .missionBoard(
+                            List.of(new MissionDTO(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE))
+                    ).build();
+            Long anotherWorkspaceId = 워크스페이스_생성_요청(defaultUserToken, step2)
+                    .jsonPath()
+                    .getLong(JSON_KEY_ID);
+            Long anotherMissionId = 워크스페이스_미션_보기_요청(defaultUserToken, anotherWorkspaceId)
+                    .jsonPath()
+                    .getLong("[0].id");
+
+            // when
+            Response response = 미션_수행_요청(
+                    defaultUserToken,
+                    workspaceId,
+                    List.of(new WorkingMissionInWorkspaceRequest(anotherMissionId, 1))
+            );
+
+            // then
+            response.then()
+                    .statusCode(404)
+                    .body(JSON_KEY_ERROR_CODE, Matchers.equalTo(NotFoundResourcesException.ERROR_CODE));
+        }
+
+        @Test
+        void 워크스페이스가_시작_중이_아닌_경우_실패한다_400() {
+            // given
+            CreatingWorkspaceRequest step = 워크스페이스_생성__DEFAULT_WORKSPACE_REQUEST;
+            Long workspaceId = 워크스페이스_생성_요청(defaultUserToken, step)
+                    .jsonPath()
+                    .getLong(JSON_KEY_ID);
+
+            Long missionId = 워크스페이스_미션_보기_요청(defaultUserToken, workspaceId)
+                    .jsonPath()
+                    .getLong("[0].id");
+
+            // when
+            Response response = 미션_수행_요청(
+                    defaultUserToken,
+                    workspaceId,
+                    List.of(new WorkingMissionInWorkspaceRequest(missionId, 1))
+            );
+
+            // then
+            response.then()
+                    .statusCode(400)
+                    .body(JSON_KEY_ERROR_CODE, Matchers.equalTo(InvalidStateException.ERROR_CODE));
+        }
+
+        @Test
+        void 미션_수행을_성공한다_200() {
+            // given
+            CreatingWorkspaceRequest step = 워크스페이스_생성__DEFAULT_WORKSPACE_REQUEST;
+            Long workspaceId = 워크스페이스_생성_요청(defaultUserToken, step)
+                    .jsonPath()
+                    .getLong(JSON_KEY_ID);
+            String password = 워크스페이스_비밀번호_보기_요청(defaultUserToken, workspaceId)
+                    .jsonPath()
+                    .getString(JSON_KEY_PASSWORD);
+            JoiningWorkspaceRequest step1 = new JoiningWorkspaceRequest(password, TASK__DEFAULT_TASK);
+            워크스페이스_참여_요청(user1Token, workspaceId, step1);
+            워크스페이스_시작_요청(defaultUserToken, workspaceId);
+
+            List<MissionResponse> responses = 워크스페이스_미션_보기_요청(defaultUserToken, workspaceId)
+                    .as(new ParameterizedTypeReference<List<MissionResponse>>() {
+                    }.getType());
+            MissionResponse mission = responses.get(0);
+
+            // when
+            int count = 2;
+            Response response = 미션_수행_요청(
+                    defaultUserToken,
+                    workspaceId,
+                    List.of(new WorkingMissionInWorkspaceRequest(mission.getId(), count))
+            );
+
+            // then
+            response.then()
+                    .statusCode(200)
+                    .body("workingScore", Matchers.equalTo((mission.getScore()) * count));
+        }
     }
 }

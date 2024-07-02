@@ -4,6 +4,7 @@ import gymmi.entity.Mission;
 import gymmi.entity.Task;
 import gymmi.entity.User;
 import gymmi.entity.Worker;
+import gymmi.entity.Working;
 import gymmi.entity.Workspace;
 import gymmi.exception.AlreadyExistException;
 import gymmi.exception.InvalidStateException;
@@ -12,16 +13,19 @@ import gymmi.exception.NotMatchedException;
 import gymmi.repository.MissionRepository;
 import gymmi.repository.TaskRepository;
 import gymmi.repository.WorkerRepository;
+import gymmi.repository.WorkingRepository;
 import gymmi.repository.WorkspaceRepository;
 import gymmi.request.CreatingWorkspaceRequest;
 import gymmi.request.JoiningWorkspaceRequest;
 import gymmi.request.MissionDTO;
+import gymmi.request.WorkingMissionInWorkspaceRequest;
 import gymmi.response.InsideWorkspaceResponse;
 import gymmi.response.JoinedWorkspaceResponse;
 import gymmi.response.MatchingWorkspacePasswordResponse;
 import gymmi.response.MissionResponse;
 import gymmi.response.WorkspacePasswordResponse;
 import gymmi.response.WorkspaceResponse;
+import jakarta.persistence.criteria.CriteriaBuilder.In;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -39,6 +43,7 @@ public class WorkspaceService {
     private final WorkerRepository workerRepository;
     private final MissionRepository missionRepository;
     private final TaskRepository taskRepository;
+    private final WorkingRepository workingRepository;
 
     @Transactional
     public Long createWorkspace(User loginedUser, CreatingWorkspaceRequest request) {
@@ -120,14 +125,13 @@ public class WorkspaceService {
 
     public WorkspacePasswordResponse getWorkspacePassword(User loginedUser, Long workspaceId) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
-        validateIfWorker(loginedUser.getId(), workspaceId);
+        validateIfWorkerIsInWorkspace(loginedUser.getId(), workspaceId);
         return new WorkspacePasswordResponse(workspace.getPassword());
     }
 
-    private void validateIfWorker(Long userId, Long workspaceId) {
-        if (workerRepository.findByUserIdAndWorkspaceId(userId, workspaceId).isEmpty()) {
-            throw new NotHavePermissionException("해당 워크스페이스의 참여자가 아닙니다.");
-        }
+    private Worker validateIfWorkerIsInWorkspace(Long userId, Long workspaceId) {
+        return workerRepository.findByUserIdAndWorkspaceId(userId, workspaceId)
+                .orElseThrow(() -> new NotHavePermissionException("해당 워크스페이스의 참여자가 아니에요."));
     }
 
     public MatchingWorkspacePasswordResponse matchesWorkspacePassword(Long workspaceId, String workspacePassword) {
@@ -178,7 +182,7 @@ public class WorkspaceService {
     @Transactional
     public void startWorkspace(User loginedUser, Long workspaceId) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
-        validateIfWorker(loginedUser.getId(), workspaceId);
+        validateIfWorkerIsInWorkspace(loginedUser.getId(), workspaceId);
         if (!workspace.isCreator(loginedUser)) {
             throw new NotHavePermissionException("방장이 아닙니다.");
         }
@@ -192,13 +196,13 @@ public class WorkspaceService {
     @Transactional
     public void leaveWorkspace(User loginedUser, Long workspaceId) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
-        validateIfWorker(loginedUser.getId(), workspaceId);
+        validateIfWorkerIsInWorkspace(loginedUser.getId(), workspaceId);
         if (!workspace.isPreparing()) {
             throw new InvalidStateException("준비 단계에서만 나갈 수 있습니다.");
         }
 
         if (workspace.isCreator(loginedUser)) {
-            validateIfWorkerExistsExcludeCreator(workspace);
+            validateIfAnyWorkerExistsInWorkspaceExcludeCreator(workspace);
 
             deleteTaskAndWorker(loginedUser, workspaceId);
             deleteMissionsAndWorkspace(workspaceId, workspace);
@@ -208,7 +212,7 @@ public class WorkspaceService {
         deleteTaskAndWorker(loginedUser, workspaceId);
     }
 
-    private void validateIfWorkerExistsExcludeCreator(Workspace workspace) {
+    private void validateIfAnyWorkerExistsInWorkspaceExcludeCreator(Workspace workspace) {
         int workerCount = workerRepository.countAllByWorkspaceId(workspace.getId());
         if (workerCount != 1) {
             throw new InvalidStateException("방장 이외에 참여자가 존재합니다.");
@@ -226,12 +230,12 @@ public class WorkspaceService {
     }
 
     public InsideWorkspaceResponse enterWorkspace(User logiendUser, Long workspaceId) {
-        validateIfWorker(logiendUser.getId(), workspaceId);
+        validateIfWorkerIsInWorkspace(logiendUser.getId(), workspaceId);
 
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
         List<Worker> sortedWorkers = workerRepository.getAllByWorkspaceId(workspaceId)
                 .stream()
-                .sorted(Comparator.comparing(Worker::getScore).reversed())
+                .sorted(Comparator.comparing(Worker::getContributedScore).reversed())
                 .toList();
 
         List<Integer> workerRanks = rankTied(sortedWorkers);
@@ -250,10 +254,10 @@ public class WorkspaceService {
         Queue<Integer> rankBuffer = new LinkedList<>();
         List<Integer> workerRanks = new ArrayList<>();
 
-        Integer previousScore = sortedWorker.get(0).getScore();
+        Integer previousScore = sortedWorker.get(0).getContributedScore();
         for (int i = 0; i < sortedWorker.size(); i++) {
             rankBuffer.add(i + 1);
-            Integer workerScore = sortedWorker.get(i).getScore();
+            Integer workerScore = sortedWorker.get(i).getContributedScore();
             if (workerScore == previousScore) {
                 workerRanks.add(rankBuffer.element());
                 continue;
@@ -266,11 +270,35 @@ public class WorkspaceService {
     }
 
     public List<MissionResponse> getMissionsInWorkspace(User loginedUser, Long workspaceId) {
-        validateIfWorker(loginedUser.getId(), workspaceId);
+        validateIfWorkerIsInWorkspace(loginedUser.getId(), workspaceId);
         List<Mission> missions = missionRepository.getAllByWorkspaceId(workspaceId);
         return missions.stream()
                 .map(MissionResponse::new)
                 .toList();
+    }
+
+    @Transactional
+    public Integer workMissionsInWorkspace(
+            User loginedUser,
+            Long workspaceId,
+            List<WorkingMissionInWorkspaceRequest> requests
+    ) {
+        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
+        Worker worker = validateIfWorkerIsInWorkspace(loginedUser.getId(), workspaceId);
+        if (!workspace.isInProgress()) {
+            throw new InvalidStateException("워크스페이스가 시작중이 아니에요.");
+        }
+
+        int workingScore = 0;
+        for (WorkingMissionInWorkspaceRequest request : requests) {
+            Mission mission = missionRepository.getByMissionId(request.getId());
+            Working working = worker.doMission(mission, request.getCount());
+            workingRepository.save(working);
+            workingScore += working.getWorkingScore();
+        }
+
+        worker.addWorkingScore(workingScore);
+        return workingScore;
     }
 }
 

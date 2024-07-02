@@ -1,6 +1,7 @@
 package gymmi.entity;
 
 
+import gymmi.exception.NotFoundResourcesException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -34,7 +35,7 @@ public class Worker {
     private Workspace workspace;
 
     @Column(nullable = false)
-    private Integer score;
+    private Integer contributedScore;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -43,7 +44,7 @@ public class Worker {
     public Worker(User user, Workspace workspace) {
         this.user = user;
         this.workspace = workspace;
-        this.score = 0;
+        this.contributedScore = 0;
         this.createdAt = LocalDateTime.now();
     }
 
@@ -59,7 +60,22 @@ public class Worker {
         return user.getNickname();
     }
 
-    public Integer getScore() {
-        return score;
+    public Integer getContributedScore() {
+        return contributedScore;
+    }
+
+    public void addWorkingScore(Integer workingScore) {
+        contributedScore += workingScore;
+    }
+
+    public Working doMission(Mission mission, Integer count) {
+        if (!this.workspace.isRegisteredMission(mission)) {
+            throw new NotFoundResourcesException("해당 미션이 존재하지 않아요.");
+        }
+        return Working.builder()
+                .mission(mission)
+                .worker(this)
+                .count(count)
+                .build();
     }
 }

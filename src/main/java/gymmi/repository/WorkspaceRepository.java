@@ -33,7 +33,7 @@ public interface WorkspaceRepository extends JpaRepository<Workspace, Long> {
     List<Workspace> getJoinedWorkspacesByUserId(Long userId, int pageNumber);
 
 
-    @Query("select sum(w.score) from Workspace ws inner join Worker w on ws.id = w.workspace.id where ws.id = :workspaceId")
+    @Query("select sum(w.contributedScore) from Workspace ws inner join Worker w on ws.id = w.workspace.id where ws.id = :workspaceId")
     Integer getAchievementScore(Long workspaceId);
 
     @Query("select ws from Workspace ws")

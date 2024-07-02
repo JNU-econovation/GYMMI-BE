@@ -46,4 +46,8 @@ public class Mission {
     public Integer getScore() {
         return score;
     }
+
+    public Workspace getWorkspace() {
+        return workspace;
+    }
 }
