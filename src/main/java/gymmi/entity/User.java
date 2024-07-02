@@ -18,7 +18,9 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 import org.mindrot.jbcrypt.BCrypt;
+import org.springframework.util.StringUtils;
 
 @Entity
 @Table(name = "uuser")
@@ -45,7 +47,8 @@ public class User {
     @Column(nullable = false)
     private String nickname;
 
-    @Column
+    @Column(nullable = false)
+    @ColumnDefault("''")
     private String email;
 
     @Builder
@@ -56,7 +59,14 @@ public class User {
         this.loginId = loginId;
         this.password = encryptPassword(plainPassword);
         this.nickname = nickname;
-        this.email = email;
+        this.email = validateEmail(email);
+    }
+
+    private String validateEmail(String email) {
+        if (!StringUtils.hasText(email)) {
+            return "";
+        }
+        return email;
     }
 
     private void validatePassword(String plainPassword) {
