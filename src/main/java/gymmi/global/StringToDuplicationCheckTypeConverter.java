@@ -1,6 +1,7 @@
 package gymmi.global;
 
 import gymmi.exception.NotFoundResourcesException;
+import gymmi.exception.NotMatchedException;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.core.convert.converter.Converter;
@@ -20,6 +21,6 @@ public class StringToDuplicationCheckTypeConverter implements Converter<String, 
         if (queryParamValueMapping.containsKey(source)) {
             return queryParamValueMapping.get(source);
         }
-        throw new NotFoundResourcesException("해당 type은 존재하지 않는 type 입니다.");
+        throw new NotMatchedException("잘못된 query param value 입니다. : " + source);
     }
 }
