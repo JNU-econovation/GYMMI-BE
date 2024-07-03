@@ -273,6 +273,7 @@ public class WorkspaceService {
         validateIfWorkerIsInWorkspace(loginedUser.getId(), workspaceId);
         List<Mission> missions = missionRepository.getAllByWorkspaceId(workspaceId);
         return missions.stream()
+                .sorted(Comparator.comparing(Mission::getName))
                 .map(MissionResponse::new)
                 .toList();
     }
