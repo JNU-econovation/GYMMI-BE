@@ -89,7 +89,7 @@ public class User {
     }
 
 
-    private void validateLoginId(String loginId) {
+    public static void validateLoginId(String loginId) {
         if (!REGEX_LOGIN_ID.matcher(loginId).matches()) {
             throw new InvalidPatternException("아이디는 영문+숫자 조합으로 구성해주세요.");
         }
@@ -101,7 +101,7 @@ public class User {
         }
     }
 
-    private void validateNickname(String nickname) {
+    public static void validateNickname(String nickname) {
         if (!REGEX_NICKNAME.matcher(nickname).matches()) {
             throw new InvalidPatternException("닉네임은 한글(초성), 영문, 숫자만 가능합니다.");
         }
