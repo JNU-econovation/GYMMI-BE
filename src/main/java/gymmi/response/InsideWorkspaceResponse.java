@@ -17,6 +17,7 @@ public class InsideWorkspaceResponse {
     private final Integer goalScore;
     private final String description;
     private final Integer achievementScore;
+    private final Boolean isCreator;
     private final List<WorkerResponse> workers;
 
     @Builder
@@ -31,6 +32,7 @@ public class InsideWorkspaceResponse {
         this.goalScore = workspace.getGoalScore();
         this.description = workspace.getDescription();
         this.achievementScore = achievementScore;
+        this.isCreator = workspace.isCreatedBy(loginedUser);
         this.workers = getWorkerResponse(sortedWorkers, workerRanks, workspace.getCreator(), loginedUser);
     }
 

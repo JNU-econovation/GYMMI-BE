@@ -312,7 +312,7 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                 .header(HttpHeaders.AUTHORIZATION, AUTHORIZATION_TYPE_BEARER + defaultUserToken)
                 .pathParam("workspaceId", workspaceId)
                 .body(request)
-                .when().get("/workspaces/{workspaceId}/match-password");
+                .when().post("/workspaces/{workspaceId}/match-password");
 
         // then
         response.then()

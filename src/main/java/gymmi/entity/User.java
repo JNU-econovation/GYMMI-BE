@@ -18,7 +18,9 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 import org.mindrot.jbcrypt.BCrypt;
+import org.springframework.util.StringUtils;
 
 @Entity
 @Table(name = "uuser")
@@ -45,7 +47,8 @@ public class User {
     @Column(nullable = false)
     private String nickname;
 
-    @Column
+    @Column(nullable = false)
+    @ColumnDefault("''")
     private String email;
 
     @Builder
@@ -56,7 +59,14 @@ public class User {
         this.loginId = loginId;
         this.password = encryptPassword(plainPassword);
         this.nickname = nickname;
-        this.email = email;
+        this.email = validateEmail(email);
+    }
+
+    private String validateEmail(String email) {
+        if (!StringUtils.hasText(email)) {
+            return "";
+        }
+        return email;
     }
 
     private void validatePassword(String plainPassword) {
@@ -79,7 +89,7 @@ public class User {
     }
 
 
-    private void validateLoginId(String loginId) {
+    public static void validateLoginId(String loginId) {
         if (!REGEX_LOGIN_ID.matcher(loginId).matches()) {
             throw new InvalidPatternException("아이디는 영문+숫자 조합으로 구성해주세요.");
         }
@@ -91,7 +101,7 @@ public class User {
         }
     }
 
-    private void validateNickname(String nickname) {
+    public static void validateNickname(String nickname) {
         if (!REGEX_NICKNAME.matcher(nickname).matches()) {
             throw new InvalidPatternException("닉네임은 한글(초성), 영문, 숫자만 가능합니다.");
         }

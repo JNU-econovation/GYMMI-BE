@@ -1,7 +1,7 @@
 package gymmi.entity;
 
-import static gymmi.utils.Regexpressions.REGEX_영어_한글_만;
 import static gymmi.utils.Regexpressions.REGEX_영어_한글_숫자_만;
+import static gymmi.utils.Regexpressions.REGEX_영어_한글_쉼표_만;
 
 import gymmi.exception.InvalidNumberException;
 import gymmi.exception.InvalidPatternException;
@@ -21,13 +21,16 @@ import java.util.regex.Pattern;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
+import org.springframework.util.StringUtils;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Workspace {
 
     private static final Pattern REGEX_WORKSPACE_NAME = REGEX_영어_한글_숫자_만;
-    private static final Pattern REGEX_WORKSPACE_TAG = REGEX_영어_한글_만;
+    private static final Pattern REGEX_WORKSPACE_TAG = REGEX_영어_한글_쉼표_만;
+
 
     private final static SecureRandom random = new SecureRandom();
 
@@ -45,9 +48,11 @@ public class Workspace {
     @Column(nullable = false)
     private String password;
 
-    @Column
+    @Column(nullable = false)
+    @ColumnDefault("''")
     private String description;
 
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private WorkspaceStatus status;
 
@@ -60,7 +65,8 @@ public class Workspace {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @Column
+    @Column(nullable = false)
+    @ColumnDefault("''")
     private String tag;
 
     @Builder
@@ -73,9 +79,7 @@ public class Workspace {
         this.goalScore = validateGoalScore(goalScore);
         this.headCount = headCount;
         this.tag = validateTag(tag);
-
-        this.description = description;
-
+        this.description = validateDescription(description);
         this.password = generatePassword();
         this.createdAt = LocalDateTime.now();
         this.status = WorkspaceStatus.PREPARING;
@@ -100,13 +104,20 @@ public class Workspace {
     }
 
     private String validateTag(String tag) {
-        if (tag == null) {
-            return tag;
+        if (!StringUtils.hasText(tag)) {
+            return "";
         }
         if (!REGEX_WORKSPACE_TAG.matcher(tag).matches()) {
             throw new InvalidPatternException("태그는 한글, 영어만 가능합니다.");
         }
         return tag;
+    }
+
+    private String validateDescription(String description) {
+        if (!StringUtils.hasText(description)) {
+            return "";
+        }
+        return description;
     }
 
     private String generatePassword() {
@@ -129,7 +140,7 @@ public class Workspace {
         return this.headCount <= headCount;
     }
 
-    public boolean isCreator(User user) {
+    public boolean isCreatedBy(User user) {
         return this.creator.equals(user);
     }
 

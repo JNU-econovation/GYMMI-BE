@@ -1,5 +1,6 @@
 package gymmi.service;
 
+import gymmi.entity.User;
 import gymmi.global.DuplicationCheckType;
 import gymmi.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ public class LoginIdDuplicationCheck implements DuplicationCheck {
 
     @Override
     public boolean isDuplicate(String value) {
+        User.validateLoginId(value);
         return userRepository.findByLoginId(value).isPresent();
     }
 }
