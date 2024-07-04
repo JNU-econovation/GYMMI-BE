@@ -140,7 +140,7 @@ public class Workspace {
         return this.headCount <= headCount;
     }
 
-    public boolean isCreator(User user) {
+    public boolean isCreatedBy(User user) {
         return this.creator.equals(user);
     }
 
