@@ -14,7 +14,7 @@ public interface MissionRepository extends JpaRepository<Mission, Long> {
     @Query("delete from Mission m where m.workspace.id = :workspaceId")
     void deleteAllByWorkspaceId(Long workspaceId);
 
-    @Query("select m from Mission m where m.workspace.id = :workspaceId")
+    @Query("select m from Mission m where m.workspace.id = :workspaceId order by m.name asc")
     List<Mission> getAllByWorkspaceId(Long workspaceId);
 
     @Query("select m from Mission m where m.id = :missionId")

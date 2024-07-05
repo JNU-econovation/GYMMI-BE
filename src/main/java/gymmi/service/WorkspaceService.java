@@ -4,7 +4,8 @@ import gymmi.entity.Mission;
 import gymmi.entity.Task;
 import gymmi.entity.User;
 import gymmi.entity.Worker;
-import gymmi.entity.Working;
+import gymmi.entity.WorkingRecord;
+import gymmi.entity.WorkingSummation;
 import gymmi.entity.Workspace;
 import gymmi.exception.AlreadyExistException;
 import gymmi.exception.InvalidStateException;
@@ -13,19 +14,19 @@ import gymmi.exception.NotMatchedException;
 import gymmi.repository.MissionRepository;
 import gymmi.repository.TaskRepository;
 import gymmi.repository.WorkerRepository;
-import gymmi.repository.WorkingRepository;
+import gymmi.repository.WorkingRecordRepository;
 import gymmi.repository.WorkspaceRepository;
 import gymmi.request.CreatingWorkspaceRequest;
 import gymmi.request.JoiningWorkspaceRequest;
 import gymmi.request.MissionDTO;
 import gymmi.request.WorkingMissionInWorkspaceRequest;
+import gymmi.response.ContributedWorkingResponse;
 import gymmi.response.InsideWorkspaceResponse;
 import gymmi.response.JoinedWorkspaceResponse;
 import gymmi.response.MatchingWorkspacePasswordResponse;
 import gymmi.response.MissionResponse;
 import gymmi.response.WorkspacePasswordResponse;
 import gymmi.response.WorkspaceResponse;
-import jakarta.persistence.criteria.CriteriaBuilder.In;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -43,7 +44,7 @@ public class WorkspaceService {
     private final WorkerRepository workerRepository;
     private final MissionRepository missionRepository;
     private final TaskRepository taskRepository;
-    private final WorkingRepository workingRepository;
+    private final WorkingRecordRepository workingRecordRepository;
 
     @Transactional
     public Long createWorkspace(User loginedUser, CreatingWorkspaceRequest request) {
@@ -273,7 +274,6 @@ public class WorkspaceService {
         validateIfWorkerIsInWorkspace(loginedUser.getId(), workspaceId);
         List<Mission> missions = missionRepository.getAllByWorkspaceId(workspaceId);
         return missions.stream()
-                .sorted(Comparator.comparing(Mission::getName))
                 .map(MissionResponse::new)
                 .toList();
     }
@@ -293,13 +293,32 @@ public class WorkspaceService {
         int workingScore = 0;
         for (WorkingMissionInWorkspaceRequest request : requests) {
             Mission mission = missionRepository.getByMissionId(request.getId());
-            Working working = worker.doMission(mission, request.getCount());
-            workingRepository.save(working);
-            workingScore += working.getWorkingScore();
+            WorkingRecord workingRecord = worker.doMission(mission, request.getCount());
+            workingRecordRepository.save(workingRecord);
+            workingScore += workingRecord.getContributedScore();
         }
 
         worker.addWorkingScore(workingScore);
         return workingScore;
+    }
+
+    public List<ContributedWorkingResponse> getContributedWorkingsOfWorkerInWorkspace(
+            User loginedUser,
+            Long workspaceId,
+            Long userId
+    ) {
+        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
+        validateIfWorkerIsInWorkspace(loginedUser.getId(), workspaceId);
+        Worker targetWorker = validateIfWorkerIsInWorkspace(userId, workspaceId);
+
+        List<Mission> missions = missionRepository.getAllByWorkspaceId(workspace.getId());
+
+        List<WorkingRecord> workingRecords = workingRecordRepository.getAllByWorkerId(targetWorker.getId());
+        WorkingSummation workingSummation = new WorkingSummation(workingRecords);
+
+        return missions.stream()
+                .map(m -> new ContributedWorkingResponse(m, workingSummation))
+                .toList();
     }
 }
 

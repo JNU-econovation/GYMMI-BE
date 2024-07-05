@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Working {
+public class WorkingRecord {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,14 +36,22 @@ public class Working {
     private LocalDateTime createdAt;
 
     @Builder
-    public Working(Worker worker, Mission mission, int count) {
+    public WorkingRecord(Worker worker, Mission mission, int count) {
         this.worker = worker;
         this.mission = mission;
         this.count = count;
         this.createdAt = LocalDateTime.now();
     }
 
-    public int getWorkingScore() {
+    public int getContributedScore() {
         return mission.getScore() * count;
+    }
+
+    public int getWorkingCount() {
+        return count;
+    }
+
+    public boolean hasMission(Mission mission) {
+        return this.mission.equals(mission);
     }
 }
