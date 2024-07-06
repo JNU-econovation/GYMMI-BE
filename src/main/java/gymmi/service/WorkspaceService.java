@@ -17,6 +17,7 @@ import gymmi.repository.WorkerRepository;
 import gymmi.repository.WorkingRecordRepository;
 import gymmi.repository.WorkspaceRepository;
 import gymmi.request.CreatingWorkspaceRequest;
+import gymmi.request.EditingDescriptionOfWorkspaceRequest;
 import gymmi.request.JoiningWorkspaceRequest;
 import gymmi.request.MissionDTO;
 import gymmi.request.WorkingMissionInWorkspaceRequest;
@@ -184,9 +185,7 @@ public class WorkspaceService {
     public void startWorkspace(User loginedUser, Long workspaceId) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
         validateIfWorkerIsInWorkspace(loginedUser.getId(), workspaceId);
-        if (!workspace.isCreatedBy(loginedUser)) {
-            throw new NotHavePermissionException("방장이 아닙니다.");
-        }
+        validateIfUserIsCreator(loginedUser, workspace);
         int workerCount = workerRepository.countAllByWorkspaceId(workspace.getId());
         if (workerCount < 2) {
             throw new InvalidStateException("최소 인원인 2명을 채워주세요.");
@@ -342,6 +341,23 @@ public class WorkspaceService {
         }
         List<Task> tasks = taskRepository.getAllByWorkspaceId(workspaceId);
         return new OpeningTasksBoxResponse(tasks);
+    }
+
+    @Transactional
+    public void editDescription(
+            User loginedUser,
+            Long workspaceId,
+            EditingDescriptionOfWorkspaceRequest request
+    ) {
+        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
+        validateIfUserIsCreator(loginedUser, workspace);
+        workspace.editDescription(request.getDescription());
+    }
+
+    private void validateIfUserIsCreator(User loginedUser, Workspace workspace) {
+        if (!workspace.isCreatedBy(loginedUser)) {
+            throw new NotHavePermissionException("방장이 아닙니다.");
+        }
     }
 }
 

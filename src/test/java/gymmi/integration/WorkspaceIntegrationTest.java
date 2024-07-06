@@ -15,9 +15,10 @@ import static gymmi.Fixtures.WORKSPACE__SATISFIED_NAME;
 import static gymmi.integration.Steps.미션_수행_요청;
 import static gymmi.integration.Steps.워크스페이스_나가기_요청;
 import static gymmi.integration.Steps.워크스페이스_미션_보기_요청;
-import static gymmi.integration.Steps.워크스페이스_소개_보기_요청;
 import static gymmi.integration.Steps.워크스페이스_생성__DEFAULT_WORKSPACE_REQUEST;
 import static gymmi.integration.Steps.워크스페이스_생성_요청;
+import static gymmi.integration.Steps.워크스페이스_설명_수정_요청;
+import static gymmi.integration.Steps.워크스페이스_소개_보기_요청;
 import static gymmi.integration.Steps.워크스페이스_시작_요청;
 import static gymmi.integration.Steps.워크스페이스_입장_요청;
 import static gymmi.integration.Steps.워크스페이스_참여_요청;
@@ -32,6 +33,7 @@ import gymmi.exception.NotFoundResourcesException;
 import gymmi.exception.NotHavePermissionException;
 import gymmi.exception.NotMatchedException;
 import gymmi.request.CreatingWorkspaceRequest;
+import gymmi.request.EditingDescriptionOfWorkspaceRequest;
 import gymmi.request.JoiningWorkspaceRequest;
 import gymmi.request.MatchingWorkspacePasswordRequest;
 import gymmi.request.MissionDTO;
@@ -769,6 +771,49 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                 .statusCode(200)
                 .body("pickedTask", Matchers.notNullValue())
                 .body("tasks", Matchers.hasSize(2));
+    }
+
+    @Nested
+    class 워크스페이스_설명_수정 {
+        @Test
+        void 워크스페이스_설명_수정을_성공한다_200() {
+            // given
+            CreatingWorkspaceRequest step = 워크스페이스_생성__DEFAULT_WORKSPACE_REQUEST;
+            Long workspaceId = 워크스페이스_생성_요청(defaultUserToken, step)
+                    .jsonPath()
+                    .getLong(JSON_KEY_ID);
+
+            // when
+            Response response =
+                    워크스페이스_설명_수정_요청(defaultUserToken, workspaceId, new EditingDescriptionOfWorkspaceRequest("수정"));
+
+            // then
+            response.then()
+                    .statusCode(200);
+        }
+
+        @Test
+        void 방장이_아닌_경우_실패한다_403() {
+            // given
+            CreatingWorkspaceRequest step = 워크스페이스_생성__DEFAULT_WORKSPACE_REQUEST;
+            Long workspaceId = 워크스페이스_생성_요청(defaultUserToken, step)
+                    .jsonPath()
+                    .getLong(JSON_KEY_ID);
+            String password = 워크스페이스_소개_보기_요청(user1Token, workspaceId)
+                    .jsonPath()
+                    .getString(JSON_KEY_PASSWORD);
+            JoiningWorkspaceRequest step1 = new JoiningWorkspaceRequest(password, TASK__DEFAULT_TASK);
+            워크스페이스_참여_요청(user1Token, workspaceId, step1);
+
+            // when
+            Response response =
+                    워크스페이스_설명_수정_요청(user1Token, workspaceId, new EditingDescriptionOfWorkspaceRequest("수정"));
+
+            // then
+            response.then()
+                    .statusCode(403)
+                    .body(JSON_KEY_ERROR_CODE, Matchers.equalTo(NotHavePermissionException.ERROR_CODE));
+        }
     }
 }
 

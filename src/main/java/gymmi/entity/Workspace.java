@@ -196,6 +196,10 @@ public class Workspace {
         return goalScore;
     }
 
+    public void editDescription(String description) {
+        this.description = validateDescription(description);
+    }
+
     public Integer getHeadCount() {
         return headCount;
     }

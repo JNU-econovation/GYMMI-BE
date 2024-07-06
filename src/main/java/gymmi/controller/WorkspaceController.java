@@ -4,6 +4,7 @@ import gymmi.entity.User;
 import gymmi.entity.WorkspaceStatus;
 import gymmi.global.Logined;
 import gymmi.request.CreatingWorkspaceRequest;
+import gymmi.request.EditingDescriptionOfWorkspaceRequest;
 import gymmi.request.JoiningWorkspaceRequest;
 import gymmi.request.MatchingWorkspacePasswordRequest;
 import gymmi.request.WorkingMissionInWorkspaceRequest;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -161,4 +163,13 @@ public class WorkspaceController {
         return ResponseEntity.ok().body(response);
     }
 
+    @PutMapping("/workspaces/{workspaceId}/edit")
+    public ResponseEntity<Void> editDescriptionOfWorkspace(
+            @Logined User user,
+            @PathVariable Long workspaceId,
+            @RequestBody EditingDescriptionOfWorkspaceRequest request
+    ) {
+        workspaceService.editDescription(user, workspaceId, request);
+        return ResponseEntity.ok().build();
+    }
 }
