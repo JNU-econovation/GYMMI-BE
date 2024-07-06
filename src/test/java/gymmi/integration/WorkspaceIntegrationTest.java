@@ -643,8 +643,13 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
             MissionResponse mission = responses.get(0);
 
             // when
-            int count = 2;
+            int count = 500;
             Response response = 미션_수행_요청(
+                    defaultUserToken,
+                    workspaceId,
+                    List.of(new WorkingMissionInWorkspaceRequest(mission.getId(), count))
+            );
+            Response response1 = 미션_수행_요청(
                     defaultUserToken,
                     workspaceId,
                     List.of(new WorkingMissionInWorkspaceRequest(mission.getId(), count))
@@ -654,72 +659,116 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
             response.then()
                     .statusCode(200)
                     .body("workingScore", Matchers.equalTo((mission.getScore()) * count));
-        }
-
-        @Test
-        void 워크스페이스_참여자의_미션_합계_보기를_성공한다_200() {
-            // given
-            List<MissionDTO> missionDTOS = List.of(
-                    new MissionDTO("미션", 5),
-                    new MissionDTO("미션1", 10)
-            );
-            CreatingWorkspaceRequest step = CreatingWorkspaceRequest.builder()
-                    .goalScore(WORKSPACE__SATISFIED_GOAL_SCORE)
-                    .headCount(WORKSPACE__SATISFIED_HEAD_COUNT)
-                    .name(WORKSPACE__SATISFIED_NAME)
-                    .task(TASK__DEFAULT_TASK)
-                    .missionBoard(missionDTOS)
-                    .build();
-            Long workspaceId = 워크스페이스_생성_요청(defaultUserToken, step)
-                    .jsonPath()
-                    .getLong(JSON_KEY_ID);
-            String password = 워크스페이스_비밀번호_보기_요청(defaultUserToken, workspaceId)
-                    .jsonPath()
-                    .getString(JSON_KEY_PASSWORD);
-            JoiningWorkspaceRequest step1 = new JoiningWorkspaceRequest(password, TASK__DEFAULT_TASK);
-            워크스페이스_참여_요청(user1Token, workspaceId, step1);
-            워크스페이스_시작_요청(defaultUserToken, workspaceId);
-
-            List<MissionResponse> responses = 워크스페이스_미션_보기_요청(defaultUserToken, workspaceId)
-                    .as(new ParameterizedTypeReference<List<MissionResponse>>() {
-                    }.getType());
-            MissionResponse mission = responses.get(0);
-            MissionResponse mission1 = responses.get(1);
-            미션_수행_요청(
-                    defaultUserToken,
-                    workspaceId,
-                    List.of(
-                            new WorkingMissionInWorkspaceRequest(mission.getId(), 2),
-                            new WorkingMissionInWorkspaceRequest(mission1.getId(), 3)
-                    )
-            );
-            미션_수행_요청(
-                    defaultUserToken,
-                    workspaceId,
-                    List.of(
-                            new WorkingMissionInWorkspaceRequest(mission.getId(), 5)
-                    )
-            );
-
-            // when
-            Response response = RestAssured
-                    .given().log().all()
-                    .contentType(ContentType.JSON)
-                    .header(HttpHeaders.AUTHORIZATION, AUTHORIZATION_TYPE_BEARER + defaultUserToken)
-                    .pathParam("workspaceId", workspaceId)
-                    .pathParam("userId", 1L) // how can I get this specific id?
-                    .when().get("/workspaces/{workspaceId}/workings/{userId}");
-            response.then().log().all();
-
-            // then
-            response.then()
-                    .statusCode(200)
-                    .body("[0].mission", Matchers.equalTo("미션"))
-                    .body("[0].totalCount", Matchers.equalTo(7))
-                    .body("[0].totalContributedScore", Matchers.equalTo(35))
-                    .body("[1].mission", Matchers.equalTo("미션1"))
-                    .body("[1].totalCount", Matchers.equalTo(3))
-                    .body("[1].totalContributedScore", Matchers.equalTo(30));
+            response1.then()
+                    .statusCode(400);
         }
     }
+
+    @Test
+    void 워크스페이스_참여자의_미션_합계_보기를_성공한다_200() {
+        // given
+        List<MissionDTO> missionDTOS = List.of(
+                new MissionDTO("미션", 5),
+                new MissionDTO("미션1", 10)
+        );
+        CreatingWorkspaceRequest step = CreatingWorkspaceRequest.builder()
+                .goalScore(WORKSPACE__SATISFIED_GOAL_SCORE)
+                .headCount(WORKSPACE__SATISFIED_HEAD_COUNT)
+                .name(WORKSPACE__SATISFIED_NAME)
+                .task(TASK__DEFAULT_TASK)
+                .missionBoard(missionDTOS)
+                .build();
+        Long workspaceId = 워크스페이스_생성_요청(defaultUserToken, step)
+                .jsonPath()
+                .getLong(JSON_KEY_ID);
+        String password = 워크스페이스_비밀번호_보기_요청(defaultUserToken, workspaceId)
+                .jsonPath()
+                .getString(JSON_KEY_PASSWORD);
+        JoiningWorkspaceRequest step1 = new JoiningWorkspaceRequest(password, TASK__DEFAULT_TASK);
+        워크스페이스_참여_요청(user1Token, workspaceId, step1);
+        워크스페이스_시작_요청(defaultUserToken, workspaceId);
+
+        List<MissionResponse> responses = 워크스페이스_미션_보기_요청(defaultUserToken, workspaceId)
+                .as(new ParameterizedTypeReference<List<MissionResponse>>() {
+                }.getType());
+        MissionResponse mission = responses.get(0);
+        MissionResponse mission1 = responses.get(1);
+        미션_수행_요청(
+                defaultUserToken,
+                workspaceId,
+                List.of(
+                        new WorkingMissionInWorkspaceRequest(mission.getId(), 2),
+                        new WorkingMissionInWorkspaceRequest(mission1.getId(), 3)
+                )
+        );
+        미션_수행_요청(
+                defaultUserToken,
+                workspaceId,
+                List.of(
+                        new WorkingMissionInWorkspaceRequest(mission.getId(), 5)
+                )
+        );
+
+        // when
+        Response response = RestAssured
+                .given().log().all()
+                .contentType(ContentType.JSON)
+                .header(HttpHeaders.AUTHORIZATION, AUTHORIZATION_TYPE_BEARER + defaultUserToken)
+                .pathParam("workspaceId", workspaceId)
+                .pathParam("userId", 1L) // how can I get this specific id?
+                .when().get("/workspaces/{workspaceId}/workings/{userId}");
+        response.then().log().all();
+
+        // then
+        response.then()
+                .statusCode(200)
+                .body("[0].mission", Matchers.equalTo("미션"))
+                .body("[0].totalCount", Matchers.equalTo(7))
+                .body("[0].totalContributedScore", Matchers.equalTo(35))
+                .body("[1].mission", Matchers.equalTo("미션1"))
+                .body("[1].totalCount", Matchers.equalTo(3))
+                .body("[1].totalContributedScore", Matchers.equalTo(30));
+    }
+
+    @Test
+    void 당첨_테스크를_확인을_성공한다_200() {
+        // given
+        CreatingWorkspaceRequest step = 워크스페이스_생성__DEFAULT_WORKSPACE_REQUEST;
+        Long workspaceId = 워크스페이스_생성_요청(defaultUserToken, step)
+                .jsonPath()
+                .getLong(JSON_KEY_ID);
+        String password = 워크스페이스_비밀번호_보기_요청(defaultUserToken, workspaceId)
+                .jsonPath()
+                .getString(JSON_KEY_PASSWORD);
+        JoiningWorkspaceRequest step1 = new JoiningWorkspaceRequest(password, TASK__DEFAULT_TASK);
+        워크스페이스_참여_요청(user1Token, workspaceId, step1);
+        워크스페이스_시작_요청(defaultUserToken, workspaceId);
+
+        List<MissionResponse> responses = 워크스페이스_미션_보기_요청(defaultUserToken, workspaceId)
+                .as(new ParameterizedTypeReference<List<MissionResponse>>() {
+                }.getType());
+        MissionResponse mission = responses.get(0);
+        미션_수행_요청(
+                defaultUserToken,
+                workspaceId,
+                List.of(
+                        new WorkingMissionInWorkspaceRequest(mission.getId(), 100)
+                )
+        );
+
+        // when
+        Response response = RestAssured
+                .given().log().all()
+                .contentType(ContentType.JSON)
+                .header(HttpHeaders.AUTHORIZATION, AUTHORIZATION_TYPE_BEARER + defaultUserToken)
+                .pathParam("workspaceId", workspaceId)
+                .when().get("/workspaces/{workspaceId}/tasks");
+
+        // then
+        response.then().log().all()
+                .statusCode(200)
+                .body("pickedTask", Matchers.notNullValue())
+                .body("tasks", Matchers.hasSize(2));
+    }
 }
+

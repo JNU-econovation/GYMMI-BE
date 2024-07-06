@@ -13,6 +13,7 @@ import gymmi.response.InsideWorkspaceResponse;
 import gymmi.response.JoinedWorkspaceResponse;
 import gymmi.response.MatchingWorkspacePasswordResponse;
 import gymmi.response.MissionResponse;
+import gymmi.response.OpeningTasksBoxResponse;
 import gymmi.response.WorkingScoreResponse;
 import gymmi.response.WorkspacePasswordResponse;
 import gymmi.response.WorkspaceResponse;
@@ -152,8 +153,12 @@ public class WorkspaceController {
     }
 
     @GetMapping("/workspaces/{workspaceId}/tasks")
-    public ResponseEntity<Void> openTasksBoxInWorkspace() {
-        return null;
+    public ResponseEntity<OpeningTasksBoxResponse> openTasksBoxInWorkspace(
+            @Logined User user,
+            @PathVariable Long workspaceId
+    ) {
+        OpeningTasksBoxResponse response = workspaceService.openTaskBoxInWorkspace(user, workspaceId);
+        return ResponseEntity.ok().body(response);
     }
 
 }

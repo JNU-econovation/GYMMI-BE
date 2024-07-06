@@ -25,10 +25,10 @@ import gymmi.response.InsideWorkspaceResponse;
 import gymmi.response.JoinedWorkspaceResponse;
 import gymmi.response.MatchingWorkspacePasswordResponse;
 import gymmi.response.MissionResponse;
+import gymmi.response.OpeningTasksBoxResponse;
 import gymmi.response.WorkspacePasswordResponse;
 import gymmi.response.WorkspaceResponse;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -118,7 +118,7 @@ public class WorkspaceService {
         }
         Task task = Task.builder()
                 .workspace(workspace)
-                .user(loginedUser)
+                .register(loginedUser)
                 .name(taskName)
                 .build();
         taskRepository.save(task);
@@ -233,7 +233,7 @@ public class WorkspaceService {
         validateIfWorkerIsInWorkspace(logiendUser.getId(), workspaceId);
 
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
-        List<Worker> sortedWorkers = workerRepository.getAllByWorkspaceIdOrderByContributedScore(workspaceId)
+        List<Worker> sortedWorkers = workerRepository.getAllByWorkspaceIdOrderByContributedScore(workspaceId);
 
         List<Integer> workerRanks = rankTied(sortedWorkers);
         int achievementScore = workspaceRepository.getAchievementScore(workspaceId);
@@ -274,7 +274,7 @@ public class WorkspaceService {
                 .toList();
     }
 
-    @Transactional
+    @Transactional // lock 사용?
     public Integer workMissionsInWorkspace(
             User loginedUser,
             Long workspaceId,
@@ -300,9 +300,18 @@ public class WorkspaceService {
 
         if (workspace.achieves(achievementScore)) {
             workspace.complete();
+            drawTask(workspaceId);
         }
 
         return workingScore;
+    }
+
+    private void drawTask(Long workspaceId) {
+        List<Task> tasks = taskRepository.getAllByWorkspaceId(workspaceId);
+        List<Worker> workers = workerRepository.getAllByWorkspaceIdOrderByContributedScore(workspaceId);
+        TaskDraw taskDraw = new TaskDraw(tasks);
+        Task task = taskDraw.pickOneAmong(workers, rankTied(workers));
+        task.changeToPicked();
     }
 
     public List<ContributedWorkingResponse> getContributedWorkingsOfWorkerInWorkspace(
@@ -322,6 +331,17 @@ public class WorkspaceService {
         return missions.stream()
                 .map(m -> new ContributedWorkingResponse(m, workingSummation))
                 .toList();
+    }
+
+    @Transactional
+    public OpeningTasksBoxResponse openTaskBoxInWorkspace(User loginedUser, Long workspaceId) {
+        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
+        validateIfWorkerIsInWorkspace(loginedUser.getId(), workspace.getId());
+        if (!workspace.isCompleted()) {
+            throw new InvalidStateException("목표점수를 달성해주세요!");
+        }
+        List<Task> tasks = taskRepository.getAllByWorkspaceId(workspaceId);
+        return new OpeningTasksBoxResponse(tasks);
     }
 }
 

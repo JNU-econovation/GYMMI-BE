@@ -19,8 +19,8 @@ public interface WorkerRepository extends JpaRepository<Worker, Long> {
     @Query("delete from Worker w where w.user.id = :userId and w.workspace.id = :workspaceId")
     void deleteByUserIdAndWorkspaceId(Long userId, Long workspaceId);
 
-    @Query("select w from Worker w join w.workspace ws where ws.id = :workspaceId")
-    List<Worker> getAllByWorkspaceId(Long workspaceId);
+    @Query("select w from Worker w join w.workspace ws where ws.id = :workspaceId order by w.contributedScore desc, w.user.id asc")
+    List<Worker> getAllByWorkspaceIdOrderByContributedScore(Long workspaceId);
 
 //  boolean으로 가능?? ->
 //    @Query(value = "select * from worker w", nativeQuery = true)

@@ -64,6 +64,10 @@ public class Worker {
         return contributedScore;
     }
 
+    public double getContributedPercent() {
+        return Math.round((double) contributedScore / workspace.getGoalScore() * 100 * 100) / 100;
+    }
+
     public void addWorkingScore(Integer workingScore) {
         contributedScore += workingScore;
     }

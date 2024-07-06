@@ -144,6 +144,10 @@ public class Workspace {
         return this.status == WorkspaceStatus.PREPARING;
     }
 
+    public boolean isCompleted() {
+        return this.status == WorkspaceStatus.COMPLETED;
+    }
+
     public boolean isFull(Integer headCount) {
         return this.headCount <= headCount;
     }
