@@ -110,13 +110,13 @@ public final class Steps {
         return response;
     }
 
-    public static Response 워크스페이스_비밀번호_보기_요청(String accessToken, Long workspaceId) {
+    public static Response 워크스페이스_소개_보기_요청(String accessToken, Long workspaceId) {
         Response response = RestAssured
                 .given().log().all()
                 .contentType(ContentType.JSON)
                 .header(HttpHeaders.AUTHORIZATION, AUTHORIZATION_TYPE_BEARER + accessToken)
                 .pathParam("workspaceId", workspaceId)
-                .when().get("/workspaces/{workspaceId}/password");
+                .when().get("/workspaces/{workspaceId}/introduction");
         response.then().log().all();
         return response;
     }

@@ -15,7 +15,7 @@ import static gymmi.Fixtures.WORKSPACE__SATISFIED_NAME;
 import static gymmi.integration.Steps.미션_수행_요청;
 import static gymmi.integration.Steps.워크스페이스_나가기_요청;
 import static gymmi.integration.Steps.워크스페이스_미션_보기_요청;
-import static gymmi.integration.Steps.워크스페이스_비밀번호_보기_요청;
+import static gymmi.integration.Steps.워크스페이스_소개_보기_요청;
 import static gymmi.integration.Steps.워크스페이스_생성__DEFAULT_WORKSPACE_REQUEST;
 import static gymmi.integration.Steps.워크스페이스_생성_요청;
 import static gymmi.integration.Steps.워크스페이스_시작_요청;
@@ -118,10 +118,10 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
     }
 
     @Nested
-    class 워크스페이스_비밀번호_보기 {
+    class 워크스페이스_소개_보기 {
 
         @Test
-        void 워크스페이스의_비밀번호를_확인한다() {
+        void 워크스페이스의_소개_확인한다() {
             // given
             CreatingWorkspaceRequest step = 워크스페이스_생성__DEFAULT_WORKSPACE_REQUEST;
             long workspaceId = 워크스페이스_생성_요청(defaultUserToken, step)
@@ -129,7 +129,7 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                     .getLong(JSON_KEY_ID);
 
             // when
-            Response response = 워크스페이스_비밀번호_보기_요청(defaultUserToken, workspaceId);
+            Response response = 워크스페이스_소개_보기_요청(defaultUserToken, workspaceId);
 
             // then
             response.then()
@@ -145,7 +145,7 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                     .getLong(JSON_KEY_ID);
 
             // when
-            Response response = 워크스페이스_비밀번호_보기_요청(user1Token, workspaceId);
+            Response response = 워크스페이스_소개_보기_요청(user1Token, workspaceId);
 
             // then
             response.then()
@@ -165,7 +165,7 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                     .jsonPath()
                     .getLong(JSON_KEY_ID);
 
-            String password = 워크스페이스_비밀번호_보기_요청(defaultUserToken, workspaceId)
+            String password = 워크스페이스_소개_보기_요청(defaultUserToken, workspaceId)
                     .jsonPath()
                     .getString(JSON_KEY_PASSWORD);
 
@@ -188,7 +188,7 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                     .jsonPath()
                     .getLong(JSON_KEY_ID);
 
-            String password = 워크스페이스_비밀번호_보기_요청(defaultUserToken, workspaceId)
+            String password = 워크스페이스_소개_보기_요청(defaultUserToken, workspaceId)
                     .jsonPath()
                     .getString(JSON_KEY_PASSWORD);
 
@@ -221,7 +221,7 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                     .jsonPath()
                     .getLong(JSON_KEY_ID);
 
-            String password = 워크스페이스_비밀번호_보기_요청(defaultUserToken, workspaceId)
+            String password = 워크스페이스_소개_보기_요청(defaultUserToken, workspaceId)
                     .jsonPath()
                     .getString(JSON_KEY_PASSWORD);
 
@@ -255,7 +255,7 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                     .jsonPath()
                     .getLong(JSON_KEY_ID);
 
-            String password = 워크스페이스_비밀번호_보기_요청(defaultUserToken, workspaceId)
+            String password = 워크스페이스_소개_보기_요청(defaultUserToken, workspaceId)
                     .jsonPath()
                     .getString(JSON_KEY_PASSWORD);
 
@@ -376,7 +376,7 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                     .jsonPath()
                     .getLong(JSON_KEY_ID);
 
-            String password = 워크스페이스_비밀번호_보기_요청(defaultUserToken, workspaceId)
+            String password = 워크스페이스_소개_보기_요청(defaultUserToken, workspaceId)
                     .jsonPath()
                     .getString(JSON_KEY_PASSWORD);
 
@@ -399,7 +399,7 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                     .jsonPath()
                     .getLong(JSON_KEY_ID);
 
-            String password = 워크스페이스_비밀번호_보기_요청(defaultUserToken, workspaceId)
+            String password = 워크스페이스_소개_보기_요청(defaultUserToken, workspaceId)
                     .jsonPath()
                     .getString(JSON_KEY_PASSWORD);
 
@@ -462,7 +462,7 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                         .jsonPath()
                         .getLong(JSON_KEY_ID);
 
-                String password = 워크스페이스_비밀번호_보기_요청(defaultUserToken, workspaceId)
+                String password = 워크스페이스_소개_보기_요청(defaultUserToken, workspaceId)
                         .jsonPath()
                         .getString(JSON_KEY_PASSWORD);
 
@@ -486,7 +486,7 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                         .jsonPath()
                         .getLong(JSON_KEY_ID);
 
-                String password = 워크스페이스_비밀번호_보기_요청(defaultUserToken, workspaceId)
+                String password = 워크스페이스_소개_보기_요청(defaultUserToken, workspaceId)
                         .jsonPath()
                         .getString(JSON_KEY_PASSWORD);
 
@@ -514,7 +514,7 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                 .jsonPath()
                 .getLong(JSON_KEY_ID);
 
-        String password = 워크스페이스_비밀번호_보기_요청(defaultUserToken, workspaceId)
+        String password = 워크스페이스_소개_보기_요청(defaultUserToken, workspaceId)
                 .jsonPath()
                 .getString(JSON_KEY_PASSWORD);
 
@@ -563,7 +563,7 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
             Long workspaceId = 워크스페이스_생성_요청(defaultUserToken, step)
                     .jsonPath()
                     .getLong(JSON_KEY_ID);
-            String password = 워크스페이스_비밀번호_보기_요청(defaultUserToken, workspaceId)
+            String password = 워크스페이스_소개_보기_요청(defaultUserToken, workspaceId)
                     .jsonPath()
                     .getString(JSON_KEY_PASSWORD);
             JoiningWorkspaceRequest step1 = new JoiningWorkspaceRequest(password, TASK__DEFAULT_TASK);
@@ -630,7 +630,7 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
             Long workspaceId = 워크스페이스_생성_요청(defaultUserToken, step)
                     .jsonPath()
                     .getLong(JSON_KEY_ID);
-            String password = 워크스페이스_비밀번호_보기_요청(defaultUserToken, workspaceId)
+            String password = 워크스페이스_소개_보기_요청(defaultUserToken, workspaceId)
                     .jsonPath()
                     .getString(JSON_KEY_PASSWORD);
             JoiningWorkspaceRequest step1 = new JoiningWorkspaceRequest(password, TASK__DEFAULT_TASK);
@@ -681,7 +681,7 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
         Long workspaceId = 워크스페이스_생성_요청(defaultUserToken, step)
                 .jsonPath()
                 .getLong(JSON_KEY_ID);
-        String password = 워크스페이스_비밀번호_보기_요청(defaultUserToken, workspaceId)
+        String password = 워크스페이스_소개_보기_요청(defaultUserToken, workspaceId)
                 .jsonPath()
                 .getString(JSON_KEY_PASSWORD);
         JoiningWorkspaceRequest step1 = new JoiningWorkspaceRequest(password, TASK__DEFAULT_TASK);
@@ -737,7 +737,7 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
         Long workspaceId = 워크스페이스_생성_요청(defaultUserToken, step)
                 .jsonPath()
                 .getLong(JSON_KEY_ID);
-        String password = 워크스페이스_비밀번호_보기_요청(defaultUserToken, workspaceId)
+        String password = 워크스페이스_소개_보기_요청(defaultUserToken, workspaceId)
                 .jsonPath()
                 .getString(JSON_KEY_PASSWORD);
         JoiningWorkspaceRequest step1 = new JoiningWorkspaceRequest(password, TASK__DEFAULT_TASK);

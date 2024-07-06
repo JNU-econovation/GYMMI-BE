@@ -15,7 +15,7 @@ import gymmi.response.MatchingWorkspacePasswordResponse;
 import gymmi.response.MissionResponse;
 import gymmi.response.OpeningTasksBoxResponse;
 import gymmi.response.WorkingScoreResponse;
-import gymmi.response.WorkspacePasswordResponse;
+import gymmi.response.WorkspaceIntroductionResponse;
 import gymmi.response.WorkspaceResponse;
 import gymmi.service.WorkspaceService;
 import java.util.List;
@@ -55,12 +55,12 @@ public class WorkspaceController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/workspaces/{workspaceId}/password")
-    public ResponseEntity<WorkspacePasswordResponse> seeWorkspacePassword(
+    @GetMapping("/workspaces/{workspaceId}/introduction")
+    public ResponseEntity<WorkspaceIntroductionResponse> seeWorkspaceIntroduction(
             @Logined User user,
             @PathVariable Long workspaceId
     ) {
-        WorkspacePasswordResponse response = workspaceService.getWorkspacePassword(user, workspaceId);
+        WorkspaceIntroductionResponse response = workspaceService.getWorkspaceIntroduction(user, workspaceId);
         return ResponseEntity.ok().body(response);
     }
 

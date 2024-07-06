@@ -26,7 +26,7 @@ import gymmi.response.JoinedWorkspaceResponse;
 import gymmi.response.MatchingWorkspacePasswordResponse;
 import gymmi.response.MissionResponse;
 import gymmi.response.OpeningTasksBoxResponse;
-import gymmi.response.WorkspacePasswordResponse;
+import gymmi.response.WorkspaceIntroductionResponse;
 import gymmi.response.WorkspaceResponse;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -124,10 +124,10 @@ public class WorkspaceService {
         taskRepository.save(task);
     }
 
-    public WorkspacePasswordResponse getWorkspacePassword(User loginedUser, Long workspaceId) {
+    public WorkspaceIntroductionResponse getWorkspaceIntroduction(User loginedUser, Long workspaceId) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
         validateIfWorkerIsInWorkspace(loginedUser.getId(), workspaceId);
-        return new WorkspacePasswordResponse(workspace.getPassword());
+        return new WorkspaceIntroductionResponse(workspace);
     }
 
     private Worker validateIfWorkerIsInWorkspace(Long userId, Long workspaceId) {
