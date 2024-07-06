@@ -29,7 +29,7 @@ public class Task {
 
     @JoinColumn(name = "user_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    private User user;
+    private User register;
 
     @Column(nullable = false)
     private String name;
@@ -38,10 +38,36 @@ public class Task {
     private boolean isPicked;
 
     @Builder
-    public Task(Workspace workspace, User user, String name) {
+    public Task(Workspace workspace, User register, String name) {
         this.workspace = workspace;
-        this.user = user;
+        this.register = register;
         this.name = name;
         this.isPicked = false;
     }
+
+    public boolean isPicked() {
+        return isPicked;
+    }
+
+    public void changeToPicked() {
+        this.isPicked = true;
+    }
+
+    public boolean isRegisteredBy(User user) {
+        return this.register.equals(user);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public User getRegister() {
+        return register;
+    }
 }
+
+

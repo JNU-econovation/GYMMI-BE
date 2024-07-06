@@ -4,6 +4,7 @@ import gymmi.entity.User;
 import gymmi.entity.WorkspaceStatus;
 import gymmi.global.Logined;
 import gymmi.request.CreatingWorkspaceRequest;
+import gymmi.request.EditingDescriptionOfWorkspaceRequest;
 import gymmi.request.JoiningWorkspaceRequest;
 import gymmi.request.MatchingWorkspacePasswordRequest;
 import gymmi.request.WorkingMissionInWorkspaceRequest;
@@ -13,8 +14,9 @@ import gymmi.response.InsideWorkspaceResponse;
 import gymmi.response.JoinedWorkspaceResponse;
 import gymmi.response.MatchingWorkspacePasswordResponse;
 import gymmi.response.MissionResponse;
+import gymmi.response.OpeningTasksBoxResponse;
 import gymmi.response.WorkingScoreResponse;
-import gymmi.response.WorkspacePasswordResponse;
+import gymmi.response.WorkspaceIntroductionResponse;
 import gymmi.response.WorkspaceResponse;
 import gymmi.service.WorkspaceService;
 import java.util.List;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -54,12 +57,12 @@ public class WorkspaceController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/workspaces/{workspaceId}/password")
-    public ResponseEntity<WorkspacePasswordResponse> seeWorkspacePassword(
+    @GetMapping("/workspaces/{workspaceId}/introduction")
+    public ResponseEntity<WorkspaceIntroductionResponse> seeWorkspaceIntroduction(
             @Logined User user,
             @PathVariable Long workspaceId
     ) {
-        WorkspacePasswordResponse response = workspaceService.getWorkspacePassword(user, workspaceId);
+        WorkspaceIntroductionResponse response = workspaceService.getWorkspaceIntroduction(user, workspaceId);
         return ResponseEntity.ok().body(response);
     }
 
@@ -152,8 +155,21 @@ public class WorkspaceController {
     }
 
     @GetMapping("/workspaces/{workspaceId}/tasks")
-    public ResponseEntity<Void> openTasksBoxInWorkspace() {
-        return null;
+    public ResponseEntity<OpeningTasksBoxResponse> openTasksBoxInWorkspace(
+            @Logined User user,
+            @PathVariable Long workspaceId
+    ) {
+        OpeningTasksBoxResponse response = workspaceService.openTaskBoxInWorkspace(user, workspaceId);
+        return ResponseEntity.ok().body(response);
     }
 
+    @PutMapping("/workspaces/{workspaceId}/edit")
+    public ResponseEntity<Void> editDescriptionOfWorkspace(
+            @Logined User user,
+            @PathVariable Long workspaceId,
+            @RequestBody EditingDescriptionOfWorkspaceRequest request
+    ) {
+        workspaceService.editDescription(user, workspaceId, request);
+        return ResponseEntity.ok().build();
+    }
 }

@@ -136,12 +136,16 @@ public class Workspace {
         return this.status == WorkspaceStatus.IN_PROGRESS;
     }
 
-    public boolean isRegisteredMission(Mission mission) {
+    public boolean hasMission(Mission mission) {
         return this.equals(mission.getWorkspace());
     }
 
     public boolean isPreparing() {
         return this.status == WorkspaceStatus.PREPARING;
+    }
+
+    public boolean isCompleted() {
+        return this.status == WorkspaceStatus.COMPLETED;
     }
 
     public boolean isFull(Integer headCount) {
@@ -150,6 +154,14 @@ public class Workspace {
 
     public boolean isCreatedBy(User user) {
         return this.creator.equals(user);
+    }
+
+    public boolean achieves(int achievementScore) {
+        return this.goalScore <= achievementScore;
+    }
+
+    public void complete() {
+        this.status = WorkspaceStatus.COMPLETED;
     }
 
     public void start() {
@@ -182,6 +194,10 @@ public class Workspace {
 
     public Integer getGoalScore() {
         return goalScore;
+    }
+
+    public void editDescription(String description) {
+        this.description = validateDescription(description);
     }
 
     public Integer getHeadCount() {

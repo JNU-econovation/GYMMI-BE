@@ -64,12 +64,16 @@ public class Worker {
         return contributedScore;
     }
 
+    public double getContributedPercent() {
+        return Math.round((double) contributedScore / workspace.getGoalScore() * 100 * 100) / 100;
+    }
+
     public void addWorkingScore(Integer workingScore) {
         contributedScore += workingScore;
     }
 
     public WorkingRecord doMission(Mission mission, Integer count) {
-        if (!this.workspace.isRegisteredMission(mission)) {
+        if (!this.workspace.hasMission(mission)) {
             throw new NotFoundResourcesException("해당 미션이 존재하지 않아요.");
         }
         return WorkingRecord.builder()

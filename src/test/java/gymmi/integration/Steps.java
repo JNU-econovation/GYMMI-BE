@@ -12,6 +12,7 @@ import static gymmi.Fixtures.WORKSPACE__SATISFIED_NAME;
 
 import gymmi.Fixtures;
 import gymmi.request.CreatingWorkspaceRequest;
+import gymmi.request.EditingDescriptionOfWorkspaceRequest;
 import gymmi.request.JoiningWorkspaceRequest;
 import gymmi.request.LoginRequest;
 import gymmi.request.MissionDTO;
@@ -110,13 +111,13 @@ public final class Steps {
         return response;
     }
 
-    public static Response 워크스페이스_비밀번호_보기_요청(String accessToken, Long workspaceId) {
+    public static Response 워크스페이스_소개_보기_요청(String accessToken, Long workspaceId) {
         Response response = RestAssured
                 .given().log().all()
                 .contentType(ContentType.JSON)
                 .header(HttpHeaders.AUTHORIZATION, AUTHORIZATION_TYPE_BEARER + accessToken)
                 .pathParam("workspaceId", workspaceId)
-                .when().get("/workspaces/{workspaceId}/password");
+                .when().get("/workspaces/{workspaceId}/introduction");
         response.then().log().all();
         return response;
     }
@@ -187,6 +188,20 @@ public final class Steps {
                 .pathParam("workspaceId", workspaceId)
                 .body(requests)
                 .when().post("/workspaces/{workspaceId}/missions");
+        response.then().log().all();
+        return response;
+    }
+
+    public static Response 워크스페이스_설명_수정_요청(
+            String accessToken, Long workspaceId, EditingDescriptionOfWorkspaceRequest request
+    ) {
+        Response response = RestAssured
+                .given().log().all()
+                .contentType(ContentType.JSON)
+                .header(HttpHeaders.AUTHORIZATION, AUTHORIZATION_TYPE_BEARER + accessToken)
+                .pathParam("workspaceId", workspaceId)
+                .body(request)
+                .when().put("/workspaces/{workspaceId}/edit");
         response.then().log().all();
         return response;
     }
