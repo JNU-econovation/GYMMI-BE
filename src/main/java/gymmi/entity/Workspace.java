@@ -132,6 +132,14 @@ public class Workspace {
         return this.password.equals(password);
     }
 
+    public boolean isInProgress() {
+        return this.status == WorkspaceStatus.IN_PROGRESS;
+    }
+
+    public boolean isRegisteredMission(Mission mission) {
+        return this.equals(mission.getWorkspace());
+    }
+
     public boolean isPreparing() {
         return this.status == WorkspaceStatus.PREPARING;
     }

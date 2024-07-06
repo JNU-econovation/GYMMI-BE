@@ -17,6 +17,7 @@ import gymmi.request.LoginRequest;
 import gymmi.request.MissionDTO;
 import gymmi.request.RegistrationRequest;
 import gymmi.request.ReissueRequest;
+import gymmi.request.WorkingMissionInWorkspaceRequest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
@@ -172,6 +173,20 @@ public final class Steps {
                 .header(HttpHeaders.AUTHORIZATION, AUTHORIZATION_TYPE_BEARER + accessToken)
                 .pathParam("workspaceId", workspaceId)
                 .when().get("/workspaces/{workspaceId}");
+        response.then().log().all();
+        return response;
+    }
+
+    public static Response 미션_수행_요청(
+            String accessToken, Long workspaceId, List<WorkingMissionInWorkspaceRequest> requests
+    ) {
+        Response response = RestAssured
+                .given().log().all()
+                .contentType(ContentType.JSON)
+                .header(HttpHeaders.AUTHORIZATION, AUTHORIZATION_TYPE_BEARER + accessToken)
+                .pathParam("workspaceId", workspaceId)
+                .body(requests)
+                .when().post("/workspaces/{workspaceId}/missions");
         response.then().log().all();
         return response;
     }

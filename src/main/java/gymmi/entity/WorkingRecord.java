@@ -9,9 +9,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import java.time.LocalDateTime;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 @Entity
-public class Contribution {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class WorkingRecord {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,4 +34,24 @@ public class Contribution {
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
+
+    @Builder
+    public WorkingRecord(Worker worker, Mission mission, int count) {
+        this.worker = worker;
+        this.mission = mission;
+        this.count = count;
+        this.createdAt = LocalDateTime.now();
+    }
+
+    public int getContributedScore() {
+        return mission.getScore() * count;
+    }
+
+    public int getWorkingCount() {
+        return count;
+    }
+
+    public boolean hasMission(Mission mission) {
+        return this.mission.equals(mission);
+    }
 }

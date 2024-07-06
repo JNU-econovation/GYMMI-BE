@@ -6,11 +6,14 @@ import gymmi.global.Logined;
 import gymmi.request.CreatingWorkspaceRequest;
 import gymmi.request.JoiningWorkspaceRequest;
 import gymmi.request.MatchingWorkspacePasswordRequest;
+import gymmi.request.WorkingMissionInWorkspaceRequest;
+import gymmi.response.ContributedWorkingResponse;
 import gymmi.response.IdResponse;
 import gymmi.response.InsideWorkspaceResponse;
 import gymmi.response.JoinedWorkspaceResponse;
 import gymmi.response.MatchingWorkspacePasswordResponse;
 import gymmi.response.MissionResponse;
+import gymmi.response.WorkingScoreResponse;
 import gymmi.response.WorkspacePasswordResponse;
 import gymmi.response.WorkspaceResponse;
 import gymmi.service.WorkspaceService;
@@ -128,8 +131,24 @@ public class WorkspaceController {
     }
 
     @PostMapping("/workspaces/{workspaceId}/missions")
-    public ResponseEntity<Void> workMissionsInWorkspace() {
-        return null;
+    public ResponseEntity<WorkingScoreResponse> workMissionsInWorkspace(
+            @Logined User user,
+            @PathVariable Long workspaceId,
+            @RequestBody List<WorkingMissionInWorkspaceRequest> requests
+    ) {
+        Integer workingScore = workspaceService.workMissionsInWorkspace(user, workspaceId, requests);
+        return ResponseEntity.ok().body(new WorkingScoreResponse(workingScore));
+    }
+
+    @GetMapping("/workspaces/{workspaceId}/workings/{userId}")
+    public ResponseEntity<List<ContributedWorkingResponse>> seeSumOfWorkingsInWorkspace(
+            @Logined User user,
+            @PathVariable Long workspaceId,
+            @PathVariable Long userId
+    ) {
+        List<ContributedWorkingResponse> responses =
+                workspaceService.getContributedWorkingsOfWorkerInWorkspace(user, workspaceId, userId);
+        return ResponseEntity.ok().body(responses);
     }
 
     @GetMapping("/workspaces/{workspaceId}/tasks")

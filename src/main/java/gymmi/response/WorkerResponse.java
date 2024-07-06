@@ -18,7 +18,7 @@ public class WorkerResponse {
     public WorkerResponse(Worker worker, Integer rank, boolean isCreator, boolean isMyself) {
         this.id = worker.getId();
         this.name = worker.getNickname();
-        this.contributeScore = worker.getScore();
+        this.contributeScore = worker.getContributedScore();
         this.rank = rank;
         this.isCreator = isCreator;
         this.isMyself = isMyself;
