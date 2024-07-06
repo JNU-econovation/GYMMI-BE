@@ -63,7 +63,7 @@ public class WorkspaceController {
         return ResponseEntity.ok().body(response);
     }
 
-    @GetMapping("/workspaces/{workspaceId}/match-password")
+    @PostMapping("/workspaces/{workspaceId}/match-password")
     public ResponseEntity<MatchingWorkspacePasswordResponse> matchWorkspacePassword(
             @Logined User user,
             @PathVariable Long workspaceId,

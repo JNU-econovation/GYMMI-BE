@@ -183,8 +183,8 @@ public class WorkspaceService {
     @Transactional
     public void startWorkspace(User loginedUser, Long workspaceId) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
-        validateIfWorkerIsInWorkspace(loginedUser.getId(), workspaceId);
-        if (!workspace.isCreator(loginedUser)) {
+        validateIfWorker(loginedUser.getId(), workspaceId);
+        if (!workspace.isCreatedBy(loginedUser)) {
             throw new NotHavePermissionException("방장이 아닙니다.");
         }
         int workerCount = workerRepository.countAllByWorkspaceId(workspace.getId());
@@ -202,9 +202,8 @@ public class WorkspaceService {
             throw new InvalidStateException("준비 단계에서만 나갈 수 있습니다.");
         }
 
-        if (workspace.isCreator(loginedUser)) {
-            validateIfAnyWorkerExistsInWorkspaceExcludeCreator(workspace);
-
+        if (workspace.isCreatedBy(loginedUser)) {
+            validateIfWorkerExistsExcludeCreator(workspace);
             deleteTaskAndWorker(loginedUser, workspaceId);
             deleteMissionsAndWorkspace(workspaceId, workspace);
             return;
