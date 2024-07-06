@@ -136,7 +136,7 @@ public class Workspace {
         return this.status == WorkspaceStatus.IN_PROGRESS;
     }
 
-    public boolean isRegisteredMission(Mission mission) {
+    public boolean hasMission(Mission mission) {
         return this.equals(mission.getWorkspace());
     }
 
@@ -150,6 +150,14 @@ public class Workspace {
 
     public boolean isCreatedBy(User user) {
         return this.creator.equals(user);
+    }
+
+    public boolean achieves(int achievementScore) {
+        return this.goalScore <= achievementScore;
+    }
+
+    public void complete() {
+        this.status = WorkspaceStatus.COMPLETED;
     }
 
     public void start() {

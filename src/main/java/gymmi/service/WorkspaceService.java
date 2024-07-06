@@ -146,7 +146,7 @@ public class WorkspaceService {
                 pageNumber);
         List<JoinedWorkspaceResponse> responses = new ArrayList<>();
         for (Workspace workspace : joinedWorkspaces) {
-            Integer achievementScore = workspaceRepository.getAchievementScore(workspace.getId());
+            int achievementScore = workspaceRepository.getAchievementScore(workspace.getId());
             JoinedWorkspaceResponse response = JoinedWorkspaceResponse.builder()
                     .id(workspace.getId())
                     .name(workspace.getName())
@@ -166,7 +166,7 @@ public class WorkspaceService {
         List<Workspace> workspaces = workspaceRepository.getAllWorkspaces();
         List<WorkspaceResponse> responses = new ArrayList<>();
         for (Workspace workspace : workspaces) {
-            Integer achievementScore = workspaceRepository.getAchievementScore(workspace.getId());
+            int achievementScore = workspaceRepository.getAchievementScore(workspace.getId());
             WorkspaceResponse response = WorkspaceResponse.builder()
                     .id(workspace.getId())
                     .name(workspace.getName())
@@ -233,13 +233,10 @@ public class WorkspaceService {
         validateIfWorkerIsInWorkspace(logiendUser.getId(), workspaceId);
 
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
-        List<Worker> sortedWorkers = workerRepository.getAllByWorkspaceId(workspaceId)
-                .stream()
-                .sorted(Comparator.comparing(Worker::getContributedScore).reversed())
-                .toList();
+        List<Worker> sortedWorkers = workerRepository.getAllByWorkspaceIdOrderByContributedScore(workspaceId)
 
         List<Integer> workerRanks = rankTied(sortedWorkers);
-        Integer achievementScore = workspaceRepository.getAchievementScore(workspaceId);
+        int achievementScore = workspaceRepository.getAchievementScore(workspaceId);
 
         return InsideWorkspaceResponse.builder()
                 .workspace(workspace)
@@ -298,6 +295,13 @@ public class WorkspaceService {
         }
 
         worker.addWorkingScore(workingScore);
+
+        int achievementScore = workspaceRepository.getAchievementScore(workspaceId);
+
+        if (workspace.achieves(achievementScore)) {
+            workspace.complete();
+        }
+
         return workingScore;
     }
 
