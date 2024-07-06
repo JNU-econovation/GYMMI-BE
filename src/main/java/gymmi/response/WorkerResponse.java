@@ -16,7 +16,7 @@ public class WorkerResponse {
 
     @Builder
     public WorkerResponse(Worker worker, Integer rank, boolean isCreator, boolean isMyself) {
-        this.id = worker.getId();
+        this.id = worker.getUser().getId();
         this.name = worker.getNickname();
         this.contributeScore = worker.getContributedScore();
         this.rank = rank;
