@@ -183,7 +183,7 @@ public class WorkspaceService {
     @Transactional
     public void startWorkspace(User loginedUser, Long workspaceId) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
-        validateIfWorker(loginedUser.getId(), workspaceId);
+        validateIfWorkerIsInWorkspace(loginedUser.getId(), workspaceId);
         if (!workspace.isCreatedBy(loginedUser)) {
             throw new NotHavePermissionException("방장이 아닙니다.");
         }
@@ -203,7 +203,7 @@ public class WorkspaceService {
         }
 
         if (workspace.isCreatedBy(loginedUser)) {
-            validateIfWorkerExistsExcludeCreator(workspace);
+            validateIfAnyWorkerExistsInWorkspaceExcludeCreator(workspace);
             deleteTaskAndWorker(loginedUser, workspaceId);
             deleteMissionsAndWorkspace(workspaceId, workspace);
             return;
