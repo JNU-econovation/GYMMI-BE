@@ -9,6 +9,7 @@ import gymmi.repository.*;
 import gymmi.request.*;
 import gymmi.response.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -155,8 +156,12 @@ public class WorkspaceService {
         return responses;
     }
 
-    public List<WorkspaceResponse> getAllWorkspaces() {
-        List<Workspace> workspaces = workspaceRepository.getAllWorkspaces();
+    public List<WorkspaceResponse> getAllWorkspaces(
+            WorkspaceStatus status,
+            String keyword,
+            int pageNumber
+    ) {
+        List<Workspace> workspaces = workspaceRepository.getAllWorkspaces(status, keyword, PageRequest.of(pageNumber, 10));
         List<WorkspaceResponse> responses = new ArrayList<>();
         for (Workspace workspace : workspaces) {
             int achievementScore = workspaceRepository.getAchievementScore(workspace.getId());

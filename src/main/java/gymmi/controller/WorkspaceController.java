@@ -3,25 +3,15 @@ package gymmi.controller;
 import gymmi.entity.User;
 import gymmi.entity.WorkspaceStatus;
 import gymmi.global.Logined;
-import gymmi.request.CreatingWorkspaceRequest;
-import gymmi.request.EditingIntroductionOfWorkspaceRequest;
-import gymmi.request.JoiningWorkspaceRequest;
-import gymmi.request.MatchingWorkspacePasswordRequest;
-import gymmi.request.WorkingMissionInWorkspaceRequest;
+import gymmi.request.*;
 import gymmi.response.*;
 import gymmi.service.WorkspaceService;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -84,7 +74,7 @@ public class WorkspaceController {
             @RequestParam(required = false) String keyword,
             @RequestParam(value = "page") int pageNumber
     ) {
-        List<WorkspaceResponse> responses = workspaceService.getAllWorkspaces();
+        List<WorkspaceResponse> responses = workspaceService.getAllWorkspaces(status, keyword, pageNumber);
         return ResponseEntity.ok().body(responses);
     }
 
