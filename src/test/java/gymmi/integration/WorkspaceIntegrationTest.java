@@ -84,6 +84,70 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
             response.then()
                     .statusCode(400);
         }
+
+        @Test
+        void 참여_가능한_수가_초과하는_경우_실패한다_400() {
+            // given
+            CreatingWorkspaceRequest step = CreatingWorkspaceRequest.builder()
+                    .name("지미")
+                    .goalScore(WORKSPACE__SATISFIED_GOAL_SCORE)
+                    .headCount(WORKSPACE__SATISFIED_HEAD_COUNT)
+                    .task(TASK__DEFAULT_TASK)
+                    .missionBoard(List.of(new MissionDTO(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE)))
+                    .build();
+            워크스페이스_생성_요청(defaultUserToken, step);
+
+            CreatingWorkspaceRequest step1 = CreatingWorkspaceRequest.builder()
+                    .name("지미1")
+                    .goalScore(WORKSPACE__SATISFIED_GOAL_SCORE)
+                    .headCount(WORKSPACE__SATISFIED_HEAD_COUNT)
+                    .task(TASK__DEFAULT_TASK)
+                    .missionBoard(List.of(new MissionDTO(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE)))
+                    .build();
+            워크스페이스_생성_요청(defaultUserToken, step1);
+
+            CreatingWorkspaceRequest step2 = CreatingWorkspaceRequest.builder()
+                    .name("지미2")
+                    .goalScore(WORKSPACE__SATISFIED_GOAL_SCORE)
+                    .headCount(WORKSPACE__SATISFIED_HEAD_COUNT)
+                    .task(TASK__DEFAULT_TASK)
+                    .missionBoard(List.of(new MissionDTO(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE)))
+                    .build();
+            워크스페이스_생성_요청(defaultUserToken, step2);
+
+            CreatingWorkspaceRequest step3 = CreatingWorkspaceRequest.builder()
+                    .name("지미3")
+                    .goalScore(WORKSPACE__SATISFIED_GOAL_SCORE)
+                    .headCount(WORKSPACE__SATISFIED_HEAD_COUNT)
+                    .task(TASK__DEFAULT_TASK)
+                    .missionBoard(List.of(new MissionDTO(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE)))
+                    .build();
+            워크스페이스_생성_요청(defaultUserToken, step3);
+
+            CreatingWorkspaceRequest step4 = CreatingWorkspaceRequest.builder()
+                    .name("지미4")
+                    .goalScore(WORKSPACE__SATISFIED_GOAL_SCORE)
+                    .headCount(WORKSPACE__SATISFIED_HEAD_COUNT)
+                    .task(TASK__DEFAULT_TASK)
+                    .missionBoard(List.of(new MissionDTO(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE)))
+                    .build();
+            워크스페이스_생성_요청(defaultUserToken, step4);
+
+            CreatingWorkspaceRequest step5 = CreatingWorkspaceRequest.builder()
+                    .name("지미5")
+                    .goalScore(WORKSPACE__SATISFIED_GOAL_SCORE)
+                    .headCount(WORKSPACE__SATISFIED_HEAD_COUNT)
+                    .task(TASK__DEFAULT_TASK)
+                    .missionBoard(List.of(new MissionDTO(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE)))
+                    .build();
+
+            // when
+            Response response = 워크스페이스_생성_요청(defaultUserToken, step5);
+
+            // then
+            response.then()
+                    .statusCode(400);
+        }
     }
 
     @Nested
@@ -263,6 +327,16 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
             response.then()
                     .statusCode(400)
                     .body(JSON_KEY_ERROR_CODE, Matchers.equalTo(NotMatchedException.ERROR_CODE));
+        }
+
+        @Test
+        void 참여가능한_수를_초과한_경우_실패한다_400() {
+            // given
+
+            // when
+
+            // then
+
         }
     }
 
@@ -752,7 +826,7 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
 
             // when
             Response response =
-                    워크스페이스_설명_수정_요청(defaultUserToken, workspaceId, new EditingIntroductionOfWorkspaceRequest("수정","태그"));
+                    워크스페이스_설명_수정_요청(defaultUserToken, workspaceId, new EditingIntroductionOfWorkspaceRequest("수정", "태그"));
 
             // then
             response.then()
@@ -774,7 +848,7 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
 
             // when
             Response response =
-                    워크스페이스_설명_수정_요청(user1Token, workspaceId, new EditingIntroductionOfWorkspaceRequest("수정","태그"));
+                    워크스페이스_설명_수정_요청(user1Token, workspaceId, new EditingIntroductionOfWorkspaceRequest("수정", "태그"));
 
             // then
             response.then()

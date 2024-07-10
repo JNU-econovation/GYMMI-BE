@@ -30,7 +30,10 @@ public interface WorkspaceRepository extends JpaRepository<Workspace, Long> {
             "when ws.status = 'COMPLETED' then 3 " +
             "end, w.created_at DESC " +
             "limit 10 offset :pageNumber", nativeQuery = true)
-    List<Workspace> getJoinedWorkspacesByUserId(Long userId, int pageNumber);
+    List<Workspace> getJoinedWorkspacesByUserIdOrderBy_(Long userId, int pageNumber);
+
+    @Query("select count(*) from Workspace w where w.status = 'PREPARING' or w.status = 'IN_PROGRESS'")
+    int getCountsOfJoinedWorkspacesWhereStatusIsPreparingOrInProgress(Long userId);
 
 
     @Query("select sum(w.contributedScore) from Workspace ws inner join Worker w on ws.id = w.workspace.id where ws.id = :workspaceId")

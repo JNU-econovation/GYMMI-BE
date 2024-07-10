@@ -29,6 +29,7 @@ public class WorkspaceService {
 
     @Transactional
     public Long createWorkspace(User loginedUser, CreatingWorkspaceRequest request) {
+        validateCountOfWorkspaces(loginedUser.getId());
         if (workspaceRepository.findWorkspaceByByName(request.getName()).isPresent()) {
             throw new AlreadyExistException("이미 존재하는 워크스페이스 이름 입니다.");
         }
@@ -62,12 +63,23 @@ public class WorkspaceService {
 
     @Transactional
     public void joinWorkspace(User loginedUser, Long workspaceId, JoiningWorkspaceRequest request) {
+        validateCountOfWorkspaces(loginedUser.getId());
+
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
         if (!workspace.matchesPassword(request.getPassword())) {
             throw new NotMatchedException("비밀번호가 일치하지 않습니다.");
         }
+
         participateInWorkspace(loginedUser, workspace);
         setTask(loginedUser, workspace, request.getTask());
+    }
+
+    private void validateCountOfWorkspaces(Long userId) {
+        int countOfJoinedWorkspaces =
+                workspaceRepository.getCountsOfJoinedWorkspacesWhereStatusIsPreparingOrInProgress(userId);
+        if (countOfJoinedWorkspaces >= 5) {
+            throw new InvalidStateException("워크스페이스는 5개까지 참여 가능합니다.(완료된 워크스페이스 제외)");
+        }
     }
 
 
@@ -123,7 +135,7 @@ public class WorkspaceService {
     }
 
     public List<JoinedWorkspaceResponse> getJoinedWorkspaces(User loginedUser, int pageNumber) {
-        List<Workspace> joinedWorkspaces = workspaceRepository.getJoinedWorkspacesByUserId(loginedUser.getId(),
+        List<Workspace> joinedWorkspaces = workspaceRepository.getJoinedWorkspacesByUserIdOrderBy_(loginedUser.getId(),
                 pageNumber);
         List<JoinedWorkspaceResponse> responses = new ArrayList<>();
         for (Workspace workspace : joinedWorkspaces) {
