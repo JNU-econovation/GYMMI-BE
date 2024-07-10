@@ -8,13 +8,16 @@ import gymmi.Fixtures;
 import gymmi.entity.User;
 import gymmi.entity.Worker;
 import gymmi.entity.Workspace;
+import gymmi.global.QuerydslConfig;
 import jakarta.persistence.EntityManager;
 import java.util.Optional;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 
+@Import(QuerydslConfig.class)
 @DataJpaTest
 class WorkerRepositoryTest {
 

@@ -99,10 +99,6 @@ public class Workspace {
         return goalScore;
     }
 
-    public void changeTag(String tag) {
-        this.tag = validateTag(tag);
-    }
-
     private String validateTag(String tag) {
         if (!StringUtils.hasText(tag)) {
             return "";
@@ -200,6 +196,9 @@ public class Workspace {
         this.description = validateDescription(description);
     }
 
+    public void editTag(String tag) {
+        this.tag = validateTag(tag);
+    }
     public Integer getHeadCount() {
         return headCount;
     }

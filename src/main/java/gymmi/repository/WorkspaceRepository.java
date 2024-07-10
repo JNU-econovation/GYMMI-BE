@@ -3,12 +3,13 @@ package gymmi.repository;
 
 import gymmi.entity.Workspace;
 import gymmi.exception.NotFoundResourcesException;
-import java.util.List;
-import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-public interface WorkspaceRepository extends JpaRepository<Workspace, Long> {
+import java.util.List;
+import java.util.Optional;
+
+public interface WorkspaceRepository extends JpaRepository<Workspace, Long>, WorkspaceCustomRepository {
 
     @Query("select ws from Workspace ws where ws.name = :name")
     Optional<Workspace> findWorkspaceByByName(String name);
@@ -30,7 +31,10 @@ public interface WorkspaceRepository extends JpaRepository<Workspace, Long> {
             "when ws.status = 'COMPLETED' then 3 " +
             "end, w.created_at DESC " +
             "limit 10 offset :pageNumber", nativeQuery = true)
-    List<Workspace> getJoinedWorkspacesByUserId(Long userId, int pageNumber);
+    List<Workspace> getJoinedWorkspacesByUserIdOrderBy_(Long userId, int pageNumber);
+
+    @Query("select count(*) from Workspace w where w.status = 'PREPARING' or w.status = 'IN_PROGRESS'")
+    int getCountsOfJoinedWorkspacesWhereStatusIsPreparingOrInProgress(Long userId);
 
 
     @Query("select sum(w.contributedScore) from Workspace ws inner join Worker w on ws.id = w.workspace.id where ws.id = :workspaceId")

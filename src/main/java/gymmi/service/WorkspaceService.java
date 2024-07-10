@@ -1,41 +1,22 @@
 package gymmi.service;
 
-import gymmi.entity.Mission;
-import gymmi.entity.Task;
-import gymmi.entity.User;
-import gymmi.entity.Worker;
-import gymmi.entity.WorkingRecord;
-import gymmi.entity.WorkingSummation;
-import gymmi.entity.Workspace;
+import gymmi.entity.*;
 import gymmi.exception.AlreadyExistException;
 import gymmi.exception.InvalidStateException;
 import gymmi.exception.NotHavePermissionException;
 import gymmi.exception.NotMatchedException;
-import gymmi.repository.MissionRepository;
-import gymmi.repository.TaskRepository;
-import gymmi.repository.WorkerRepository;
-import gymmi.repository.WorkingRecordRepository;
-import gymmi.repository.WorkspaceRepository;
-import gymmi.request.CreatingWorkspaceRequest;
-import gymmi.request.EditingDescriptionOfWorkspaceRequest;
-import gymmi.request.JoiningWorkspaceRequest;
-import gymmi.request.MissionDTO;
-import gymmi.request.WorkingMissionInWorkspaceRequest;
-import gymmi.response.ContributedWorkingResponse;
-import gymmi.response.InsideWorkspaceResponse;
-import gymmi.response.JoinedWorkspaceResponse;
-import gymmi.response.MatchingWorkspacePasswordResponse;
-import gymmi.response.MissionResponse;
-import gymmi.response.OpeningTasksBoxResponse;
-import gymmi.response.WorkspaceIntroductionResponse;
-import gymmi.response.WorkspaceResponse;
+import gymmi.repository.*;
+import gymmi.request.*;
+import gymmi.response.*;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -49,6 +30,7 @@ public class WorkspaceService {
 
     @Transactional
     public Long createWorkspace(User loginedUser, CreatingWorkspaceRequest request) {
+        validateCountOfWorkspaces(loginedUser.getId());
         if (workspaceRepository.findWorkspaceByByName(request.getName()).isPresent()) {
             throw new AlreadyExistException("이미 존재하는 워크스페이스 이름 입니다.");
         }
@@ -82,12 +64,23 @@ public class WorkspaceService {
 
     @Transactional
     public void joinWorkspace(User loginedUser, Long workspaceId, JoiningWorkspaceRequest request) {
+        validateCountOfWorkspaces(loginedUser.getId());
+
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
         if (!workspace.matchesPassword(request.getPassword())) {
             throw new NotMatchedException("비밀번호가 일치하지 않습니다.");
         }
+
         participateInWorkspace(loginedUser, workspace);
         setTask(loginedUser, workspace, request.getTask());
+    }
+
+    private void validateCountOfWorkspaces(Long userId) {
+        int countOfJoinedWorkspaces =
+                workspaceRepository.getCountsOfJoinedWorkspacesWhereStatusIsPreparingOrInProgress(userId);
+        if (countOfJoinedWorkspaces >= 5) {
+            throw new InvalidStateException("워크스페이스는 5개까지 참여 가능합니다.(완료된 워크스페이스 제외)");
+        }
     }
 
 
@@ -128,7 +121,7 @@ public class WorkspaceService {
     public WorkspaceIntroductionResponse getWorkspaceIntroduction(User loginedUser, Long workspaceId) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
         validateIfWorkerIsInWorkspace(loginedUser.getId(), workspaceId);
-        return new WorkspaceIntroductionResponse(workspace);
+        return new WorkspaceIntroductionResponse(workspace, workspace.isCreatedBy(loginedUser));
     }
 
     private Worker validateIfWorkerIsInWorkspace(Long userId, Long workspaceId) {
@@ -143,7 +136,7 @@ public class WorkspaceService {
     }
 
     public List<JoinedWorkspaceResponse> getJoinedWorkspaces(User loginedUser, int pageNumber) {
-        List<Workspace> joinedWorkspaces = workspaceRepository.getJoinedWorkspacesByUserId(loginedUser.getId(),
+        List<Workspace> joinedWorkspaces = workspaceRepository.getJoinedWorkspacesByUserIdOrderBy_(loginedUser.getId(),
                 pageNumber);
         List<JoinedWorkspaceResponse> responses = new ArrayList<>();
         for (Workspace workspace : joinedWorkspaces) {
@@ -163,8 +156,12 @@ public class WorkspaceService {
         return responses;
     }
 
-    public List<WorkspaceResponse> getAllWorkspaces() {
-        List<Workspace> workspaces = workspaceRepository.getAllWorkspaces();
+    public List<WorkspaceResponse> getAllWorkspaces(
+            WorkspaceStatus status,
+            String keyword,
+            int pageNumber
+    ) {
+        List<Workspace> workspaces = workspaceRepository.getAllWorkspaces(status, keyword, PageRequest.of(pageNumber, 10));
         List<WorkspaceResponse> responses = new ArrayList<>();
         for (Workspace workspace : workspaces) {
             int achievementScore = workspaceRepository.getAchievementScore(workspace.getId());
@@ -344,20 +341,26 @@ public class WorkspaceService {
     }
 
     @Transactional
-    public void editDescription(
+    public void editIntroduction(
             User loginedUser,
             Long workspaceId,
-            EditingDescriptionOfWorkspaceRequest request
+            EditingIntroductionOfWorkspaceRequest request
     ) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
         validateIfUserIsCreator(loginedUser, workspace);
         workspace.editDescription(request.getDescription());
+        workspace.editTag(request.getTag());
     }
 
     private void validateIfUserIsCreator(User loginedUser, Workspace workspace) {
         if (!workspace.isCreatedBy(loginedUser)) {
             throw new NotHavePermissionException("방장이 아닙니다.");
         }
+    }
+
+    public MatchingWorkerResponse matchesWorker(User loginedUser, Long workspaceId) {
+        boolean matchingResult = workerRepository.findByUserIdAndWorkspaceId(loginedUser.getId(), workspaceId).isPresent();
+        return new MatchingWorkerResponse(matchingResult);
     }
 }
 
