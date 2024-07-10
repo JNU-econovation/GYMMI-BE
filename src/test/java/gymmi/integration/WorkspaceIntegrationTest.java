@@ -1,55 +1,22 @@
 package gymmi.integration;
 
-import static gymmi.Fixtures.AUTHORIZATION_TYPE_BEARER;
-import static gymmi.Fixtures.JSON_KEY_ERROR_CODE;
-import static gymmi.Fixtures.JSON_KEY_ID;
-import static gymmi.Fixtures.JSON_KEY_MESSAGE;
-import static gymmi.Fixtures.JSON_KEY_PASSWORD;
-import static gymmi.Fixtures.MISSION__SATISFIED_MISSION_NAME;
-import static gymmi.Fixtures.MISSION__SATISFIED_MISSION_SCORE;
-import static gymmi.Fixtures.TASK__DEFAULT_TASK;
-import static gymmi.Fixtures.WORKSPACE__DISSATISFIED_PASSWORD;
-import static gymmi.Fixtures.WORKSPACE__SATISFIED_GOAL_SCORE;
-import static gymmi.Fixtures.WORKSPACE__SATISFIED_HEAD_COUNT;
-import static gymmi.Fixtures.WORKSPACE__SATISFIED_NAME;
-import static gymmi.integration.Steps.미션_수행_요청;
-import static gymmi.integration.Steps.워크스페이스_나가기_요청;
-import static gymmi.integration.Steps.워크스페이스_미션_보기_요청;
-import static gymmi.integration.Steps.워크스페이스_생성__DEFAULT_WORKSPACE_REQUEST;
-import static gymmi.integration.Steps.워크스페이스_생성_요청;
-import static gymmi.integration.Steps.워크스페이스_설명_수정_요청;
-import static gymmi.integration.Steps.워크스페이스_소개_보기_요청;
-import static gymmi.integration.Steps.워크스페이스_시작_요청;
-import static gymmi.integration.Steps.워크스페이스_입장_요청;
-import static gymmi.integration.Steps.워크스페이스_참여_요청;
-import static gymmi.integration.Steps.회원_가입__DEFAULT_USER_REQUEST;
-import static gymmi.integration.Steps.회원_가입__USER_1_REQUEST;
-import static gymmi.integration.Steps.회원_가입__USER_2_REQUEST;
-import static gymmi.integration.Steps.회원가입_및_로그인_요청;
-
-import gymmi.exception.AlreadyExistException;
-import gymmi.exception.InvalidStateException;
-import gymmi.exception.NotFoundResourcesException;
-import gymmi.exception.NotHavePermissionException;
-import gymmi.exception.NotMatchedException;
-import gymmi.request.CreatingWorkspaceRequest;
-import gymmi.request.EditingDescriptionOfWorkspaceRequest;
-import gymmi.request.JoiningWorkspaceRequest;
-import gymmi.request.MatchingWorkspacePasswordRequest;
-import gymmi.request.MissionDTO;
-import gymmi.request.RegistrationRequest;
-import gymmi.request.WorkingMissionInWorkspaceRequest;
+import gymmi.exception.*;
+import gymmi.request.*;
 import gymmi.response.MissionResponse;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
-import java.util.List;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
+
+import java.util.List;
+
+import static gymmi.Fixtures.*;
+import static gymmi.integration.Steps.*;
 
 public class WorkspaceIntegrationTest extends IntegrationTest {
 
@@ -814,6 +781,29 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                     .statusCode(403)
                     .body(JSON_KEY_ERROR_CODE, Matchers.equalTo(NotHavePermissionException.ERROR_CODE));
         }
+    }
+
+    @Test
+    void 워크스페이스_참여자_여부_확인을_성공한다_200() {
+        // given
+        CreatingWorkspaceRequest step = 워크스페이스_생성__DEFAULT_WORKSPACE_REQUEST;
+        Long workspaceId = 워크스페이스_생성_요청(defaultUserToken, step)
+                .jsonPath()
+                .getLong(JSON_KEY_ID);
+
+        // when
+        Response response = RestAssured
+                .given().log().all()
+                .contentType(ContentType.JSON)
+                .header(HttpHeaders.AUTHORIZATION, AUTHORIZATION_TYPE_BEARER + defaultUserToken)
+                .pathParam("workspaceId", workspaceId)
+                .when().get("/workspaces/{workspaceId}/match-worker");
+        response.then().log().all();
+
+        // then
+        response.then()
+                .statusCode(200)
+                .body("isWorker", Matchers.equalTo(true));
     }
 }
 

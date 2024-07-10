@@ -8,16 +8,7 @@ import gymmi.request.EditingDescriptionOfWorkspaceRequest;
 import gymmi.request.JoiningWorkspaceRequest;
 import gymmi.request.MatchingWorkspacePasswordRequest;
 import gymmi.request.WorkingMissionInWorkspaceRequest;
-import gymmi.response.ContributedWorkingResponse;
-import gymmi.response.IdResponse;
-import gymmi.response.InsideWorkspaceResponse;
-import gymmi.response.JoinedWorkspaceResponse;
-import gymmi.response.MatchingWorkspacePasswordResponse;
-import gymmi.response.MissionResponse;
-import gymmi.response.OpeningTasksBoxResponse;
-import gymmi.response.WorkingScoreResponse;
-import gymmi.response.WorkspaceIntroductionResponse;
-import gymmi.response.WorkspaceResponse;
+import gymmi.response.*;
 import gymmi.service.WorkspaceService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -171,5 +162,14 @@ public class WorkspaceController {
     ) {
         workspaceService.editDescription(user, workspaceId, request);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/workspaces/{workspaceId}/match-worker")
+    public ResponseEntity<MatchingWorkerResponse> matchWorker(
+            @Logined User user,
+            @PathVariable Long workspaceId
+    ) {
+        MatchingWorkerResponse response = workspaceService.matchesWorker(user, workspaceId);
+        return ResponseEntity.ok().body(response);
     }
 }

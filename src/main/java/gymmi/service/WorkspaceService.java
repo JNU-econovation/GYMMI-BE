@@ -21,14 +21,8 @@ import gymmi.request.EditingDescriptionOfWorkspaceRequest;
 import gymmi.request.JoiningWorkspaceRequest;
 import gymmi.request.MissionDTO;
 import gymmi.request.WorkingMissionInWorkspaceRequest;
-import gymmi.response.ContributedWorkingResponse;
-import gymmi.response.InsideWorkspaceResponse;
-import gymmi.response.JoinedWorkspaceResponse;
-import gymmi.response.MatchingWorkspacePasswordResponse;
-import gymmi.response.MissionResponse;
-import gymmi.response.OpeningTasksBoxResponse;
-import gymmi.response.WorkspaceIntroductionResponse;
-import gymmi.response.WorkspaceResponse;
+import gymmi.response.*;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -358,6 +352,11 @@ public class WorkspaceService {
         if (!workspace.isCreatedBy(loginedUser)) {
             throw new NotHavePermissionException("방장이 아닙니다.");
         }
+    }
+
+    public MatchingWorkerResponse matchesWorker(User loginedUser, Long workspaceId) {
+        boolean matchingResult = workerRepository.findByUserIdAndWorkspaceId(loginedUser.getId(), workspaceId).isPresent();
+        return new MatchingWorkerResponse(matchingResult);
     }
 }
 
