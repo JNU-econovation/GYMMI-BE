@@ -17,7 +17,7 @@ import gymmi.repository.WorkerRepository;
 import gymmi.repository.WorkingRecordRepository;
 import gymmi.repository.WorkspaceRepository;
 import gymmi.request.CreatingWorkspaceRequest;
-import gymmi.request.EditingDescriptionOfWorkspaceRequest;
+import gymmi.request.EditingIntroductionOfWorkspaceRequest;
 import gymmi.request.JoiningWorkspaceRequest;
 import gymmi.request.MissionDTO;
 import gymmi.request.WorkingMissionInWorkspaceRequest;
@@ -338,14 +338,15 @@ public class WorkspaceService {
     }
 
     @Transactional
-    public void editDescription(
+    public void editIntroduction(
             User loginedUser,
             Long workspaceId,
-            EditingDescriptionOfWorkspaceRequest request
+            EditingIntroductionOfWorkspaceRequest request
     ) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
         validateIfUserIsCreator(loginedUser, workspace);
         workspace.editDescription(request.getDescription());
+        workspace.editTag(request.getTag());
     }
 
     private void validateIfUserIsCreator(User loginedUser, Workspace workspace) {

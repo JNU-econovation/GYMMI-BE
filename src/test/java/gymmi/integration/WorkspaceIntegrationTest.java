@@ -741,9 +741,9 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
     }
 
     @Nested
-    class 워크스페이스_설명_수정 {
+    class 워크스페이스_소개_수정 {
         @Test
-        void 워크스페이스_설명_수정을_성공한다_200() {
+        void 워크스페이스_소개_수정을_성공한다_200() {
             // given
             CreatingWorkspaceRequest step = 워크스페이스_생성__DEFAULT_WORKSPACE_REQUEST;
             Long workspaceId = 워크스페이스_생성_요청(defaultUserToken, step)
@@ -752,7 +752,7 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
 
             // when
             Response response =
-                    워크스페이스_설명_수정_요청(defaultUserToken, workspaceId, new EditingDescriptionOfWorkspaceRequest("수정"));
+                    워크스페이스_설명_수정_요청(defaultUserToken, workspaceId, new EditingIntroductionOfWorkspaceRequest("수정","태그"));
 
             // then
             response.then()
@@ -774,7 +774,7 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
 
             // when
             Response response =
-                    워크스페이스_설명_수정_요청(user1Token, workspaceId, new EditingDescriptionOfWorkspaceRequest("수정"));
+                    워크스페이스_설명_수정_요청(user1Token, workspaceId, new EditingIntroductionOfWorkspaceRequest("수정","태그"));
 
             // then
             response.then()

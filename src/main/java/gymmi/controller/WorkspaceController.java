@@ -4,7 +4,7 @@ import gymmi.entity.User;
 import gymmi.entity.WorkspaceStatus;
 import gymmi.global.Logined;
 import gymmi.request.CreatingWorkspaceRequest;
-import gymmi.request.EditingDescriptionOfWorkspaceRequest;
+import gymmi.request.EditingIntroductionOfWorkspaceRequest;
 import gymmi.request.JoiningWorkspaceRequest;
 import gymmi.request.MatchingWorkspacePasswordRequest;
 import gymmi.request.WorkingMissionInWorkspaceRequest;
@@ -158,9 +158,9 @@ public class WorkspaceController {
     public ResponseEntity<Void> editDescriptionOfWorkspace(
             @Logined User user,
             @PathVariable Long workspaceId,
-            @RequestBody EditingDescriptionOfWorkspaceRequest request
+            @RequestBody @Validated EditingIntroductionOfWorkspaceRequest request
     ) {
-        workspaceService.editDescription(user, workspaceId, request);
+        workspaceService.editIntroduction(user, workspaceId, request);
         return ResponseEntity.ok().build();
     }
 
