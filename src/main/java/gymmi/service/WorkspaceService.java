@@ -1,35 +1,21 @@
 package gymmi.service;
 
-import gymmi.entity.Mission;
-import gymmi.entity.Task;
-import gymmi.entity.User;
-import gymmi.entity.Worker;
-import gymmi.entity.WorkingRecord;
-import gymmi.entity.WorkingSummation;
-import gymmi.entity.Workspace;
+import gymmi.entity.*;
 import gymmi.exception.AlreadyExistException;
 import gymmi.exception.InvalidStateException;
 import gymmi.exception.NotHavePermissionException;
 import gymmi.exception.NotMatchedException;
-import gymmi.repository.MissionRepository;
-import gymmi.repository.TaskRepository;
-import gymmi.repository.WorkerRepository;
-import gymmi.repository.WorkingRecordRepository;
-import gymmi.repository.WorkspaceRepository;
-import gymmi.request.CreatingWorkspaceRequest;
-import gymmi.request.EditingIntroductionOfWorkspaceRequest;
-import gymmi.request.JoiningWorkspaceRequest;
-import gymmi.request.MissionDTO;
-import gymmi.request.WorkingMissionInWorkspaceRequest;
+import gymmi.repository.*;
+import gymmi.request.*;
 import gymmi.response.*;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -122,7 +108,7 @@ public class WorkspaceService {
     public WorkspaceIntroductionResponse getWorkspaceIntroduction(User loginedUser, Long workspaceId) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
         validateIfWorkerIsInWorkspace(loginedUser.getId(), workspaceId);
-        return new WorkspaceIntroductionResponse(workspace);
+        return new WorkspaceIntroductionResponse(workspace, workspace.isCreatedBy(loginedUser));
     }
 
     private Worker validateIfWorkerIsInWorkspace(Long userId, Long workspaceId) {
