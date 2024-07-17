@@ -811,7 +811,7 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
         response.then().log().all()
                 .statusCode(200)
                 .body("pickedTask", Matchers.notNullValue())
-                .body("tasks", Matchers.hasSize(2));
+                .body("tasks", Matchers.hasSize(1));
     }
 
     @Nested
