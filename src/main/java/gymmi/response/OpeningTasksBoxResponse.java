@@ -2,8 +2,9 @@ package gymmi.response;
 
 import gymmi.entity.Task;
 import gymmi.exception.ServerLogicFaultException;
-import java.util.List;
 import lombok.Getter;
+
+import java.util.List;
 
 @Getter
 public class OpeningTasksBoxResponse {
@@ -13,11 +14,12 @@ public class OpeningTasksBoxResponse {
 
     public OpeningTasksBoxResponse(List<Task> tasks) {
         this.pickedTask = getPickedTask(tasks);
-        this.tasks = getTask(tasks);
+        this.tasks = getRestTasks(tasks);
     }
 
-    private List<TaskDTO> getTask(List<Task> tasks) {
+    private List<TaskDTO> getRestTasks(List<Task> tasks) {
         return tasks.stream()
+                .filter(t -> !t.isPicked())
                 .map(t -> new TaskDTO(t.getId(), t.getName(), t.getRegister().getNickname()))
                 .toList();
     }
