@@ -358,9 +358,19 @@ public class WorkspaceService {
         }
     }
 
-    public MatchingWorkerResponse matchesWorker(User loginedUser, Long workspaceId) {
-        boolean matchingResult = workerRepository.findByUserIdAndWorkspaceId(loginedUser.getId(), workspaceId).isPresent();
-        return new MatchingWorkerResponse(matchingResult);
+    public CheckingEntranceOfWorkspaceResponse checkEnteringWorkspace(User loginedUser, Long workspaceId) {
+        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
+        boolean isWorker = workerRepository.findByUserIdAndWorkspaceId(loginedUser.getId(), workspaceId).isPresent();
+
+        Integer count = workerRepository.countAllByWorkspaceId(workspaceId);
+        boolean isFull = workspace.isFull(count);
+        return new CheckingEntranceOfWorkspaceResponse(isWorker, isFull);
+    }
+
+    public CheckingCreationOfWorkspaceResponse checkCreatingOfWorkspace(User loginedUser) {
+        int countOfJoinedWorkspaces =
+                workspaceRepository.getCountsOfJoinedWorkspacesWhereStatusIsPreparingOrInProgress(loginedUser.getId());
+        boolean canCreate = countOfJoinedWorkspaces < 5;
+        return new CheckingCreationOfWorkspaceResponse(canCreate);
     }
 }
-

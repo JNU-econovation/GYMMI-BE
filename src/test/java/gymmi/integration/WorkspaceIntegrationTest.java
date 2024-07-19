@@ -858,7 +858,7 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    void 워크스페이스_참여자_여부_확인을_성공한다_200() {
+    void 워크스페이스_입장_가능_여부_확인을_성공한다_200() {
         // given
         CreatingWorkspaceRequest step = 워크스페이스_생성__DEFAULT_WORKSPACE_REQUEST;
         Long workspaceId = 워크스페이스_생성_요청(defaultUserToken, step)
@@ -871,13 +871,30 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                 .contentType(ContentType.JSON)
                 .header(HttpHeaders.AUTHORIZATION, AUTHORIZATION_TYPE_BEARER + defaultUserToken)
                 .pathParam("workspaceId", workspaceId)
-                .when().get("/workspaces/{workspaceId}/match-worker");
+                .when().get("/workspaces/{workspaceId}/enter");
         response.then().log().all();
 
         // then
         response.then()
                 .statusCode(200)
-                .body("isWorker", Matchers.equalTo(true));
+                .body("isWorker", Matchers.equalTo(true))
+                .body("isFull", Matchers.equalTo(false));
+    }
+
+    @Test
+    void 워크스페이스_생성_및_참여_가능_여부를_확인하면_성공한다_200() {
+        // given, when
+        Response response = RestAssured
+                .given().log().all()
+                .contentType(ContentType.JSON)
+                .header(HttpHeaders.AUTHORIZATION, AUTHORIZATION_TYPE_BEARER + defaultUserToken)
+                .when().get("/workspaces/check-creation");
+        response.then().log().all();
+
+        // then
+        response.then()
+                .statusCode(200)
+                .body("canCreate", Matchers.equalTo(true));
     }
 }
 

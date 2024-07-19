@@ -74,13 +74,13 @@ public class User {
             throw new InvalidPatternException("비밀번호는 영문+숫자+특수문자 조합으로 구성해주세요.");
         }
         if (!REGEX_영어.matcher(plainPassword).find()) {
-            throw new InvalidPatternException("영문을 포함해주세요");
+            throw new InvalidPatternException("비밀번호에 영문을 포함해주세요");
         }
         if (!REGEX_숫자.matcher(plainPassword).find()) {
-            throw new InvalidPatternException("숫자를 포함해주세요.");
+            throw new InvalidPatternException("비밀번호에 숫자를 포함해주세요.");
         }
         if (!REGEX_SPECIAL_CHARACTER.matcher(plainPassword).find()) {
-            throw new InvalidPatternException("특수문자를 포함해주세요.");
+            throw new InvalidPatternException("비밀번호에 특수문자를 포함해주세요.");
         }
     }
 
@@ -94,10 +94,10 @@ public class User {
             throw new InvalidPatternException("아이디는 영문+숫자 조합으로 구성해주세요.");
         }
         if (!REGEX_영어.matcher(loginId).find()) {
-            throw new InvalidPatternException("영문을 포함해주세요");
+            throw new InvalidPatternException("아이디에 영문을 포함해주세요");
         }
         if (!REGEX_숫자.matcher(loginId).find()) {
-            throw new InvalidPatternException("숫자를 포함해주세요.");
+            throw new InvalidPatternException("아이디에 숫자를 포함해주세요.");
         }
     }
 

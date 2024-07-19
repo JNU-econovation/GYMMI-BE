@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ReissueRequest {
 
-    @NotBlank
+    @NotBlank(message = "토큰이 비어있습니다.")
     private String refreshToken;
 
     public ReissueRequest(String refreshToken) {

@@ -1,9 +1,11 @@
 package gymmi.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -14,6 +16,13 @@ public class ExceptionController {
     @ExceptionHandler
     public ResponseEntity<ErrorResponse> handle400Exception(BadRequestException e, HttpServletRequest request) {
         ErrorResponse response = new ErrorResponse(e.getErrorCode(), e.getMessage());
+        log(e, request.getRequestURI());
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> handle400Exception(ConstraintViolationException e, HttpServletRequest request) {
+        ErrorResponse response = new ErrorResponse("INVALID_INPUT_VALUE", e.getMessage());
         log(e, request.getRequestURI());
         return ResponseEntity.badRequest().body(response);
     }
@@ -54,10 +63,4 @@ public class ExceptionController {
                 requestURI, e.getMessage(), e);
     }
 
-    @ExceptionHandler
-    public ResponseEntity<ErrorResponse> handleException(Exception e, HttpServletRequest request) {
-        ErrorResponse response = new ErrorResponse("에러 처리 준비중", e.getMessage());
-        log(e, request.getRequestURI());
-        return ResponseEntity.status(600).body(response);
-    }
 }
