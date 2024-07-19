@@ -42,6 +42,6 @@ public class WorkspaceCustomRepositoryImpl implements WorkspaceCustomRepository 
     }
 
     private BooleanExpression keywordEq(QWorkspace workspace, String keyword) {
-        return keyword == null ? null : workspace.name.contains(keyword).or(workspace.creator.nickname.contains(keyword));
+        return keyword == null ? null : workspace.name.contains(keyword);
     }
 }
