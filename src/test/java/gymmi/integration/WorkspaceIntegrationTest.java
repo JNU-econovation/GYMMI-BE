@@ -880,5 +880,21 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                 .body("isWorker", Matchers.equalTo(true))
                 .body("isFull", Matchers.equalTo(false));
     }
+
+    @Test
+    void 워크스페이스_생성_및_참여_가능_여부를_확인하면_성공한다_200() {
+        // given, when
+        Response response = RestAssured
+                .given().log().all()
+                .contentType(ContentType.JSON)
+                .header(HttpHeaders.AUTHORIZATION, AUTHORIZATION_TYPE_BEARER + defaultUserToken)
+                .when().get("/workspaces/check-creation");
+        response.then().log().all();
+
+        // then
+        response.then()
+                .statusCode(200)
+                .body("canCreate", Matchers.equalTo(true));
+    }
 }
 

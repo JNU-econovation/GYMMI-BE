@@ -366,4 +366,11 @@ public class WorkspaceService {
         boolean isFull = workspace.isFull(count);
         return new CheckingEntranceOfWorkspaceResponse(isWorker, isFull);
     }
+
+    public CheckingCreationOfWorkspaceResponse checkCreatingOfWorkspace(User loginedUser) {
+        int countOfJoinedWorkspaces =
+                workspaceRepository.getCountsOfJoinedWorkspacesWhereStatusIsPreparingOrInProgress(loginedUser.getId());
+        boolean canCreate = countOfJoinedWorkspaces < 5;
+        return new CheckingCreationOfWorkspaceResponse(canCreate);
+    }
 }

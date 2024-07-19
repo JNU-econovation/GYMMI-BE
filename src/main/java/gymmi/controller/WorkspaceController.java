@@ -162,4 +162,12 @@ public class WorkspaceController {
         CheckingEntranceOfWorkspaceResponse response = workspaceService.checkEnteringWorkspace(user, workspaceId);
         return ResponseEntity.ok().body(response);
     }
+
+    @GetMapping("/workspaces/check-creation")
+    public ResponseEntity<CheckingCreationOfWorkspaceResponse> checkCreatingOfWorkspace(
+            @Logined User user
+    ) {
+        CheckingCreationOfWorkspaceResponse response = workspaceService.checkCreatingOfWorkspace(user);
+        return ResponseEntity.ok().body(response);
+    }
 }
