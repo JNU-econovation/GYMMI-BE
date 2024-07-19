@@ -38,7 +38,7 @@ public class WorkspaceCustomRepositoryImpl implements WorkspaceCustomRepository 
     }
 
     private BooleanExpression workspaceStatusEq(QWorkspace workspace, WorkspaceStatus status) {
-        return status == null ? null : workspace.status.eq(status);
+        return status == null ? null : workspace.status.eq(status); // 여기서 수정
     }
 
     private BooleanExpression keywordEq(QWorkspace workspace, String keyword) {

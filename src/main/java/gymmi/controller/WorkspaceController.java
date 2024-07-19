@@ -154,12 +154,12 @@ public class WorkspaceController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/workspaces/{workspaceId}/match-worker")
-    public ResponseEntity<MatchingWorkerResponse> matchWorker(
+    @GetMapping("/workspaces/{workspaceId}/enter")
+    public ResponseEntity<CheckingEntranceOfWorkspaceResponse> checkEntrance(
             @Logined User user,
             @PathVariable Long workspaceId
     ) {
-        MatchingWorkerResponse response = workspaceService.matchesWorker(user, workspaceId);
+        CheckingEntranceOfWorkspaceResponse response = workspaceService.checkEnteringWorkspace(user, workspaceId);
         return ResponseEntity.ok().body(response);
     }
 }
