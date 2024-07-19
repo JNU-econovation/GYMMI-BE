@@ -11,11 +11,11 @@ import org.hibernate.validator.constraints.Range;
 public class MissionDTO {
 
     @NotBlank
-    @Length(max = 20)
+    @Length(max = 20, message = "미션 글자수는 20자까지 가능합니다.")
     private String mission;
 
     @NotBlank
-    @Range(min = 1, max = 10)
+    @Range(min = 1, max = 10, message = "미션 점수는 1~10점까지 가능합니다.")
     private Integer score;
 
     public MissionDTO(String mission, Integer score) {

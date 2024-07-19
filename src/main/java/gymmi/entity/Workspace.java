@@ -94,7 +94,7 @@ public class Workspace {
 
     private Integer validateGoalScore(Integer goalScore) {
         if (!(goalScore % 10 == 0)) {
-            throw new InvalidNumberException("10점 단위로 입력해주세요.");
+            throw new InvalidNumberException("미션 점수는 10점 단위로 입력해주세요.");
         }
         return goalScore;
     }
