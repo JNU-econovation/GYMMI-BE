@@ -29,6 +29,9 @@ public class AuthService {
         if (userRepository.findByLoginId(request.getLoginId()).isPresent()) {
             throw new AlreadyExistException("이미 등록된 아이디 입니다.");
         }
+        if (userRepository.findByNickname(request.getNickname()).isPresent()) {
+            throw new AlreadyExistException("이미 존재하는 닉네임 입니다.");
+        }
         User newUser = User.builder()
                 .loginId(request.getLoginId())
                 .plainPassword(request.getPassword())
@@ -84,5 +87,10 @@ public class AuthService {
     public void logout(User loginedUser) {
         Logined logined = loginedRepository.getByUserId(loginedUser.getId());
         logined.destroyRefreshToken();
+    }
+
+    @Transactional
+    public void resign(User loginedUser) {
+
     }
 }
