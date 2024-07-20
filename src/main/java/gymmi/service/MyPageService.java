@@ -2,7 +2,10 @@ package gymmi.service;
 
 import gymmi.entity.ProfileImage;
 import gymmi.entity.User;
+import gymmi.exception.AlreadyExistException;
 import gymmi.repository.ProfileImageRepository;
+import gymmi.repository.UserRepository;
+import gymmi.request.EditingMyPageRequest;
 import gymmi.response.ProfileImageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,6 +20,7 @@ public class MyPageService {
 
     private final ImageFileUploader imageFileUploader;
     private final ProfileImageRepository profileImageRepository;
+    private final UserRepository userRepository;
 
     @Transactional
     public ProfileImageResponse setProfileImage(User loginedUser, MultipartFile profileImageFile) {
@@ -33,6 +37,14 @@ public class MyPageService {
 
         imageFileUploader.upload(profileImageFile, filename);
         return new ProfileImageResponse(savedProfileImage);
+    }
+
+    @Transactional
+    public void editMyPage(User loginedUser, EditingMyPageRequest request) {
+        if (userRepository.findByNickname(request.getNickname()).isPresent()) {
+            throw new AlreadyExistException("이미 존재하는 닉네임 입니다.");
+        }
+        loginedUser.changeNickname(request.getNickname());
     }
 
 }

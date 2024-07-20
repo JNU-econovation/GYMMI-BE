@@ -1,11 +1,16 @@
 package gymmi.integration;
 
+import gymmi.request.EditingMyPageRequest;
 import gymmi.request.RegistrationRequest;
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpHeaders;
 
+import static gymmi.Fixtures.AUTHORIZATION_TYPE_BEARER;
 import static gymmi.integration.Steps.*;
 
 public class MyPageIntegrationTest extends IntegrationTest {
@@ -30,6 +35,22 @@ public class MyPageIntegrationTest extends IntegrationTest {
 
         // then
 
+    }
+
+    @Test
+    void 닉네임_수정을_성공한다_200() {
+        // given, when
+        Response response = RestAssured
+                .given().log().all()
+                .contentType(ContentType.JSON)
+                .header(HttpHeaders.AUTHORIZATION, AUTHORIZATION_TYPE_BEARER + defaultUserToken)
+                .body(new EditingMyPageRequest("123"))
+                .when().put("/my/nickname/edit");
+        response.then().log().all();
+
+        // then
+        response.then()
+                .statusCode(200);
     }
 
 }

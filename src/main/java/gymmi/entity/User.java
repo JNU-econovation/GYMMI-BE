@@ -1,19 +1,7 @@
 package gymmi.entity;
 
-import static gymmi.utils.Regexpressions.REGEX_숫자;
-import static gymmi.utils.Regexpressions.REGEX_영어;
-import static gymmi.utils.Regexpressions.REGEX_영어_숫자_만;
-import static gymmi.utils.Regexpressions.REGEX_영어_한글_초성_숫자_만;
-import static gymmi.utils.Regexpressions.SPECIAL_CHARACTER;
-
 import gymmi.exception.InvalidPatternException;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import java.util.regex.Pattern;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -21,6 +9,10 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.util.StringUtils;
+
+import java.util.regex.Pattern;
+
+import static gymmi.utils.Regexpressions.*;
 
 @Entity
 @Table(name = "uuser")
@@ -101,10 +93,11 @@ public class User {
         }
     }
 
-    public static void validateNickname(String nickname) {
+    public static String validateNickname(String nickname) {
         if (!REGEX_NICKNAME.matcher(nickname).matches()) {
             throw new InvalidPatternException("닉네임은 한글(초성), 영문, 숫자만 가능합니다.");
         }
+        return nickname;
     }
 
     public boolean canAuthenticate(String loginId, String plainPassword) {
@@ -112,6 +105,10 @@ public class User {
             return true;
         }
         return false;
+    }
+
+    public void changeNickname(String nickname) {
+        this.nickname = validateNickname(nickname);
     }
 
     public Long getId() {

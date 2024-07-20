@@ -64,7 +64,7 @@ public class ExceptionController {
     ) {
         ErrorResponse response = new ErrorResponse("ERROR", e.getMessage());
         log(e, request.getRequestURI());
-        return ResponseEntity.status(resp.getStatus()).body(response);
+        return ResponseEntity.status(500).body(response);
     }
 
     private void log(Exception e, String requestURI) {
