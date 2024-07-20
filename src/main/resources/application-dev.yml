@@ -24,4 +24,5 @@ jwt:
     access-expiration-time: ${ACCESS_EXPIRATION_TIME}
     refresh-expiration-time: ${REFRESH_EXPIRATION_TIME}
 
-
+file:
+  storage-path: ${FILE_STORAGE_PATH}

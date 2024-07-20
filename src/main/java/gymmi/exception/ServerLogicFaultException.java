@@ -8,4 +8,8 @@ public class ServerLogicFaultException extends GymmiException {
     public ServerLogicFaultException(String message) {
         super(message, ERROR_CODE, ERROR_DESCRIPTION);
     }
+
+    public ServerLogicFaultException(String message, Throwable cause) {
+        super(message, cause, ERROR_CODE, ERROR_DESCRIPTION);
+    }
 }

@@ -1,29 +1,23 @@
 package gymmi.integration;
 
-import static gymmi.Fixtures.AUTHORIZATION_TYPE_BEARER;
-import static gymmi.Fixtures.JSON_KEY_ACCESS_TOKEN;
-import static gymmi.Fixtures.MISSION__SATISFIED_MISSION_NAME;
-import static gymmi.Fixtures.MISSION__SATISFIED_MISSION_SCORE;
-import static gymmi.Fixtures.TASK__DEFAULT_TASK;
-import static gymmi.Fixtures.USER__SATISFIED_PASSWORD;
-import static gymmi.Fixtures.WORKSPACE__SATISFIED_GOAL_SCORE;
-import static gymmi.Fixtures.WORKSPACE__SATISFIED_HEAD_COUNT;
-import static gymmi.Fixtures.WORKSPACE__SATISFIED_NAME;
-
 import gymmi.Fixtures;
-import gymmi.request.CreatingWorkspaceRequest;
-import gymmi.request.EditingIntroductionOfWorkspaceRequest;
-import gymmi.request.JoiningWorkspaceRequest;
-import gymmi.request.LoginRequest;
-import gymmi.request.MissionDTO;
-import gymmi.request.RegistrationRequest;
-import gymmi.request.ReissueRequest;
-import gymmi.request.WorkingMissionInWorkspaceRequest;
+import gymmi.request.*;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import io.restassured.internal.multipart.MultiPartSpecificationImpl;
 import io.restassured.response.Response;
-import java.util.List;
+import io.restassured.specification.MultiPartSpecification;
 import org.springframework.http.HttpHeaders;
+import org.springframework.mock.web.MockMultipartFile;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+
+import static gymmi.Fixtures.*;
+import static io.restassured.RestAssured.config;
+import static io.restassured.config.MultiPartConfig.multiPartConfig;
 
 public final class Steps {
 
@@ -205,6 +199,19 @@ public final class Steps {
         response.then().log().all();
         return response;
     }
+
+    public static Response 프로필_이미지_설정_요청(String accessToken, File file) {
+        Response response = RestAssured
+                .given().log().all()
+                .contentType(ContentType.MULTIPART)
+                .config(config().multiPartConfig(multiPartConfig().defaultSubtype("mixed")))
+                .header(HttpHeaders.AUTHORIZATION, AUTHORIZATION_TYPE_BEARER + accessToken)
+                .multiPart("profileImage","1234")
+                .when().put("/my/profile-image");
+        response.then().log().all();
+        return response;
+    }
+
 
     public static String 회원가입_및_로그인_요청(RegistrationRequest request) {
         회원_가입_요청(request);
