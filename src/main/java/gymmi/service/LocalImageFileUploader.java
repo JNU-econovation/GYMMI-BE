@@ -22,15 +22,13 @@ public class LocalImageFileUploader implements ImageFileUploader {
         this.storagePath = storagePath;
     }
 
-    public String upload(MultipartFile imageFile, String uuid) {
+    public String upload(MultipartFile imageFile, String fileName) {
         validateImageFile(imageFile);
         try {
-            String extension = StringUtils.getFilenameExtension(imageFile.getOriginalFilename());
-            String filename = uuid + "." + extension;
-            File file = new File(storagePath + filename);
+            File file = new File(storagePath + fileName);
             imageFile.transferTo(file);
             file.setReadOnly();
-            return filename;
+            return fileName;
         } catch (IOException e) {
             throw new ServerLogicFaultException("파일 업로드를 실패하였습니다.", e);
         }

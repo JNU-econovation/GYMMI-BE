@@ -11,6 +11,7 @@ import gymmi.response.ProfileImageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
@@ -28,7 +29,8 @@ public class MyPageService {
         profileImageRepository.findByUserId(loginedUser.getId())
                 .ifPresent(profileImage -> profileImageRepository.delete(profileImage));
 
-        String filename = UUID.randomUUID().toString();
+        String extension = StringUtils.getFilenameExtension(profileImageFile.getOriginalFilename());
+        String filename = UUID.randomUUID() + extension;
         ProfileImage newProfileImage = ProfileImage.builder()
                 .owner(loginedUser)
                 .originName(profileImageFile.getOriginalFilename())
