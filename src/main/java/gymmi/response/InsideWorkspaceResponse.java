@@ -3,10 +3,11 @@ package gymmi.response;
 import gymmi.entity.User;
 import gymmi.entity.Worker;
 import gymmi.entity.Workspace;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 public class InsideWorkspaceResponse {
@@ -48,6 +49,7 @@ public class InsideWorkspaceResponse {
                     .rank(workerRanks.get(i))
                     .isCreator(creator.equals(worker.getUser()))
                     .isMyself(worker.getUser().equals(loginedUser))
+                    .profileImage(worker.getUser().getProfileImageName())
                     .build();
             workerResponses.add(response);
         }

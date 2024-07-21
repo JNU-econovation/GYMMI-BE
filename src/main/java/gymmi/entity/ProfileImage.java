@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ProfileImage {
 
+    public static final String EMPTY_NAME = "";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

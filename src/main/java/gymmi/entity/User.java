@@ -47,6 +47,9 @@ public class User {
     @Column(nullable = false)
     private boolean isResigned;
 
+    @OneToOne(mappedBy = "owner", fetch = FetchType.LAZY)
+    private ProfileImage profileImage; // 지연 로딩 안됨.
+
     @Builder
     public User(String loginId, String plainPassword, String nickname, String email) {
         validateLoginId(loginId);
@@ -134,5 +137,12 @@ public class User {
     public void resign() {
         this.isResigned = true;
         this.nickname = RESIGNED_NICKNAME;
+    }
+
+    public String getProfileImageName() {
+        if (profileImage == null) {
+            return ProfileImage.EMPTY_NAME;
+        }
+        return profileImage.getStoredName();
     }
 }

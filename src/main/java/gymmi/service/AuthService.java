@@ -1,11 +1,13 @@
 package gymmi.service;
 
 import gymmi.entity.Logined;
+import gymmi.entity.ProfileImage;
 import gymmi.entity.User;
 import gymmi.exception.AlreadyExistException;
 import gymmi.exception.AuthenticationException;
 import gymmi.exception.NotMatchedException;
 import gymmi.repository.LoginedRepository;
+import gymmi.repository.ProfileImageRepository;
 import gymmi.repository.UserRepository;
 import gymmi.request.LoginRequest;
 import gymmi.request.RegistrationRequest;
@@ -56,7 +58,7 @@ public class AuthService {
         return LoginResponse.builder()
                 .userId(user.getId())
                 .nickname(user.getNickname())
-                .profileURL("")
+                .profileURL(user.getProfileImageName())
                 .refreshToken(tokenResponse.getRefreshToken())
                 .accessToken(tokenResponse.getAccessToken())
                 .build();
