@@ -3,6 +3,7 @@ package gymmi.controller;
 import gymmi.entity.User;
 import gymmi.global.Logined;
 import gymmi.request.EditingMyPageRequest;
+import gymmi.response.MyPageResponse;
 import gymmi.service.MyPageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -44,11 +45,11 @@ public class MyPageController {
     }
 
     @GetMapping("/my")
-    public ResponseEntity<Void> seeMyPage(
+    public ResponseEntity<MyPageResponse> seeMyPage(
             @Logined User user
     ) {
-        myPageService.getMyInfo(user);
-        return ResponseEntity.ok().build();
+        MyPageResponse response = myPageService.getMyInfo(user);
+        return ResponseEntity.ok().body(response);
     }
 
 
