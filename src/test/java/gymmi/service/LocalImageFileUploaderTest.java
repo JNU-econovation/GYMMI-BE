@@ -19,6 +19,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class LocalImageFileUploaderTest {
 
     public static final String DIRECTORY_PATH = System.getProperty("user.home") + "/temp";
+    public static final String ORIGINAL_FILENAME = "파일이름.png";
     private static String TEST_PATH = DIRECTORY_PATH + "/";
     public static final LocalImageFileUploader imageFileUploader = new LocalImageFileUploader(TEST_PATH);
 
@@ -43,7 +44,7 @@ class LocalImageFileUploaderTest {
         // given
         MultipartFile multipartFile = new MockMultipartFile(
                 "file",
-                "파일이름",
+                ORIGINAL_FILENAME,
                 MediaType.IMAGE_PNG_VALUE,
                 new byte[]{1, 2, 3, 4, 5}
         );
@@ -63,7 +64,7 @@ class LocalImageFileUploaderTest {
 
         MultipartFile multipartFile = new MockMultipartFile(
                 "file",
-                "파일이름",
+                ORIGINAL_FILENAME,
                 MediaType.APPLICATION_JSON_VALUE,
                 new byte[]{1, 2, 3, 4, 5}
         );
@@ -71,7 +72,7 @@ class LocalImageFileUploaderTest {
         // when, then
         assertThatThrownBy(() -> uploader.upload(multipartFile, UUID.randomUUID().toString()))
                 .isInstanceOf(InvalidFileException.class)
-                .hasMessage("png 또는 jpeg 파일만 가능합니다.");
+                .hasMessage("이미지 형식의 파일만 가능합니다.");
     }
 
     @Test
@@ -81,7 +82,7 @@ class LocalImageFileUploaderTest {
 
         MultipartFile multipartFile = new MockMultipartFile(
                 "file",
-                "파일이름",
+                ORIGINAL_FILENAME,
                 MediaType.APPLICATION_JSON_VALUE,
                 InputStream.nullInputStream()
         );
@@ -92,13 +93,31 @@ class LocalImageFileUploaderTest {
                 .hasMessage("비어있는 파일입니다.");
     }
 
+    @Test
+    void 이미지_파일_저장시_확장자가_없는경우_예외가_발생한다() throws IOException {
+        // given
+        LocalImageFileUploader uploader = imageFileUploader;
+
+        MultipartFile multipartFile = new MockMultipartFile(
+                "file",
+                "파일이름",
+                MediaType.IMAGE_PNG_VALUE,
+                new byte[]{1, 2, 3, 4, 5}
+        );
+
+        // when, then
+        assertThatThrownBy(() -> uploader.upload(multipartFile, UUID.randomUUID().toString()))
+                .isInstanceOf(InvalidFileException.class)
+                .hasMessage("파일의 확장자가 존재하지 않습니다.");
+    }
+
 
     @Test
     void 파일_삭제를_성공한다() {
         // given
         MultipartFile multipartFile = new MockMultipartFile(
                 "file",
-                "파일이름",
+                ORIGINAL_FILENAME,
                 MediaType.IMAGE_PNG_VALUE,
                 new byte[]{1, 2, 3, 4, 5}
         );

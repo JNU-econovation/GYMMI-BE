@@ -5,6 +5,7 @@ import gymmi.exception.NotFoundResourcesException;
 import gymmi.exception.ServerLogicFaultException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -21,13 +22,15 @@ public class LocalImageFileUploader implements ImageFileUploader {
         this.storagePath = storagePath;
     }
 
-    public String upload(MultipartFile imageFile, String fileName) {
+    public String upload(MultipartFile imageFile, String uuid) {
         validateImageFile(imageFile);
         try {
-            File file = new File(storagePath + fileName);
+            String extension = StringUtils.getFilenameExtension(imageFile.getOriginalFilename());
+            String filename = uuid + "." + extension;
+            File file = new File(storagePath + filename);
             imageFile.transferTo(file);
             file.setReadOnly();
-            return fileName;
+            return filename;
         } catch (IOException e) {
             throw new ServerLogicFaultException("파일 업로드를 실패하였습니다.", e);
         }
@@ -48,8 +51,13 @@ public class LocalImageFileUploader implements ImageFileUploader {
             throw new InvalidFileException("비어있는 파일입니다.");
         }
         if (!SUPPORTABLE_IMAGE_TYPES.contains(file.getContentType())) {
-            throw new InvalidFileException("png 또는 jpeg 파일만 가능합니다.");
+            throw new InvalidFileException("이미지 형식의 파일만 가능합니다.");
         }
+        String extension = StringUtils.getFilenameExtension(file.getOriginalFilename());
+        if (extension == null) {
+            throw new InvalidFileException("파일의 확장자가 존재하지 않습니다.");
+        }
+
     }
 
 }
