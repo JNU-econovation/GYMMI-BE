@@ -112,6 +112,13 @@ public class User {
         return false;
     }
 
+    public boolean canAuthenticate(String plainPassword) {
+        if (BCrypt.checkpw(plainPassword, password)) {
+            return true;
+        }
+        return false;
+    }
+
     public void changeNickname(String nickname) {
         this.nickname = validateNickname(nickname);
     }

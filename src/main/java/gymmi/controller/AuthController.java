@@ -5,6 +5,7 @@ import gymmi.global.Logined;
 import gymmi.request.LoginRequest;
 import gymmi.request.RegistrationRequest;
 import gymmi.request.ReissueRequest;
+import gymmi.request.ResignRequest;
 import gymmi.response.LoginResponse;
 import gymmi.response.TokenResponse;
 import gymmi.service.AuthService;
@@ -47,8 +48,10 @@ public class AuthController {
     }
 
     @DeleteMapping("/auth/cuag")
-    public ResponseEntity<Void> resign(@Logined User user) {
-        authService.resign(user);
+    public ResponseEntity<Void> resign(@Logined User user,
+        @RequestBody @Validated ResignRequest request
+    ) {
+        authService.resign(user, request);
         return ResponseEntity.ok().build();
     }
 

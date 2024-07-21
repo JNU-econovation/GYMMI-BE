@@ -10,6 +10,7 @@ import gymmi.repository.UserRepository;
 import gymmi.request.LoginRequest;
 import gymmi.request.RegistrationRequest;
 import gymmi.request.ReissueRequest;
+import gymmi.request.ResignRequest;
 import gymmi.response.LoginResponse;
 import gymmi.response.TokenResponse;
 import lombok.RequiredArgsConstructor;
@@ -90,7 +91,10 @@ public class AuthService {
     }
 
     @Transactional
-    public void resign(User loginedUser) {
+    public void resign(User loginedUser, ResignRequest request) {
+        if (!loginedUser.canAuthenticate(request.getPassword())) {
+            throw new NotMatchedException("비밀번호가 일치하지 않습니다.");
+        }
         loginedUser.resign();
         // 프로필사진 지우기
     }
