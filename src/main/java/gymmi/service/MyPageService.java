@@ -6,6 +6,7 @@ import gymmi.exception.AlreadyExistException;
 import gymmi.repository.ProfileImageRepository;
 import gymmi.repository.UserRepository;
 import gymmi.request.EditingMyPageRequest;
+import gymmi.response.MyPageResponse;
 import gymmi.response.ProfileImageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -52,6 +53,15 @@ public class MyPageService {
             throw new AlreadyExistException("이미 존재하는 닉네임 입니다.");
         }
         loginedUser.changeNickname(request.getNickname());
+    }
+
+    public MyPageResponse getMyInfo(User loginedUser) {
+        return MyPageResponse.builder()
+                .nickname(loginedUser.getNickname())
+                .email(loginedUser.getEmail())
+                .loginId(loginedUser.getLoginId())
+                .profileImage(loginedUser.getProfileImageName())
+                .build();
     }
 }
 

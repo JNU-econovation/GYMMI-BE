@@ -43,5 +43,13 @@ public class MyPageController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/my")
+    public ResponseEntity<Void> seeMyPage(
+            @Logined User user
+    ) {
+        myPageService.getMyInfo(user);
+        return ResponseEntity.ok().build();
+    }
+
 
 }

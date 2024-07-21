@@ -145,4 +145,13 @@ public class User {
         }
         return profileImage.getStoredName();
     }
+
+    public String getLoginId() {
+        return loginId;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
 }
