@@ -40,12 +40,18 @@ public class MyPageService {
     }
 
     @Transactional
+    public void deleteProfileImage(User loginedUser) {
+        ProfileImage profileImage = profileImageRepository.getByUserId(loginedUser.getId());
+        profileImageRepository.delete(profileImage);
+        imageFileUploader.delete(profileImage.getStoredName());
+    }
+
+    @Transactional
     public void editMyPage(User loginedUser, EditingMyPageRequest request) {
         if (userRepository.findByNickname(request.getNickname()).isPresent()) {
             throw new AlreadyExistException("이미 존재하는 닉네임 입니다.");
         }
         loginedUser.changeNickname(request.getNickname());
     }
-
 }
 
