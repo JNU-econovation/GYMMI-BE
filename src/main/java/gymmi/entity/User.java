@@ -25,6 +25,7 @@ public class User {
     private static final Pattern REGEX_NICKNAME = REGEX_영어_한글_초성_숫자_만;
     private static final Pattern REGEX_SPECIAL_CHARACTER = Pattern.compile("[" + SPECIAL_CHARACTER + "]");
     private static final Pattern REGEX_EMAIL = Pattern.compile("^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]*$");
+    public static final String RESIGNED_NICKNAME = "(탈퇴한유저)";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,6 +44,9 @@ public class User {
     @ColumnDefault("''")
     private String email;
 
+    @Column(nullable = false)
+    private boolean isResigned;
+
     @Builder
     public User(String loginId, String plainPassword, String nickname, String email) {
         validateLoginId(loginId);
@@ -52,6 +56,7 @@ public class User {
         this.password = encryptPassword(plainPassword);
         this.nickname = nickname;
         this.email = validateEmail(email);
+        this.isResigned = false;
     }
 
     private String validateEmail(String email) {
@@ -117,5 +122,10 @@ public class User {
 
     public String getNickname() {
         return nickname;
+    }
+
+    public void resign() {
+        this.isResigned = true;
+        this.nickname = RESIGNED_NICKNAME;
     }
 }

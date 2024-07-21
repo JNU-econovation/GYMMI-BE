@@ -91,6 +91,7 @@ public class AuthService {
 
     @Transactional
     public void resign(User loginedUser) {
-
+        loginedUser.resign();
+        // 프로필사진 지우기
     }
 }
