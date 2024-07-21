@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ProfileImage {
 
-    public static final String EMPTY_NAME = "";
+    public static final String EMPTY_NAME = "default.png";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
