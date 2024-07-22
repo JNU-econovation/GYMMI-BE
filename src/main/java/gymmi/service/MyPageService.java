@@ -30,7 +30,7 @@ public class MyPageService {
                 .ifPresent(profileImage -> profileImageRepository.delete(profileImage));
 
         String extension = StringUtils.getFilenameExtension(profileImageFile.getOriginalFilename());
-        String filename = UUID.randomUUID() + extension;
+        String filename = UUID.randomUUID() + "." + extension;
         ProfileImage newProfileImage = ProfileImage.builder()
                 .owner(loginedUser)
                 .originName(profileImageFile.getOriginalFilename())
