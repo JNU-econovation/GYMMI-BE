@@ -1,19 +1,7 @@
 package gymmi.entity;
 
-import static gymmi.utils.Regexpressions.REGEX_숫자;
-import static gymmi.utils.Regexpressions.REGEX_영어;
-import static gymmi.utils.Regexpressions.REGEX_영어_숫자_만;
-import static gymmi.utils.Regexpressions.REGEX_영어_한글_초성_숫자_만;
-import static gymmi.utils.Regexpressions.SPECIAL_CHARACTER;
-
 import gymmi.exception.InvalidPatternException;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import java.util.regex.Pattern;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -21,6 +9,10 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.util.StringUtils;
+
+import java.util.regex.Pattern;
+
+import static gymmi.utils.Regexpressions.*;
 
 @Entity
 @Table(name = "uuser")
@@ -33,6 +25,7 @@ public class User {
     private static final Pattern REGEX_NICKNAME = REGEX_영어_한글_초성_숫자_만;
     private static final Pattern REGEX_SPECIAL_CHARACTER = Pattern.compile("[" + SPECIAL_CHARACTER + "]");
     private static final Pattern REGEX_EMAIL = Pattern.compile("^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]*$");
+    public static final String RESIGNED_NICKNAME = "(탈퇴한유저)";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,6 +44,12 @@ public class User {
     @ColumnDefault("''")
     private String email;
 
+    @Column(nullable = false)
+    private boolean isResigned;
+
+    @OneToOne(mappedBy = "owner", fetch = FetchType.LAZY)
+    private ProfileImage profileImage; // 지연 로딩 안됨.
+
     @Builder
     public User(String loginId, String plainPassword, String nickname, String email) {
         validateLoginId(loginId);
@@ -60,6 +59,7 @@ public class User {
         this.password = encryptPassword(plainPassword);
         this.nickname = nickname;
         this.email = validateEmail(email);
+        this.isResigned = false;
     }
 
     private String validateEmail(String email) {
@@ -101,10 +101,11 @@ public class User {
         }
     }
 
-    public static void validateNickname(String nickname) {
+    public static String validateNickname(String nickname) {
         if (!REGEX_NICKNAME.matcher(nickname).matches()) {
             throw new InvalidPatternException("닉네임은 한글(초성), 영문, 숫자만 가능합니다.");
         }
+        return nickname;
     }
 
     public boolean canAuthenticate(String loginId, String plainPassword) {
@@ -114,6 +115,17 @@ public class User {
         return false;
     }
 
+    public boolean canAuthenticate(String plainPassword) {
+        if (BCrypt.checkpw(plainPassword, password)) {
+            return true;
+        }
+        return false;
+    }
+
+    public void changeNickname(String nickname) {
+        this.nickname = validateNickname(nickname);
+    }
+
     public Long getId() {
         return id;
     }
@@ -121,4 +133,25 @@ public class User {
     public String getNickname() {
         return nickname;
     }
+
+    public void resign() {
+        this.isResigned = true;
+        this.nickname = RESIGNED_NICKNAME;
+    }
+
+    public String getProfileImageName() {
+        if (profileImage == null) {
+            return ProfileImage.EMPTY_NAME;
+        }
+        return profileImage.getStoredName();
+    }
+
+    public String getLoginId() {
+        return loginId;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
 }

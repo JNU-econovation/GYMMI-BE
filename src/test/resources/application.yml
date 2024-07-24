@@ -10,3 +10,6 @@ jwt:
     secret-key: asdasdasdasdasdsadsasdadsadasdsadsa
     access-expiration-time: 1000000000
     refresh-expiration-time: 100000000
+
+file:
+  storage-path: "/Users/lookh/temp/" # use in Integration test (need to change)

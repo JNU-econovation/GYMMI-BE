@@ -7,3 +7,8 @@ spring:
       hibernate:
         format_sql: true
     show-sql: true
+
+  servlet:
+    multipart:
+      max-file-size: ${MAX_FILE_SIZE}
+      max-request-size: ${MAX_REQUEST_SIZE}

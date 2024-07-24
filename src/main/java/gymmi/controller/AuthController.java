@@ -5,12 +5,14 @@ import gymmi.global.Logined;
 import gymmi.request.LoginRequest;
 import gymmi.request.RegistrationRequest;
 import gymmi.request.ReissueRequest;
+import gymmi.request.ResignRequest;
 import gymmi.response.LoginResponse;
 import gymmi.response.TokenResponse;
 import gymmi.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -42,6 +44,14 @@ public class AuthController {
     @PostMapping("/auth/goodbye")
     public ResponseEntity<Void> logout(@Logined User user) {
         authService.logout(user);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/auth/cuag")
+    public ResponseEntity<Void> resign(@Logined User user,
+        @RequestBody @Validated ResignRequest request
+    ) {
+        authService.resign(user, request);
         return ResponseEntity.ok().build();
     }
 

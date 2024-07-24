@@ -25,3 +25,6 @@ jwt:
     secret-key: ${SECRET_KEY}
     access-expiration-time: ${ACCESS_EXPIRATION_TIME}
     refresh-expiration-time: ${REFRESH_EXPIRATION_TIME}
+
+file:
+  storage-path: "/Users/lookh/temp/" # use in Integration test (need to change)

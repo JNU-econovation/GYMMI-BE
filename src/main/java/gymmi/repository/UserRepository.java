@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    @Query("select u from User u where u.loginId = :loginId")
+    @Query("select u from User u where u.loginId = :loginId and u.isResigned = false")
     Optional<User> findByLoginId(String loginId);
 
     @Query("select u from User u where u.id = :userId")

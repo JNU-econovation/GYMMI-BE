@@ -1,15 +1,18 @@
 package gymmi.service;
 
 import gymmi.entity.Logined;
+import gymmi.entity.ProfileImage;
 import gymmi.entity.User;
 import gymmi.exception.AlreadyExistException;
 import gymmi.exception.AuthenticationException;
 import gymmi.exception.NotMatchedException;
 import gymmi.repository.LoginedRepository;
+import gymmi.repository.ProfileImageRepository;
 import gymmi.repository.UserRepository;
 import gymmi.request.LoginRequest;
 import gymmi.request.RegistrationRequest;
 import gymmi.request.ReissueRequest;
+import gymmi.request.ResignRequest;
 import gymmi.response.LoginResponse;
 import gymmi.response.TokenResponse;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +31,9 @@ public class AuthService {
     public void registerUser(RegistrationRequest request) {
         if (userRepository.findByLoginId(request.getLoginId()).isPresent()) {
             throw new AlreadyExistException("이미 등록된 아이디 입니다.");
+        }
+        if (userRepository.findByNickname(request.getNickname()).isPresent()) {
+            throw new AlreadyExistException("이미 존재하는 닉네임 입니다.");
         }
         User newUser = User.builder()
                 .loginId(request.getLoginId())
@@ -52,7 +58,7 @@ public class AuthService {
         return LoginResponse.builder()
                 .userId(user.getId())
                 .nickname(user.getNickname())
-                .profileURL("")
+                .profileURL(user.getProfileImageName())
                 .refreshToken(tokenResponse.getRefreshToken())
                 .accessToken(tokenResponse.getAccessToken())
                 .build();
@@ -84,5 +90,14 @@ public class AuthService {
     public void logout(User loginedUser) {
         Logined logined = loginedRepository.getByUserId(loginedUser.getId());
         logined.destroyRefreshToken();
+    }
+
+    @Transactional
+    public void resign(User loginedUser, ResignRequest request) {
+        if (!loginedUser.canAuthenticate(request.getPassword())) {
+            throw new NotMatchedException("비밀번호가 일치하지 않습니다.");
+        }
+        loginedUser.resign();
+        // 프로필사진 지우기
     }
 }
