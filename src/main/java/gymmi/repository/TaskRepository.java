@@ -1,11 +1,12 @@
 package gymmi.repository;
 
 import gymmi.entity.Task;
-import java.util.List;
-import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+
+import java.util.List;
+import java.util.Optional;
 
 public interface TaskRepository extends JpaRepository<Task, Long> {
 
@@ -15,7 +16,7 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     @Query("select t from Task t where t.workspace.id = :workspaceId")
     List<Task> getAllByWorkspaceId(Long workspaceId);
 
-    @Modifying(clearAutomatically = true)
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query("delete from Task t where t.register.id = :userId and t.workspace.id = :workspaceId")
     void deleteByUserIdAndWorkspaceId(Long userId, Long workspaceId);
 }

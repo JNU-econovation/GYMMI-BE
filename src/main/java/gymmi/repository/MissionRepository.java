@@ -2,15 +2,16 @@ package gymmi.repository;
 
 import gymmi.entity.Mission;
 import gymmi.exception.NotFoundResourcesException;
-import java.util.List;
-import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
+import java.util.Optional;
+
 public interface MissionRepository extends JpaRepository<Mission, Long> {
 
-    @Modifying(clearAutomatically = true)
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query("delete from Mission m where m.workspace.id = :workspaceId")
     void deleteAllByWorkspaceId(Long workspaceId);
 

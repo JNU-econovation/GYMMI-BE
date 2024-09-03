@@ -1,4 +1,4 @@
-package gymmi.repository;
+package gymmi.repository.custom;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -48,4 +48,5 @@ public class WorkspaceCustomRepositoryImpl implements WorkspaceCustomRepository 
     private BooleanExpression keywordEq(QWorkspace workspace, String keyword) {
         return keyword == null ? null : workspace.name.contains(keyword);
     }
+
 }

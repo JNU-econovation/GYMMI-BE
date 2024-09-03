@@ -3,6 +3,8 @@ package gymmi.repository;
 
 import gymmi.entity.Workspace;
 import gymmi.exception.NotFoundResourcesException;
+import gymmi.repository.custom.WorkspaceCustomRepository;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -11,8 +13,7 @@ import java.util.Optional;
 
 public interface WorkspaceRepository extends JpaRepository<Workspace, Long>, WorkspaceCustomRepository {
 
-    @Query("select ws from Workspace ws where ws.name = :name")
-    Optional<Workspace> findWorkspaceByByName(String name);
+    boolean existsByName(String name);
 
     default Workspace getWorkspaceById(Long id) {
         Workspace workspace = findById(id)
@@ -20,8 +21,6 @@ public interface WorkspaceRepository extends JpaRepository<Workspace, Long>, Wor
         return workspace;
     }
 
-    //    @Query("select ws from Workspace ws inner join Worker w on ws.id = w.workspace.id where w.user.id = :userId order by w.createdAt DESC, field ")
-//    List<Workspace> getJoinedWorkspacesByUserId(Long userId, Pageable pageable);
     @Query(value = "select ws.id, ws.creator, ws.created_at, ws.head_count, ws.description, " +
             "ws.goal_score, ws.tag, ws.name, ws.password, ws.status from workspace ws inner join worker w on ws.id = w.workspace_id where w.user_id = :userId "
             +
@@ -42,6 +41,4 @@ public interface WorkspaceRepository extends JpaRepository<Workspace, Long>, Wor
     @Query("select sum(w.contributedScore) from Workspace ws inner join Worker w on ws.id = w.workspace.id where ws.id = :workspaceId")
     int getAchievementScore(Long workspaceId);
 
-    @Query("select ws from Workspace ws")
-    List<Workspace> getAllWorkspaces();
 }

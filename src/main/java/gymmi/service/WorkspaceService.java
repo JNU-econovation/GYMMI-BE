@@ -10,6 +10,7 @@ import gymmi.request.*;
 import gymmi.response.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,7 +33,7 @@ public class WorkspaceService {
     @Transactional
     public Long createWorkspace(User loginedUser, CreatingWorkspaceRequest request) {
         validateCountOfWorkspaces(loginedUser.getId());
-        if (workspaceRepository.findWorkspaceByByName(request.getName()).isPresent()) {
+        if (workspaceRepository.existsByName(request.getName())) {
             throw new AlreadyExistException("이미 존재하는 워크스페이스 이름 입니다.");
         }
 
@@ -137,8 +138,9 @@ public class WorkspaceService {
     }
 
     public List<JoinedWorkspaceResponse> getJoinedWorkspaces(User loginedUser, int pageNumber) {
+        Pageable pageable = PageRequest.of(pageNumber, 10);
         List<Workspace> joinedWorkspaces = workspaceRepository.getJoinedWorkspacesByUserIdOrderBy_(loginedUser.getId(),
-                pageNumber);
+                pageable);
         List<JoinedWorkspaceResponse> responses = new ArrayList<>();
         for (Workspace workspace : joinedWorkspaces) {
             int achievementScore = workspaceRepository.getAchievementScore(workspace.getId());
@@ -367,7 +369,7 @@ public class WorkspaceService {
 
     public CheckingEntranceOfWorkspaceResponse checkEnteringWorkspace(User loginedUser, Long workspaceId) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
-        boolean isWorker = workerRepository.findByUserIdAndWorkspaceId(loginedUser.getId(), workspaceId).isPresent();
+        boolean isWorker = workerRepository.existsByUserIdAndWorkspaceId(loginedUser.getId(), workspaceId);
 
         Integer count = workerRepository.countAllByWorkspaceId(workspaceId);
         boolean isFull = workspace.isFull(count);

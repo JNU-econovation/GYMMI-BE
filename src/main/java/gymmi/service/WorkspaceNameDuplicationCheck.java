@@ -20,6 +20,6 @@ public class WorkspaceNameDuplicationCheck implements DuplicationCheck {
     @Override
     public boolean isDuplicate(String value) {
         Workspace.validateName(value);
-        return workspaceRepository.findWorkspaceByByName(value).isPresent();
+        return workspaceRepository.existsByName(value);
     }
 }

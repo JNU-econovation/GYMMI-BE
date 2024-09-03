@@ -1,4 +1,4 @@
-package gymmi.repository;
+package gymmi.repository.custom;
 
 import gymmi.entity.Workspace;
 import gymmi.entity.WorkspaceStatus;

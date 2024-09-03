@@ -2,11 +2,13 @@ package gymmi.repository;
 
 import gymmi.entity.User;
 import gymmi.exception.NotFoundResourcesException;
-import java.util.Optional;
+import gymmi.repository.custom.UserCustomRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-public interface UserRepository extends JpaRepository<User, Long> {
+import java.util.Optional;
+
+public interface UserRepository extends JpaRepository<User, Long>, UserCustomRepository {
 
     @Query("select u from User u where u.loginId = :loginId and u.isResigned = false")
     Optional<User> findByLoginId(String loginId);
