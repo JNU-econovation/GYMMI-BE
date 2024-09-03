@@ -572,10 +572,10 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                 .statusCode(200)
                 .body("workers[0].rank", Matchers.equalTo(1))
                 .body("workers[1].rank", Matchers.equalTo(1))
-                .body("workers[0].isCreator", Matchers.equalTo(true))
-                .body("workers[1].isCreator", Matchers.equalTo(false))
-                .body("workers[0].isMyself", Matchers.equalTo(false))
-                .body("workers[1].isMyself", Matchers.equalTo(true));
+                .body("workers[0].isCreator", Matchers.equalTo(false))
+                .body("workers[1].isCreator", Matchers.equalTo(true))
+                .body("workers[0].isMyself", Matchers.equalTo(true))
+                .body("workers[1].isMyself", Matchers.equalTo(false));
 
     }
 

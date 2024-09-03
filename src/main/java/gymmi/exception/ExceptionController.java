@@ -56,16 +56,16 @@ public class ExceptionController {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
 
-    @ExceptionHandler
-    public ResponseEntity<ErrorResponse> handle500Exception(
-            Exception e,
-            HttpServletRequest request,
-            HttpServletResponse resp
-    ) {
-        ErrorResponse response = new ErrorResponse("ERROR", e.getMessage());
-        log(e, request.getRequestURI());
-        return ResponseEntity.status(500).body(response);
-    }
+//    @ExceptionHandler
+//    public ResponseEntity<ErrorResponse> handle500Exception(
+//            Exception e,
+//            HttpServletRequest request,
+//            HttpServletResponse resp
+//    ) {
+//        ErrorResponse response = new ErrorResponse("ERROR", e.getMessage());
+//        log(e, request.getRequestURI());
+//        return ResponseEntity.status(500).body(response);
+//    }
 
     private void log(Exception e, String requestURI) {
         log.warn(System.lineSeparator() +

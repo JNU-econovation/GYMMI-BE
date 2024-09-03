@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -226,18 +227,24 @@ public class WorkspaceService {
     }
 
     public InsideWorkspaceResponse enterWorkspace(User logiendUser, Long workspaceId) {
-        validateIfWorkerIsInWorkspace(logiendUser.getId(), workspaceId);
+        Worker worker = validateIfWorkerIsInWorkspace(logiendUser.getId(), workspaceId);
 
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
         List<Worker> sortedWorkers = workerRepository.getAllByWorkspaceIdOrderByContributedScore(workspaceId);
-
         List<Integer> workerRanks = rankTied(sortedWorkers);
+
         int achievementScore = workspaceRepository.getAchievementScore(workspaceId);
 
+        List<Worker> workers = sortedWorkers.stream()
+                .filter(w -> (!w.equals(worker)))
+                .collect(Collectors.toList());
+        workers.add(0, worker);
+
+        // 랭크 로직은 수정해야할듯.
         return InsideWorkspaceResponse.builder()
                 .workspace(workspace)
                 .achievementScore(achievementScore)
-                .sortedWorkers(sortedWorkers)
+                .sortedWorkers(workers)
                 .workerRanks(workerRanks)
                 .loginedUser(logiendUser)
                 .build();

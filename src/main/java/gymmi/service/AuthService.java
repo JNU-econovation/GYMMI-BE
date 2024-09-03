@@ -26,6 +26,8 @@ public class AuthService {
     private final TokenProcessor tokenProcessor;
     private final UserRepository userRepository;
     private final LoginedRepository loginedRepository;
+    private final ProfileImageRepository profileImageRepository;
+    private final ImageFileUploader imageFileUploader;
 
     @Transactional
     public void registerUser(RegistrationRequest request) {
@@ -98,6 +100,8 @@ public class AuthService {
             throw new NotMatchedException("비밀번호가 일치하지 않습니다.");
         }
         loginedUser.resign();
-        // 프로필사진 지우기
+        ProfileImage profileImage = profileImageRepository.getByUserId(loginedUser.getId());
+        profileImageRepository.delete(profileImage);
+        imageFileUploader.delete(profileImage.getStoredName());
     }
 }
