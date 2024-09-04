@@ -78,8 +78,8 @@ public class WorkspaceService {
     }
 
     private void validateCountOfWorkspaces(Long userId) {
-        int countOfJoinedWorkspaces =
-                workspaceRepository.getCountsOfJoinedWorkspacesWhereStatusIsPreparingOrInProgress(userId);
+        long countOfJoinedWorkspaces =
+                workspaceRepository.getCountsOfJoinedWorkspacesExcludeCompleted(userId);
         if (countOfJoinedWorkspaces >= 5) {
             throw new InvalidStateException("워크스페이스는 5개까지 참여 가능합니다.(완료된 워크스페이스 제외)");
         }
@@ -377,8 +377,8 @@ public class WorkspaceService {
     }
 
     public CheckingCreationOfWorkspaceResponse checkCreatingOfWorkspace(User loginedUser) {
-        int countOfJoinedWorkspaces =
-                workspaceRepository.getCountsOfJoinedWorkspacesWhereStatusIsPreparingOrInProgress(loginedUser.getId());
+        long countOfJoinedWorkspaces =
+                workspaceRepository.getCountsOfJoinedWorkspacesExcludeCompleted(loginedUser.getId());
         boolean canCreate = countOfJoinedWorkspaces < 5;
         return new CheckingCreationOfWorkspaceResponse(canCreate);
     }
