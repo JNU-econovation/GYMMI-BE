@@ -64,7 +64,7 @@ public class WorkspaceCustomRepositoryImpl implements WorkspaceCustomRepository 
     @Override
     public List<Workspace> getJoinedWorkspacesByUserIdOrderBy_(Long userId, Pageable pageable) {
         return jpaQueryFactory.select(workspace)
-                .from(workspace)
+                .from(worker)
                 .join(worker.workspace, workspace)
                 .where(worker.user.id.eq(userId))
                 .orderBy(workspaceStatusOrderPriority())
