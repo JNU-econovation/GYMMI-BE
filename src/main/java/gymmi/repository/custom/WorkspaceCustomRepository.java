@@ -10,4 +10,7 @@ public interface WorkspaceCustomRepository {
 
     List<Workspace> getAllWorkspaces(WorkspaceStatus status, String keyword, Pageable pageable);
 
+    List<Workspace> getJoinedWorkspacesByUserIdOrderBy_(Long userId, Pageable pageable);
+
+
 }
