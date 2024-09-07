@@ -43,7 +43,7 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                     .name(WORKSPACE__SATISFIED_NAME)
                     .task(TASK__DEFAULT_TASK)
                     .missionBoard(
-                            List.of(new MissionDTO(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE)))
+                            List.of(new MissionRequest(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE)))
                     .build();
 
             // when
@@ -64,7 +64,7 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                     .name(WORKSPACE__SATISFIED_NAME)
                     .task(TASK__DEFAULT_TASK)
                     .missionBoard(
-                            List.of(new MissionDTO(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE)))
+                            List.of(new MissionRequest(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE)))
                     .build();
 
             CreatingWorkspaceRequest request = CreatingWorkspaceRequest.builder()
@@ -73,7 +73,7 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                     .name(WORKSPACE__SATISFIED_NAME)
                     .task(TASK__DEFAULT_TASK)
                     .missionBoard(
-                            List.of(new MissionDTO(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE)))
+                            List.of(new MissionRequest(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE)))
                     .build();
             워크스페이스_생성_요청(defaultUserToken, step);
 
@@ -93,7 +93,7 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                     .goalScore(WORKSPACE__SATISFIED_GOAL_SCORE)
                     .headCount(WORKSPACE__SATISFIED_HEAD_COUNT)
                     .task(TASK__DEFAULT_TASK)
-                    .missionBoard(List.of(new MissionDTO(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE)))
+                    .missionBoard(List.of(new MissionRequest(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE)))
                     .build();
             워크스페이스_생성_요청(defaultUserToken, step);
 
@@ -102,7 +102,7 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                     .goalScore(WORKSPACE__SATISFIED_GOAL_SCORE)
                     .headCount(WORKSPACE__SATISFIED_HEAD_COUNT)
                     .task(TASK__DEFAULT_TASK)
-                    .missionBoard(List.of(new MissionDTO(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE)))
+                    .missionBoard(List.of(new MissionRequest(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE)))
                     .build();
             워크스페이스_생성_요청(defaultUserToken, step1);
 
@@ -111,7 +111,7 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                     .goalScore(WORKSPACE__SATISFIED_GOAL_SCORE)
                     .headCount(WORKSPACE__SATISFIED_HEAD_COUNT)
                     .task(TASK__DEFAULT_TASK)
-                    .missionBoard(List.of(new MissionDTO(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE)))
+                    .missionBoard(List.of(new MissionRequest(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE)))
                     .build();
             워크스페이스_생성_요청(defaultUserToken, step2);
 
@@ -120,7 +120,7 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                     .goalScore(WORKSPACE__SATISFIED_GOAL_SCORE)
                     .headCount(WORKSPACE__SATISFIED_HEAD_COUNT)
                     .task(TASK__DEFAULT_TASK)
-                    .missionBoard(List.of(new MissionDTO(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE)))
+                    .missionBoard(List.of(new MissionRequest(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE)))
                     .build();
             워크스페이스_생성_요청(defaultUserToken, step3);
 
@@ -129,7 +129,7 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                     .goalScore(WORKSPACE__SATISFIED_GOAL_SCORE)
                     .headCount(WORKSPACE__SATISFIED_HEAD_COUNT)
                     .task(TASK__DEFAULT_TASK)
-                    .missionBoard(List.of(new MissionDTO(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE)))
+                    .missionBoard(List.of(new MissionRequest(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE)))
                     .build();
             워크스페이스_생성_요청(defaultUserToken, step4);
 
@@ -138,7 +138,7 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                     .goalScore(WORKSPACE__SATISFIED_GOAL_SCORE)
                     .headCount(WORKSPACE__SATISFIED_HEAD_COUNT)
                     .task(TASK__DEFAULT_TASK)
-                    .missionBoard(List.of(new MissionDTO(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE)))
+                    .missionBoard(List.of(new MissionRequest(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE)))
                     .build();
 
             // when
@@ -247,7 +247,7 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                     .name(WORKSPACE__SATISFIED_NAME)
                     .task(TASK__DEFAULT_TASK)
                     .missionBoard(
-                            List.of(new MissionDTO(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE)))
+                            List.of(new MissionRequest(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE)))
                     .build();
 
             Long workspaceId = 워크스페이스_생성_요청(defaultUserToken, step)
@@ -281,7 +281,7 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                     .name(WORKSPACE__SATISFIED_NAME)
                     .task(TASK__DEFAULT_TASK)
                     .missionBoard(
-                            List.of(new MissionDTO(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE)))
+                            List.of(new MissionRequest(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE)))
                     .build();
 
             Long workspaceId = 워크스페이스_생성_요청(defaultUserToken, step)
@@ -619,7 +619,7 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                     .name("지미지미")
                     .task(TASK__DEFAULT_TASK)
                     .missionBoard(
-                            List.of(new MissionDTO(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE))
+                            List.of(new MissionRequest(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE))
                     ).build();
             Long anotherWorkspaceId = 워크스페이스_생성_요청(defaultUserToken, step2)
                     .jsonPath()
@@ -710,16 +710,16 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
     @Test
     void 워크스페이스_참여자의_미션_합계_보기를_성공한다_200() {
         // given
-        List<MissionDTO> missionDTOS = List.of(
-                new MissionDTO("미션", 5),
-                new MissionDTO("미션1", 10)
+        List<MissionRequest> missionRequests = List.of(
+                new MissionRequest("미션", 5),
+                new MissionRequest("미션1", 10)
         );
         CreatingWorkspaceRequest step = CreatingWorkspaceRequest.builder()
                 .goalScore(WORKSPACE__SATISFIED_GOAL_SCORE)
                 .headCount(WORKSPACE__SATISFIED_HEAD_COUNT)
                 .name(WORKSPACE__SATISFIED_NAME)
                 .task(TASK__DEFAULT_TASK)
-                .missionBoard(missionDTOS)
+                .missionBoard(missionRequests)
                 .build();
         Long workspaceId = 워크스페이스_생성_요청(defaultUserToken, step)
                 .jsonPath()

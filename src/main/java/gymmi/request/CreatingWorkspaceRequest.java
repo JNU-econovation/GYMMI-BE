@@ -1,6 +1,5 @@
 package gymmi.request;
 
-import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
@@ -31,7 +30,7 @@ public class CreatingWorkspaceRequest {
     private String tag;
 
     @Size(min = 1, max = 15, message = "미션 개수는 1~15개까지 가능합니다.")
-    private List<MissionDTO> missionBoard;
+    private List<MissionRequest> missionBoard;
 
     @NotBlank(message = "테스크를 입력해주세요.")
     private String task;
@@ -40,7 +39,7 @@ public class CreatingWorkspaceRequest {
     public CreatingWorkspaceRequest(
             String name, Integer headCount,
             Integer goalScore, String description, String tag,
-            List<MissionDTO> missionBoard, String task
+            List<MissionRequest> missionBoard, String task
     ) {
         this.name = name;
         this.headCount = headCount;

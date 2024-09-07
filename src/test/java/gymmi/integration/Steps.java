@@ -4,15 +4,10 @@ import gymmi.Fixtures;
 import gymmi.request.*;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import io.restassured.internal.multipart.MultiPartSpecificationImpl;
 import io.restassured.response.Response;
-import io.restassured.specification.MultiPartSpecification;
 import org.springframework.http.HttpHeaders;
-import org.springframework.mock.web.MockMultipartFile;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 import static gymmi.Fixtures.*;
@@ -47,7 +42,7 @@ public final class Steps {
             .headCount(WORKSPACE__SATISFIED_HEAD_COUNT)
             .name(WORKSPACE__SATISFIED_NAME)
             .task(TASK__DEFAULT_TASK)
-            .missionBoard(List.of(new MissionDTO(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE)))
+            .missionBoard(List.of(new MissionRequest(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE)))
             .build();
 
 

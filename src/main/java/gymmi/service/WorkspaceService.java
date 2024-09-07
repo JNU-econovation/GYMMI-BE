@@ -31,36 +31,21 @@ public class WorkspaceService {
     private final WorkingRecordRepository workingRecordRepository;
 
     @Transactional
+    //락 문제..? 동시 요청 이슈 해결 how??
     public Long createWorkspace(User loginedUser, CreatingWorkspaceRequest request) {
         validateCountOfWorkspaces(loginedUser.getId());
         if (workspaceRepository.existsByName(request.getName())) {
             throw new AlreadyExistException("이미 존재하는 워크스페이스 이름 입니다.");
         }
 
-        Workspace workspace = Workspace.builder()
-                .creator(loginedUser)
-                .name(request.getName())
-                .headCount(request.getHeadCount())
-                .goalScore(request.getGoalScore())
-                .description(request.getDescription())
-                .tag(request.getTag())
-                .build();
-        Workspace savedWorkspace = workspaceRepository.save(workspace);
+        WorkspaceInitializer workspaceInitializer = new WorkspaceInitializer(loginedUser, request);
 
-        List<MissionDTO> missionBoard = request.getMissionBoard();
-        for (MissionDTO missionDTO : missionBoard) {
-            Mission mission = Mission.builder()
-                    .workspace(savedWorkspace)
-                    .name(missionDTO.getMission())
-                    .score(missionDTO.getScore())
-                    .build();
-            missionRepository.save(mission);
-        }
+        Workspace workspace = workspaceRepository.save(workspaceInitializer.getWorkspace());
+        missionRepository.saveAll(workspaceInitializer.getMissions());
+        taskRepository.save(workspaceInitializer.getTask());
+        workerRepository.save(workspaceInitializer.getWorker());
 
-        setTask(loginedUser, savedWorkspace, request.getTask());
-        participateInWorkspace(loginedUser, savedWorkspace);
-
-        return savedWorkspace.getId();
+        return workspace.getId();
     }
 
 
