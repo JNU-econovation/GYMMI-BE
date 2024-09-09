@@ -1,28 +1,21 @@
 package gymmi.entity;
 
-import static gymmi.utils.Regexpressions.REGEX_영어_한글_숫자_만;
-import static gymmi.utils.Regexpressions.REGEX_영어_한글_쉼표_만;
-
-import gymmi.exception.InvalidNumberException;
-import gymmi.exception.InvalidPatternException;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import java.security.SecureRandom;
-import java.time.LocalDateTime;
-import java.util.regex.Pattern;
+import gymmi.exception.*;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.util.StringUtils;
+
+import java.security.SecureRandom;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
+
+import static gymmi.utils.Regexpressions.REGEX_영어_한글_숫자_만;
+import static gymmi.utils.Regexpressions.REGEX_영어_한글_쉼표_만;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -68,6 +61,9 @@ public class Workspace {
     @Column(nullable = false)
     @ColumnDefault("''")
     private String tag;
+
+    @OneToMany
+    private List<Worker> workers = new ArrayList<>();
 
     @Builder
     public Workspace(
@@ -128,6 +124,34 @@ public class Workspace {
         return this.password.equals(password);
     }
 
+    public boolean canJoin(User user, String password) {
+        if (!matchesPassword(password)) {
+            throw new NotMatchedException("비밀번호가 일치하지 않습니다.");
+        }
+        if (!isPreparing()) {
+            throw new InvalidStateException("준비중인 워크스페이스에만 참여할 수 있습니다.");
+        }
+        if (isFull1()) {
+            throw new InvalidStateException("워크스페이스 인원이 가득 찼습니다.");
+        }
+        if (workers.stream()
+                .filter(w -> w.getUser().equals(user))
+                .findAny().isPresent()) {
+            throw new AlreadyExistException("이미 참여한 워크스페이스 입니다.");
+        }
+        return true;
+    }
+
+    public Worker join(User user, String password) {
+        canJoin(user, password);
+
+        return Worker.builder()
+                .workspace(this)
+                .user(user)
+                .build();
+        // 사이드 이펙트 제거 대신 -> 새로고침 필요
+    }
+
     public boolean isInProgress() {
         return this.status == WorkspaceStatus.IN_PROGRESS;
     }
@@ -146,6 +170,10 @@ public class Workspace {
 
     public boolean isFull(Integer headCount) {
         return this.headCount <= headCount;
+    }
+
+    public boolean isFull1() {
+        return workers.size() >= headCount;
     }
 
     public boolean isCreatedBy(User user) {
@@ -199,6 +227,7 @@ public class Workspace {
     public void editTag(String tag) {
         this.tag = validateTag(tag);
     }
+
     public Integer getHeadCount() {
         return headCount;
     }

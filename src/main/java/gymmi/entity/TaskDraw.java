@@ -1,4 +1,4 @@
-package gymmi.service;
+package gymmi.entity;
 
 import gymmi.entity.Task;
 import gymmi.entity.User;
@@ -19,7 +19,7 @@ public class TaskDraw {
 
     private Task findBy(User user) {
         return tasks.stream()
-                .filter(t -> t.isRegisteredBy(user))
+//                .filter(t -> t.isRegisteredBy(user))
                 .findFirst()
                 .orElseThrow(() -> new ServerLogicFaultException("task is not exist: " + this.getClass()));
     }

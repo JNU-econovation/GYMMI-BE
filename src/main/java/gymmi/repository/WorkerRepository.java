@@ -25,7 +25,7 @@ public interface WorkerRepository extends JpaRepository<Worker, Long> {
             "join fetch w.user " +
             "where ws.id = :workspaceId " +
             "order by w.contributedScore desc, w.user.nickname asc")
-    List<Worker> getAllByWorkspaceIdOrderByContributedScore(Long workspaceId);
+    List<Worker> getAllByWorkspaceId(Long workspaceId);
 
     boolean existsByUserIdAndWorkspaceId(Long userId, Long workspaceId);
 

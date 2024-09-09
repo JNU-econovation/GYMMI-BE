@@ -16,20 +16,11 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "workspace_id"})})
 public class Task {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @JoinColumn(name = "workspace_id", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Workspace workspace;
-
-    @JoinColumn(name = "user_id", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
-    private User register;
 
     @Column(nullable = false)
     private String name;
@@ -38,9 +29,7 @@ public class Task {
     private boolean isPicked;
 
     @Builder
-    public Task(Workspace workspace, User register, String name) {
-        this.workspace = workspace;
-        this.register = register;
+    public Task(String name) {
         this.name = name;
         this.isPicked = false;
     }
@@ -53,10 +42,6 @@ public class Task {
         this.isPicked = true;
     }
 
-    public boolean isRegisteredBy(User user) {
-        return this.register.equals(user);
-    }
-
     public Long getId() {
         return id;
     }
@@ -65,9 +50,6 @@ public class Task {
         return name;
     }
 
-    public User getRegister() {
-        return register;
-    }
 }
 
 

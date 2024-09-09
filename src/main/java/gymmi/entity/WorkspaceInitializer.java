@@ -1,6 +1,5 @@
-package gymmi.service;
+package gymmi.entity;
 
-import gymmi.entity.*;
 import gymmi.request.CreatingWorkspaceRequest;
 import gymmi.request.MissionRequest;
 import lombok.Getter;
@@ -10,12 +9,12 @@ import java.util.List;
 
 @Getter
 public class WorkspaceInitializer {
-    private final Workspace workspace;
-    private final List<Mission> missions;
-    private final Task task;
-    private final Worker worker;
+    private Workspace workspace;
+    private List<Mission> missions;
+    private Task task;
+    private Worker worker;
 
-    public WorkspaceInitializer(User creator, CreatingWorkspaceRequest request) {
+    public void init(User creator, CreatingWorkspaceRequest request) {
         this.workspace = createWorkspace(creator, request);
         this.missions = createMissions(request.getMissionBoard());
         this.task = createTask(creator, request.getTask());
@@ -26,6 +25,7 @@ public class WorkspaceInitializer {
         return Worker.builder()
                 .workspace(workspace)
                 .user(creator)
+                .task(task)
                 .build();
     }
 
@@ -55,8 +55,8 @@ public class WorkspaceInitializer {
 
     private Task createTask(User register, String taskName) {
         return Task.builder()
-                .workspace(workspace)
-                .register(register)
+//                .workspace(workspace)
+//                .register(register)
                 .name(taskName)
                 .build();
     }

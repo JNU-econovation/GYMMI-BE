@@ -6,7 +6,10 @@ import gymmi.exception.InvalidStateException;
 import gymmi.exception.NotHavePermissionException;
 import gymmi.exception.NotMatchedException;
 import gymmi.repository.*;
-import gymmi.request.*;
+import gymmi.request.CreatingWorkspaceRequest;
+import gymmi.request.EditingIntroductionOfWorkspaceRequest;
+import gymmi.request.JoiningWorkspaceRequest;
+import gymmi.request.WorkingMissionInWorkspaceRequest;
 import gymmi.response.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -38,7 +41,8 @@ public class WorkspaceService {
             throw new AlreadyExistException("이미 존재하는 워크스페이스 이름 입니다.");
         }
 
-        WorkspaceInitializer workspaceInitializer = new WorkspaceInitializer(loginedUser, request);
+        WorkspaceInitializer workspaceInitializer = new WorkspaceInitializer();
+        workspaceInitializer.init(loginedUser, request);
 
         Workspace workspace = workspaceRepository.save(workspaceInitializer.getWorkspace());
         missionRepository.saveAll(workspaceInitializer.getMissions());
@@ -59,7 +63,19 @@ public class WorkspaceService {
         }
 
         participateInWorkspace(loginedUser, workspace);
-        setTask(loginedUser, workspace, request.getTask());
+//        setTask(loginedUser, workspace, request.getTask());
+    }
+
+    @Transactional
+    public void joinWorkspace1(User loginedUser, Long workspaceId, JoiningWorkspaceRequest request) {
+        validateCountOfWorkspaces(loginedUser.getId());
+
+        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
+        List<Worker> workers = workerRepository.getAllByWorkspaceId(workspace.getId());
+        WorkspaceParticipation workspaceParticipation = new WorkspaceParticipation(workspace, workers);
+        Worker worker = workspaceParticipation.join(loginedUser, request.getPassword(), request.getTask());
+
+        workerRepository.save(worker);
     }
 
     private void validateCountOfWorkspaces(Long userId) {
@@ -93,15 +109,12 @@ public class WorkspaceService {
         workerRepository.save(worker);
     }
 
+    // TO-DO: task
     private void setTask(User loginedUser, Workspace workspace, String taskName) {
-        if (taskRepository.findByUserIdAndWorkspaceId(loginedUser.getId(), workspace.getId()).isPresent()) {
-            throw new AlreadyExistException("이미 테스크를 작성하였습니다.");
-        }
-        Task task = Task.builder()
-                .workspace(workspace)
-                .register(loginedUser)
-                .name(taskName)
-                .build();
+//        if (taskRepository.findByUserIdAndWorkspaceId(loginedUser.getId(), workspace.getId()).isPresent()) {
+//            throw new AlreadyExistException("이미 테스크를 작성하였습니다.");
+//        }
+        Task task = new Task(taskName);
         taskRepository.save(task);
     }
 
@@ -217,7 +230,7 @@ public class WorkspaceService {
         Worker worker = validateIfWorkerIsInWorkspace(logiendUser.getId(), workspaceId);
 
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
-        List<Worker> sortedWorkers = workerRepository.getAllByWorkspaceIdOrderByContributedScore(workspaceId);
+        List<Worker> sortedWorkers = workerRepository.getAllByWorkspaceId(workspaceId);
         List<Integer> workerRanks = rankTied(sortedWorkers);
 
         int achievementScore = workspaceRepository.getAchievementScore(workspaceId);
@@ -298,7 +311,7 @@ public class WorkspaceService {
 
     private void drawTask(Long workspaceId) {
         List<Task> tasks = taskRepository.getAllByWorkspaceId(workspaceId);
-        List<Worker> workers = workerRepository.getAllByWorkspaceIdOrderByContributedScore(workspaceId);
+        List<Worker> workers = workerRepository.getAllByWorkspaceId(workspaceId);
         TaskDraw taskDraw = new TaskDraw(tasks);
         Task task = taskDraw.pickOneAmong(workers, rankTied(workers));
         task.changeToPicked();

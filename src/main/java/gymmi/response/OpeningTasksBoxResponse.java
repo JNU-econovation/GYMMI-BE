@@ -20,7 +20,8 @@ public class OpeningTasksBoxResponse {
     private List<TaskDTO> getRestTasks(List<Task> tasks) {
         return tasks.stream()
                 .filter(t -> !t.isPicked())
-                .map(t -> new TaskDTO(t.getId(), t.getName(), t.getRegister().getNickname()))
+//                .map(t -> new TaskDTO(t.getId(), t.getName(), t.getRegister().getNickname()))
+                .map(t -> new TaskDTO(t.getId(), t.getName(), null))
                 .toList();
     }
 
@@ -28,7 +29,8 @@ public class OpeningTasksBoxResponse {
         return tasks.stream()
                 .filter(t -> t.isPicked())
                 .findFirst()
-                .map(t -> new TaskDTO(t.getId(), t.getName(), t.getRegister().getNickname()))
+//                .map(t -> new TaskDTO(t.getId(), t.getName(), t.getRegister().getNickname()))
+                .map(t -> new TaskDTO(t.getId(), t.getName(), null))
                 .orElseThrow(() -> new ServerLogicFaultException("picked task is not exist: " + this.getClass()));
     }
 
