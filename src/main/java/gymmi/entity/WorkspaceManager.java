@@ -7,12 +7,12 @@ import gymmi.exception.NotMatchedException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WorkspaceParticipation {
+public class WorkspaceManager {
 
     private final Workspace workspace;
     private final List<Worker> workers;
 
-    public WorkspaceParticipation(Workspace workspace, List<Worker> workers) {
+    public WorkspaceManager(Workspace workspace, List<Worker> workers) {
         this.workspace = workspace;
         this.workers = validate(workers);
     }
@@ -25,7 +25,7 @@ public class WorkspaceParticipation {
         return new ArrayList<>(workers);
     }
 
-    public Worker join(User user, String password, String taskName) {
+    public Worker allow(User user, String password, String taskName) {
         if (workspace.matchesPassword(password)) {
             throw new NotMatchedException("비밀번호가 일치하지 않습니다.");
         }
@@ -50,5 +50,26 @@ public class WorkspaceParticipation {
         Worker worker = new Worker(user, workspace, task);
         return worker;
     }
+
+    public WorkerLeavedEvent release(Worker worker) {
+        if (!workspace.isPreparing()) {
+            throw new InvalidStateException("준비 단계에서만 나갈 수 있습니다.");
+        }
+        if (workspace.isCreatedBy(worker.getUser())) {
+            if (workers.size() != 1) {
+                throw new InvalidStateException("방장 이외에 참여자가 존재합니다.");
+            }
+        }
+        workers.remove(worker);
+        return new WorkerLeavedEvent(worker, workers.size() == 0);
+    }
+
+    public void start() {
+        if (workers.size() < 2) {
+            throw new InvalidStateException("최소 인원인 2명을 채워주세요.");
+        }
+        workspace.changeStatusTo(WorkspaceStatus.IN_PROGRESS);
+    }
+
 
 }

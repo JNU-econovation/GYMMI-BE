@@ -55,8 +55,8 @@ public class WorkspaceService {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
         List<Worker> workers = workerRepository.getAllByWorkspaceId(workspace.getId());
 
-        WorkspaceParticipation workspaceParticipation = new WorkspaceParticipation(workspace, workers);
-        Worker worker = workspaceParticipation.join(loginedUser, request.getPassword(), request.getTask());
+        WorkspaceManager workspaceManager = new WorkspaceManager(workspace, workers);
+        Worker worker = workspaceManager.allow(loginedUser, request.getPassword(), request.getTask());
 
         workerRepository.save(worker);
     }
@@ -115,8 +115,8 @@ public class WorkspaceService {
         validateIfUserIsCreator(loginedUser, workspace);
         List<Worker> workers = workerRepository.getAllByWorkspaceId(workspace.getId());
 
-        WorkspaceStarter workspaceStarter = new WorkspaceStarter(workspace, workers);
-        workspaceStarter.start();
+        WorkspaceManager workspaceManager = new WorkspaceManager(workspace, workers);
+        workspaceManager.start();
     }
 
     @Transactional
@@ -125,8 +125,8 @@ public class WorkspaceService {
         Worker worker = validateIfWorkerIsInWorkspace(loginedUser.getId(), workspace.getId());
         List<Worker> workers = workerRepository.getAllByWorkspaceId(workspace.getId());
 
-        WorkspaceLeaver workspaceLeaver = new WorkspaceLeaver(workspace, workers);
-        WorkerLeavedEvent workerLeavedEvent = workspaceLeaver.detach(worker);
+        WorkspaceManager workspaceManager = new WorkspaceManager(workspace, workers);
+        WorkerLeavedEvent workerLeavedEvent = workspaceManager.release(worker);
 
         workerRepository.deleteById(workerLeavedEvent.getWorker().getId());
         if (workerLeavedEvent.isLastOne()) {
@@ -135,23 +135,7 @@ public class WorkspaceService {
         }
     }
 
-    private void validateIfAnyWorkerExistsInWorkspaceExcludeCreator(Workspace workspace) {
-        int workerCount = workerRepository.countAllByWorkspaceId(workspace.getId());
-        if (workerCount != 1) {
-            throw new InvalidStateException("방장 이외에 참여자가 존재합니다.");
-        }
-    }
-
-    private void deleteMissionsAndWorkspace(Long workspaceId, Workspace workspace) {
-        missionRepository.deleteAllByWorkspaceId(workspace.getId());
-        workspaceRepository.deleteById(workspaceId);
-    }
-
-    private void deleteTaskAndWorker(User loginedUser, Long workspaceId) {
-        taskRepository.deleteByUserIdAndWorkspaceId(loginedUser.getId(), workspaceId);
-        workerRepository.deleteByUserIdAndWorkspaceId(loginedUser.getId(), workspaceId);
-    }
-
+    // TODO: 수정필요
     public InsideWorkspaceResponse enterWorkspace(User logiendUser, Long workspaceId) {
         Worker worker = validateIfWorkerIsInWorkspace(logiendUser.getId(), workspaceId);
 
@@ -203,7 +187,7 @@ public class WorkspaceService {
                 .toList();
     }
 
-    @Transactional // lock 사용?
+    @Transactional // 동시성 문제
     public Integer workMissionsInWorkspace(
             User loginedUser,
             Long workspaceId,
@@ -211,6 +195,7 @@ public class WorkspaceService {
     ) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
         Worker worker = validateIfWorkerIsInWorkspace(loginedUser.getId(), workspaceId);
+
         if (!workspace.isInProgress()) {
             throw new InvalidStateException("워크스페이스가 시작중이 아니에요.");
         }
