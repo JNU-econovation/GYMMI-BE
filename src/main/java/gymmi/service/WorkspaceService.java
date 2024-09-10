@@ -4,7 +4,6 @@ import gymmi.entity.*;
 import gymmi.exception.AlreadyExistException;
 import gymmi.exception.InvalidStateException;
 import gymmi.exception.NotHavePermissionException;
-import gymmi.exception.NotMatchedException;
 import gymmi.repository.*;
 import gymmi.request.CreatingWorkspaceRequest;
 import gymmi.request.EditingIntroductionOfWorkspaceRequest;
@@ -17,15 +16,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class WorkspaceService {
+    private static final int DEFAULT_PAGE_SIZE = 10;
 
     private final WorkspaceRepository workspaceRepository;
     private final WorkerRepository workerRepository;
@@ -34,7 +31,7 @@ public class WorkspaceService {
     private final WorkingRecordRepository workingRecordRepository;
 
     @Transactional
-    //락 문제..? 동시 요청 이슈 해결 how??
+    // 중복 요청
     public Long createWorkspace(User loginedUser, CreatingWorkspaceRequest request) {
         validateCountOfWorkspaces(loginedUser.getId());
         if (workspaceRepository.existsByName(request.getName())) {
@@ -46,32 +43,18 @@ public class WorkspaceService {
 
         Workspace workspace = workspaceRepository.save(workspaceInitializer.getWorkspace());
         missionRepository.saveAll(workspaceInitializer.getMissions());
-        taskRepository.save(workspaceInitializer.getTask());
         workerRepository.save(workspaceInitializer.getWorker());
 
         return workspace.getId();
     }
 
-
     @Transactional
+    // 동시 참여 -> 인원수 초과, 중복 요청 -> 중복 참여자 존재
     public void joinWorkspace(User loginedUser, Long workspaceId, JoiningWorkspaceRequest request) {
         validateCountOfWorkspaces(loginedUser.getId());
-
-        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
-        if (!workspace.matchesPassword(request.getPassword())) {
-            throw new NotMatchedException("비밀번호가 일치하지 않습니다.");
-        }
-
-        participateInWorkspace(loginedUser, workspace);
-//        setTask(loginedUser, workspace, request.getTask());
-    }
-
-    @Transactional
-    public void joinWorkspace1(User loginedUser, Long workspaceId, JoiningWorkspaceRequest request) {
-        validateCountOfWorkspaces(loginedUser.getId());
-
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
         List<Worker> workers = workerRepository.getAllByWorkspaceId(workspace.getId());
+
         WorkspaceParticipation workspaceParticipation = new WorkspaceParticipation(workspace, workers);
         Worker worker = workspaceParticipation.join(loginedUser, request.getPassword(), request.getTask());
 
@@ -86,41 +69,12 @@ public class WorkspaceService {
         }
     }
 
-
-    private void participateInWorkspace(User loginedUser, Workspace workspace) {
-        if (workerRepository.findByUserIdAndWorkspaceId(loginedUser.getId(), workspace.getId()).isPresent()) {
-            throw new AlreadyExistException("이미 참여한 워크스페이스 입니다.");
-        }
-
-        if (!workspace.isPreparing()) {
-            throw new InvalidStateException("준비중인 워크스페이스에만 참여할 수 있습니다.");
-        }
-
-        int workerCount = workerRepository.countAllByWorkspaceId(workspace.getId());
-        if (workspace.isFull(workerCount)) {
-            throw new InvalidStateException("워크스페이스 인원이 가득 찼습니다.");
-            // 동시에 참여하는 경우?? 검증로직 피할수도? 락사용
-        }
-
-        Worker worker = Worker.builder()
-                .workspace(workspace)
-                .user(loginedUser)
-                .build();
-        workerRepository.save(worker);
-    }
-
-    // TO-DO: task
-    private void setTask(User loginedUser, Workspace workspace, String taskName) {
-//        if (taskRepository.findByUserIdAndWorkspaceId(loginedUser.getId(), workspace.getId()).isPresent()) {
-//            throw new AlreadyExistException("이미 테스크를 작성하였습니다.");
-//        }
-        Task task = new Task(taskName);
-        taskRepository.save(task);
-    }
+    // TODO: task repo
 
     public WorkspaceIntroductionResponse getWorkspaceIntroduction(User loginedUser, Long workspaceId) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
         validateIfWorkerIsInWorkspace(loginedUser.getId(), workspaceId);
+
         return new WorkspaceIntroductionResponse(workspace, workspace.isCreatedBy(loginedUser));
     }
 
@@ -131,82 +85,54 @@ public class WorkspaceService {
 
     public MatchingWorkspacePasswordResponse matchesWorkspacePassword(Long workspaceId, String workspacePassword) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
+
         boolean matchingResult = workspace.matchesPassword(workspacePassword);
         return new MatchingWorkspacePasswordResponse(matchingResult);
     }
 
-    public List<JoinedWorkspaceResponse> getJoinedWorkspaces(User loginedUser, int pageNumber) {
-        Pageable pageable = PageRequest.of(pageNumber, 10);
-        List<Workspace> joinedWorkspaces = workspaceRepository.getJoinedWorkspacesByUserIdOrderBy_(loginedUser.getId(),
-                pageable);
-        List<JoinedWorkspaceResponse> responses = new ArrayList<>();
-        for (Workspace workspace : joinedWorkspaces) {
-            int achievementScore = workspaceRepository.getAchievementScore(workspace.getId());
-            JoinedWorkspaceResponse response = JoinedWorkspaceResponse.builder()
-                    .id(workspace.getId())
-                    .name(workspace.getName())
-                    .creator(workspace.getCreator().getNickname())
-                    .status(workspace.getStatus().name())
-                    .tag(workspace.getTag())
-                    .createdAt(workspace.getCreatedAt())
-                    .goalScore(workspace.getGoalScore())
-                    .achievementScore(achievementScore)
-                    .build();
-            responses.add(response);
-        }
-        return responses;
+    public List<JoinedWorkspaceResponse> getJoinedAllWorkspaces(User loginedUser, int pageNumber) {
+        Pageable pageable = PageRequest.of(pageNumber, DEFAULT_PAGE_SIZE);
+        List<Workspace> workspaces = workspaceRepository.getJoinedWorkspacesByUserIdOrderBy_(loginedUser.getId(), pageable);
+        Map<Workspace, Integer> achievementScores = workspaceRepository.getAchievementScoresIn(workspaces);
+
+        return workspaces.stream()
+                .map(workspace -> new JoinedWorkspaceResponse(workspace, achievementScores.get(workspace)))
+                .toList();
     }
 
-    public List<WorkspaceResponse> getAllWorkspaces(
-            WorkspaceStatus status,
-            String keyword,
-            int pageNumber
-    ) {
-        List<Workspace> workspaces = workspaceRepository.getAllWorkspaces(status, keyword, PageRequest.of(pageNumber, 10));
-        List<WorkspaceResponse> responses = new ArrayList<>();
-        for (Workspace workspace : workspaces) {
-            int achievementScore = workspaceRepository.getAchievementScore(workspace.getId());
-            WorkspaceResponse response = WorkspaceResponse.builder()
-                    .id(workspace.getId())
-                    .name(workspace.getName())
-                    .status(workspace.getStatus().name())
-                    .goalScore(workspace.getGoalScore())
-                    .createdAt(workspace.getCreatedAt())
-                    .achievementScore(achievementScore)
-                    .build();
-            responses.add(response);
-        }
-        return responses;
+    public List<WorkspaceResponse> getAllWorkspaces(WorkspaceStatus status, String keyword, int pageNumber) {
+        List<Workspace> workspaces = workspaceRepository.getAllWorkspaces(status, keyword, PageRequest.of(pageNumber, DEFAULT_PAGE_SIZE));
+        Map<Workspace, Integer> achievementScores = workspaceRepository.getAchievementScoresIn(workspaces);
+        return workspaces.stream()
+                .map(workspace -> new WorkspaceResponse(workspace, achievementScores.get(workspace)))
+                .toList();
     }
 
     @Transactional
     public void startWorkspace(User loginedUser, Long workspaceId) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
-        validateIfWorkerIsInWorkspace(loginedUser.getId(), workspaceId);
+        validateIfWorkerIsInWorkspace(loginedUser.getId(), workspace.getId());
         validateIfUserIsCreator(loginedUser, workspace);
-        int workerCount = workerRepository.countAllByWorkspaceId(workspace.getId());
-        if (workerCount < 2) {
-            throw new InvalidStateException("최소 인원인 2명을 채워주세요.");
-        }
-        workspace.start();
+        List<Worker> workers = workerRepository.getAllByWorkspaceId(workspace.getId());
+
+        WorkspaceStarter workspaceStarter = new WorkspaceStarter(workspace, workers);
+        workspaceStarter.start();
     }
 
     @Transactional
     public void leaveWorkspace(User loginedUser, Long workspaceId) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
-        validateIfWorkerIsInWorkspace(loginedUser.getId(), workspaceId);
-        if (!workspace.isPreparing()) {
-            throw new InvalidStateException("준비 단계에서만 나갈 수 있습니다.");
-        }
+        Worker worker = validateIfWorkerIsInWorkspace(loginedUser.getId(), workspace.getId());
+        List<Worker> workers = workerRepository.getAllByWorkspaceId(workspace.getId());
 
-        if (workspace.isCreatedBy(loginedUser)) {
-            validateIfAnyWorkerExistsInWorkspaceExcludeCreator(workspace);
-            deleteTaskAndWorker(loginedUser, workspaceId);
-            deleteMissionsAndWorkspace(workspaceId, workspace);
-            return;
-        }
+        WorkspaceLeaver workspaceLeaver = new WorkspaceLeaver(workspace, workers);
+        WorkerLeavedEvent workerLeavedEvent = workspaceLeaver.detach(worker);
 
-        deleteTaskAndWorker(loginedUser, workspaceId);
+        workerRepository.deleteById(workerLeavedEvent.getWorker().getId());
+        if (workerLeavedEvent.isLastOne()) {
+            missionRepository.deleteAllByWorkspaceId(workspace.getId());
+            workspaceRepository.deleteById(workspaceId);
+        }
     }
 
     private void validateIfAnyWorkerExistsInWorkspaceExcludeCreator(Workspace workspace) {

@@ -22,4 +22,8 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 //    @Query("delete from Task t where t.register.id = :userId and t.workspace.id = :workspaceId")
     @Query("delete from Task t")
     void deleteByUserIdAndWorkspaceId(Long userId, Long workspaceId);
+
+//    @Modifying(flushAutomatically = true, clearAutomatically = true)
+//    @Query("delete from Task t where t.id = (select w.task.id from Worker w where w.id = :workerId)")
+//    void deleteByWorkerId(Long workerId);
 }

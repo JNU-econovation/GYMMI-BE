@@ -6,6 +6,8 @@ import gymmi.repository.custom.WorkspaceCustomRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
+
 public interface WorkspaceRepository extends JpaRepository<Workspace, Long>, WorkspaceCustomRepository {
 
     boolean existsByName(String name);

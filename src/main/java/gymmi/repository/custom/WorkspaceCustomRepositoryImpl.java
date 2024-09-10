@@ -3,16 +3,18 @@ package gymmi.repository.custom;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
-import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import gymmi.entity.Workspace;
 import gymmi.entity.WorkspaceStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
+import static com.querydsl.core.group.GroupBy.*;
 import static gymmi.entity.QWorker.worker;
 import static gymmi.entity.QWorkspace.workspace;
 
@@ -81,4 +83,13 @@ public class WorkspaceCustomRepositoryImpl implements WorkspaceCustomRepository 
                 .otherwise(4).asc();
     }
 
+    @Override
+    public Map<Workspace, Integer> getAchievementScoresIn(List<Workspace> workspaces) {
+        return jpaQueryFactory.select(workspace, worker.contributedScore.sum())
+                .from(worker)
+                .join(worker.workspace, workspace)
+                .where(workspace.in(workspaces))
+                .orderBy()
+                .transform(groupBy(workspace).as(worker.contributedScore.sum()));
+    }
 }

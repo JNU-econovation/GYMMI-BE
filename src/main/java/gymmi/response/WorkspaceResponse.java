@@ -1,8 +1,10 @@
 package gymmi.response;
 
-import java.time.LocalDateTime;
+import gymmi.entity.Workspace;
 import lombok.Builder;
 import lombok.Getter;
+
+import java.time.LocalDateTime;
 
 @Getter
 public class WorkspaceResponse {
@@ -23,6 +25,15 @@ public class WorkspaceResponse {
         this.goalScore = goalScore;
         this.achievementScore = achievementScore;
         this.createdAt = createdAt;
+    }
+
+    public WorkspaceResponse(Workspace workspace, Integer achievementScore) {
+        this.id = workspace.getId();
+        this.name = workspace.getName();
+        this.status = workspace.getStatus().name();
+        this.goalScore = workspace.getGoalScore();
+        this.achievementScore = achievementScore;
+        this.createdAt = workspace.getCreatedAt();
     }
 
 }

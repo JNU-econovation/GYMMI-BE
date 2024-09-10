@@ -92,4 +92,9 @@ public class Worker {
     public Task getTask() {
         return task;
     }
+
+    public boolean isJoinedIn(Workspace workspace) {
+        return this.workspace.equals(workspace);
+    }
+
 }

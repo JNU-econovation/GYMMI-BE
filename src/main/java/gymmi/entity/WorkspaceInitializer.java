@@ -11,22 +11,12 @@ import java.util.List;
 public class WorkspaceInitializer {
     private Workspace workspace;
     private List<Mission> missions;
-    private Task task;
     private Worker worker;
 
     public void init(User creator, CreatingWorkspaceRequest request) {
         this.workspace = createWorkspace(creator, request);
         this.missions = createMissions(request.getMissionBoard());
-        this.task = createTask(creator, request.getTask());
-        this.worker = createWorker(creator);
-    }
-
-    private Worker createWorker(User creator) {
-        return Worker.builder()
-                .workspace(workspace)
-                .user(creator)
-                .task(task)
-                .build();
+        this.worker = createWorker(creator, request.getTask());
     }
 
     private Workspace createWorkspace(User creator, CreatingWorkspaceRequest request) {
@@ -53,12 +43,13 @@ public class WorkspaceInitializer {
         return missions;
     }
 
-    private Task createTask(User register, String taskName) {
-        return Task.builder()
-//                .workspace(workspace)
-//                .register(register)
-                .name(taskName)
+    private Worker createWorker(User creator, String taskName) {
+        return Worker.builder()
+                .workspace(workspace)
+                .user(creator)
+                .task(new Task(taskName))
                 .build();
     }
+
 }
 

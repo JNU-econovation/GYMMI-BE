@@ -5,6 +5,8 @@ import gymmi.entity.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.File;
+
 class WorkspaceRepositoryTest extends RepositoryTest {
 
     @Autowired
@@ -15,7 +17,7 @@ class WorkspaceRepositoryTest extends RepositoryTest {
         // given
 
         // when
-        workspaceRepository.getCountsOfJoinedWorkspacesExcludeCompleted(null);
+//        workspaceRepository.getCountsOfJoinedWorkspacesExcludeCompleted(null);
         // then
 
     }

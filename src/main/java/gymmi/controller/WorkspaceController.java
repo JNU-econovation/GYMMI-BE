@@ -63,7 +63,7 @@ public class WorkspaceController {
             @Logined User user,
             @RequestParam("page") int pageNumber
     ) {
-        List<JoinedWorkspaceResponse> responses = workspaceService.getJoinedWorkspaces(user, pageNumber);
+        List<JoinedWorkspaceResponse> responses = workspaceService.getJoinedAllWorkspaces(user, pageNumber);
         return ResponseEntity.ok().body(responses);
     }
 

@@ -4,6 +4,7 @@ import gymmi.exception.AlreadyExistException;
 import gymmi.exception.InvalidStateException;
 import gymmi.exception.NotMatchedException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class WorkspaceParticipation {
@@ -13,11 +14,15 @@ public class WorkspaceParticipation {
 
     public WorkspaceParticipation(Workspace workspace, List<Worker> workers) {
         this.workspace = workspace;
-        this.workers = workers;
+        this.workers = validate(workers);
     }
 
-    private void validate() {
-
+    private List<Worker> validate(List<Worker> workers) {
+        if (!workers.stream()
+                .allMatch(worker -> worker.isJoinedIn(workspace))) {
+            throw new InvalidStateException("참여자가 아닙니다.");
+        }
+        return new ArrayList<>(workers);
     }
 
     public Worker join(User user, String password, String taskName) {
@@ -31,8 +36,7 @@ public class WorkspaceParticipation {
             throw new InvalidStateException("워크스페이스 인원이 가득 찼습니다.");
         }
         if (workers.stream()
-                .filter(w -> w.getUser().equals(user))
-                .findAny().isPresent()) {
+                .anyMatch(worker -> worker.getUser().equals(user))) {
             throw new AlreadyExistException("이미 참여한 워크스페이스 입니다.");
         }
 

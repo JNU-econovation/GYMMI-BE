@@ -5,6 +5,7 @@ import gymmi.entity.WorkspaceStatus;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Map;
 
 public interface WorkspaceCustomRepository {
 
@@ -12,5 +13,5 @@ public interface WorkspaceCustomRepository {
 
     List<Workspace> getJoinedWorkspacesByUserIdOrderBy_(Long userId, Pageable pageable);
 
-
+    Map<Workspace, Integer> getAchievementScoresIn(List<Workspace> workspaces);
 }
