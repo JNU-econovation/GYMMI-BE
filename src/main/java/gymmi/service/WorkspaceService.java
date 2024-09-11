@@ -69,8 +69,6 @@ public class WorkspaceService {
         }
     }
 
-    // TODO: task repo
-
     public WorkspaceIntroductionResponse getWorkspaceIntroduction(User loginedUser, Long workspaceId) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
         validateIfWorkerIsInWorkspace(loginedUser.getId(), workspaceId);
@@ -187,8 +185,42 @@ public class WorkspaceService {
                 .toList();
     }
 
+    // todo 시작하기
     @Transactional // 동시성 문제
     public Integer workMissionsInWorkspace(
+            User loginedUser,
+            Long workspaceId,
+            List<WorkingMissionInWorkspaceRequest> requests
+    ) {
+        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
+        Worker worker = validateIfWorkerIsInWorkspace(loginedUser.getId(), workspaceId);
+
+        if (!workspace.isInProgress()) {
+            throw new InvalidStateException("워크스페이스가 시작중이 아니에요.");
+        }
+
+        int workingScore = 0;
+        for (WorkingMissionInWorkspaceRequest request : requests) {
+            Mission mission = missionRepository.getByMissionId(request.getId());
+            WorkingRecord workingRecord = worker.doMission(mission, request.getCount());
+            workingRecordRepository.save(workingRecord);
+            workingScore += workingRecord.getContributedScore();
+        }
+
+        worker.addWorkingScore(workingScore);
+
+        int achievementScore = workspaceRepository.getAchievementScore(workspaceId);
+
+        if (workspace.achieves(achievementScore)) {
+            workspace.complete();
+            drawTask(workspaceId);
+        }
+
+        return workingScore;
+    }
+
+    @Transactional // 동시성 문제
+    public Integer workMissionsInWorkspace1(
             User loginedUser,
             Long workspaceId,
             List<WorkingMissionInWorkspaceRequest> requests

@@ -65,6 +65,9 @@ public class WorkspaceManager {
     }
 
     public void start() {
+        if (!workspace.isPreparing()) {
+            throw new InvalidStateException("진행중이거나 이미 종료되었어요.");
+        }
         if (workers.size() < 2) {
             throw new InvalidStateException("최소 인원인 2명을 채워주세요.");
         }
