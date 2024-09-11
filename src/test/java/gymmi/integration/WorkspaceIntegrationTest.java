@@ -1,6 +1,7 @@
 package gymmi.integration;
 
 import gymmi.exception.*;
+import gymmi.exception.class1.AlreadyExistException;
 import gymmi.request.*;
 import gymmi.response.MissionResponse;
 import io.restassured.RestAssured;
@@ -235,7 +236,7 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
             // then
             response.then()
                     .statusCode(400)
-                    .body(JSON_KEY_ERROR_CODE, Matchers.equalTo(AlreadyExistException.ERROR_CODE));
+                    .body(JSON_KEY_ERROR_CODE, Matchers.equalTo(AlreadyExistException.EXCEPTION_CODE));
         }
 
         @Test

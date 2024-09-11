@@ -8,4 +8,5 @@ public class NotMatchedException extends BadRequestException {
     public NotMatchedException(String message) {
         super(message, ERROR_CODE, ERROR_DESCRIPTION);
     }
+
 }

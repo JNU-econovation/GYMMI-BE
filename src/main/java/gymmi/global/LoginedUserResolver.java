@@ -1,7 +1,8 @@
 package gymmi.global;
 
 import gymmi.entity.User;
-import gymmi.exception.AuthenticationException;
+import gymmi.exception.class1.AuthenticationFailException;
+import gymmi.exception.message.ErrorCode;
 import gymmi.repository.UserRepository;
 import gymmi.service.TokenProcessor;
 import jakarta.servlet.http.HttpServletRequest;
@@ -47,10 +48,10 @@ public class LoginedUserResolver implements HandlerMethodArgumentResolver {
 
     private void validate(String authorizationHeader) {
         if (!StringUtils.hasText(authorizationHeader)) {
-            throw new AuthenticationException("인증 헤더의 값이 비어있습니다.");
+            throw new AuthenticationFailException(ErrorCode.MISSING_AUTHORIZATION_HEADER);
         }
         if (!authorizationHeader.startsWith(AUTHORIZATION_TYPE_BEARER)) {
-            throw new AuthenticationException("지원하지 않는 인증 방식 입니다. Bearer 타입으로 인증해 주세요.");
+            throw new AuthenticationFailException(ErrorCode.UNSUPPORTED_AUTHORIZATION_TYPE);
         }
     }
 }

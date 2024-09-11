@@ -3,9 +3,10 @@ package gymmi.service;
 import gymmi.entity.Logined;
 import gymmi.entity.ProfileImage;
 import gymmi.entity.User;
-import gymmi.exception.AlreadyExistException;
-import gymmi.exception.AuthenticationException;
-import gymmi.exception.NotMatchedException;
+import gymmi.exception.class1.AuthenticationFailException;
+import gymmi.exception.class1.AlreadyExistException;
+import gymmi.exception.class1.NotMatchedException;
+import gymmi.exception.message.ErrorCode;
 import gymmi.repository.LoginedRepository;
 import gymmi.repository.ProfileImageRepository;
 import gymmi.repository.UserRepository;
@@ -32,10 +33,10 @@ public class AuthService {
     @Transactional
     public void registerUser(RegistrationRequest request) {
         if (userRepository.findByLoginId(request.getLoginId()).isPresent()) {
-            throw new AlreadyExistException("이미 등록된 아이디 입니다.");
+            throw new AlreadyExistException(ErrorCode.ALREADY_USED_LOGIN_ID);
         }
         if (userRepository.findByNickname(request.getNickname()).isPresent()) {
-            throw new AlreadyExistException("이미 존재하는 닉네임 입니다.");
+            throw new AlreadyExistException(ErrorCode.ALREADY_USED_NICKNAME);
         }
         User newUser = User.builder()
                 .loginId(request.getLoginId())
@@ -50,10 +51,10 @@ public class AuthService {
     @Transactional
     public LoginResponse login(LoginRequest request) {
         User user = userRepository.findByLoginId(request.getLoginId())
-                .orElseThrow(() -> new NotMatchedException("아이디와 비밀번호를 확인해 주세요."));
+                .orElseThrow(() -> new AuthenticationFailException(ErrorCode.FAILED_LOGIN));
 
         if (!user.canAuthenticate(request.getLoginId(), request.getPassword())) {
-            throw new NotMatchedException("아이디와 비밀번호를 확인해 주세요.");
+            throw new AuthenticationFailException(ErrorCode.FAILED_LOGIN);
         }
 
         TokenResponse tokenResponse = generateAndSaveTokensAbout(user);
@@ -74,7 +75,7 @@ public class AuthService {
 
         if (!logined.isActivatedRefreshToken(request.getRefreshToken())) {
             logined.destroyRefreshToken();
-            throw new AuthenticationException("잘못된 접근입니다. 다시 로그인 해주세요.");
+            throw new AuthenticationFailException(ErrorCode.UNUSUAL_AUTHORIZATION_ACCESS);
         }
 
         return generateAndSaveTokensAbout(user);
@@ -97,7 +98,7 @@ public class AuthService {
     @Transactional
     public void resign(User loginedUser, ResignRequest request) {
         if (!loginedUser.canAuthenticate(request.getPassword())) {
-            throw new NotMatchedException("비밀번호가 일치하지 않습니다.");
+            throw new NotMatchedException(ErrorCode.NOT_MATCHED_PASSWORD);
         }
         loginedUser.resign();
         ProfileImage profileImage = profileImageRepository.getByUserId(loginedUser.getId());

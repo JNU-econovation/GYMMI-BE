@@ -1,6 +1,7 @@
 package gymmi.service;
 
-import gymmi.exception.AuthenticationException;
+import gymmi.exception.class1.AuthenticationFailException;
+import gymmi.exception.message.ErrorCode;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
@@ -72,15 +73,15 @@ public final class TokenProcessor {
                     .parseSignedClaims(token)
                     .getPayload();
             if (!payload.getSubject().equals(subject)) {
-                throw new AuthenticationException("토큰 제목을 확인해 주세요.");
+                throw new AuthenticationFailException(ErrorCode.NOT_MATCHED_JWT_SUBJECT);
             }
             String userId = payload
                     .get(CLAIM_KEY_USER_ID, String.class);
             return Long.valueOf(userId);
         } catch (ExpiredJwtException e) {
-            throw new AuthenticationException("토큰이 만료되었습니다.", e);
+            throw new AuthenticationFailException(ErrorCode.EXPIRED_JWT, e);
         } catch (JwtException e) {
-            throw new AuthenticationException("토큰 관련 에러 발생.", e);
+            throw new AuthenticationFailException(ErrorCode.JWT_RELATED_ERROR, e);
         }
     }
 

@@ -1,9 +1,11 @@
 package gymmi.service;
 
 import gymmi.entity.*;
-import gymmi.exception.AlreadyExistException;
-import gymmi.exception.InvalidStateException;
-import gymmi.exception.NotHavePermissionException;
+
+import gymmi.exception.class1.AlreadyExistException;
+import gymmi.exception.class1.InvalidStateException;
+import gymmi.exception.class1.NotHavePermissionException;
+import gymmi.exception.message.ErrorCode;
 import gymmi.repository.*;
 import gymmi.request.CreatingWorkspaceRequest;
 import gymmi.request.EditingIntroductionOfWorkspaceRequest;
@@ -35,7 +37,7 @@ public class WorkspaceService {
     public Long createWorkspace(User loginedUser, CreatingWorkspaceRequest request) {
         validateCountOfWorkspaces(loginedUser.getId());
         if (workspaceRepository.existsByName(request.getName())) {
-            throw new AlreadyExistException("이미 존재하는 워크스페이스 이름 입니다.");
+            throw new AlreadyExistException(ErrorCode.ALREADY_USED_WORKSPACE_NAME);
         }
 
         WorkspaceInitializer workspaceInitializer = new WorkspaceInitializer();
@@ -65,7 +67,7 @@ public class WorkspaceService {
         long countOfJoinedWorkspaces =
                 workspaceRepository.getCountsOfJoinedWorkspacesExcludeCompleted(userId);
         if (countOfJoinedWorkspaces >= 5) {
-            throw new InvalidStateException("워크스페이스는 5개까지 참여 가능합니다.(완료된 워크스페이스 제외)");
+            throw new InvalidStateException(ErrorCode.EXCEED_MAX_JOINED_WORKSPACE);
         }
     }
 
@@ -78,7 +80,7 @@ public class WorkspaceService {
 
     private Worker validateIfWorkerIsInWorkspace(Long userId, Long workspaceId) {
         return workerRepository.findByUserIdAndWorkspaceId(userId, workspaceId)
-                .orElseThrow(() -> new NotHavePermissionException("해당 워크스페이스의 참여자가 아니에요."));
+                .orElseThrow(() -> new NotHavePermissionException(ErrorCode.NOT_JOINED_WORKSPACE));
     }
 
     public MatchingWorkspacePasswordResponse matchesWorkspacePassword(Long workspaceId, String workspacePassword) {
@@ -196,7 +198,7 @@ public class WorkspaceService {
         Worker worker = validateIfWorkerIsInWorkspace(loginedUser.getId(), workspaceId);
 
         if (!workspace.isInProgress()) {
-            throw new InvalidStateException("워크스페이스가 시작중이 아니에요.");
+            throw new InvalidStateException(ErrorCode.INACTIVE_WORKSPACE);
         }
 
         int workingScore = 0;
@@ -229,7 +231,7 @@ public class WorkspaceService {
         Worker worker = validateIfWorkerIsInWorkspace(loginedUser.getId(), workspaceId);
 
         if (!workspace.isInProgress()) {
-            throw new InvalidStateException("워크스페이스가 시작중이 아니에요.");
+            throw new InvalidStateException(ErrorCode.INACTIVE_WORKSPACE);
         }
 
         int workingScore = 0;
@@ -284,7 +286,7 @@ public class WorkspaceService {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
         validateIfWorkerIsInWorkspace(loginedUser.getId(), workspace.getId());
         if (!workspace.isCompleted()) {
-            throw new InvalidStateException("목표점수를 달성해주세요!");
+            throw new InvalidStateException(ErrorCode.NOT_REACHED_WORKSPACE_GOAL_SCORE);
         }
         List<Task> tasks = taskRepository.getAllByWorkspaceId(workspaceId);
         return new OpeningTasksBoxResponse(tasks);
@@ -304,7 +306,7 @@ public class WorkspaceService {
 
     private void validateIfUserIsCreator(User loginedUser, Workspace workspace) {
         if (!workspace.isCreatedBy(loginedUser)) {
-            throw new NotHavePermissionException("방장이 아닙니다.");
+            throw new NotHavePermissionException(ErrorCode.NOT_WORKSPACE_CREATOR);
         }
     }
 

@@ -2,7 +2,8 @@ package gymmi.service;
 
 import gymmi.entity.ProfileImage;
 import gymmi.entity.User;
-import gymmi.exception.AlreadyExistException;
+import gymmi.exception.class1.AlreadyExistException;
+import gymmi.exception.message.ErrorCode;
 import gymmi.repository.ProfileImageRepository;
 import gymmi.repository.UserRepository;
 import gymmi.request.EditingMyPageRequest;
@@ -52,7 +53,7 @@ public class MyPageService {
     @Transactional
     public void editMyPage(User loginedUser, EditingMyPageRequest request) {
         if (userRepository.findByNickname(request.getNickname()).isPresent()) {
-            throw new AlreadyExistException("이미 존재하는 닉네임 입니다.");
+            throw new AlreadyExistException(ErrorCode.ALREADY_USED_NICKNAME);
         }
         loginedUser.changeNickname(request.getNickname());
     }

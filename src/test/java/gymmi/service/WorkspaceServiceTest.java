@@ -2,6 +2,7 @@ package gymmi.service;
 
 import gymmi.Fixtures;
 import gymmi.entity.User;
+import gymmi.repository.*;
 import gymmi.request.CreatingWorkspaceRequest;
 import gymmi.request.MissionRequest;
 import jakarta.persistence.EntityManager;
@@ -17,7 +18,7 @@ import static gymmi.Fixtures.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-@Transactional
+//@Transactional
 class WorkspaceServiceTest {
 
     @Autowired
@@ -25,6 +26,20 @@ class WorkspaceServiceTest {
 
     @Autowired
     EntityManager entityManager;
+
+    @Autowired
+    WorkspaceRepository workspaceRepository;
+    @Autowired
+    WorkerRepository workerRepository;
+    @Autowired
+    MissionRepository missionRepository;
+    @Autowired
+    TaskRepository taskRepository;
+    @Autowired
+    WorkingRecordRepository workingRecordRepository;
+
+    @Autowired
+    UserRepository userRepository;
 
     @Test
     void 워크스페이스_생성() {
@@ -53,9 +68,12 @@ class WorkspaceServiceTest {
         void 방장이_방을_나가면_미션과_워크스페이스는_삭제된다() {
             // given
 
+
             // when
+            workspaceService.leaveWorkspace(null, null);
 
             // then
+
         }
 
         @Test

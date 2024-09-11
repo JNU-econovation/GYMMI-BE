@@ -1,8 +1,9 @@
 package gymmi.entity;
 
-import gymmi.exception.AlreadyExistException;
+import gymmi.exception.class1.AlreadyExistException;
 import gymmi.exception.InvalidStateException;
 import gymmi.exception.NotMatchedException;
+import gymmi.exception.message.ErrorCode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +38,7 @@ public class WorkspaceManager {
         }
         if (workers.stream()
                 .anyMatch(worker -> worker.getUser().equals(user))) {
-            throw new AlreadyExistException("이미 참여한 워크스페이스 입니다.");
+            throw new AlreadyExistException(ErrorCode.ALREADY_JOINED_WORKSPACE);
         }
 
         Worker worker = createWorker(user, taskName);
