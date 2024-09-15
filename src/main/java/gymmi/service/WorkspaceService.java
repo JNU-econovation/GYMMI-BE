@@ -217,14 +217,6 @@ public class WorkspaceService {
         return workouts;
     }
 
-    private void drawTask(Long workspaceId) {
-        List<Task> tasks = taskRepository.getAllByWorkspaceId(workspaceId);
-        List<Worker> workers = workerRepository.getAllByWorkspaceId(workspaceId);
-        TaskDraw taskDraw = new TaskDraw(tasks);
-        Task task = taskDraw.pickOneAmong(workers, rankTied(workers));
-        task.changeToPicked();
-    }
-
     public List<ContributedWorkingResponse> getContributedWorkoutOfWorkerInWorkspace(
             User loginedUser,
             Long workspaceId,
