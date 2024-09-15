@@ -125,10 +125,6 @@ public class Workspace {
         return this.status == WorkspaceStatus.IN_PROGRESS;
     }
 
-    public boolean hasMission(Mission mission) {
-        return this.equals(mission.getWorkspace());
-    }
-
     public boolean isPreparing() {
         return this.status == WorkspaceStatus.PREPARING;
     }
@@ -141,16 +137,12 @@ public class Workspace {
         return this.status == WorkspaceStatus.FULLY_COMPLETED;
     }
 
-    public boolean isFull(Integer headCount) {
-        return this.headCount <= headCount;
-    }
-
     public boolean isCreatedBy(User user) {
         return this.creator.equals(user);
     }
 
-    public boolean achieves(int achievementScore) {
-        return this.goalScore <= achievementScore;
+    public boolean isCreatedBy(Worker worker) {
+        return this.creator.equals(worker);
     }
 
     public boolean isMoreThan(int achievementScore) {
@@ -189,11 +181,11 @@ public class Workspace {
         return goalScore;
     }
 
-    public void editDescription(String description) {
+    void editDescription(String description) {
         this.description = validateDescription(description);
     }
 
-    public void editTag(String tag) {
+    void editTag(String tag) {
         this.tag = validateTag(tag);
     }
 

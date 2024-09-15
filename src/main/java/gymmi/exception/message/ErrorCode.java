@@ -13,7 +13,7 @@ public enum ErrorCode {
     NOT_JOINED_WORKSPACE("해당 워크스페이스의 참여자가 아니에요.", 400),
     EXIST_NOT_JOINED_WORKER("해당 워크스페이스의 참여자가 아닌 사람이 존재합니다.", 500),
     INACTIVE_WORKSPACE("워크스페이스가 시작중이 아니에요.", 400),
-    NOT_WORKSPACE_CREATOR("방장이 아닙니다.", 400),
+    NOT_WORKSPACE_CREATOR("해당 워크스페이스의 방장이 아닙니다.", 400),
     NOT_REACHED_WORKSPACE_GOAL_SCORE("목표점수를 달성해주세요!", 400),
     NOT_REGISTERED_WORKSPACE_MISSION("워크스페이스에 등록된 미션이 아닙니다.", 400),
     INVALID_MISSION_SCORE_UNIT("미션 점수는 10점 단위로 입력해주세요.", 400),
@@ -43,6 +43,7 @@ public enum ErrorCode {
     // common
     NOT_MATCHED_PASSWORD("비밀번호가 일치하지 않습니다.", 400),
     UNSUPPORTED_TYPE("지원하지 않는 type 입니다.", 400),
+    NOT_FOUND_WORKER("존재하지 않는 참여자 입니다.", 400),
 
 
     ;

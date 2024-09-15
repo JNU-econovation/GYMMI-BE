@@ -2,6 +2,7 @@ package gymmi.entity;
 
 import gymmi.exception.class1.AlreadyExistException;
 import gymmi.exception.class1.InvalidStateException;
+import gymmi.exception.class1.NotHavePermissionException;
 import gymmi.exception.class1.NotMatchedException;
 import gymmi.exception.message.ErrorCode;
 
@@ -67,7 +68,10 @@ public class WorkspacePreparingManager {
         return new WorkerLeavedEvent(worker, workers.size() == 0);
     }
 
-    public void start() {
+    public void startBy(Worker creator) {
+        if (!workspace.isCreatedBy(creator)) {
+            throw new NotHavePermissionException(NOT_WORKSPACE_CREATOR);
+        }
         if (!workspace.isPreparing()) {
             throw new InvalidStateException(ALREADY_ACTIVATED_WORKSPACE);
         }
@@ -76,6 +80,5 @@ public class WorkspacePreparingManager {
         }
         workspace.changeStatusTo(WorkspaceStatus.IN_PROGRESS);
     }
-
 
 }

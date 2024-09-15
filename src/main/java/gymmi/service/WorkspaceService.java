@@ -111,14 +111,10 @@ public class WorkspaceService {
     @Transactional
     public void startWorkspace(User loginedUser, Long workspaceId) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
-
-        validateIfWorkerIsInWorkspace(loginedUser.getId(), workspace.getId());
-
-        validateIfUserIsCreator(loginedUser, workspace);
+        Worker worker = workerRepository.getByUserIdAndWorkspaceId(loginedUser.getId(), workspace.getId());
         List<Worker> workers = workerRepository.getAllByWorkspaceId(workspace.getId());
-
         WorkspacePreparingManager workspacePreparingManager = new WorkspacePreparingManager(workspace, workers);
-        workspacePreparingManager.start();
+        workspacePreparingManager.startBy(worker);
     }
 
     @Transactional
@@ -265,24 +261,22 @@ public class WorkspaceService {
             EditingIntroductionOfWorkspaceRequest request
     ) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
-        validateIfUserIsCreator(loginedUser, workspace);
-        workspace.editDescription(request.getDescription());
-        workspace.editTag(request.getTag());
-    }
+        Worker worker = workerRepository.getByUserIdAndWorkspaceId(loginedUser.getId(), workspace.getId());
 
-    private void validateIfUserIsCreator(User loginedUser, Workspace workspace) {
-        if (!workspace.isCreatedBy(loginedUser)) {
-            throw new NotHavePermissionException(ErrorCode.NOT_WORKSPACE_CREATOR);
-        }
+        WorkspaceEditManager workspaceEditManager = new WorkspaceEditManager(workspace, worker);
+        workspaceEditManager.edit(request.getDescription(), request.getTag());
     }
 
     public CheckingEntranceOfWorkspaceResponse checkEnteringWorkspace(User loginedUser, Long workspaceId) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
-        boolean isWorker = workerRepository.existsByUserIdAndWorkspaceId(loginedUser.getId(), workspaceId);
+        List<Worker> workers = workerRepository.getAllByWorkspaceId(workspace.getId());
+        Worker worker = workerRepository.findByUserIdAndWorkspaceId(loginedUser.getId(), workspace.getId())
+                .orElseThrow(null);
 
-        Integer count = workerRepository.countAllByWorkspaceId(workspaceId);
-        boolean isFull = workspace.isFull(count);
-        return new CheckingEntranceOfWorkspaceResponse(isWorker, isFull);
+        WorkspaceGateChecker workspaceGateChecker = new WorkspaceGateChecker(workspace, workers);
+        boolean isFull = workspaceGateChecker.canJoin();
+        boolean isExist = workspaceGateChecker.canEnter(worker);
+        return new CheckingEntranceOfWorkspaceResponse(isExist, isFull);
     }
 
     public CheckingCreationOfWorkspaceResponse checkCreatingOfWorkspace(User loginedUser) {

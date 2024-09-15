@@ -1,6 +1,8 @@
 package gymmi.repository;
 
 import gymmi.entity.Worker;
+import gymmi.exception.class1.NotFoundException;
+import gymmi.exception.message.ErrorCode;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -12,6 +14,11 @@ public interface WorkerRepository extends JpaRepository<Worker, Long> {
 
     @Query("select w from Worker w where w.user.id = :userId and w.workspace.id = :workspaceId")
     Optional<Worker> findByUserIdAndWorkspaceId(Long userId, Long workspaceId);
+
+    default Worker getByUserIdAndWorkspaceId(Long userId, Long workspaceId) {
+        return findByUserIdAndWorkspaceId(userId, workspaceId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_WORKER));
+    }
 
     @Query("select count(w) from Worker w where w.workspace.id = :workspaceId")
     Integer countAllByWorkspaceId(Long workspaceId);
