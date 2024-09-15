@@ -11,8 +11,6 @@ import org.springframework.util.StringUtils;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Pattern;
 
 import static gymmi.utils.Regexpressions.REGEX_영어_한글_숫자_만;
@@ -135,7 +133,11 @@ public class Workspace {
     }
 
     public boolean isCompleted() {
-        return this.status == WorkspaceStatus.COMPLETED;
+        return this.status == WorkspaceStatus.COMPLETED || this.status == WorkspaceStatus.FULLY_COMPLETED;
+    }
+
+    public boolean isFullyCompleted() {
+        return this.status == WorkspaceStatus.FULLY_COMPLETED;
     }
 
     public boolean isFull(Integer headCount) {

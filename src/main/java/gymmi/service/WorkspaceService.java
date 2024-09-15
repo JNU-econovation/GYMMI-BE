@@ -209,11 +209,6 @@ public class WorkspaceService {
         int achievementScore = workspaceRepository.getAchievementScore(workspaceId);
         workspaceProgressManager.completeWhenGoalScoreIsAchieved(achievementScore);
 
-//      미션 종료면 뽑기
-        if (workspace.achieves(achievementScore)) {
-            drawTask(workspaceId);
-        }
-
         return worked.getSum();
     }
 
@@ -254,11 +249,12 @@ public class WorkspaceService {
     @Transactional
     public OpeningTasksBoxResponse openTaskBoxInWorkspace(User loginedUser, Long workspaceId) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
+        List<Worker> workers = workerRepository.getAllByWorkspaceId(workspace.getId());
         validateIfWorkerIsInWorkspace(loginedUser.getId(), workspace.getId());
-        if (!workspace.isCompleted()) {
-            throw new InvalidStateException(ErrorCode.NOT_REACHED_WORKSPACE_GOAL_SCORE);
-        }
-        List<Task> tasks = taskRepository.getAllByWorkspaceId(workspaceId);
+
+        WorkspaceDrawManager workspaceDrawManager = new WorkspaceDrawManager(workspace, workers);
+        workspaceDrawManager.drawIfNotPicked();
+        List<Task> tasks = workspaceDrawManager.getTasks();
         return new OpeningTasksBoxResponse(tasks);
     }
 
