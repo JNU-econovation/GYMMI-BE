@@ -1,12 +1,14 @@
 package gymmi.entity;
 
 import gymmi.exception.class1.AlreadyExistException;
-import gymmi.exception.InvalidStateException;
-import gymmi.exception.NotMatchedException;
+import gymmi.exception.class1.InvalidStateException;
+import gymmi.exception.class1.NotMatchedException;
 import gymmi.exception.message.ErrorCode;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static gymmi.exception.message.ErrorCode.*;
 
 public class WorkspacePreparingManager {
 
@@ -21,20 +23,20 @@ public class WorkspacePreparingManager {
     private List<Worker> validate(List<Worker> workers) {
         if (!workers.stream()
                 .allMatch(worker -> worker.isJoinedIn(workspace))) {
-            throw new InvalidStateException("참여자가 아닙니다.");
+            throw new InvalidStateException(EXIST_NOT_JOINED_WORKER);
         }
         return new ArrayList<>(workers);
     }
 
     public Worker allow(User user, String password, String taskName) {
-        if (workspace.matchesPassword(password)) {
-            throw new NotMatchedException("비밀번호가 일치하지 않습니다.");
-        }
-        if (!workspace.isPreparing()) {
-            throw new InvalidStateException("준비중인 워크스페이스에만 참여할 수 있습니다.");
+        if (!workspace.matchesPassword(password)) {
+            throw new NotMatchedException(NOT_MATCHED_PASSWORD);
         }
         if (workers.size() >= workspace.getHeadCount()) {
-            throw new InvalidStateException("워크스페이스 인원이 가득 찼습니다.");
+            throw new InvalidStateException(FULL_WORKSPACE);
+        }
+        if (!workspace.isPreparing()) {
+            throw new InvalidStateException(ALREADY_ACTIVATED_WORKSPACE);
         }
         if (workers.stream()
                 .anyMatch(worker -> worker.getUser().equals(user))) {
@@ -54,11 +56,11 @@ public class WorkspacePreparingManager {
 
     public WorkerLeavedEvent release(Worker worker) {
         if (!workspace.isPreparing()) {
-            throw new InvalidStateException("준비 단계에서만 나갈 수 있습니다.");
+            throw new InvalidStateException(ALREADY_ACTIVATED_WORKSPACE);
         }
         if (workspace.isCreatedBy(worker.getUser())) {
             if (workers.size() != 1) {
-                throw new InvalidStateException("방장 이외에 참여자가 존재합니다.");
+                throw new InvalidStateException(EXIST_WORKERS_EXCLUDE_CREATOR);
             }
         }
         workers.remove(worker);
@@ -67,10 +69,10 @@ public class WorkspacePreparingManager {
 
     public void start() {
         if (!workspace.isPreparing()) {
-            throw new InvalidStateException("진행중이거나 이미 종료되었어요.");
+            throw new InvalidStateException(ALREADY_ACTIVATED_WORKSPACE);
         }
         if (workers.size() < 2) {
-            throw new InvalidStateException("최소 인원인 2명을 채워주세요.");
+            throw new InvalidStateException(BELOW_MINIMUM_WORKER);
         }
         workspace.changeStatusTo(WorkspaceStatus.IN_PROGRESS);
     }

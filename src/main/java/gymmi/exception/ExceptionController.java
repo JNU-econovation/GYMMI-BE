@@ -20,47 +20,47 @@ public class ExceptionController {
         return ResponseEntity.badRequest().body(response);
     }
 
-    @ExceptionHandler
-    public ResponseEntity<ErrorResponse> handle400Exception(BadRequestException e, HttpServletRequest request) {
-        ErrorResponse response = new ErrorResponse(e.getErrorTitle(), e.getMessage());
-        log(e, request.getRequestURI());
-        return ResponseEntity.badRequest().body(response);
-    }
-
-    @ExceptionHandler
-    public ResponseEntity<ErrorResponse> handle400Exception(ConstraintViolationException e, HttpServletRequest request) {
-        ErrorResponse response = new ErrorResponse("INVALID_INPUT_VALUE", e.getMessage());
-        log(e, request.getRequestURI());
-        return ResponseEntity.badRequest().body(response);
-    }
-
-    @ExceptionHandler
-    public ResponseEntity<ErrorResponse> handle401Exception(AuthenticationException e, HttpServletRequest request) {
-        ErrorResponse response = new ErrorResponse(e.getErrorTitle(), e.getMessage());
-        log(e, request.getRequestURI());
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
-    }
-
-    @ExceptionHandler
-    public ResponseEntity<ErrorResponse> handle403Exception(NotHavePermissionException e, HttpServletRequest request) {
-        ErrorResponse response = new ErrorResponse(e.getErrorTitle(), e.getMessage());
-        log(e, request.getRequestURI());
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
-    }
-
-    @ExceptionHandler
-    public ResponseEntity<ErrorResponse> handle404Exception(NotFoundException e, HttpServletRequest request) {
-        ErrorResponse response = new ErrorResponse(e.getErrorTitle(), e.getMessage());
-        log(e, request.getRequestURI());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-    }
-
-    @ExceptionHandler
-    public ResponseEntity<ErrorResponse> handle500Exception(GymmiException e, HttpServletRequest request) {
-        ErrorResponse response = new ErrorResponse(e.getMessage(), e.getMessage());
-        log(e, request.getRequestURI());
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-    }
+//    @ExceptionHandler
+//    public ResponseEntity<ErrorResponse> handle400Exception(BadRequestException e, HttpServletRequest request) {
+//        ErrorResponse response = new ErrorResponse(e.getErrorTitle(), e.getMessage());
+//        log(e, request.getRequestURI());
+//        return ResponseEntity.badRequest().body(response);
+//    }
+//
+//    @ExceptionHandler
+//    public ResponseEntity<ErrorResponse> handle400Exception(ConstraintViolationException e, HttpServletRequest request) {
+//        ErrorResponse response = new ErrorResponse("INVALID_INPUT_VALUE", e.getMessage());
+//        log(e, request.getRequestURI());
+//        return ResponseEntity.badRequest().body(response);
+//    }
+//
+//    @ExceptionHandler
+//    public ResponseEntity<ErrorResponse> handle401Exception(AuthenticationException e, HttpServletRequest request) {
+//        ErrorResponse response = new ErrorResponse(e.getErrorTitle(), e.getMessage());
+//        log(e, request.getRequestURI());
+//        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+//    }
+//
+//    @ExceptionHandler
+//    public ResponseEntity<ErrorResponse> handle403Exception(NotHavePermissionException e, HttpServletRequest request) {
+//        ErrorResponse response = new ErrorResponse(e.getErrorTitle(), e.getMessage());
+//        log(e, request.getRequestURI());
+//        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+//    }
+//
+//    @ExceptionHandler
+//    public ResponseEntity<ErrorResponse> handle404Exception(NotFoundException e, HttpServletRequest request) {
+//        ErrorResponse response = new ErrorResponse(e.getErrorTitle(), e.getMessage());
+//        log(e, request.getRequestURI());
+//        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+//    }
+//
+//    @ExceptionHandler
+//    public ResponseEntity<ErrorResponse> handle500Exception(GymmiException e, HttpServletRequest request) {
+//        ErrorResponse response = new ErrorResponse(e.getMessage(), e.getMessage());
+//        log(e, request.getRequestURI());
+//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+//    }
 
 //    @ExceptionHandler
 //    public ResponseEntity<ErrorResponse> handle500Exception(

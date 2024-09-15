@@ -1,6 +1,7 @@
 package gymmi.service;
 
-import gymmi.exception.InvalidFileException;
+import gymmi.exception.class1.InvalidFileException;
+import gymmi.exception.class1.FileIOFailException;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -71,7 +72,7 @@ class LocalImageFileUploaderTest {
 
         // when, then
         assertThatThrownBy(() -> uploader.upload(multipartFile, UUID.randomUUID().toString()))
-                .isInstanceOf(InvalidFileException.class)
+                .isInstanceOf(FileIOFailException.class)
                 .hasMessage("이미지 형식의 파일만 가능합니다.");
     }
 

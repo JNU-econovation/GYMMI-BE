@@ -7,8 +7,8 @@ import static gymmi.Fixtures.WORKSPACE__SATISFIED_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import gymmi.exception.InvalidNumberException;
-import gymmi.exception.InvalidPatternException;
+import gymmi.exception.class1.InvalidNumberException;
+import gymmi.exception.class1.InvalidPatternException;
 import org.junit.jupiter.api.Test;
 
 class WorkspaceTest {

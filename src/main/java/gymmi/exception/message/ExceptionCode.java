@@ -23,7 +23,6 @@ public enum ExceptionCode {
 
     NOT_HAVE_PERMISSION("권한이 없는 경우");
 
-
     //@formatter:off
     private final String description;
 

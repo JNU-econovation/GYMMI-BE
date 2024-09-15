@@ -7,6 +7,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import static gymmi.exception.message.ErrorCode.NOT_JOINED_WORKSPACE;
+
 public class WorkspaceProgressManager {
 
     private final Workspace workspace;
@@ -34,6 +36,9 @@ public class WorkspaceProgressManager {
     }
 
     public Worked doWorkout(Worker worker, Map<Mission, Integer> workouts) {
+        if (!worker.isJoinedIn(workspace)) {
+            throw new InvalidStateException(NOT_JOINED_WORKSPACE);
+        }
         List<WorkoutRecord> workoutRecords = workouts.entrySet().stream()
                 .map(workout -> doMission(workout.getKey(), workout.getValue()))
                 .toList();

@@ -1,7 +1,8 @@
 package gymmi.entity;
 
-import gymmi.exception.InvalidNumberException;
+import gymmi.exception.class1.InvalidNumberException;
 import gymmi.exception.InvalidPatternException;
+import gymmi.exception.message.ErrorCode;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -86,7 +87,7 @@ public class Workspace {
 
     private Integer validateGoalScore(Integer goalScore) {
         if (!(goalScore % 10 == 0)) {
-            throw new InvalidNumberException("미션 점수는 10점 단위로 입력해주세요.");
+            throw new InvalidNumberException(ErrorCode.INVALID_MISSION_SCORE_UNIT);
         }
         return goalScore;
     }

@@ -1,7 +1,6 @@
 package gymmi.entity;
 
 
-import gymmi.exception.NotFoundResourcesException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;

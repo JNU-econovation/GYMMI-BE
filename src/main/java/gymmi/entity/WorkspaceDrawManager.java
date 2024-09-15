@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import static gymmi.exception.message.ErrorCode.NOT_JOINED_WORKSPACE;
+import static gymmi.exception.message.ErrorCode.EXIST_NOT_JOINED_WORKER;
 
 public class WorkspaceDrawManager {
 
@@ -23,7 +23,7 @@ public class WorkspaceDrawManager {
     private List<Worker> validate(List<Worker> workers) {
         if (!workers.stream()
                 .allMatch(worker -> worker.isJoinedIn(workspace))) {
-            throw new InvalidStateException(NOT_JOINED_WORKSPACE);
+            throw new InvalidStateException(EXIST_NOT_JOINED_WORKER);
         }
         return new ArrayList<>(workers);
     }

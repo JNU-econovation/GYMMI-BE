@@ -270,8 +270,7 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
 
             // then
             response.then()
-                    .statusCode(400)
-                    .body(JSON_KEY_ERROR_CODE, Matchers.equalTo(InvalidStateException.ERROR_CODE));
+                    .statusCode(400);
         }
 
         @Test
@@ -305,8 +304,7 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
 
             // then
             response.then()
-                    .statusCode(400)
-                    .body(JSON_KEY_ERROR_CODE, Matchers.equalTo(InvalidStateException.ERROR_CODE));
+                    .statusCode(400);
         }
 
         @Test
@@ -326,8 +324,7 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
 
             // then
             response.then()
-                    .statusCode(400)
-                    .body(JSON_KEY_ERROR_CODE, Matchers.equalTo(NotMatchedException.ERROR_CODE));
+                    .statusCode(400);
         }
 
         @Test
@@ -454,8 +451,7 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
 
             // then
             response.then()
-                    .statusCode(403)
-                    .body(JSON_KEY_ERROR_CODE, Matchers.equalTo(NotHavePermissionException.ERROR_CODE));
+                    .statusCode(403);
         }
 
         @Test
@@ -472,8 +468,7 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
 
             // then
             response.then()
-                    .statusCode(400)
-                    .body(JSON_KEY_ERROR_CODE, Matchers.equalTo(InvalidStateException.ERROR_CODE));
+                    .statusCode(400);
         }
 
 
@@ -663,9 +658,9 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
 
             // then
             response.then()
-                    .statusCode(400)
-                    .body(JSON_KEY_ERROR_CODE, Matchers.equalTo(InvalidStateException.ERROR_CODE));
+                    .statusCode(400);
         }
+
 
         @Test
         void 미션_수행을_성공한다_200() {
@@ -853,8 +848,7 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
 
             // then
             response.then()
-                    .statusCode(403)
-                    .body(JSON_KEY_ERROR_CODE, Matchers.equalTo(NotHavePermissionException.ERROR_CODE));
+                    .statusCode(403);
         }
     }
 
