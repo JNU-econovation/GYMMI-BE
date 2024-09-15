@@ -9,13 +9,12 @@ import gymmi.repository.UserRepository;
 import gymmi.request.EditingMyPageRequest;
 import gymmi.response.MyPageResponse;
 import gymmi.response.ProfileImageResponse;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor

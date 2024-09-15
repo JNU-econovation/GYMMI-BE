@@ -1,7 +1,13 @@
 package gymmi.integration;
 
+import static gymmi.Fixtures.AUTHORIZATION_TYPE_BEARER;
+import static gymmi.integration.Steps.프로필_이미지_설정_요청;
+import static gymmi.integration.Steps.회원_가입__DEFAULT_USER_REQUEST;
+import static gymmi.integration.Steps.회원_가입__USER_1_REQUEST;
+import static gymmi.integration.Steps.회원가입_및_로그인_요청;
+
 import gymmi.request.EditingMyPageRequest;
-import gymmi.request.RegistrationRequest;
+import gymmi.workspace.request.RegistrationRequest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
@@ -9,9 +15,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
-
-import static gymmi.Fixtures.AUTHORIZATION_TYPE_BEARER;
-import static gymmi.integration.Steps.*;
 
 public class MyPageIntegrationTest extends IntegrationTest {
 

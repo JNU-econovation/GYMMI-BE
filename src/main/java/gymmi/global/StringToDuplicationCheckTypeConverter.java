@@ -1,6 +1,5 @@
 package gymmi.global;
 
-import gymmi.exception.NotFoundResourcesException;
 import gymmi.exception.NotMatchedException;
 import java.util.HashMap;
 import java.util.Map;

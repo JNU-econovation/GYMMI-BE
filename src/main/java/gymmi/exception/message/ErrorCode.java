@@ -45,7 +45,6 @@ public enum ErrorCode {
     UNSUPPORTED_TYPE("지원하지 않는 type 입니다.", 400),
     NOT_FOUND_WORKER("존재하지 않는 참여자 입니다.", 400),
 
-
     ;
 
     private final String message;

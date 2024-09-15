@@ -1,17 +1,20 @@
 package gymmi.service;
 
+import static gymmi.exception.message.ErrorCode.EMPTY_FILE;
+import static gymmi.exception.message.ErrorCode.FAILED_FILE_UPLOAD;
+import static gymmi.exception.message.ErrorCode.MISSING_FILE_EXTENSION;
+import static gymmi.exception.message.ErrorCode.NOT_FOUND_FILE;
+import static gymmi.exception.message.ErrorCode.UNSUPPORTED_FILE;
+
 import gymmi.exception.class1.FileIOFailException;
 import gymmi.exception.class1.InvalidFileException;
 import gymmi.exception.class1.NotFoundException;
+import java.io.File;
+import java.io.IOException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.File;
-import java.io.IOException;
-
-import static gymmi.exception.message.ErrorCode.*;
 
 @Component
 public class LocalImageFileUploader implements ImageFileUploader {

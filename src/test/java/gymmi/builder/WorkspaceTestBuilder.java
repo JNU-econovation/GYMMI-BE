@@ -1,8 +1,8 @@
 package gymmi.builder;
 
 import gymmi.entity.User;
-import gymmi.entity.Workspace;
-import gymmi.entity.WorkspaceStatus;
+import gymmi.workspace.domain.Workspace;
+import gymmi.workspace.domain.WorkspaceStatus;
 import java.time.LocalDateTime;
 import org.springframework.test.util.ReflectionTestUtils;
 

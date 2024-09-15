@@ -1,23 +1,32 @@
 package gymmi.service;
 
+import static gymmi.Fixtures.MISSION__SATISFIED_MISSION_NAME;
+import static gymmi.Fixtures.MISSION__SATISFIED_MISSION_SCORE;
+import static gymmi.Fixtures.TASK__DEFAULT_TASK;
+import static gymmi.Fixtures.WORKSPACE__SATISFIED_GOAL_SCORE;
+import static gymmi.Fixtures.WORKSPACE__SATISFIED_HEAD_COUNT;
+import static gymmi.Fixtures.WORKSPACE__SATISFIED_NAME;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import gymmi.Fixtures;
-import gymmi.entity.Task;
 import gymmi.entity.User;
-import gymmi.repository.*;
-import gymmi.request.CreatingWorkspaceRequest;
-import gymmi.request.MissionRequest;
+import gymmi.repository.UserRepository;
+import gymmi.workspace.domain.Task;
+import gymmi.workspace.repository.MissionRepository;
+import gymmi.workspace.repository.TaskRepository;
+import gymmi.workspace.repository.WorkerRepository;
+import gymmi.workspace.repository.WorkspaceRepository;
+import gymmi.workspace.request.CreatingWorkspaceRequest;
+import gymmi.workspace.request.MissionRequest;
+import gymmi.workspace.service.WorkspaceService;
 import jakarta.persistence.EntityManager;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static gymmi.Fixtures.*;
-import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Transactional
@@ -67,7 +76,6 @@ class WorkspaceServiceTest {
         @Test
         void 방장이_방을_나가면_미션과_워크스페이스는_삭제된다() {
             // given
-
 
             // when
             workspaceService.leaveWorkspace(null, null);

@@ -9,6 +9,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import gymmi.exception.class1.InvalidNumberException;
 import gymmi.exception.class1.InvalidPatternException;
+import gymmi.workspace.domain.Workspace;
+import gymmi.workspace.domain.WorkspaceStatus;
 import org.junit.jupiter.api.Test;
 
 class WorkspaceTest {

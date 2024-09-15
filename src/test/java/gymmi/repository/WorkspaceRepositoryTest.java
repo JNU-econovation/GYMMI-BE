@@ -1,11 +1,8 @@
 package gymmi.repository;
 
-import gymmi.Fixtures;
-import gymmi.entity.User;
+import gymmi.workspace.repository.WorkspaceRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.io.File;
 
 class WorkspaceRepositoryTest extends RepositoryTest {
 

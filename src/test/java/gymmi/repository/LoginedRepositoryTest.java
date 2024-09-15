@@ -1,6 +1,5 @@
 package gymmi.repository;
 
-import gymmi.entity.Logined;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
