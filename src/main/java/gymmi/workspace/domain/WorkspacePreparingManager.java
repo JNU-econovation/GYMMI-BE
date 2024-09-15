@@ -1,16 +1,22 @@
 package gymmi.workspace.domain;
 
+import static gymmi.exception.message.ErrorCode.ALREADY_ACTIVATED_WORKSPACE;
+import static gymmi.exception.message.ErrorCode.BELOW_MINIMUM_WORKER;
+import static gymmi.exception.message.ErrorCode.EXIST_NOT_JOINED_WORKER;
+import static gymmi.exception.message.ErrorCode.EXIST_WORKERS_EXCLUDE_CREATOR;
+import static gymmi.exception.message.ErrorCode.FULL_WORKSPACE;
+import static gymmi.exception.message.ErrorCode.NOT_JOINED_WORKSPACE;
+import static gymmi.exception.message.ErrorCode.NOT_MATCHED_PASSWORD;
+import static gymmi.exception.message.ErrorCode.NOT_WORKSPACE_CREATOR;
+
 import gymmi.entity.User;
 import gymmi.exception.class1.AlreadyExistException;
 import gymmi.exception.class1.InvalidStateException;
 import gymmi.exception.class1.NotHavePermissionException;
 import gymmi.exception.class1.NotMatchedException;
 import gymmi.exception.message.ErrorCode;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import static gymmi.exception.message.ErrorCode.*;
 
 public class WorkspacePreparingManager {
 
@@ -57,6 +63,9 @@ public class WorkspacePreparingManager {
     }
 
     public WorkerLeavedEvent release(Worker worker) {
+        if (!worker.isJoinedIn(workspace)) {
+            throw new InvalidStateException(NOT_JOINED_WORKSPACE);
+        }
         if (!workspace.isPreparing()) {
             throw new InvalidStateException(ALREADY_ACTIVATED_WORKSPACE);
         }

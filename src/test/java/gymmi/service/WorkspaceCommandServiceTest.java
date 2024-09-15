@@ -18,7 +18,7 @@ import gymmi.workspace.repository.WorkerRepository;
 import gymmi.workspace.repository.WorkspaceRepository;
 import gymmi.workspace.request.CreatingWorkspaceRequest;
 import gymmi.workspace.request.MissionRequest;
-import gymmi.workspace.service.WorkspaceService;
+import gymmi.workspace.service.WorkspaceCommandService;
 import jakarta.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,10 +30,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @Transactional
-class WorkspaceServiceTest {
+class WorkspaceCommandServiceTest {
 
     @Autowired
-    WorkspaceService workspaceService;
+    WorkspaceCommandService workspaceCommandService;
 
     @Autowired
     EntityManager entityManager;
@@ -65,7 +65,7 @@ class WorkspaceServiceTest {
                 .build();
 
         // when
-        Long result = workspaceService.createWorkspace(user, request);
+        Long result = workspaceCommandService.createWorkspace(user, request);
 
         // then
         assertThat(result).isNotNull();
@@ -78,7 +78,7 @@ class WorkspaceServiceTest {
             // given
 
             // when
-            workspaceService.leaveWorkspace(null, null);
+            workspaceCommandService.leaveWorkspace(null, null);
 
             // then
 

@@ -16,14 +16,14 @@ public class WorkerResponse {
     private final String profileImage;
 
     @Builder
-    public WorkerResponse(Worker worker, Integer rank, String profileImage, boolean isCreator, boolean isMyself) {
+    public WorkerResponse(Worker worker, Integer rank, boolean isCreator, boolean isMyself) {
         this.id = worker.getUser().getId();
         this.name = worker.getNickname();
         this.contributeScore = worker.getContributedScore();
         this.rank = rank;
         this.isCreator = isCreator;
         this.isMyself = isMyself;
-        this.profileImage = profileImage;
+        this.profileImage = worker.getUser().getProfileImageName();
     }
 
 }

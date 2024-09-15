@@ -22,8 +22,9 @@ public class InsideWorkspaceResponse {
 
     @Builder
     public InsideWorkspaceResponse(
-            Workspace workspace, Integer achievementScore,
-            List<Worker> sortedWorkers, List<Integer> workerRanks,
+            Workspace workspace,
+            List<Worker> workers,
+            int achievementScore,
             User loginedUser
     ) {
         this.name = workspace.getName();
@@ -33,24 +34,20 @@ public class InsideWorkspaceResponse {
         this.description = workspace.getDescription();
         this.achievementScore = achievementScore;
         this.isCreator = workspace.isCreatedBy(loginedUser);
-        this.workers = getWorkerResponse(sortedWorkers, workerRanks, workspace.getCreator(), loginedUser);
+        this.workers = getWorkerResponse(workspace, workers, loginedUser);
     }
 
     private List<WorkerResponse> getWorkerResponse(
-            List<Worker> sortedWorkers, List<Integer> workerRanks,
-            User creator, User loginedUser
+            Workspace workspace,
+            List<Worker> workers,
+            User loginedUser
     ) {
         List<WorkerResponse> workerResponses = new ArrayList<>();
-        for (int i = 0; i < sortedWorkers.size(); i++) {
-            Worker worker = sortedWorkers.get(i);
-            WorkerResponse response = WorkerResponse.builder()
-                    .worker(worker)
-                    .rank(workerRanks.get(i))
-                    .isCreator(creator.equals(worker.getUser()))
-                    .isMyself(worker.getUser().equals(loginedUser))
-                    .profileImage(worker.getUser().getProfileImageName())
-                    .build();
-            workerResponses.add(response);
+        for (int i = 0; i < workers.size(); i++) {
+            Worker worker = workers.get(i);
+            workerResponses.add(
+                    new WorkerResponse(worker, i, workspace.isCreatedBy(worker), loginedUser.equals(worker))
+            );
         }
         return workerResponses;
     }

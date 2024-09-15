@@ -20,7 +20,8 @@ import gymmi.workspace.response.OpeningTasksBoxResponse;
 import gymmi.workspace.response.WorkingScoreResponse;
 import gymmi.workspace.response.WorkspaceIntroductionResponse;
 import gymmi.workspace.response.WorkspaceResponse;
-import gymmi.workspace.service.WorkspaceService;
+import gymmi.workspace.service.WorkspaceCommandService;
+import gymmi.workspace.service.WorkspaceQueryService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -38,14 +39,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class WorkspaceController {
 
-    private final WorkspaceService workspaceService;
+    private final WorkspaceCommandService workspaceCommandService;
+    private final WorkspaceQueryService workspaceQueryService;
 
     @PostMapping("/workspaces")
     public ResponseEntity<IdResponse> createWorkspace(
             @Logined User user,
             @Validated @RequestBody CreatingWorkspaceRequest request
     ) {
-        Long workspaceId = workspaceService.createWorkspace(user, request);
+        Long workspaceId = workspaceCommandService.createWorkspace(user, request);
         return ResponseEntity.ok().body(new IdResponse(workspaceId));
     }
 
@@ -55,7 +57,7 @@ public class WorkspaceController {
             @Validated @RequestBody JoiningWorkspaceRequest request,
             @PathVariable Long workspaceId
     ) {
-        workspaceService.joinWorkspace(user, workspaceId, request);
+        workspaceCommandService.joinWorkspace(user, workspaceId, request);
         return ResponseEntity.ok().build();
     }
 
@@ -64,7 +66,7 @@ public class WorkspaceController {
             @Logined User user,
             @PathVariable Long workspaceId
     ) {
-        WorkspaceIntroductionResponse response = workspaceService.getWorkspaceIntroduction(user, workspaceId);
+        WorkspaceIntroductionResponse response = workspaceQueryService.getWorkspaceIntroduction(user, workspaceId);
         return ResponseEntity.ok().body(response);
     }
 
@@ -74,7 +76,7 @@ public class WorkspaceController {
             @PathVariable Long workspaceId,
             @Validated @RequestBody MatchingWorkspacePasswordRequest request
     ) {
-        MatchingWorkspacePasswordResponse response = workspaceService.matchesWorkspacePassword(workspaceId,
+        MatchingWorkspacePasswordResponse response = workspaceQueryService.matchesWorkspacePassword(workspaceId,
                 request.getPassword());
         return ResponseEntity.ok().body(response);
     }
@@ -84,7 +86,7 @@ public class WorkspaceController {
             @Logined User user,
             @RequestParam("page") int pageNumber
     ) {
-        List<JoinedWorkspaceResponse> responses = workspaceService.getJoinedAllWorkspaces(user, pageNumber);
+        List<JoinedWorkspaceResponse> responses = workspaceQueryService.getJoinedAllWorkspaces(user, pageNumber);
         return ResponseEntity.ok().body(responses);
     }
 
@@ -95,7 +97,7 @@ public class WorkspaceController {
             @RequestParam(required = false) String keyword,
             @RequestParam(value = "page") int pageNumber
     ) {
-        List<WorkspaceResponse> responses = workspaceService.getAllWorkspaces(status, keyword, pageNumber);
+        List<WorkspaceResponse> responses = workspaceQueryService.getAllWorkspaces(status, keyword, pageNumber);
         return ResponseEntity.ok().body(responses);
     }
 
@@ -104,7 +106,7 @@ public class WorkspaceController {
             @Logined User user,
             @PathVariable Long workspaceId
     ) {
-        workspaceService.startWorkspace(user, workspaceId);
+        workspaceCommandService.startWorkspace(user, workspaceId);
         return ResponseEntity.ok().build();
     }
 
@@ -113,7 +115,7 @@ public class WorkspaceController {
             @Logined User user,
             @PathVariable Long workspaceId
     ) {
-        workspaceService.leaveWorkspace(user, workspaceId);
+        workspaceCommandService.leaveWorkspace(user, workspaceId);
         return ResponseEntity.ok().build();
     }
 
@@ -122,7 +124,7 @@ public class WorkspaceController {
             @Logined User user,
             @PathVariable Long workspaceId
     ) {
-        InsideWorkspaceResponse response = workspaceService.enterWorkspace(user, workspaceId);
+        InsideWorkspaceResponse response = workspaceQueryService.enterWorkspace(user, workspaceId);
         return ResponseEntity.ok().body(response);
     }
 
@@ -131,7 +133,7 @@ public class WorkspaceController {
             @Logined User user,
             @PathVariable Long workspaceId
     ) {
-        List<MissionResponse> responses = workspaceService.getMissionsInWorkspace(user, workspaceId);
+        List<MissionResponse> responses = workspaceQueryService.getMissionsInWorkspace(user, workspaceId);
         return ResponseEntity.ok().body(responses);
     }
 
@@ -141,7 +143,7 @@ public class WorkspaceController {
             @PathVariable Long workspaceId,
             @RequestBody List<WorkingMissionInWorkspaceRequest> requests
     ) {
-        Integer workingScore = workspaceService.workMissionsInWorkspace(user, workspaceId, requests);
+        Integer workingScore = workspaceCommandService.workMissionsInWorkspace(user, workspaceId, requests);
         return ResponseEntity.ok().body(new WorkingScoreResponse(workingScore));
     }
 
@@ -152,7 +154,7 @@ public class WorkspaceController {
             @PathVariable Long userId
     ) {
         List<ContributedWorkingResponse> responses =
-                workspaceService.getContributedWorkoutOfWorkerInWorkspace(user, workspaceId, userId);
+                workspaceQueryService.getContributedWorkoutOfWorkerInWorkspace(user, workspaceId, userId);
         return ResponseEntity.ok().body(responses);
     }
 
@@ -161,7 +163,7 @@ public class WorkspaceController {
             @Logined User user,
             @PathVariable Long workspaceId
     ) {
-        OpeningTasksBoxResponse response = workspaceService.openTaskBoxInWorkspace(user, workspaceId);
+        OpeningTasksBoxResponse response = workspaceCommandService.openTaskBoxInWorkspace(user, workspaceId);
         return ResponseEntity.ok().body(response);
     }
 
@@ -171,7 +173,7 @@ public class WorkspaceController {
             @PathVariable Long workspaceId,
             @RequestBody @Validated EditingIntroductionOfWorkspaceRequest request
     ) {
-        workspaceService.editIntroduction(user, workspaceId, request);
+        workspaceCommandService.editIntroduction(user, workspaceId, request);
         return ResponseEntity.ok().build();
     }
 
@@ -180,7 +182,8 @@ public class WorkspaceController {
             @Logined User user,
             @PathVariable Long workspaceId
     ) {
-        CheckingEntranceOfWorkspaceResponse response = workspaceService.checkEnteringWorkspace(user, workspaceId);
+        CheckingEntranceOfWorkspaceResponse response = workspaceQueryService.checkEnteringWorkspace(user,
+                workspaceId);
         return ResponseEntity.ok().body(response);
     }
 
@@ -188,7 +191,7 @@ public class WorkspaceController {
     public ResponseEntity<CheckingCreationOfWorkspaceResponse> checkCreatingOfWorkspace(
             @Logined User user
     ) {
-        CheckingCreationOfWorkspaceResponse response = workspaceService.checkCreatingOfWorkspace(user);
+        CheckingCreationOfWorkspaceResponse response = workspaceQueryService.checkCreatingOfWorkspace(user);
         return ResponseEntity.ok().body(response);
     }
 }

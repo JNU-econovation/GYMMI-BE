@@ -74,7 +74,7 @@ public class Worker {
         return Math.round((double) contributedScore / workspace.getGoalScore() * 100 * 100) / 100;
     }
 
-    public void addWorkingScore(Integer workingScore) {
+    void addWorkingScore(Integer workingScore) {
         contributedScore += workingScore;
     }
 
