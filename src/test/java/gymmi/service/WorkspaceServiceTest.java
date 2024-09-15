@@ -1,6 +1,7 @@
 package gymmi.service;
 
 import gymmi.Fixtures;
+import gymmi.entity.Task;
 import gymmi.entity.User;
 import gymmi.repository.*;
 import gymmi.request.CreatingWorkspaceRequest;
@@ -12,13 +13,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static gymmi.Fixtures.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-//@Transactional
+@Transactional
 class WorkspaceServiceTest {
 
     @Autowired
@@ -35,8 +37,6 @@ class WorkspaceServiceTest {
     MissionRepository missionRepository;
     @Autowired
     TaskRepository taskRepository;
-    @Autowired
-    WorkingRecordRepository workingRecordRepository;
 
     @Autowired
     UserRepository userRepository;
@@ -85,6 +85,27 @@ class WorkspaceServiceTest {
             // then
 
         }
+
+        @Test
+        void 스프링_배치_테스트() {
+            // given
+            for (int i = 0; i < 10; i++) {
+                Task task = new Task("" + i);
+                taskRepository.save(task);
+            }
+            entityManager.flush();
+            entityManager.clear();
+
+            System.out.println("============================");
+            List<Task> tasks = new ArrayList<>();
+            // then
+            for (int i = 0; i < 10; i++) {
+                long a = i;
+                taskRepository.findById(a).ifPresent(tasks::add);
+            }
+
+        }
+
     }
 
 }

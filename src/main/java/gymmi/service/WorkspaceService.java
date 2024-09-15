@@ -1,7 +1,6 @@
 package gymmi.service;
 
 import gymmi.entity.*;
-
 import gymmi.exception.class1.AlreadyExistException;
 import gymmi.exception.class1.InvalidStateException;
 import gymmi.exception.class1.NotHavePermissionException;
@@ -30,7 +29,8 @@ public class WorkspaceService {
     private final WorkerRepository workerRepository;
     private final MissionRepository missionRepository;
     private final TaskRepository taskRepository;
-    private final WorkingRecordRepository workingRecordRepository;
+    private final WorkoutRecordRepository workoutRecordRepository;
+    private final WorkedRepository workedRepository;
 
     @Transactional
     // 중복 요청
@@ -57,8 +57,8 @@ public class WorkspaceService {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
         List<Worker> workers = workerRepository.getAllByWorkspaceId(workspace.getId());
 
-        WorkspaceManager workspaceManager = new WorkspaceManager(workspace, workers);
-        Worker worker = workspaceManager.allow(loginedUser, request.getPassword(), request.getTask());
+        WorkspacePreparingManager workspacePreparingManager = new WorkspacePreparingManager(workspace, workers);
+        Worker worker = workspacePreparingManager.allow(loginedUser, request.getPassword(), request.getTask());
 
         workerRepository.save(worker);
     }
@@ -111,12 +111,14 @@ public class WorkspaceService {
     @Transactional
     public void startWorkspace(User loginedUser, Long workspaceId) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
+
         validateIfWorkerIsInWorkspace(loginedUser.getId(), workspace.getId());
+
         validateIfUserIsCreator(loginedUser, workspace);
         List<Worker> workers = workerRepository.getAllByWorkspaceId(workspace.getId());
 
-        WorkspaceManager workspaceManager = new WorkspaceManager(workspace, workers);
-        workspaceManager.start();
+        WorkspacePreparingManager workspacePreparingManager = new WorkspacePreparingManager(workspace, workers);
+        workspacePreparingManager.start();
     }
 
     @Transactional
@@ -125,8 +127,8 @@ public class WorkspaceService {
         Worker worker = validateIfWorkerIsInWorkspace(loginedUser.getId(), workspace.getId());
         List<Worker> workers = workerRepository.getAllByWorkspaceId(workspace.getId());
 
-        WorkspaceManager workspaceManager = new WorkspaceManager(workspace, workers);
-        WorkerLeavedEvent workerLeavedEvent = workspaceManager.release(worker);
+        WorkspacePreparingManager workspacePreparingManager = new WorkspacePreparingManager(workspace, workers);
+        WorkerLeavedEvent workerLeavedEvent = workspacePreparingManager.release(worker);
 
         workerRepository.deleteById(workerLeavedEvent.getWorker().getId());
         if (workerLeavedEvent.isLastOne()) {
@@ -196,62 +198,32 @@ public class WorkspaceService {
     ) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
         Worker worker = validateIfWorkerIsInWorkspace(loginedUser.getId(), workspaceId);
+        List<Mission> missions = missionRepository.getAllByWorkspaceId(workspace.getId());
+        Map<Mission, Integer> workouts = getWorkouts(requests);
 
-        if (!workspace.isInProgress()) {
-            throw new InvalidStateException(ErrorCode.INACTIVE_WORKSPACE);
-        }
+        WorkspaceProgressManager workspaceProgressManager = new WorkspaceProgressManager(workspace, missions);
+        Worked worked = workspaceProgressManager.doWorkout(worker, workouts);
+        worked.apply();
 
-        int workingScore = 0;
-        for (WorkingMissionInWorkspaceRequest request : requests) {
-            Mission mission = missionRepository.getByMissionId(request.getId());
-            WorkingRecord workingRecord = worker.doMission(mission, request.getCount());
-            workingRecordRepository.save(workingRecord);
-            workingScore += workingRecord.getContributedScore();
-        }
-
-        worker.addWorkingScore(workingScore);
-
+        workedRepository.save(worked);
         int achievementScore = workspaceRepository.getAchievementScore(workspaceId);
+        workspaceProgressManager.completeWhenGoalScoreIsAchieved(achievementScore);
 
+//      미션 종료면 뽑기
         if (workspace.achieves(achievementScore)) {
-            workspace.complete();
             drawTask(workspaceId);
         }
 
-        return workingScore;
+        return worked.getSum();
     }
 
-    @Transactional // 동시성 문제
-    public Integer workMissionsInWorkspace1(
-            User loginedUser,
-            Long workspaceId,
-            List<WorkingMissionInWorkspaceRequest> requests
-    ) {
-        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
-        Worker worker = validateIfWorkerIsInWorkspace(loginedUser.getId(), workspaceId);
-
-        if (!workspace.isInProgress()) {
-            throw new InvalidStateException(ErrorCode.INACTIVE_WORKSPACE);
-        }
-
-        int workingScore = 0;
+    private Map<Mission, Integer> getWorkouts(List<WorkingMissionInWorkspaceRequest> requests) {
+        Map<Mission, Integer> workouts = new HashMap<>();
         for (WorkingMissionInWorkspaceRequest request : requests) {
             Mission mission = missionRepository.getByMissionId(request.getId());
-            WorkingRecord workingRecord = worker.doMission(mission, request.getCount());
-            workingRecordRepository.save(workingRecord);
-            workingScore += workingRecord.getContributedScore();
+            workouts.put(mission, request.getCount());
         }
-
-        worker.addWorkingScore(workingScore);
-
-        int achievementScore = workspaceRepository.getAchievementScore(workspaceId);
-
-        if (workspace.achieves(achievementScore)) {
-            workspace.complete();
-            drawTask(workspaceId);
-        }
-
-        return workingScore;
+        return workouts;
     }
 
     private void drawTask(Long workspaceId) {
@@ -262,7 +234,7 @@ public class WorkspaceService {
         task.changeToPicked();
     }
 
-    public List<ContributedWorkingResponse> getContributedWorkingsOfWorkerInWorkspace(
+    public List<ContributedWorkingResponse> getContributedWorkoutOfWorkerInWorkspace(
             User loginedUser,
             Long workspaceId,
             Long userId
@@ -270,14 +242,12 @@ public class WorkspaceService {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
         validateIfWorkerIsInWorkspace(loginedUser.getId(), workspaceId);
         Worker targetWorker = validateIfWorkerIsInWorkspace(userId, workspaceId);
-
         List<Mission> missions = missionRepository.getAllByWorkspaceId(workspace.getId());
+        List<WorkoutRecord> workoutRecords = workoutRecordRepository.getAllByWorkerId(targetWorker.getId());
 
-        List<WorkingRecord> workingRecords = workingRecordRepository.getAllByWorkerId(targetWorker.getId());
-        WorkingSummation workingSummation = new WorkingSummation(workingRecords);
-
+        WorkoutSummation workoutSummation = new WorkoutSummation(workoutRecords);
         return missions.stream()
-                .map(m -> new ContributedWorkingResponse(m, workingSummation))
+                .map(m -> new ContributedWorkingResponse(m, workoutSummation))
                 .toList();
     }
 

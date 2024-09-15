@@ -8,12 +8,12 @@ import gymmi.exception.message.ErrorCode;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WorkspaceManager {
+public class WorkspacePreparingManager {
 
     private final Workspace workspace;
     private final List<Worker> workers;
 
-    public WorkspaceManager(Workspace workspace, List<Worker> workers) {
+    public WorkspacePreparingManager(Workspace workspace, List<Worker> workers) {
         this.workspace = workspace;
         this.workers = validate(workers);
     }

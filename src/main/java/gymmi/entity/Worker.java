@@ -78,17 +78,6 @@ public class Worker {
         contributedScore += workingScore;
     }
 
-    public WorkingRecord doMission(Mission mission, Integer count) {
-        if (!this.workspace.hasMission(mission)) {
-            throw new NotFoundResourcesException("해당 미션이 존재하지 않아요.");
-        }
-        return WorkingRecord.builder()
-                .mission(mission)
-                .worker(this)
-                .count(count)
-                .build();
-    }
-
     public Task getTask() {
         return task;
     }

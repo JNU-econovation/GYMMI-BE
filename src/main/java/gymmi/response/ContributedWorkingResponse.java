@@ -1,7 +1,7 @@
 package gymmi.response;
 
 import gymmi.entity.Mission;
-import gymmi.entity.WorkingSummation;
+import gymmi.entity.WorkoutSummation;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -14,11 +14,11 @@ public class ContributedWorkingResponse {
     private Integer totalContributedScore;
 
     @Builder
-    public ContributedWorkingResponse(Mission mission, WorkingSummation workingSummation) {
+    public ContributedWorkingResponse(Mission mission, WorkoutSummation workoutSummation) {
         this.id = mission.getId();
         this.mission = mission.getName();
-        this.totalCount = workingSummation.getSumOfMissionCountWorked(mission);
-        this.totalContributedScore = workingSummation.getSumOfMissionScoreContributed(mission);
+        this.totalCount = workoutSummation.getSumOfMissionCountWorked(mission);
+        this.totalContributedScore = workoutSummation.getSumOfMissionScoreContributed(mission);
     }
 
 

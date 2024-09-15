@@ -150,11 +150,11 @@ public class Workspace {
         return this.goalScore <= achievementScore;
     }
 
-    public void complete() {
-        this.status = WorkspaceStatus.COMPLETED;
+    public boolean isMoreThan(int achievementScore) {
+        return this.goalScore > achievementScore;
     }
 
-    public void changeStatusTo(WorkspaceStatus status) {
+    void changeStatusTo(WorkspaceStatus status) {
         this.status = status;
     }
 

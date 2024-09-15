@@ -131,7 +131,7 @@ public class WorkspaceController {
             @PathVariable Long userId
     ) {
         List<ContributedWorkingResponse> responses =
-                workspaceService.getContributedWorkingsOfWorkerInWorkspace(user, workspaceId, userId);
+                workspaceService.getContributedWorkoutOfWorkerInWorkspace(user, workspaceId, userId);
         return ResponseEntity.ok().body(responses);
     }
 
