@@ -1,13 +1,8 @@
 package gymmi.workspace.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import gymmi.exception.class1.InvalidRangeException;
+import gymmi.exception.message.ErrorCode;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -33,8 +28,22 @@ public class Mission {
     @Builder
     public Mission(Workspace workspace, String name, Integer score) {
         this.workspace = workspace;
-        this.name = name;
-        this.score = score;
+        this.name = validateName(name);
+        this.score = validateScore(score);
+    }
+
+    private Integer validateScore(Integer score) {
+        if (score < 1 || score > 10) {
+            throw new InvalidRangeException(ErrorCode.INVALID_WORKSPACE_MISSION_SCORE);
+        }
+        return score;
+    }
+
+    private String validateName(String name) {
+        if (name.length() > 20) {
+            throw new InvalidRangeException(ErrorCode.INVALID_WORKSPACE_MISSION_NAME_LENGTH);
+        }
+        return name;
     }
 
     public boolean isRegisteredIn(Workspace workspace) {

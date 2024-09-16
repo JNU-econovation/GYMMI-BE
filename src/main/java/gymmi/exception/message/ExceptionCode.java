@@ -19,6 +19,8 @@ public enum ExceptionCode {
 
     INVALID_PATTERN("조건에 맞지 않는 문자열인 경우"),
 
+    INVALID_RANGE("조건에 맞지 않는 범위인 경우"),
+
     INVALID_STATE("조건에 맞지 않는 상태인 경우"),
 
     NOT_HAVE_PERMISSION("권한이 없는 경우");

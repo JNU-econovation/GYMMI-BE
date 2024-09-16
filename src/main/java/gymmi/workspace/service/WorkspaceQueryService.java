@@ -11,7 +11,6 @@ import gymmi.workspace.domain.Workspace;
 import gymmi.workspace.domain.WorkspaceGateChecker;
 import gymmi.workspace.domain.WorkspaceStatus;
 import gymmi.workspace.repository.MissionRepository;
-import gymmi.workspace.repository.WorkedRepository;
 import gymmi.workspace.repository.WorkerRepository;
 import gymmi.workspace.repository.WorkoutRecordRepository;
 import gymmi.workspace.repository.WorkspaceRepository;
@@ -43,7 +42,6 @@ public class WorkspaceQueryService {
     private final WorkerRepository workerRepository;
     private final MissionRepository missionRepository;
     private final WorkoutRecordRepository workoutRecordRepository;
-    private final WorkedRepository workedRepository;
 
     public WorkspaceIntroductionResponse getWorkspaceIntroduction(User loginedUser, Long workspaceId) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);

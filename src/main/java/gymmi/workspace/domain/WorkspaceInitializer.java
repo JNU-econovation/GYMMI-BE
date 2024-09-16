@@ -1,11 +1,14 @@
 package gymmi.workspace.domain;
 
 import gymmi.entity.User;
+import gymmi.exception.class1.InvalidRangeException;
+import gymmi.exception.message.ErrorCode;
 import gymmi.workspace.request.CreatingWorkspaceRequest;
 import gymmi.workspace.request.MissionRequest;
+import lombok.Getter;
+
 import java.util.ArrayList;
 import java.util.List;
-import lombok.Getter;
 
 @Getter
 public class WorkspaceInitializer {
@@ -31,6 +34,9 @@ public class WorkspaceInitializer {
     }
 
     private List<Mission> createMissions(List<MissionRequest> missionBoard) {
+        if (missionBoard.isEmpty() || missionBoard.size() > 15) {
+            throw new InvalidRangeException(ErrorCode.INVALID_WORKSPACE_MISSION_SIZE);
+        }
         List<Mission> missions = new ArrayList<>();
         for (MissionRequest missionRequest : missionBoard) {
             Mission mission = Mission.builder()

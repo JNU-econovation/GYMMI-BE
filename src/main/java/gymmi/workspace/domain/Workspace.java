@@ -1,8 +1,9 @@
 package gymmi.workspace.domain;
 
 import gymmi.entity.User;
-import gymmi.exception.InvalidPatternException;
 import gymmi.exception.class1.InvalidNumberException;
+import gymmi.exception.class1.InvalidPatternException;
+import gymmi.exception.class1.InvalidRangeException;
 import gymmi.exception.message.ErrorCode;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -65,13 +66,15 @@ public class Workspace {
 
     @Builder
     public Workspace(
+            Long id,
             User creator, String name, String description,
             Integer goalScore, Integer headCount, String tag
     ) {
+        this.id = id;
         this.creator = creator;
         this.name = validateName(name);
         this.goalScore = validateGoalScore(goalScore);
-        this.headCount = headCount;
+        this.headCount = validateHeadCount(headCount);
         this.tag = validateTag(tag);
         this.description = validateDescription(description);
         this.password = generatePassword();
@@ -79,14 +82,28 @@ public class Workspace {
         this.status = WorkspaceStatus.PREPARING;
     }
 
+    private Integer validateHeadCount(Integer headCount) {
+        if (headCount < 2 || headCount > 9) {
+            throw new InvalidRangeException(ErrorCode.INVALID_WORKSPACE_HEAD_COUNT);
+        }
+        return headCount;
+    }
+
     public static String validateName(String name) {
+        if (name.length() > 9) {
+            throw new InvalidRangeException(ErrorCode.INVALID_WORKSPACE_NAME_LENGTH);
+        }
         if (!REGEX_WORKSPACE_NAME.matcher(name).matches()) {
-            throw new InvalidPatternException("이름은 한글, 영문, 숫자만 가능합니다.");
+            throw new InvalidPatternException(ErrorCode.INVALID_WORKSPACE_NAME_FORMAT);
         }
         return name;
     }
 
     private Integer validateGoalScore(Integer goalScore) {
+        if (goalScore < 100 || goalScore > 1000) {
+            throw new InvalidRangeException(ErrorCode.INVALID_WORKSPACE_GOAL_SCORE);
+        }
+
         if (!(goalScore % 10 == 0)) {
             throw new InvalidNumberException(ErrorCode.INVALID_MISSION_SCORE_UNIT);
         }
@@ -97,8 +114,11 @@ public class Workspace {
         if (!StringUtils.hasText(tag)) {
             return "";
         }
+        if (tag.length() > 10) {
+            throw new InvalidRangeException(ErrorCode.INVALID_TAG_NAME_LENGTH);
+        }
         if (!REGEX_WORKSPACE_TAG.matcher(tag).matches()) {
-            throw new InvalidPatternException("태그는 한글, 영어만 가능합니다.");
+            throw new InvalidPatternException(ErrorCode.INVALID_TAG_NAME_FORMAT);
         }
         return tag;
     }
@@ -200,5 +220,21 @@ public class Workspace {
 
     public String getTag() {
         return tag;
+    }
+
+    @Override
+    public String toString() {
+        return "Workspace{" +
+                "id=" + id +
+                ", creator=" + creator +
+                ", name='" + name + '\'' +
+                ", password='" + password + '\'' +
+                ", description='" + description + '\'' +
+                ", status=" + status +
+                ", goalScore=" + goalScore +
+                ", headCount=" + headCount +
+                ", createdAt=" + createdAt +
+                ", tag='" + tag + '\'' +
+                '}';
     }
 }

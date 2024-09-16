@@ -164,4 +164,16 @@ public class User {
         return email;
     }
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", loginId='" + loginId + '\'' +
+                ", password='" + password + '\'' +
+                ", nickname='" + nickname + '\'' +
+                ", email='" + email + '\'' +
+                ", isResigned=" + isResigned +
+                ", profileImage=" + profileImage +
+                '}';
+    }
 }

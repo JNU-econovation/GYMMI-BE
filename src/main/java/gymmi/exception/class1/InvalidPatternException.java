@@ -4,7 +4,7 @@ import gymmi.exception.message.ErrorCode;
 import gymmi.exception.message.ExceptionCode;
 
 public class InvalidPatternException extends GymmiException {
-    public static final ExceptionCode EXCEPTION_CODE = ExceptionCode.INVALID_NUMBER;
+    public static final ExceptionCode EXCEPTION_CODE = ExceptionCode.INVALID_PATTERN;
 
     public InvalidPatternException(ErrorCode errorCode) {
         super(errorCode, EXCEPTION_CODE);
