@@ -1,21 +1,20 @@
 package gymmi.workspace.repository.custom;
 
+import static com.querydsl.core.group.GroupBy.groupBy;
+import static gymmi.workspace.domain.QWorker.worker;
+import static gymmi.workspace.domain.QWorkspace.workspace;
+
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import gymmi.workspace.domain.Workspace;
 import gymmi.workspace.domain.WorkspaceStatus;
+import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
-import java.util.Map;
-
-import static com.querydsl.core.group.GroupBy.groupBy;
-import static gymmi.workspace.domain.QWorker.worker;
-import static gymmi.workspace.domain.QWorkspace.workspace;
 
 @RequiredArgsConstructor
 @Repository
@@ -91,4 +90,21 @@ public class WorkspaceCustomRepositoryImpl implements WorkspaceCustomRepository 
                 .orderBy()
                 .transform(groupBy(workspace).as(worker.contributedScore.sum()));
     }
+
+    @Override
+    public long getCountsOfJoinedWorkspacesExcludeCompleted(Long userId) {
+        return jpaQueryFactory.select(workspace.count())
+                .from(worker)
+                .join(worker.workspace, workspace)
+                .where(
+                        workspace.status.notIn((WorkspaceStatus.COMPLETED), WorkspaceStatus.FULLY_COMPLETED)
+                                .and(worker.user.id.eq(userId)))
+                .fetchOne();
+    }
+
+    /*
+    @Query("select count(*) from Worker w join w.workspace ws " +
+            "where (ws.status != 'COMPLETED') or ws.status != 'FULLY_COMPELTE' and w.user.id = :userId")
+    long getCountsOfJoinedWorkspacesExcludeCompleted(Long userId);
+     */
 }

@@ -84,6 +84,7 @@ public class WorkspaceCommandService {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
         Worker worker = workerRepository.getByUserIdAndWorkspaceId(loginedUser.getId(), workspace.getId());
         List<Worker> workers = workerRepository.getAllByWorkspaceId(workspace.getId());
+
         WorkspacePreparingManager workspacePreparingManager = new WorkspacePreparingManager(workspace, workers);
         workspacePreparingManager.startBy(worker);
     }

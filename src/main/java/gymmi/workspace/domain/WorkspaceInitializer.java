@@ -12,6 +12,9 @@ import java.util.List;
 
 @Getter
 public class WorkspaceInitializer {
+
+    public static final int MAX_MISSIONS_SIZE = 15;
+
     private Workspace workspace;
     private List<Mission> missions;
     private Worker worker;
@@ -34,7 +37,7 @@ public class WorkspaceInitializer {
     }
 
     private List<Mission> createMissions(List<MissionRequest> missionBoard) {
-        if (missionBoard.isEmpty() || missionBoard.size() > 15) {
+        if (missionBoard.isEmpty() || missionBoard.size() > MAX_MISSIONS_SIZE) {
             throw new InvalidRangeException(ErrorCode.INVALID_WORKSPACE_MISSION_SIZE);
         }
         List<Mission> missions = new ArrayList<>();

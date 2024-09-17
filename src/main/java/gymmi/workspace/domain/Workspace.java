@@ -1,32 +1,45 @@
 package gymmi.workspace.domain;
 
+import static gymmi.utils.Regexpressions.REGEX_영어_한글_숫자_만;
+import static gymmi.utils.Regexpressions.REGEX_영어_한글_쉼표_만;
+
+import gymmi.entity.TimeEntity;
 import gymmi.entity.User;
 import gymmi.exception.class1.InvalidNumberException;
 import gymmi.exception.class1.InvalidPatternException;
 import gymmi.exception.class1.InvalidRangeException;
 import gymmi.exception.message.ErrorCode;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import java.security.SecureRandom;
+import java.time.LocalDateTime;
+import java.util.regex.Pattern;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.util.StringUtils;
 
-import java.security.SecureRandom;
-import java.time.LocalDateTime;
-import java.util.regex.Pattern;
-
-import static gymmi.utils.Regexpressions.REGEX_영어_한글_숫자_만;
-import static gymmi.utils.Regexpressions.REGEX_영어_한글_쉼표_만;
-
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Workspace {
+public class Workspace extends TimeEntity {
+
+    public static final int MIN_GOAL_SCORE = 100;
+    public static final int MAX_GOAL_SCORE = 1000;
+
+    public static final int MIN_HEAD_COUNT = 2;
+    public static final int MAX_HEAD_COUNT = 9;
 
     private static final Pattern REGEX_WORKSPACE_NAME = REGEX_영어_한글_숫자_만;
     private static final Pattern REGEX_WORKSPACE_TAG = REGEX_영어_한글_쉼표_만;
-
-
     private final static SecureRandom random = new SecureRandom();
 
     @Id
@@ -57,20 +70,15 @@ public class Workspace {
     @Column(nullable = false)
     private Integer headCount;
 
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-
     @Column(nullable = false)
     @ColumnDefault("''")
     private String tag;
 
     @Builder
     public Workspace(
-            Long id,
             User creator, String name, String description,
             Integer goalScore, Integer headCount, String tag
     ) {
-        this.id = id;
         this.creator = creator;
         this.name = validateName(name);
         this.goalScore = validateGoalScore(goalScore);
@@ -78,12 +86,11 @@ public class Workspace {
         this.tag = validateTag(tag);
         this.description = validateDescription(description);
         this.password = generatePassword();
-        this.createdAt = LocalDateTime.now();
         this.status = WorkspaceStatus.PREPARING;
     }
 
     private Integer validateHeadCount(Integer headCount) {
-        if (headCount < 2 || headCount > 9) {
+        if (headCount < MIN_HEAD_COUNT || headCount > MAX_HEAD_COUNT) {
             throw new InvalidRangeException(ErrorCode.INVALID_WORKSPACE_HEAD_COUNT);
         }
         return headCount;
@@ -100,7 +107,7 @@ public class Workspace {
     }
 
     private Integer validateGoalScore(Integer goalScore) {
-        if (goalScore < 100 || goalScore > 1000) {
+        if (goalScore < MIN_GOAL_SCORE || goalScore > MAX_GOAL_SCORE) {
             throw new InvalidRangeException(ErrorCode.INVALID_WORKSPACE_GOAL_SCORE);
         }
 
@@ -215,7 +222,7 @@ public class Workspace {
     }
 
     public LocalDateTime getCreatedAt() {
-        return createdAt;
+        return super.getCreatedAt();
     }
 
     public String getTag() {
@@ -233,8 +240,10 @@ public class Workspace {
                 ", status=" + status +
                 ", goalScore=" + goalScore +
                 ", headCount=" + headCount +
-                ", createdAt=" + createdAt +
+                ", createdAt=" + getCreatedAt() +
                 ", tag='" + tag + '\'' +
                 '}';
     }
+
+
 }

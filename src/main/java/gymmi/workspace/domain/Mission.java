@@ -13,6 +13,9 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(of = {"id"})
 public class Mission {
 
+    public static final int MIN_SCORE = 1;
+    public static final int MAX_SCORE = 10;
+    public static final int MAX_NAME_LENGTH = 20;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -33,14 +36,14 @@ public class Mission {
     }
 
     private Integer validateScore(Integer score) {
-        if (score < 1 || score > 10) {
+        if (score < MIN_SCORE || score > MAX_SCORE) {
             throw new InvalidRangeException(ErrorCode.INVALID_WORKSPACE_MISSION_SCORE);
         }
         return score;
     }
 
     private String validateName(String name) {
-        if (name.length() > 20) {
+        if (name.length() > MAX_NAME_LENGTH) {
             throw new InvalidRangeException(ErrorCode.INVALID_WORKSPACE_MISSION_NAME_LENGTH);
         }
         return name;

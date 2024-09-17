@@ -1,20 +1,33 @@
 package gymmi.workspace.domain;
 
 
+import gymmi.entity.TimeEntity;
 import gymmi.entity.User;
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Entity
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "workspace_id"})})
-@EqualsAndHashCode(of = {"id"})
-public class Worker {
+@EqualsAndHashCode(of = {"id"}, callSuper = false)
+public class Worker extends TimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,19 +44,9 @@ public class Worker {
     @Column(nullable = false)
     private Integer contributedScore;
 
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-
     @JoinColumn(name = "task_id")
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private Task task;
-
-    public Worker(User user, Workspace workspace) {
-        this.user = user;
-        this.workspace = workspace;
-        this.contributedScore = 0;
-        this.createdAt = LocalDateTime.now();
-    }
 
     @Builder
     public Worker(User user, Workspace workspace, Task task) {
@@ -51,23 +54,6 @@ public class Worker {
         this.workspace = workspace;
         this.task = task;
         this.contributedScore = 0;
-        this.createdAt = LocalDateTime.now();
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public String getNickname() {
-        return user.getNickname();
-    }
-
-    public Integer getContributedScore() {
-        return contributedScore;
     }
 
     public double getContributedPercent() {
@@ -76,10 +62,6 @@ public class Worker {
 
     void addWorkingScore(Integer workingScore) {
         contributedScore += workingScore;
-    }
-
-    public Task getTask() {
-        return task;
     }
 
     public boolean isJoinedIn(Workspace workspace) {

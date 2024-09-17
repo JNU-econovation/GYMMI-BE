@@ -16,11 +16,6 @@ public interface WorkspaceRepository extends JpaRepository<Workspace, Long>, Wor
         return workspace;
     }
 
-    @Query("select count(*) from Worker w join w.workspace ws " +
-            "where ws.status != 'COMPLETED' and w.user.id = :userId")
-    long getCountsOfJoinedWorkspacesExcludeCompleted(Long userId);
-
-
     @Query("select sum(w.contributedScore) from Worker w join w.workspace ws where ws.id = :workspaceId")
     int getAchievementScore(Long workspaceId);
 

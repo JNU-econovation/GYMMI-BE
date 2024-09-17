@@ -13,4 +13,6 @@ public interface WorkspaceCustomRepository {
     List<Workspace> getJoinedWorkspacesByUserIdOrderBy_(Long userId, Pageable pageable);
 
     Map<Workspace, Integer> getAchievementScoresIn(List<Workspace> workspaces);
+
+    long getCountsOfJoinedWorkspacesExcludeCompleted(Long userId);
 }

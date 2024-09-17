@@ -1,5 +1,6 @@
 package gymmi.workspace.domain;
 
+import static gymmi.exception.message.ErrorCode.EXCEED_MAX_WORKERS;
 import static gymmi.exception.message.ErrorCode.EXIST_NOT_JOINED_WORKER;
 
 import gymmi.exception.class1.InvalidStateException;
@@ -20,6 +21,9 @@ public class WorkspaceGateChecker {
         if (!workers.stream()
                 .allMatch(worker -> worker.isJoinedIn(workspace))) {
             throw new InvalidStateException(EXIST_NOT_JOINED_WORKER);
+        }
+        if (workers.size() > workspace.getHeadCount()) {
+            throw new InvalidStateException(EXCEED_MAX_WORKERS);
         }
         return new ArrayList<>(workers);
     }
