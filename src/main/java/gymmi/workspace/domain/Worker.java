@@ -68,4 +68,7 @@ public class Worker extends TimeEntity {
         return this.workspace.equals(workspace);
     }
 
+    public String getNickname() {
+        return user.getNickname();
+    }
 }

@@ -6,6 +6,7 @@ public enum ErrorCode {
     ALREADY_JOINED_WORKSPACE("이미 참여한 워크스페이스 입니다.", 400),
     ALREADY_USED_WORKSPACE_NAME("이미 사용중인 워크스페이스 이름 입니다.", 400),
     FULL_WORKSPACE("워크스페이스 인원이 가득 찼습니다.", 400),
+    NOT_CONSISTENT_WORKERS("워크스페이스 인원이 잘못 되었습니다.", 500),
     ALREADY_ACTIVATED_WORKSPACE("이미 시작되거나 종료된 워크스페이스 입니다.", 400),
     EXIST_WORKERS_EXCLUDE_CREATOR("방장 이외에 참여자가 존재합니다.", 400),
     BELOW_MINIMUM_WORKER("최소 인원인 2명을 채워주세요.", 400),

@@ -1,6 +1,5 @@
 package gymmi.workspace.domain;
 
-import static gymmi.exception.message.ErrorCode.EXIST_NOT_JOINED_WORKER;
 import static gymmi.exception.message.ErrorCode.NOT_JOINED_WORKSPACE;
 
 import gymmi.exception.class1.InvalidStateException;
@@ -16,16 +15,10 @@ public class WorkspaceDrawManager {
     private final List<Worker> workers;
 
     public WorkspaceDrawManager(Workspace workspace, List<Worker> workers) {
+        WorkspaceWithWorkersConsistencyValidator.validateMeetMinHeadCount(workers);
+        WorkspaceWithWorkersConsistencyValidator.validateWorkersConsistency(workspace, workers);
         this.workspace = validateStatus(workspace);
-        this.workers = validate(workers);
-    }
-
-    private List<Worker> validate(List<Worker> workers) {
-        if (!workers.stream()
-                .allMatch(worker -> worker.isJoinedIn(workspace))) {
-            throw new InvalidStateException(EXIST_NOT_JOINED_WORKER);
-        }
-        return new ArrayList<>(workers);
+        this.workers = new ArrayList<>(workers);
     }
 
     private Workspace validateStatus(Workspace workspace) {
@@ -46,7 +39,7 @@ public class WorkspaceDrawManager {
     }
 
     public List<Task> getTasks(Worker worker) {
-        if (worker.isJoinedIn(workspace)) {
+        if (!worker.isJoinedIn(workspace)) {
             throw new InvalidStateException(NOT_JOINED_WORKSPACE);
         }
         return workers.stream()

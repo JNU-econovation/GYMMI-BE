@@ -2,7 +2,6 @@ package gymmi.workspace.domain;
 
 import static gymmi.exception.message.ErrorCode.ALREADY_ACTIVATED_WORKSPACE;
 import static gymmi.exception.message.ErrorCode.BELOW_MINIMUM_WORKER;
-import static gymmi.exception.message.ErrorCode.EXIST_NOT_JOINED_WORKER;
 import static gymmi.exception.message.ErrorCode.EXIST_WORKERS_EXCLUDE_CREATOR;
 import static gymmi.exception.message.ErrorCode.FULL_WORKSPACE;
 import static gymmi.exception.message.ErrorCode.NOT_JOINED_WORKSPACE;
@@ -17,23 +16,18 @@ import gymmi.exception.class1.NotMatchedException;
 import gymmi.exception.message.ErrorCode;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Getter;
 
+@Getter
 public class WorkspacePreparingManager {
 
     private final Workspace workspace;
     private final List<Worker> workers;
 
     public WorkspacePreparingManager(Workspace workspace, List<Worker> workers) {
+        WorkspaceWithWorkersConsistencyValidator.validateWorkersConsistency(workspace, workers);
         this.workspace = workspace;
-        this.workers = validate(workers);
-    }
-
-    private List<Worker> validate(List<Worker> workers) {
-        if (!workers.stream()
-                .allMatch(worker -> worker.isJoinedIn(workspace))) {
-            throw new InvalidStateException(EXIST_NOT_JOINED_WORKER);
-        }
-        return new ArrayList<>(workers);
+        this.workers = new ArrayList<>(workers);
     }
 
     public Worker allow(User user, String password, String taskName) {
