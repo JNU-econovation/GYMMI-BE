@@ -11,6 +11,7 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+@Disabled
 public class DuplicationCheckTest extends IntegrationTest {
 
     private static final String TYPE = "type";

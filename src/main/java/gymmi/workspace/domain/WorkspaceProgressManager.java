@@ -1,13 +1,12 @@
 package gymmi.workspace.domain;
 
+import static gymmi.exception.message.ErrorCode.NOT_JOINED_WORKSPACE;
+
 import gymmi.exception.class1.InvalidStateException;
 import gymmi.exception.message.ErrorCode;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
-import static gymmi.exception.message.ErrorCode.NOT_JOINED_WORKSPACE;
 
 public class WorkspaceProgressManager {
 
@@ -16,8 +15,10 @@ public class WorkspaceProgressManager {
 
 
     public WorkspaceProgressManager(Workspace workspace, List<Mission> missions) {
+        WorkspaceWithMissionsConsistencyValidator.validateRegistration(workspace, missions);
+        WorkspaceWithMissionsConsistencyValidator.validateConsistencyMissionsCount(missions);
         this.workspace = validateStatus(workspace);
-        this.missions = validateRegistration(missions);
+        this.missions = Collections.unmodifiableList(missions);
     }
 
     private Workspace validateStatus(Workspace workspace) {
@@ -25,14 +26,6 @@ public class WorkspaceProgressManager {
             throw new InvalidStateException(ErrorCode.INACTIVE_WORKSPACE);
         }
         return workspace;
-    }
-
-    private List<Mission> validateRegistration(List<Mission> missions) {
-        if (!missions.stream()
-                .allMatch(mission -> mission.isRegisteredIn(workspace))) {
-            throw new InvalidStateException(ErrorCode.NOT_REGISTERED_WORKSPACE_MISSION);
-        }
-        return Collections.unmodifiableList(missions);
     }
 
     public Worked doWorkout(Worker worker, Map<Mission, Integer> workouts) {
@@ -46,7 +39,7 @@ public class WorkspaceProgressManager {
     }
 
     private WorkoutRecord doMission(Mission mission, int count) {
-        if (missions.contains(mission)) {
+        if (!missions.contains(mission)) {
             throw new InvalidStateException(ErrorCode.NOT_REGISTERED_WORKSPACE_MISSION);
         }
         return new WorkoutRecord(mission, count);

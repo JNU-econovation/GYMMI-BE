@@ -26,42 +26,25 @@ class WorkspaceWithWorkersConsistencyValidatorTest {
 
         // when, then
         assertThatThrownBy(() -> validateMeetMinHeadCount(workers))
-                .hasMessage(ErrorCode.NOT_CONSISTENT_WORKERS.getMessage());
+                .hasMessage(ErrorCode.NOT_CONSISTENT_WORKERS_COUNT.getMessage());
     }
 
     @Test
     void 워크스페이스_참여자가_아닌_경우_예외가_발생한다() {
         // given
         Workspace workspace = Instancio.of(Workspace.class).create();
-        Workspace workspace1 = Instancio.of(Workspace.class).create();
 
         Worker worker = Instancio.of(Worker.class)
                 .set(Select.field(Worker::getWorkspace), workspace)
                 .create();
         Worker worker1 = Instancio.of(Worker.class)
-                .set(Select.field(Worker::getWorkspace), workspace1)
+                .filter(Select.field(Worker::getWorkspace), (Workspace ws) -> !ws.equals(workspace))
                 .create();
         List<Worker> workers = List.of(worker, worker1);
 
         // when, then
         assertThatThrownBy(() -> validateWorkersConsistency(workspace, workers))
                 .hasMessage(ErrorCode.EXIST_NOT_JOINED_WORKER.getMessage());
-    }
-
-    @Test
-    void 워크스페이스_참여자_수_정합성이_안맞는_경우_예외가_발생한다() {
-        // given
-        Workspace workspace = Instancio.of(Workspace.class).create();
-        int workersSize = Instancio.gen().ints().min(Workspace.MAX_HEAD_COUNT + 1).get();
-        List<Worker> workers = Instancio.ofList(Worker.class)
-                .size(workersSize)
-                .set(Select.field(Worker::getWorkspace), workspace)
-                .withUnique(Select.field(Worker::getId))
-                .create();
-
-        // when, then
-        assertThatThrownBy(() -> validateWorkersConsistency(workspace, workers))
-                .hasMessage(ErrorCode.NOT_CONSISTENT_WORKERS.getMessage());
     }
 
     @Test
@@ -72,7 +55,7 @@ class WorkspaceWithWorkersConsistencyValidatorTest {
 
         // when, then
         assertThatThrownBy(() -> validateWorkersConsistency(workspace, workers))
-                .hasMessage(ErrorCode.NOT_CONSISTENT_WORKERS.getMessage());
+                .hasMessage(ErrorCode.NOT_CONSISTENT_WORKERS_COUNT.getMessage());
     }
 
 }

@@ -15,7 +15,7 @@ public class ExceptionController {
     public ResponseEntity<ErrorResponse> handleAll(GymmiException e, HttpServletRequest request) {
         ErrorResponse response = new ErrorResponse(e.getExceptionCode().name(), e.getMessage());
         log(e, request.getRequestURI());
-        return ResponseEntity.badRequest().body(response);
+        return ResponseEntity.status(e.getStatusCode()).body(response);
     }
 
 //    @ExceptionHandler
@@ -72,6 +72,14 @@ public class ExceptionController {
 //    }
 
     private void log(Exception e, String requestURI) {
+        log.warn(System.lineSeparator() +
+                        "[에러 발생 로그]" + System.lineSeparator() +
+                        "request-url : {}" + System.lineSeparator() +
+                        "error: {}",
+                requestURI, e.getMessage(), e);
+    }
+
+    private void log1(Exception e, String requestURI) {
         log.warn(System.lineSeparator() +
                         "[에러 발생 로그]" + System.lineSeparator() +
                         "request-url : {}" + System.lineSeparator() +

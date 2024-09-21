@@ -1,9 +1,9 @@
 package gymmi.workspace.repository.custom;
 
-import static com.querydsl.core.group.GroupBy.groupBy;
 import static gymmi.workspace.domain.QWorker.worker;
 import static gymmi.workspace.domain.QWorkspace.workspace;
 
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
@@ -12,6 +12,7 @@ import gymmi.workspace.domain.Workspace;
 import gymmi.workspace.domain.WorkspaceStatus;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -83,12 +84,17 @@ public class WorkspaceCustomRepositoryImpl implements WorkspaceCustomRepository 
 
     @Override
     public Map<Workspace, Integer> getAchievementScoresIn(List<Workspace> workspaces) {
-        return jpaQueryFactory.select(workspace, worker.contributedScore.sum())
+        List<Tuple> tuple = jpaQueryFactory.select(workspace, worker.contributedScore.sum())
                 .from(worker)
                 .join(worker.workspace, workspace)
                 .where(workspace.in(workspaces))
-                .orderBy()
-                .transform(groupBy(workspace).as(worker.contributedScore.sum()));
+                .groupBy(workspace)
+                .fetch();
+        return tuple.stream()
+                .collect(Collectors.toMap(
+                        t -> t.get(workspace),
+                        t -> t.get(worker.contributedScore.sum())
+                ));
     }
 
     @Override

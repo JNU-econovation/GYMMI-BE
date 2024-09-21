@@ -1,7 +1,10 @@
 package gymmi.workspace.domain;
 
+import gymmi.entity.TimeEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
@@ -9,8 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Worked {
+@EqualsAndHashCode(of = {"id"}, callSuper = false)
+public class Worked extends TimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,10 +27,6 @@ public class Worked {
 
     @OneToMany(mappedBy = "worked", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<WorkoutRecord> workoutRecords = new ArrayList<>();
-
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-
 
     public Worked(Worker worker, List<WorkoutRecord> workoutRecords) {
         this.worker = worker;

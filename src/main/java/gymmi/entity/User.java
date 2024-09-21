@@ -27,8 +27,8 @@ import org.springframework.util.StringUtils;
 @Entity
 @Table(name = "uuser")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@EqualsAndHashCode(of = {"id"})
-public class User {
+@EqualsAndHashCode(of = {"id"}, callSuper = false)
+public class User extends TimeEntity {
 
     private static final Pattern REGEX_LOGIN_ID = REGEX_영어_숫자_만;
     private static final Pattern REGEX_PASSWORD = Pattern.compile("^[a-zA-Z0-9" + SPECIAL_CHARACTER + "]+$");

@@ -114,7 +114,7 @@ public class WorkspaceQueryService {
                 .orElseThrow(null);
 
         WorkspaceGateChecker workspaceGateChecker = new WorkspaceGateChecker(workspace, workers);
-        boolean isFull = workspaceGateChecker.canJoin();
+        boolean isFull = !workspaceGateChecker.canJoin();
         boolean isExist = workspaceGateChecker.canEnter(worker);
         return new CheckingEntranceOfWorkspaceResponse(isExist, isFull);
     }

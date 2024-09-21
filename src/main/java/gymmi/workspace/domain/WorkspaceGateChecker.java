@@ -15,6 +15,9 @@ public class WorkspaceGateChecker {
     }
 
     public boolean canJoin() {
+        if (!workspace.isPreparing()) {
+            return false;
+        }
         return workspace.getHeadCount() > workers.size();
     }
 

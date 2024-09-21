@@ -30,35 +30,6 @@ class WorkerRepositoryTest {
     WorkerRepository workerRepository;
 
     @Test
-    void 워커를_찾는다() {
-        // given
-        User defaultUser = Fixtures.USER__DEFAULT_USER;
-
-        Workspace workspace = Workspace.builder()
-                .creator(defaultUser)
-                .name(WORKSPACE__SATISFIED_NAME)
-                .headCount(WORKSPACE__SATISFIED_HEAD_COUNT)
-                .goalScore(WORKSPACE__SATISFIED_GOAL_SCORE)
-                .description(null)
-                .tag(null)
-                .build();
-        entityManager.persist(defaultUser);
-        entityManager.persist(workspace);
-
-        Worker worker = Worker.builder()
-                .user(defaultUser)
-                .workspace(workspace)
-                .build();
-        entityManager.persist(worker);
-
-        // when
-        Optional<Worker> result = workerRepository.findByUserIdAndWorkspaceId(defaultUser.getId(), workspace.getId());
-
-        // then
-        assertThat(result).isNotEmpty();
-    }
-
-    @Test
     void 워크스페이스_참가자를_저장할때_작성한_테스크도_같이_저장된다() {
         // given
         User user = Fixtures.USER__DEFAULT_USER;

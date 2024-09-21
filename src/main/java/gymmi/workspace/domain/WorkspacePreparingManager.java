@@ -50,12 +50,6 @@ public class WorkspacePreparingManager {
         return worker;
     }
 
-    private Worker createWorker(User user, String taskName) {
-        Task task = new Task(taskName);
-        Worker worker = new Worker(user, workspace, task);
-        return worker;
-    }
-
     public WorkerLeavedEvent release(Worker worker) {
         if (!worker.isJoinedIn(workspace)) {
             throw new InvalidStateException(NOT_JOINED_WORKSPACE);
@@ -79,10 +73,16 @@ public class WorkspacePreparingManager {
         if (!workspace.isPreparing()) {
             throw new InvalidStateException(ALREADY_ACTIVATED_WORKSPACE);
         }
-        if (workers.size() < 2) {
+        if (workers.size() < Workspace.MIN_HEAD_COUNT) {
             throw new InvalidStateException(BELOW_MINIMUM_WORKER);
         }
         workspace.changeStatusTo(WorkspaceStatus.IN_PROGRESS);
+    }
+
+    private Worker createWorker(User user, String taskName) {
+        Task task = new Task(taskName);
+        Worker worker = new Worker(user, workspace, task);
+        return worker;
     }
 
 }

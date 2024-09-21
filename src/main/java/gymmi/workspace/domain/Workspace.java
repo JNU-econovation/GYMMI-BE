@@ -172,7 +172,7 @@ public class Workspace extends TimeEntity {
     }
 
     public boolean isCreatedBy(Worker worker) {
-        return this.creator.equals(worker);
+        return this.creator.equals(worker.getUser());
     }
 
     public boolean isMoreThan(int achievementScore) {

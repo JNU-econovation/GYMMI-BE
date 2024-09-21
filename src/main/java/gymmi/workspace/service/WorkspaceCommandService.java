@@ -98,7 +98,7 @@ public class WorkspaceCommandService {
         WorkspacePreparingManager workspacePreparingManager = new WorkspacePreparingManager(workspace, workers);
         WorkerLeavedEvent workerLeavedEvent = workspacePreparingManager.release(worker);
 
-        workerRepository.deleteById(workerLeavedEvent.getWorker().getId());
+        workerRepository.delete(workerLeavedEvent.getWorker());
         if (workerLeavedEvent.isLastOne()) {
             missionRepository.deleteAllByWorkspaceId(workspace.getId());
             workspaceRepository.deleteById(workspaceId);

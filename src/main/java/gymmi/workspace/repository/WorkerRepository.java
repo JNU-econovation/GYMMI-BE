@@ -26,9 +26,6 @@ public interface WorkerRepository extends JpaRepository<Worker, Long> {
     @Query("delete from Worker w where w.user.id = :userId and w.workspace.id = :workspaceId")
     void deleteByUserIdAndWorkspaceId(Long userId, Long workspaceId);
 
-    @Modifying(flushAutomatically = true, clearAutomatically = true)
-    @Query("delete from Worker w where w.id = :workerId")
-    void deleteById(Long workerId);
 
     @Query("select w from Worker w " +
             "join w.workspace ws " +

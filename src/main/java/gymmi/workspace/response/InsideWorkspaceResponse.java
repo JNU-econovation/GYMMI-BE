@@ -46,7 +46,7 @@ public class InsideWorkspaceResponse {
         for (int i = 0; i < workers.size(); i++) {
             Worker worker = workers.get(i);
             workerResponses.add(
-                    new WorkerResponse(worker, i, workspace.isCreatedBy(worker), loginedUser.equals(worker))
+                    new WorkerResponse(worker, i, workspace.isCreatedBy(worker), loginedUser.equals(worker.getUser()))
             );
         }
         return workerResponses;

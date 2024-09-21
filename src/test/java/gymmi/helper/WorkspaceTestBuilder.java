@@ -1,4 +1,4 @@
-package gymmi.builder;
+package gymmi.helper;
 
 import gymmi.entity.User;
 import gymmi.workspace.domain.Workspace;
