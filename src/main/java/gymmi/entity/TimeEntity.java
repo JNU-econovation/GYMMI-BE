@@ -17,7 +17,6 @@ public abstract class TimeEntity {
     @Column(columnDefinition = "timestamp(3)", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @LastModifiedDate
     @Column(columnDefinition = "timestamp(3)", nullable = false)
     private LocalDateTime lastModifiedAt;
