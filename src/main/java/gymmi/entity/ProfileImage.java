@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ProfileImage {
+public class ProfileImage extends TimeEntity {
 
     public static final String EMPTY_NAME = "default.png";
 
