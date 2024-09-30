@@ -7,7 +7,7 @@ create table uuser
     email            varchar(255) default '' not null,
     login_id         varchar(255)            not null,
     nickname         varchar(255)            not null,
-    password         varchar(255)            not null,
+    password         varchar(255)            not null
 ) engine=InnoDB;
 
 create table feedback
@@ -70,7 +70,7 @@ create table task
 (
     id        bigint       not null auto_increment primary key,
     is_picked bit          not null,
-    name      varchar(255) not null,
+    name      varchar(255) not null
 ) engine=InnoDB;
 
 create table worker
@@ -90,13 +90,10 @@ create table worker
 
 create table worked
 (
-    created_at       timestamp(3) not null,
     id               bigint       not null auto_increment primary key,
     last_modified_at timestamp(3) not null,
     worker_id        bigint       not null,
     created_at       timestamp(3) not null,
-    last_modified_at timestamp(3) not null,
-    primary key (id),
     foreign key (worker_id) references worker (id)
 ) engine=InnoDB;
 

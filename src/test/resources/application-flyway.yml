@@ -1,0 +1,12 @@
+spring:
+  config:
+    activate:
+      on-profile: flyway
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+
+  flyway:
+    enabled: true
+    baseline-on-migrate: true

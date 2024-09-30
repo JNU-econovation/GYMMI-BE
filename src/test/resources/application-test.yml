@@ -7,11 +7,8 @@ spring:
     hibernate:
       ddl-auto: create-drop
 
-  h2:
-    console:
-      enabled: true
-      settings:
-        web-allow-others: true
+  flyway:
+    enabled: false
 
   datasource:
     driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
