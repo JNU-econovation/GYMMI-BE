@@ -1,20 +1,22 @@
 package gymmi.service;
 
-import gymmi.exception.InvalidFileException;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import gymmi.exception.class1.FileIOFailException;
+import gymmi.exception.class1.InvalidFileException;
+import gymmi.exception.class1.NotFoundException;
+import gymmi.exception.message.ErrorCode;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.UUID;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.UUID;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class LocalImageFileUploaderTest {
 
@@ -72,7 +74,7 @@ class LocalImageFileUploaderTest {
         // when, then
         assertThatThrownBy(() -> uploader.upload(multipartFile, UUID.randomUUID().toString()))
                 .isInstanceOf(InvalidFileException.class)
-                .hasMessage("이미지 형식의 파일만 가능합니다.");
+                .hasMessage(ErrorCode.UNSUPPORTED_FILE.getMessage());
     }
 
     @Test
@@ -90,7 +92,7 @@ class LocalImageFileUploaderTest {
         // when, then
         assertThatThrownBy(() -> uploader.upload(multipartFile, UUID.randomUUID().toString()))
                 .isInstanceOf(InvalidFileException.class)
-                .hasMessage("비어있는 파일입니다.");
+                .hasMessage(ErrorCode.EMPTY_FILE.getMessage());
     }
 
     @Test
@@ -108,7 +110,7 @@ class LocalImageFileUploaderTest {
         // when, then
         assertThatThrownBy(() -> uploader.upload(multipartFile, UUID.randomUUID().toString()))
                 .isInstanceOf(InvalidFileException.class)
-                .hasMessage("파일의 확장자가 존재하지 않습니다.");
+                .hasMessage(ErrorCode.MISSING_FILE_EXTENSION.getMessage());
     }
 
 
@@ -138,7 +140,7 @@ class LocalImageFileUploaderTest {
 
         // when, then
         assertThatThrownBy(() -> uploader.delete("123"))
-                .hasMessage("해당 파일이 존재하지 않습니다.");
+                .isInstanceOf(NotFoundException.class);
     }
 
     @Test
@@ -148,7 +150,7 @@ class LocalImageFileUploaderTest {
 
         // when, then
         assertThatThrownBy(() -> uploader.delete(""))
-                .hasMessage("파일 삭제에 실패하였습니다.");
+                .isInstanceOf(FileIOFailException.class);
     }
 
 }

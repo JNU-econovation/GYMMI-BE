@@ -1,15 +1,20 @@
 package gymmi.service;
 
-import gymmi.exception.InvalidFileException;
-import gymmi.exception.NotFoundResourcesException;
-import gymmi.exception.ServerLogicFaultException;
+import static gymmi.exception.message.ErrorCode.EMPTY_FILE;
+import static gymmi.exception.message.ErrorCode.FAILED_FILE_UPLOAD;
+import static gymmi.exception.message.ErrorCode.MISSING_FILE_EXTENSION;
+import static gymmi.exception.message.ErrorCode.NOT_FOUND_FILE;
+import static gymmi.exception.message.ErrorCode.UNSUPPORTED_FILE;
+
+import gymmi.exception.class1.FileIOFailException;
+import gymmi.exception.class1.InvalidFileException;
+import gymmi.exception.class1.NotFoundException;
+import java.io.File;
+import java.io.IOException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.File;
-import java.io.IOException;
 
 @Component
 public class LocalImageFileUploader implements ImageFileUploader {
@@ -30,30 +35,30 @@ public class LocalImageFileUploader implements ImageFileUploader {
             file.setReadOnly();
             return fileName;
         } catch (IOException e) {
-            throw new ServerLogicFaultException("파일 업로드를 실패하였습니다.", e);
+            throw new FileIOFailException(FAILED_FILE_UPLOAD, e);
         }
     }
 
     public void delete(String imageFileName) {
         File file = new File(storagePath + imageFileName);
         if (!file.exists()) {
-            throw new NotFoundResourcesException("해당 파일이 존재하지 않습니다.");
+            throw new NotFoundException(NOT_FOUND_FILE);
         }
         if (!file.delete()) {
-            throw new ServerLogicFaultException("파일 삭제에 실패하였습니다.");
+            throw new FileIOFailException(FAILED_FILE_UPLOAD);
         }
     }
 
     private void validateImageFile(MultipartFile file) {
         if (file == null || file.isEmpty()) {
-            throw new InvalidFileException("비어있는 파일입니다.");
+            throw new InvalidFileException(EMPTY_FILE);
         }
         if (!SUPPORTABLE_IMAGE_TYPES.contains(file.getContentType())) {
-            throw new InvalidFileException("이미지 형식의 파일만 가능합니다.");
+            throw new InvalidFileException(UNSUPPORTED_FILE);
         }
         String extension = StringUtils.getFilenameExtension(file.getOriginalFilename());
         if (extension == null) {
-            throw new InvalidFileException("파일의 확장자가 존재하지 않습니다.");
+            throw new InvalidFileException(MISSING_FILE_EXTENSION);
         }
 
     }

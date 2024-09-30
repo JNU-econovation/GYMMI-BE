@@ -22,8 +22,8 @@ public class BadRequestException extends GymmiException {
     }
 
     @Override
-    public String getErrorCode() {
-        return super.getErrorCode();
+    public String getErrorTitle() {
+        return super.getErrorTitle();
     }
 
     @Override

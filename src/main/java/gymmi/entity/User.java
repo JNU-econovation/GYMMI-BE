@@ -1,7 +1,21 @@
 package gymmi.entity;
 
+import static gymmi.utils.Regexpressions.REGEX_숫자;
+import static gymmi.utils.Regexpressions.REGEX_영어;
+import static gymmi.utils.Regexpressions.REGEX_영어_숫자_만;
+import static gymmi.utils.Regexpressions.REGEX_영어_한글_초성_숫자_만;
+import static gymmi.utils.Regexpressions.SPECIAL_CHARACTER;
+
 import gymmi.exception.InvalidPatternException;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import java.util.regex.Pattern;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -10,15 +24,11 @@ import org.hibernate.annotations.ColumnDefault;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.util.StringUtils;
 
-import java.util.regex.Pattern;
-
-import static gymmi.utils.Regexpressions.*;
-
 @Entity
 @Table(name = "uuser")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@EqualsAndHashCode(of = {"id"})
-public class User {
+@EqualsAndHashCode(of = {"id"}, callSuper = false)
+public class User extends TimeEntity {
 
     private static final Pattern REGEX_LOGIN_ID = REGEX_영어_숫자_만;
     private static final Pattern REGEX_PASSWORD = Pattern.compile("^[a-zA-Z0-9" + SPECIAL_CHARACTER + "]+$");
@@ -154,4 +164,16 @@ public class User {
         return email;
     }
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", loginId='" + loginId + '\'' +
+                ", password='" + password + '\'' +
+                ", nickname='" + nickname + '\'' +
+                ", email='" + email + '\'' +
+                ", isResigned=" + isResigned +
+                ", profileImage=" + profileImage +
+                '}';
+    }
 }

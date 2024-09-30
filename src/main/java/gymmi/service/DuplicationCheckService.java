@@ -1,11 +1,13 @@
 package gymmi.service;
 
-import gymmi.exception.PreparingException;
+import gymmi.exception.class1.UnsupportedException;
+import gymmi.exception.message.ErrorCode;
 import gymmi.global.DuplicationCheckType;
 import gymmi.response.DuplicationResponse;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -17,7 +19,7 @@ public class DuplicationCheckService {
         DuplicationCheck duplicationCheck = duplicationCheckStrategies.stream()
                 .filter(s -> s.supports(type))
                 .findAny()
-                .orElseThrow(() -> new PreparingException("준비중인 type 입니다."));
+                .orElseThrow(() -> new UnsupportedException(ErrorCode.UNSUPPORTED_TYPE));
         boolean isDuplicate = duplicationCheck.isDuplicate(value);
         return new DuplicationResponse(isDuplicate);
     }

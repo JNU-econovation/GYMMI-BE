@@ -1,26 +1,28 @@
 package gymmi.entity;
 
-import static gymmi.Fixtures.USER__DEFAULT_USER;
 import static gymmi.Fixtures.WORKSPACE__SATISFIED_GOAL_SCORE;
 import static gymmi.Fixtures.WORKSPACE__SATISFIED_HEAD_COUNT;
 import static gymmi.Fixtures.WORKSPACE__SATISFIED_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import gymmi.exception.InvalidNumberException;
-import gymmi.exception.InvalidPatternException;
+import gymmi.exception.class1.InvalidNumberException;
+import gymmi.exception.class1.InvalidPatternException;
+import gymmi.workspace.domain.Workspace;
+import gymmi.workspace.domain.WorkspaceStatus;
+import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 
 class WorkspaceTest {
 
-    // 목 사용해보기 or 테스크객체 활용 편하게하는법
-    User defaultUser = USER__DEFAULT_USER;
-
     @Test
     void 워크스페이스를_생성한다() {
-        // give, when
+        // give
+        User user = Instancio.create(User.class);
+
+        // when
         Workspace workspace = Workspace.builder()
-                .creator(defaultUser)
+                .creator(user)
                 .name(WORKSPACE__SATISFIED_NAME)
                 .headCount(WORKSPACE__SATISFIED_HEAD_COUNT)
                 .goalScore(WORKSPACE__SATISFIED_GOAL_SCORE)
@@ -35,9 +37,12 @@ class WorkspaceTest {
 
     @Test
     void 목표_점수가_10점_단위가_아닌_경우_예외가_발생한다() {
-        // given, when, then
+        // given
+        User user = Instancio.create(User.class);
+
+        // when, then
         assertThatThrownBy(() -> Workspace.builder()
-                .creator(defaultUser)
+                .creator(user)
                 .name(WORKSPACE__SATISFIED_NAME)
                 .headCount(WORKSPACE__SATISFIED_HEAD_COUNT)
                 .goalScore(505)
@@ -49,9 +54,12 @@ class WorkspaceTest {
 
     @Test
     void 태그에_한글과_영어가_아닌_문자가_들어간_경우_예외가_발생한다() {
-        // given, when, then
+        // given
+        User user = Instancio.create(User.class);
+
+        // when, then
         assertThatThrownBy(() -> Workspace.builder()
-                .creator(defaultUser)
+                .creator(user)
                 .name(WORKSPACE__SATISFIED_NAME)
                 .headCount(WORKSPACE__SATISFIED_HEAD_COUNT)
                 .goalScore(510)
@@ -63,9 +71,12 @@ class WorkspaceTest {
 
     @Test
     void 이름에_한글과_영어와_숫자가_아닌_문자가_들어간_경우_예외가_발생한다() {
-        // given, when, then
+        // given
+        User user = Instancio.create(User.class);
+
+        // when, then
         assertThatThrownBy(() -> Workspace.builder()
-                .creator(defaultUser)
+                .creator(user)
                 .name("ㄱㄴㄷㄹㅁㅂ")
                 .headCount(WORKSPACE__SATISFIED_HEAD_COUNT)
                 .goalScore(WORKSPACE__SATISFIED_GOAL_SCORE)

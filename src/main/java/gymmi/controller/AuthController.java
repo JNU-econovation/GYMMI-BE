@@ -3,12 +3,12 @@ package gymmi.controller;
 import gymmi.entity.User;
 import gymmi.global.Logined;
 import gymmi.request.LoginRequest;
-import gymmi.request.RegistrationRequest;
 import gymmi.request.ReissueRequest;
 import gymmi.request.ResignRequest;
 import gymmi.response.LoginResponse;
 import gymmi.response.TokenResponse;
 import gymmi.service.AuthService;
+import gymmi.workspace.request.RegistrationRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -49,7 +49,7 @@ public class AuthController {
 
     @DeleteMapping("/auth/cuag")
     public ResponseEntity<Void> resign(@Logined User user,
-        @RequestBody @Validated ResignRequest request
+                                       @RequestBody @Validated ResignRequest request
     ) {
         authService.resign(user, request);
         return ResponseEntity.ok().build();

@@ -2,7 +2,7 @@ package gymmi.service;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import gymmi.exception.AuthenticationException;
+import gymmi.exception.class1.AuthenticationFailException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -45,9 +45,9 @@ class TokenProcessorTest {
 
             // then
             assertThatThrownBy(() -> tokenProcessor.parseAccessToken(refreshToken))
-                    .isInstanceOf(AuthenticationException.class);
+                    .isInstanceOf(AuthenticationFailException.class);
             assertThatThrownBy(() -> tokenProcessor.parseRefreshToken(accessToken))
-                    .isInstanceOf(AuthenticationException.class);
+                    .isInstanceOf(AuthenticationFailException.class);
         }
 
         @Test
@@ -63,7 +63,7 @@ class TokenProcessorTest {
 
             // when, then
             assertThatThrownBy(() -> tokenProcessor.parseAccessToken(jwt))
-                    .isInstanceOf(AuthenticationException.class);
+                    .isInstanceOf(AuthenticationFailException.class);
         }
 
         @Test
@@ -85,7 +85,7 @@ class TokenProcessorTest {
 
             // when, then
             assertThatThrownBy(() -> tokenProcessor.parseAccessToken(jwt))
-                    .isInstanceOf(AuthenticationException.class);
+                    .isInstanceOf(AuthenticationFailException.class);
         }
     }
 

@@ -1,0 +1,13 @@
+package gymmi.exception.class1;
+
+import gymmi.exception.message.ErrorCode;
+import gymmi.exception.message.ExceptionCode;
+
+public class AlreadyExistException extends GymmiException {
+
+    public static final ExceptionCode EXCEPTION_CODE = ExceptionCode.ALREADY_EXISTS;
+
+    public AlreadyExistException(ErrorCode errorCode) {
+        super(errorCode, EXCEPTION_CODE);
+    }
+}

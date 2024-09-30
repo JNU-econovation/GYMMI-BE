@@ -1,9 +1,18 @@
 spring:
+  profiles:
+    default: test
+
   jpa:
     properties:
       hibernate:
         format_sql: true
     show-sql: true
+
+  h2:
+    console:
+      enabled: true
+      settings:
+        web-allow-others: true
 
 jwt:
   token:

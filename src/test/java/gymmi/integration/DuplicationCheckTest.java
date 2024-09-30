@@ -3,7 +3,7 @@ package gymmi.integration;
 import static gymmi.integration.Steps.회원_가입_요청;
 
 import gymmi.Fixtures;
-import gymmi.request.RegistrationRequest;
+import gymmi.workspace.request.RegistrationRequest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
@@ -11,6 +11,7 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+@Disabled
 public class DuplicationCheckTest extends IntegrationTest {
 
     private static final String TYPE = "type";

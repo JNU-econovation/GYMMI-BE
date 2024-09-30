@@ -1,10 +1,8 @@
 package gymmi.service;
 
+import java.util.Set;
 import org.springframework.http.MediaType;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
-import java.util.Set;
 
 public interface ImageFileUploader {
 

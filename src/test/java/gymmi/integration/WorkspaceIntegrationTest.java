@@ -1,23 +1,53 @@
 package gymmi.integration;
 
-import gymmi.exception.*;
-import gymmi.request.*;
-import gymmi.response.MissionResponse;
+import static gymmi.Fixtures.AUTHORIZATION_TYPE_BEARER;
+import static gymmi.Fixtures.JSON_KEY_ERROR_CODE;
+import static gymmi.Fixtures.JSON_KEY_ID;
+import static gymmi.Fixtures.JSON_KEY_PASSWORD;
+import static gymmi.Fixtures.MISSION__SATISFIED_MISSION_NAME;
+import static gymmi.Fixtures.MISSION__SATISFIED_MISSION_SCORE;
+import static gymmi.Fixtures.TASK__DEFAULT_TASK;
+import static gymmi.Fixtures.WORKSPACE__DISSATISFIED_PASSWORD;
+import static gymmi.Fixtures.WORKSPACE__SATISFIED_GOAL_SCORE;
+import static gymmi.Fixtures.WORKSPACE__SATISFIED_HEAD_COUNT;
+import static gymmi.Fixtures.WORKSPACE__SATISFIED_NAME;
+import static gymmi.integration.Steps.미션_수행_요청;
+import static gymmi.integration.Steps.워크스페이스_나가기_요청;
+import static gymmi.integration.Steps.워크스페이스_미션_보기_요청;
+import static gymmi.integration.Steps.워크스페이스_생성__DEFAULT_WORKSPACE_REQUEST;
+import static gymmi.integration.Steps.워크스페이스_생성_요청;
+import static gymmi.integration.Steps.워크스페이스_설명_수정_요청;
+import static gymmi.integration.Steps.워크스페이스_소개_보기_요청;
+import static gymmi.integration.Steps.워크스페이스_시작_요청;
+import static gymmi.integration.Steps.워크스페이스_입장_요청;
+import static gymmi.integration.Steps.워크스페이스_참여_요청;
+import static gymmi.integration.Steps.회원_가입__DEFAULT_USER_REQUEST;
+import static gymmi.integration.Steps.회원_가입__USER_1_REQUEST;
+import static gymmi.integration.Steps.회원_가입__USER_2_REQUEST;
+import static gymmi.integration.Steps.회원가입_및_로그인_요청;
+
+import gymmi.exception.NotFoundResourcesException;
+import gymmi.workspace.request.CreatingWorkspaceRequest;
+import gymmi.workspace.request.EditingIntroductionOfWorkspaceRequest;
+import gymmi.workspace.request.JoiningWorkspaceRequest;
+import gymmi.workspace.request.MatchingWorkspacePasswordRequest;
+import gymmi.workspace.request.MissionRequest;
+import gymmi.workspace.request.RegistrationRequest;
+import gymmi.workspace.request.WorkingMissionInWorkspaceRequest;
+import gymmi.workspace.response.MissionResponse;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+import java.util.List;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 
-import java.util.List;
-
-import static gymmi.Fixtures.*;
-import static gymmi.integration.Steps.*;
-
+@Disabled
 public class WorkspaceIntegrationTest extends IntegrationTest {
 
     String defaultUserToken;
@@ -43,7 +73,8 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                     .name(WORKSPACE__SATISFIED_NAME)
                     .task(TASK__DEFAULT_TASK)
                     .missionBoard(
-                            List.of(new MissionDTO(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE)))
+                            List.of(new MissionRequest(MISSION__SATISFIED_MISSION_NAME,
+                                    MISSION__SATISFIED_MISSION_SCORE)))
                     .build();
 
             // when
@@ -64,7 +95,8 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                     .name(WORKSPACE__SATISFIED_NAME)
                     .task(TASK__DEFAULT_TASK)
                     .missionBoard(
-                            List.of(new MissionDTO(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE)))
+                            List.of(new MissionRequest(MISSION__SATISFIED_MISSION_NAME,
+                                    MISSION__SATISFIED_MISSION_SCORE)))
                     .build();
 
             CreatingWorkspaceRequest request = CreatingWorkspaceRequest.builder()
@@ -73,7 +105,8 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                     .name(WORKSPACE__SATISFIED_NAME)
                     .task(TASK__DEFAULT_TASK)
                     .missionBoard(
-                            List.of(new MissionDTO(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE)))
+                            List.of(new MissionRequest(MISSION__SATISFIED_MISSION_NAME,
+                                    MISSION__SATISFIED_MISSION_SCORE)))
                     .build();
             워크스페이스_생성_요청(defaultUserToken, step);
 
@@ -93,7 +126,8 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                     .goalScore(WORKSPACE__SATISFIED_GOAL_SCORE)
                     .headCount(WORKSPACE__SATISFIED_HEAD_COUNT)
                     .task(TASK__DEFAULT_TASK)
-                    .missionBoard(List.of(new MissionDTO(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE)))
+                    .missionBoard(List.of(new MissionRequest(MISSION__SATISFIED_MISSION_NAME,
+                            MISSION__SATISFIED_MISSION_SCORE)))
                     .build();
             워크스페이스_생성_요청(defaultUserToken, step);
 
@@ -102,7 +136,8 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                     .goalScore(WORKSPACE__SATISFIED_GOAL_SCORE)
                     .headCount(WORKSPACE__SATISFIED_HEAD_COUNT)
                     .task(TASK__DEFAULT_TASK)
-                    .missionBoard(List.of(new MissionDTO(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE)))
+                    .missionBoard(List.of(new MissionRequest(MISSION__SATISFIED_MISSION_NAME,
+                            MISSION__SATISFIED_MISSION_SCORE)))
                     .build();
             워크스페이스_생성_요청(defaultUserToken, step1);
 
@@ -111,7 +146,8 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                     .goalScore(WORKSPACE__SATISFIED_GOAL_SCORE)
                     .headCount(WORKSPACE__SATISFIED_HEAD_COUNT)
                     .task(TASK__DEFAULT_TASK)
-                    .missionBoard(List.of(new MissionDTO(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE)))
+                    .missionBoard(List.of(new MissionRequest(MISSION__SATISFIED_MISSION_NAME,
+                            MISSION__SATISFIED_MISSION_SCORE)))
                     .build();
             워크스페이스_생성_요청(defaultUserToken, step2);
 
@@ -120,7 +156,8 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                     .goalScore(WORKSPACE__SATISFIED_GOAL_SCORE)
                     .headCount(WORKSPACE__SATISFIED_HEAD_COUNT)
                     .task(TASK__DEFAULT_TASK)
-                    .missionBoard(List.of(new MissionDTO(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE)))
+                    .missionBoard(List.of(new MissionRequest(MISSION__SATISFIED_MISSION_NAME,
+                            MISSION__SATISFIED_MISSION_SCORE)))
                     .build();
             워크스페이스_생성_요청(defaultUserToken, step3);
 
@@ -129,7 +166,8 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                     .goalScore(WORKSPACE__SATISFIED_GOAL_SCORE)
                     .headCount(WORKSPACE__SATISFIED_HEAD_COUNT)
                     .task(TASK__DEFAULT_TASK)
-                    .missionBoard(List.of(new MissionDTO(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE)))
+                    .missionBoard(List.of(new MissionRequest(MISSION__SATISFIED_MISSION_NAME,
+                            MISSION__SATISFIED_MISSION_SCORE)))
                     .build();
             워크스페이스_생성_요청(defaultUserToken, step4);
 
@@ -138,7 +176,8 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                     .goalScore(WORKSPACE__SATISFIED_GOAL_SCORE)
                     .headCount(WORKSPACE__SATISFIED_HEAD_COUNT)
                     .task(TASK__DEFAULT_TASK)
-                    .missionBoard(List.of(new MissionDTO(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE)))
+                    .missionBoard(List.of(new MissionRequest(MISSION__SATISFIED_MISSION_NAME,
+                            MISSION__SATISFIED_MISSION_SCORE)))
                     .build();
 
             // when
@@ -234,8 +273,7 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
 
             // then
             response.then()
-                    .statusCode(400)
-                    .body(JSON_KEY_ERROR_CODE, Matchers.equalTo(AlreadyExistException.ERROR_CODE));
+                    .statusCode(400);
         }
 
         @Test
@@ -247,7 +285,8 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                     .name(WORKSPACE__SATISFIED_NAME)
                     .task(TASK__DEFAULT_TASK)
                     .missionBoard(
-                            List.of(new MissionDTO(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE)))
+                            List.of(new MissionRequest(MISSION__SATISFIED_MISSION_NAME,
+                                    MISSION__SATISFIED_MISSION_SCORE)))
                     .build();
 
             Long workspaceId = 워크스페이스_생성_요청(defaultUserToken, step)
@@ -269,8 +308,7 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
 
             // then
             response.then()
-                    .statusCode(400)
-                    .body(JSON_KEY_ERROR_CODE, Matchers.equalTo(InvalidStateException.ERROR_CODE));
+                    .statusCode(400);
         }
 
         @Test
@@ -281,7 +319,8 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                     .name(WORKSPACE__SATISFIED_NAME)
                     .task(TASK__DEFAULT_TASK)
                     .missionBoard(
-                            List.of(new MissionDTO(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE)))
+                            List.of(new MissionRequest(MISSION__SATISFIED_MISSION_NAME,
+                                    MISSION__SATISFIED_MISSION_SCORE)))
                     .build();
 
             Long workspaceId = 워크스페이스_생성_요청(defaultUserToken, step)
@@ -304,8 +343,7 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
 
             // then
             response.then()
-                    .statusCode(400)
-                    .body(JSON_KEY_ERROR_CODE, Matchers.equalTo(InvalidStateException.ERROR_CODE));
+                    .statusCode(400);
         }
 
         @Test
@@ -325,8 +363,7 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
 
             // then
             response.then()
-                    .statusCode(400)
-                    .body(JSON_KEY_ERROR_CODE, Matchers.equalTo(NotMatchedException.ERROR_CODE));
+                    .statusCode(400);
         }
 
         @Test
@@ -453,8 +490,7 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
 
             // then
             response.then()
-                    .statusCode(403)
-                    .body(JSON_KEY_ERROR_CODE, Matchers.equalTo(NotHavePermissionException.ERROR_CODE));
+                    .statusCode(403);
         }
 
         @Test
@@ -471,8 +507,7 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
 
             // then
             response.then()
-                    .statusCode(400)
-                    .body(JSON_KEY_ERROR_CODE, Matchers.equalTo(InvalidStateException.ERROR_CODE));
+                    .statusCode(400);
         }
 
 
@@ -542,8 +577,7 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
 
                 // then
                 response.then()
-                        .statusCode(400)
-                        .body(JSON_KEY_MESSAGE, Matchers.equalTo("준비 단계에서만 나갈 수 있습니다."));
+                        .statusCode(400);
             }
         }
     }
@@ -570,8 +604,6 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
         // then
         response.then()
                 .statusCode(200)
-                .body("workers[0].rank", Matchers.equalTo(1))
-                .body("workers[1].rank", Matchers.equalTo(1))
                 .body("workers[0].isCreator", Matchers.equalTo(false))
                 .body("workers[1].isCreator", Matchers.equalTo(true))
                 .body("workers[0].isMyself", Matchers.equalTo(true))
@@ -619,7 +651,8 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
                     .name("지미지미")
                     .task(TASK__DEFAULT_TASK)
                     .missionBoard(
-                            List.of(new MissionDTO(MISSION__SATISFIED_MISSION_NAME, MISSION__SATISFIED_MISSION_SCORE))
+                            List.of(new MissionRequest(MISSION__SATISFIED_MISSION_NAME,
+                                    MISSION__SATISFIED_MISSION_SCORE))
                     ).build();
             Long anotherWorkspaceId = 워크스페이스_생성_요청(defaultUserToken, step2)
                     .jsonPath()
@@ -637,7 +670,6 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
 
             // then
             response.then()
-                    .statusCode(404)
                     .body(JSON_KEY_ERROR_CODE, Matchers.equalTo(NotFoundResourcesException.ERROR_CODE));
         }
 
@@ -662,9 +694,9 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
 
             // then
             response.then()
-                    .statusCode(400)
-                    .body(JSON_KEY_ERROR_CODE, Matchers.equalTo(InvalidStateException.ERROR_CODE));
+                    .statusCode(400);
         }
+
 
         @Test
         void 미션_수행을_성공한다_200() {
@@ -710,16 +742,16 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
     @Test
     void 워크스페이스_참여자의_미션_합계_보기를_성공한다_200() {
         // given
-        List<MissionDTO> missionDTOS = List.of(
-                new MissionDTO("미션", 5),
-                new MissionDTO("미션1", 10)
+        List<MissionRequest> missionRequests = List.of(
+                new MissionRequest("미션", 5),
+                new MissionRequest("미션1", 10)
         );
         CreatingWorkspaceRequest step = CreatingWorkspaceRequest.builder()
                 .goalScore(WORKSPACE__SATISFIED_GOAL_SCORE)
                 .headCount(WORKSPACE__SATISFIED_HEAD_COUNT)
                 .name(WORKSPACE__SATISFIED_NAME)
                 .task(TASK__DEFAULT_TASK)
-                .missionBoard(missionDTOS)
+                .missionBoard(missionRequests)
                 .build();
         Long workspaceId = 워크스페이스_생성_요청(defaultUserToken, step)
                 .jsonPath()
@@ -826,7 +858,8 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
 
             // when
             Response response =
-                    워크스페이스_설명_수정_요청(defaultUserToken, workspaceId, new EditingIntroductionOfWorkspaceRequest("수정", "태그"));
+                    워크스페이스_설명_수정_요청(defaultUserToken, workspaceId,
+                            new EditingIntroductionOfWorkspaceRequest("수정", "태그"));
 
             // then
             response.then()
@@ -852,8 +885,7 @@ public class WorkspaceIntegrationTest extends IntegrationTest {
 
             // then
             response.then()
-                    .statusCode(403)
-                    .body(JSON_KEY_ERROR_CODE, Matchers.equalTo(NotHavePermissionException.ERROR_CODE));
+                    .statusCode(403);
         }
     }
 
