@@ -4,23 +4,23 @@ import gymmi.entity.User;
 import gymmi.exception.class1.NotHavePermissionException;
 import gymmi.exception.message.ErrorCode;
 import gymmi.workspace.domain.Mission;
+import gymmi.workspace.domain.Worked;
 import gymmi.workspace.domain.Worker;
-import gymmi.workspace.domain.WorkoutRecord;
-import gymmi.workspace.domain.WorkoutSummation;
+import gymmi.workspace.domain.WorkoutMetric;
 import gymmi.workspace.domain.Workspace;
 import gymmi.workspace.domain.WorkspaceGateChecker;
 import gymmi.workspace.domain.WorkspaceStatus;
 import gymmi.workspace.repository.MissionRepository;
+import gymmi.workspace.repository.WorkedRepository;
 import gymmi.workspace.repository.WorkerRepository;
-import gymmi.workspace.repository.WorkoutRecordRepository;
 import gymmi.workspace.repository.WorkspaceRepository;
 import gymmi.workspace.response.CheckingCreationOfWorkspaceResponse;
 import gymmi.workspace.response.CheckingEntranceOfWorkspaceResponse;
-import gymmi.workspace.response.ContributedWorkingResponse;
 import gymmi.workspace.response.InsideWorkspaceResponse;
 import gymmi.workspace.response.JoinedWorkspaceResponse;
 import gymmi.workspace.response.MatchingWorkspacePasswordResponse;
 import gymmi.workspace.response.MissionResponse;
+import gymmi.workspace.response.WorkoutContextResponse;
 import gymmi.workspace.response.WorkspaceIntroductionResponse;
 import gymmi.workspace.response.WorkspaceResponse;
 import java.util.List;
@@ -41,7 +41,7 @@ public class WorkspaceQueryService {
     private final WorkspaceRepository workspaceRepository;
     private final WorkerRepository workerRepository;
     private final MissionRepository missionRepository;
-    private final WorkoutRecordRepository workoutRecordRepository;
+    private final WorkedRepository workedRepository;
 
     public WorkspaceIntroductionResponse getWorkspaceIntroduction(User loginedUser, Long workspaceId) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
@@ -90,21 +90,23 @@ public class WorkspaceQueryService {
                 .toList();
     }
 
-    public List<ContributedWorkingResponse> getContributedWorkoutOfWorkerInWorkspace(
+    public WorkoutContextResponse getWorkoutContext(
             User loginedUser,
             Long workspaceId,
             Long userId
     ) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
-        validateIfWorkerIsInWorkspace(loginedUser.getId(), workspaceId);
-        Worker targetWorker = validateIfWorkerIsInWorkspace(userId, workspaceId);
-        List<Mission> missions = missionRepository.getAllByWorkspaceId(workspace.getId());
-        List<WorkoutRecord> workoutRecords = workoutRecordRepository.getAllByWorkerId(targetWorker.getId());
+        validateIfWorkerIsInWorkspace(loginedUser.getId(), workspace.getId());
+        Worker targetWorker = validateIfWorkerIsInWorkspace(userId, workspace.getId());
+        List<Worked> workoutHistories = workedRepository.getAllByWorkerId(targetWorker.getId());
+        int firstPlaceScore = workspaceRepository.getFirstPlaceScoreIn(workspace.getId());
 
-        WorkoutSummation workoutSummation = new WorkoutSummation(workoutRecords);
-        return missions.stream()
-                .map(m -> new ContributedWorkingResponse(m, workoutSummation))
-                .toList();
+        WorkoutMetric workoutMetric = new WorkoutMetric(workoutHistories);
+        return new WorkoutContextResponse(
+                workoutMetric,
+                workoutMetric.getScoreGapFrom(firstPlaceScore),
+                workoutHistories
+        );
     }
 
     public CheckingEntranceOfWorkspaceResponse checkEnteringWorkspace(User loginedUser, Long workspaceId) {

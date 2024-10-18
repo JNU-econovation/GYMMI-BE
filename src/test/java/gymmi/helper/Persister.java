@@ -1,21 +1,29 @@
 package gymmi.helper;
 
+import static org.instancio.Select.field;
+
 import gymmi.entity.User;
 import gymmi.repository.UserRepository;
-import gymmi.workspace.domain.*;
+import gymmi.workspace.domain.Mission;
+import gymmi.workspace.domain.Task;
+import gymmi.workspace.domain.Worked;
+import gymmi.workspace.domain.Worker;
+import gymmi.workspace.domain.WorkoutRecord;
+import gymmi.workspace.domain.Workspace;
+import gymmi.workspace.domain.WorkspaceStatus;
 import gymmi.workspace.repository.WorkerRepository;
 import gymmi.workspace.repository.WorkspaceRepository;
 import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
+import java.util.List;
+import java.util.Map;
 import org.instancio.Instancio;
 import org.instancio.Select;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
-import static org.instancio.Select.field;
-
 @Component
+@Transactional
 public class Persister {
 
     @Autowired
@@ -30,6 +38,7 @@ public class Persister {
     @Autowired
     WorkerRepository workerRepository;
 
+
     public User persistUser() {
         User user = Instancio.of(User.class)
                 .set(field(User::isResigned), false)
@@ -39,7 +48,7 @@ public class Persister {
         return user;
     }
 
-    public List<User> persistUsers(int size){
+    public List<User> persistUsers(int size) {
         List<User> users = Instancio.ofList(User.class)
                 .size(size)
                 .set(field(User::isResigned), false)
@@ -63,9 +72,19 @@ public class Persister {
         return missions;
     }
 
-    public Workspace persistWorkspace(User creator, int goalScore, int headCount) {
+    public Mission persistMission(Workspace workspace, int score) {
+        Mission mission = Instancio.of(Mission.class)
+                .set(field(Mission::getWorkspace), workspace)
+                .set(field(Mission::getScore), score)
+                .ignore(field(Mission::getId))
+                .create();
+        entityManager.persist(mission);
+        return mission;
+    }
+
+    public Workspace persistWorkspace(User creator, WorkspaceStatus workspaceStatus, int goalScore, int headCount) {
         Workspace workspace = Instancio.of(Workspace.class)
-                .set(field(Workspace::getStatus), WorkspaceStatus.PREPARING)
+                .set(field(Workspace::getStatus), workspaceStatus)
                 .set(field(Workspace::getGoalScore), goalScore)
                 .set(field(Workspace::getHeadCount), headCount)
                 .set(field(Workspace::getCreator), creator)
@@ -79,6 +98,17 @@ public class Persister {
         Worker worker = new Worker(user, workspace, new Task(Instancio.gen().string().get()));
         workerRepository.save(worker);
         return worker;
+    }
+
+    public Worked persistWorkoutHistoryAndApply(Worker worker, Map<Mission, Integer> workouts) {
+        List<WorkoutRecord> workoutRecords = workouts.entrySet().stream()
+                .map(workout -> new WorkoutRecord(workout.getKey(), workout.getValue()))
+                .toList();
+        Worker managedWorker = entityManager.find(Worker.class, worker.getId());
+        Worked worked = new Worked(managedWorker, workoutRecords);
+        entityManager.persist(worked);
+        worked.apply();
+        return worked;
     }
 
 

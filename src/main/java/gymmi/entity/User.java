@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.mindrot.jbcrypt.BCrypt;
@@ -28,6 +29,7 @@ import org.springframework.util.StringUtils;
 @Table(name = "uuser")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
+@Getter
 public class User extends TimeEntity {
 
     private static final Pattern REGEX_LOGIN_ID = REGEX_영어_숫자_만;

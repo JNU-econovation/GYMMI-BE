@@ -18,6 +18,7 @@ import gymmi.workspace.response.MatchingWorkspacePasswordResponse;
 import gymmi.workspace.response.MissionResponse;
 import gymmi.workspace.response.OpeningTasksBoxResponse;
 import gymmi.workspace.response.WorkingScoreResponse;
+import gymmi.workspace.response.WorkoutContextResponse;
 import gymmi.workspace.response.WorkspaceIntroductionResponse;
 import gymmi.workspace.response.WorkspaceResponse;
 import gymmi.workspace.service.WorkspaceCommandService;
@@ -147,15 +148,14 @@ public class WorkspaceController {
         return ResponseEntity.ok().body(new WorkingScoreResponse(workingScore));
     }
 
-    @GetMapping("/workspaces/{workspaceId}/workings/{userId}")
-    public ResponseEntity<List<ContributedWorkingResponse>> seeSumOfWorkingsInWorkspace(
+    @GetMapping("/workspaces/{workspaceId}/workout-context/{userId}")
+    public ResponseEntity<WorkoutContextResponse> seeWorkoutContextInWorkspace(
             @Logined User user,
             @PathVariable Long workspaceId,
             @PathVariable Long userId
     ) {
-        List<ContributedWorkingResponse> responses =
-                workspaceQueryService.getContributedWorkoutOfWorkerInWorkspace(user, workspaceId, userId);
-        return ResponseEntity.ok().body(responses);
+        WorkoutContextResponse response = workspaceQueryService.getWorkoutContext(user, workspaceId, userId);
+        return ResponseEntity.ok().body(response);
     }
 
     @GetMapping("/workspaces/{workspaceId}/tasks")

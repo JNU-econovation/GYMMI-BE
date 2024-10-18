@@ -179,7 +179,7 @@ public class Workspace extends TimeEntity {
         return this.goalScore > achievementScore;
     }
 
-    void changeStatusTo(WorkspaceStatus status) {
+    public void changeStatusTo(WorkspaceStatus status) {
         this.status = status;
     }
 
@@ -211,11 +211,11 @@ public class Workspace extends TimeEntity {
         return goalScore;
     }
 
-    void editDescription(String description) {
+    public void editDescription(String description) {
         this.description = validateDescription(description);
     }
 
-    void editTag(String tag) {
+    public void editTag(String tag) {
         this.tag = validateTag(tag);
     }
 

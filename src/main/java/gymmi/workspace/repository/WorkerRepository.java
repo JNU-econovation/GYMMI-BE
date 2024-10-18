@@ -19,21 +19,11 @@ public interface WorkerRepository extends JpaRepository<Worker, Long> {
                 .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_WORKER));
     }
 
-    @Query("select count(w) from Worker w where w.workspace.id = :workspaceId")
-    Integer countAllByWorkspaceId(Long workspaceId);
-
-    @Modifying(flushAutomatically = true, clearAutomatically = true)
-    @Query("delete from Worker w where w.user.id = :userId and w.workspace.id = :workspaceId")
-    void deleteByUserIdAndWorkspaceId(Long userId, Long workspaceId);
-
-
     @Query("select w from Worker w " +
             "join w.workspace ws " +
             "join fetch w.user " +
             "where ws.id = :workspaceId " +
             "order by w.contributedScore desc, w.user.nickname asc")
     List<Worker> getAllByWorkspaceId(Long workspaceId);
-
-    boolean existsByUserIdAndWorkspaceId(Long userId, Long workspaceId);
 
 }
