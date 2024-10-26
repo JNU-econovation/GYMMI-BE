@@ -94,6 +94,31 @@ public class Persister {
         return workspace;
     }
 
+    public Workspace persistWorkspace(User creator) {
+        Workspace workspace = Instancio.of(Workspace.class)
+                .generate(field(Workspace::getStatus), gen -> gen.enumOf(WorkspaceStatus.class))
+                .set(field(Workspace::getGoalScore), Workspace.MIN_GOAL_SCORE)
+                .set(field(Workspace::getHeadCount), Workspace.MIN_HEAD_COUNT)
+                .set(field(Workspace::getCreator), creator)
+                .ignore(field(Workspace::getId))
+                .create();
+        workspaceRepository.save(workspace);
+        return workspace;
+    }
+
+
+    public Workspace persistWorkspace(User creator, WorkspaceStatus workspaceStatus) {
+        Workspace workspace = Instancio.of(Workspace.class)
+                .set(field(Workspace::getStatus), workspaceStatus)
+                .set(field(Workspace::getGoalScore), Workspace.MIN_GOAL_SCORE)
+                .set(field(Workspace::getHeadCount), Workspace.MIN_HEAD_COUNT)
+                .set(field(Workspace::getCreator), creator)
+                .ignore(field(Workspace::getId))
+                .create();
+        workspaceRepository.save(workspace);
+        return workspace;
+    }
+
     public Worker persistWorker(User user, Workspace workspace) {
         Worker worker = new Worker(user, workspace, new Task(Instancio.gen().string().get()));
         workerRepository.save(worker);

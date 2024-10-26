@@ -32,7 +32,6 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
 
     @Autowired
     WorkspaceCommandService workspaceCommandService;
-
     @Autowired
     WorkspaceRepository workspaceRepository;
     @Autowired
@@ -53,7 +52,7 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
         @Test
         void 참여하면서_완료_되지_않은_워크스페이스가_5개_이상_인_경우_예외가_발생한다() {
             // given
-            User user = persistUser();
+            User user = persister.persistUser();
             persistWorkspacesNotCompletedWithWorker(user, 5);
 
             CreatingWorkspaceRequest request = CreatingWorkspaceRequest.builder()
@@ -75,8 +74,8 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
         @Test
         void 워크스페이스_이름이_이미_존재하는_경우_예외가_발생한다() {
             // given
-            User user = persistUser();
-            Workspace workspace = persistWorkspace(user);
+            User user = persister.persistUser();
+            Workspace workspace = persister.persistWorkspace(user);
             String workspaceName = workspace.getName();
 
             CreatingWorkspaceRequest request = CreatingWorkspaceRequest.builder()
@@ -101,9 +100,9 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
     @Test
     void 방장이_워크스페이스를_떠나는_경우_워크스페이스도_삭제된다() {
         // given
-        User user = persistUser();
-        Workspace workspace = persistWorkspace(user, WorkspaceStatus.PREPARING);
-        Worker worker = persistWorker(user, workspace);
+        User user = persister.persistUser();
+        Workspace workspace = persister.persistWorkspace(user, WorkspaceStatus.PREPARING);
+        Worker worker = persister.persistWorker(user, workspace);
 
         // when
         workspaceCommandService.leaveWorkspace(user, workspace.getId());
@@ -118,10 +117,10 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
     @Test
     void 워크스페이스_운동시_참여자의_점수가_반영된다() {
         // given
-        User user = persistUser();
-        Workspace workspace = persistWorkspace(user, WorkspaceStatus.IN_PROGRESS);
-        Worker worker = persistWorker(user, workspace);
-        List<Mission> missions = persistMissions(workspace, 1);
+        User user = persister.persistUser();
+        Workspace workspace = persister.persistWorkspace(user, WorkspaceStatus.IN_PROGRESS);
+        Worker worker = persister.persistWorker(user, workspace);
+        List<Mission> missions = persister.persistMissions(workspace, 1);
         Mission mission = missions.get(0);
         int count = 100;
 
@@ -140,20 +139,10 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
     }
 
     @Test
-    void 완료된_워크스페이스인_경우_테스크_뽑기를_한다() {
-        // given
-
-        // when
-
-        // then
-
-    }
-
-    @Test
     void 미션을_즐겨찾기에_추가_또는_삭제_한다() {
         // given
-        User user = persistUser();
-        Workspace workspace = persistWorkspace(user);
+        User user = persister.persistUser();
+        Workspace workspace = persister.persistWorkspace(user);
         Worker worker = persister.persistWorker(user, workspace);
         Mission mission = persister.persistMission(workspace, 10);
 
@@ -163,21 +152,6 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
 
         workspaceCommandService.toggleRegistrationOfFavoriteMission(user, workspace.getId(), mission.getId());
         assertThat(favoriteMissionRepository.findByWorkerIdAndMissionId(worker.getId(), mission.getId())).isEmpty();
-    }
-
-    private Worker persistWorker(User user, Workspace workspace) {
-        Worker worker = new Worker(user, workspace, new Task(Instancio.gen().string().get()));
-        workerRepository.save(worker);
-        return worker;
-    }
-
-    private User persistUser() {
-        User user = Instancio.of(User.class)
-                .set(field("isResigned"), false)
-                .ignore(field(User::getId))
-                .create();
-        entityManager.persist(user);
-        return user;
     }
 
     private List<Workspace> persistWorkspacesNotCompletedWithWorker(User user, int size) {
@@ -196,42 +170,6 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
             entityManager.persist(worker);
         }
         return workspaces;
-    }
-
-    private Workspace persistWorkspace(User creator) {
-        Workspace workspace = Instancio.of(Workspace.class)
-                .generate(field(Workspace::getStatus), gen -> gen.enumOf(WorkspaceStatus.class))
-                .set(field(Workspace::getGoalScore), Workspace.MIN_GOAL_SCORE)
-                .set(field(Workspace::getHeadCount), Workspace.MIN_HEAD_COUNT)
-                .set(field(Workspace::getCreator), creator)
-                .ignore(field(Workspace::getId))
-                .create();
-        workspaceRepository.save(workspace);
-        return workspace;
-    }
-
-    private Workspace persistWorkspace(User creator, WorkspaceStatus workspaceStatus) {
-        Workspace workspace = Instancio.of(Workspace.class)
-                .set(field(Workspace::getStatus), workspaceStatus)
-                .set(field(Workspace::getGoalScore), Workspace.MIN_GOAL_SCORE)
-                .set(field(Workspace::getHeadCount), Workspace.MIN_HEAD_COUNT)
-                .set(field(Workspace::getCreator), creator)
-                .ignore(field(Workspace::getId))
-                .create();
-        workspaceRepository.save(workspace);
-        return workspace;
-    }
-
-    private List<Mission> persistMissions(Workspace workspace, int size) {
-        List<Mission> missions = Instancio.ofList(Mission.class)
-                .size(size)
-                .set(Select.field(Mission::getWorkspace), workspace)
-                .generate(Select.field(Mission::getScore),
-                        gen -> gen.ints().range(Mission.MIN_SCORE, Mission.MAX_SCORE))
-                .ignore(Select.field(Mission::getId))
-                .create();
-        missionRepository.saveAll(missions);
-        return missions;
     }
 
 }
