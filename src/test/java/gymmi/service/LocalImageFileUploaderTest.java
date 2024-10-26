@@ -3,10 +3,10 @@ package gymmi.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import gymmi.exception.class1.FileIOFailException;
-import gymmi.exception.class1.InvalidFileException;
-import gymmi.exception.class1.NotFoundException;
-import gymmi.exception.message.ErrorCode;
+import gymmi.exceptionhandler.exception.FileIOFailException;
+import gymmi.exceptionhandler.exception.InvalidFileException;
+import gymmi.exceptionhandler.exception.NotFoundException;
+import gymmi.exceptionhandler.message.ErrorCode;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;

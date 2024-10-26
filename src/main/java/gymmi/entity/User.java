@@ -6,7 +6,7 @@ import static gymmi.utils.Regexpressions.REGEX_영어_숫자_만;
 import static gymmi.utils.Regexpressions.REGEX_영어_한글_초성_숫자_만;
 import static gymmi.utils.Regexpressions.SPECIAL_CHARACTER;
 
-import gymmi.exception.InvalidPatternException;
+import gymmi.exceptionhandler.legacy.InvalidPatternException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

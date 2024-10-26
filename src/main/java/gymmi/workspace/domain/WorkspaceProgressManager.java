@@ -1,9 +1,9 @@
 package gymmi.workspace.domain;
 
-import static gymmi.exception.message.ErrorCode.NOT_JOINED_WORKSPACE;
+import static gymmi.exceptionhandler.message.ErrorCode.NOT_JOINED_WORKSPACE;
 
-import gymmi.exception.class1.InvalidStateException;
-import gymmi.exception.message.ErrorCode;
+import gymmi.exceptionhandler.exception.InvalidStateException;
+import gymmi.exceptionhandler.message.ErrorCode;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;

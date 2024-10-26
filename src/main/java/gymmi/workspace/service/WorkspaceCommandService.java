@@ -1,9 +1,9 @@
 package gymmi.workspace.service;
 
 import gymmi.entity.User;
-import gymmi.exception.class1.AlreadyExistException;
-import gymmi.exception.class1.InvalidStateException;
-import gymmi.exception.message.ErrorCode;
+import gymmi.exceptionhandler.exception.AlreadyExistException;
+import gymmi.exceptionhandler.exception.InvalidStateException;
+import gymmi.exceptionhandler.message.ErrorCode;
 import gymmi.workspace.domain.Mission;
 import gymmi.workspace.domain.Task;
 import gymmi.workspace.domain.Worked;

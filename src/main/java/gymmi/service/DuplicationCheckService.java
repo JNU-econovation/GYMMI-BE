@@ -1,7 +1,7 @@
 package gymmi.service;
 
-import gymmi.exception.class1.UnsupportedException;
-import gymmi.exception.message.ErrorCode;
+import gymmi.exceptionhandler.exception.UnsupportedException;
+import gymmi.exceptionhandler.message.ErrorCode;
 import gymmi.global.DuplicationCheckType;
 import gymmi.response.DuplicationResponse;
 import lombok.RequiredArgsConstructor;

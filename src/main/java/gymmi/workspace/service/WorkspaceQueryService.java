@@ -1,8 +1,8 @@
 package gymmi.workspace.service;
 
 import gymmi.entity.User;
-import gymmi.exception.class1.NotHavePermissionException;
-import gymmi.exception.message.ErrorCode;
+import gymmi.exceptionhandler.exception.NotHavePermissionException;
+import gymmi.exceptionhandler.message.ErrorCode;
 import gymmi.workspace.domain.Mission;
 import gymmi.workspace.domain.Worked;
 import gymmi.workspace.domain.Worker;

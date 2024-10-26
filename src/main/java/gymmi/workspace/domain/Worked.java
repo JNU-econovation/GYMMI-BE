@@ -1,9 +1,9 @@
 package gymmi.workspace.domain;
 
-import static gymmi.exception.message.ErrorCode.NO_WORKOUT_HISTORY_EXIST_IN_WORKSPACE;
+import static gymmi.exceptionhandler.message.ErrorCode.NO_WORKOUT_HISTORY_EXIST_IN_WORKSPACE;
 
 import gymmi.entity.TimeEntity;
-import gymmi.exception.class1.NotHavePermissionException;
+import gymmi.exceptionhandler.exception.NotHavePermissionException;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

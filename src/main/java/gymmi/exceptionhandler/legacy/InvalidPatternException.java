@@ -1,4 +1,4 @@
-package gymmi.exception;
+package gymmi.exceptionhandler.legacy;
 
 public class InvalidPatternException extends BadRequestException {
 

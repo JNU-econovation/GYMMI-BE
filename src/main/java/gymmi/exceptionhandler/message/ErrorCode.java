@@ -1,4 +1,7 @@
-package gymmi.exception.message;
+package gymmi.exceptionhandler.message;
+
+import gymmi.global.DuplicationCheckType;
+import gymmi.workspace.domain.WorkspaceStatus;
 
 public enum ErrorCode {
 
@@ -57,6 +60,9 @@ public enum ErrorCode {
     NOT_MATCHED_PASSWORD("비밀번호가 일치하지 않습니다.", 400),
     UNSUPPORTED_TYPE("지원하지 않는 type 입니다.", 400),
     NOT_FOUND_WORKER("존재하지 않는 참여자 입니다.", 400),
+    INVALID_DUPLICATION_CHECK_TYPE_VALUE("잘못된 query param value 입니다. : " + DuplicationCheckType.class.getName(), 400),
+    INVALID_WORKSPACE_STATUS_VALUE("잘못된 query param value 입니다. : " + WorkspaceStatus.class.getName(), 400),
+
 
     ;
 

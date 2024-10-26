@@ -1,6 +1,6 @@
 package gymmi.workspace.repository;
 
-import gymmi.exception.NotFoundResourcesException;
+import gymmi.exceptionhandler.legacy.NotFoundResourcesException;
 import gymmi.workspace.domain.Mission;
 import java.util.List;
 import java.util.Optional;

@@ -1,12 +1,11 @@
 package gymmi.workspace.repository;
 
-import gymmi.exception.class1.NotFoundException;
-import gymmi.exception.message.ErrorCode;
+import gymmi.exceptionhandler.exception.NotFoundException;
+import gymmi.exceptionhandler.message.ErrorCode;
 import gymmi.workspace.domain.Worker;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 public interface WorkerRepository extends JpaRepository<Worker, Long> {

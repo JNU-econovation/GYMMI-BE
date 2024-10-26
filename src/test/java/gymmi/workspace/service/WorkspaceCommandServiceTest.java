@@ -1,12 +1,12 @@
 package gymmi.workspace.service;
 
-import static gymmi.exception.message.ErrorCode.EXCEED_MAX_JOINED_WORKSPACE;
+import static gymmi.exceptionhandler.message.ErrorCode.EXCEED_MAX_JOINED_WORKSPACE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.field;
 
 import gymmi.entity.User;
-import gymmi.exception.message.ErrorCode;
+import gymmi.exceptionhandler.message.ErrorCode;
 import gymmi.workspace.domain.Mission;
 import gymmi.workspace.domain.Task;
 import gymmi.workspace.domain.Worker;

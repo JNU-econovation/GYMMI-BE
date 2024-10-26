@@ -5,10 +5,10 @@ import static gymmi.utils.Regexpressions.REGEX_영어_한글_쉼표_만;
 
 import gymmi.entity.TimeEntity;
 import gymmi.entity.User;
-import gymmi.exception.class1.InvalidNumberException;
-import gymmi.exception.class1.InvalidPatternException;
-import gymmi.exception.class1.InvalidRangeException;
-import gymmi.exception.message.ErrorCode;
+import gymmi.exceptionhandler.exception.InvalidNumberException;
+import gymmi.exceptionhandler.exception.InvalidPatternException;
+import gymmi.exceptionhandler.exception.InvalidRangeException;
+import gymmi.exceptionhandler.message.ErrorCode;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

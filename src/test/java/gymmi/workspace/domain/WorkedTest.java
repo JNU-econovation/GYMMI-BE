@@ -4,13 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import gymmi.entity.User;
-import gymmi.exception.message.ErrorCode;
+import gymmi.exceptionhandler.message.ErrorCode;
 import java.util.List;
-import java.util.function.Function;
 import org.instancio.Instancio;
-import org.instancio.Random;
 import org.instancio.Select;
-import org.instancio.support.DefaultRandom;
 import org.junit.jupiter.api.Test;
 
 class WorkedTest {

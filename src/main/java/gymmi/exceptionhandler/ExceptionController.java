@@ -1,6 +1,6 @@
-package gymmi.exception;
+package gymmi.exceptionhandler;
 
-import gymmi.exception.class1.GymmiException;
+import gymmi.exceptionhandler.exception.GymmiException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

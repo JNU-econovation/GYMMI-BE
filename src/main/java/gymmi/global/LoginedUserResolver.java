@@ -1,8 +1,8 @@
 package gymmi.global;
 
 import gymmi.entity.User;
-import gymmi.exception.class1.AuthenticationFailException;
-import gymmi.exception.message.ErrorCode;
+import gymmi.exceptionhandler.exception.AuthenticationFailException;
+import gymmi.exceptionhandler.message.ErrorCode;
 import gymmi.repository.UserRepository;
 import gymmi.service.TokenProcessor;
 import jakarta.servlet.http.HttpServletRequest;

@@ -5,7 +5,7 @@ import static gymmi.Fixtures.USER__SATISFIED_NICKNAME;
 import static gymmi.Fixtures.USER__SATISFIED_PASSWORD;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import gymmi.exception.InvalidPatternException;
+import gymmi.exceptionhandler.legacy.InvalidPatternException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;

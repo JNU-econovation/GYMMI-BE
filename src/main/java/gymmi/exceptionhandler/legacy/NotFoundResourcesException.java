@@ -1,4 +1,4 @@
-package gymmi.exception;
+package gymmi.exceptionhandler.legacy;
 
 public class NotFoundResourcesException extends NotFoundException {
 

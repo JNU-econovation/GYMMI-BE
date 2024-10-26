@@ -1,7 +1,7 @@
 package gymmi.workspace.domain;
 
-import gymmi.exception.class1.InvalidRangeException;
-import gymmi.exception.message.ErrorCode;
+import gymmi.exceptionhandler.exception.InvalidRangeException;
+import gymmi.exceptionhandler.message.ErrorCode;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;

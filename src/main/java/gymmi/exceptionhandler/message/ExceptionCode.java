@@ -1,4 +1,4 @@
-package gymmi.exception.message;
+package gymmi.exceptionhandler.message;
 
 public enum ExceptionCode {
     //@formatter:off

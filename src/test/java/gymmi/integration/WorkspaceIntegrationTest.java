@@ -26,7 +26,7 @@ import static gymmi.integration.Steps.회원_가입__USER_1_REQUEST;
 import static gymmi.integration.Steps.회원_가입__USER_2_REQUEST;
 import static gymmi.integration.Steps.회원가입_및_로그인_요청;
 
-import gymmi.exception.NotFoundResourcesException;
+import gymmi.exceptionhandler.legacy.NotFoundResourcesException;
 import gymmi.workspace.request.CreatingWorkspaceRequest;
 import gymmi.workspace.request.EditingIntroductionOfWorkspaceRequest;
 import gymmi.workspace.request.JoiningWorkspaceRequest;

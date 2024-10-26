@@ -1,4 +1,4 @@
-package gymmi.exception;
+package gymmi.exceptionhandler;
 
 import lombok.Getter;
 

@@ -3,7 +3,7 @@ package gymmi.workspace.domain;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Instancio.gen;
 
-import gymmi.exception.message.ErrorCode;
+import gymmi.exceptionhandler.message.ErrorCode;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
