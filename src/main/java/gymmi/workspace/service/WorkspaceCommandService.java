@@ -3,7 +3,9 @@ package gymmi.workspace.service;
 import gymmi.entity.User;
 import gymmi.exceptionhandler.exception.AlreadyExistException;
 import gymmi.exceptionhandler.exception.InvalidStateException;
+import gymmi.exceptionhandler.exception.NotHavePermissionException;
 import gymmi.exceptionhandler.message.ErrorCode;
+import gymmi.workspace.domain.FavoriteMission;
 import gymmi.workspace.domain.Mission;
 import gymmi.workspace.domain.Task;
 import gymmi.workspace.domain.Worked;
@@ -15,6 +17,7 @@ import gymmi.workspace.domain.WorkspaceEditManager;
 import gymmi.workspace.domain.WorkspaceInitializer;
 import gymmi.workspace.domain.WorkspacePreparingManager;
 import gymmi.workspace.domain.WorkspaceProgressManager;
+import gymmi.workspace.repository.FavoriteMissionRepository;
 import gymmi.workspace.repository.MissionRepository;
 import gymmi.workspace.repository.WorkedRepository;
 import gymmi.workspace.repository.WorkerRepository;
@@ -27,6 +30,7 @@ import gymmi.workspace.response.OpeningTasksBoxResponse;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,6 +43,7 @@ public class WorkspaceCommandService {
     private final WorkerRepository workerRepository;
     private final MissionRepository missionRepository;
     private final WorkedRepository workedRepository;
+    private final FavoriteMissionRepository favoriteMissionRepository;
 
     @Transactional
     // 중복 요청
@@ -160,6 +165,26 @@ public class WorkspaceCommandService {
 
         WorkspaceEditManager workspaceEditManager = new WorkspaceEditManager(workspace, worker);
         workspaceEditManager.edit(request.getDescription(), request.getTag());
+    }
+
+    public void toggleRegistrationOfFavoriteMission(User loginedUser, Long workspaceId, Long missionId) {
+        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
+        Worker worker = validateIfWorkerIsInWorkspace(loginedUser.getId(), workspace.getId());
+        Mission mission = missionRepository.getByMissionId(missionId);
+
+        mission.canBeReadIn(workspace);
+
+        Optional<FavoriteMission> favoriteMission =
+                favoriteMissionRepository.findByWorkerIdAndMissionId(worker.getId(), missionId);
+        favoriteMission.ifPresentOrElse(
+                fm -> favoriteMissionRepository.deleteById(fm.getId()),
+                () -> favoriteMissionRepository.save(new FavoriteMission(worker, mission))
+        );
+    }
+
+    private Worker validateIfWorkerIsInWorkspace(Long userId, Long workspaceId) {
+        return workerRepository.findByUserIdAndWorkspaceId(userId, workspaceId)
+                .orElseThrow(() -> new NotHavePermissionException(ErrorCode.NOT_JOINED_WORKSPACE));
     }
 
 }

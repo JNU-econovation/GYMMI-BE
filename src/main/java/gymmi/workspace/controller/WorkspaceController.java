@@ -207,4 +207,16 @@ public class WorkspaceController {
         CheckingCreationOfWorkspaceResponse response = workspaceQueryService.checkCreatingOfWorkspace(user);
         return ResponseEntity.ok().body(response);
     }
+
+    @PostMapping("/workspace/{workspaceId}/missions/{missionId}")
+    public ResponseEntity<Void> toggleRegistrationOfFavoriteMission(
+            @Logined User user,
+            @PathVariable Long workspaceId,
+            @PathVariable Long missionId
+    ) {
+        workspaceCommandService.toggleRegistrationOfFavoriteMission(user, workspaceId, missionId);
+        return ResponseEntity.ok().build();
+    }
+
+
 }

@@ -7,11 +7,13 @@ import static org.instancio.Select.field;
 
 import gymmi.entity.User;
 import gymmi.exceptionhandler.message.ErrorCode;
+import gymmi.helper.Persister;
 import gymmi.workspace.domain.Mission;
 import gymmi.workspace.domain.Task;
 import gymmi.workspace.domain.Worker;
 import gymmi.workspace.domain.Workspace;
 import gymmi.workspace.domain.WorkspaceStatus;
+import gymmi.workspace.repository.FavoriteMissionRepository;
 import gymmi.workspace.repository.MissionRepository;
 import gymmi.workspace.repository.WorkedRepository;
 import gymmi.workspace.repository.WorkerRepository;
@@ -27,10 +29,12 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @Transactional
+@Import(Persister.class)
 class WorkspaceCommandServiceTest {
 
     @Autowired
@@ -44,9 +48,14 @@ class WorkspaceCommandServiceTest {
     MissionRepository missionRepository;
     @Autowired
     WorkedRepository workedRepository;
+    @Autowired
+    FavoriteMissionRepository favoriteMissionRepository;
 
     @Autowired
     EntityManager entityManager;
+
+    @Autowired
+    Persister persister;
 
     @Nested
     class 워크스페이스_생성 {
@@ -98,7 +107,7 @@ class WorkspaceCommandServiceTest {
 
     }
 
-    
+
     @Test
     void 방장이_워크스페이스를_떠나는_경우_워크스페이스도_삭제된다() {
         // given
@@ -148,6 +157,22 @@ class WorkspaceCommandServiceTest {
 
         // then
 
+    }
+
+    @Test
+    void 미션을_즐겨찾기에_추가_또는_삭제_한다() {
+        // given
+        User user = persistUser();
+        Workspace workspace = persistWorkspace(user);
+        Worker worker = persister.persistWorker(user, workspace);
+        Mission mission = persister.persistMission(workspace, 10);
+
+        // when, then
+        workspaceCommandService.toggleRegistrationOfFavoriteMission(user, workspace.getId(), mission.getId());
+        assertThat(favoriteMissionRepository.findByWorkerIdAndMissionId(worker.getId(), mission.getId())).isNotEmpty();
+
+        workspaceCommandService.toggleRegistrationOfFavoriteMission(user, workspace.getId(), mission.getId());
+        assertThat(favoriteMissionRepository.findByWorkerIdAndMissionId(worker.getId(), mission.getId())).isEmpty();
     }
 
     private Worker persistWorker(User user, Workspace workspace) {
