@@ -3,6 +3,7 @@ package gymmi.workspace.service;
 import gymmi.entity.User;
 import gymmi.exceptionhandler.exception.NotHavePermissionException;
 import gymmi.exceptionhandler.message.ErrorCode;
+import gymmi.workspace.domain.FavoriteMission;
 import gymmi.workspace.domain.Mission;
 import gymmi.workspace.domain.Worked;
 import gymmi.workspace.domain.Worker;
@@ -11,6 +12,7 @@ import gymmi.workspace.domain.WorkoutRecord;
 import gymmi.workspace.domain.Workspace;
 import gymmi.workspace.domain.WorkspaceGateChecker;
 import gymmi.workspace.domain.WorkspaceStatus;
+import gymmi.workspace.repository.FavoriteMissionRepository;
 import gymmi.workspace.repository.MissionRepository;
 import gymmi.workspace.repository.WorkedRepository;
 import gymmi.workspace.repository.WorkerRepository;
@@ -46,6 +48,7 @@ public class WorkspaceQueryService {
     private final MissionRepository missionRepository;
     private final WorkedRepository workedRepository;
     private final WorkoutRecordRepository workoutRecordRepository;
+    private final FavoriteMissionRepository favoriteMissionRepository;
 
     public WorkspaceIntroductionResponse getWorkspaceIntroduction(User loginedUser, Long workspaceId) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
@@ -154,6 +157,17 @@ public class WorkspaceQueryService {
         int achievementScore = workspaceRepository.getAchievementScore(workspaceId);
 
         return new InsideWorkspaceResponse(workspace, workers, achievementScore, logiendUser);
+    }
+
+    public List<MissionResponse> getFavoriteMissions(User user, Long workspaceId) {
+        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
+        Worker worker = validateIfWorkerIsInWorkspace(user.getId(), workspace.getId());
+        List<FavoriteMission> favoriteMissions = favoriteMissionRepository.getAllByWorkerId(worker.getId());
+
+        return favoriteMissions.stream()
+                .map(FavoriteMission::getMission)
+                .map(MissionResponse::new)
+                .toList();
     }
 
 }

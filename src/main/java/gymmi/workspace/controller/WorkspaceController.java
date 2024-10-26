@@ -218,5 +218,14 @@ public class WorkspaceController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/workspace/{workspaceId}/missions/favorite")
+    public ResponseEntity<List<MissionResponse>> seeFavoriteMissions(
+            @Logined User user,
+            @PathVariable Long workspaceId
+    ) {
+        List<MissionResponse> responses = workspaceQueryService.getFavoriteMissions(user, workspaceId);
+        return ResponseEntity.ok().body(responses);
+    }
+
 
 }
