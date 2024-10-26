@@ -11,7 +11,6 @@ import gymmi.workspace.request.MatchingWorkspacePasswordRequest;
 import gymmi.workspace.request.WorkingMissionInWorkspaceRequest;
 import gymmi.workspace.response.CheckingCreationOfWorkspaceResponse;
 import gymmi.workspace.response.CheckingEntranceOfWorkspaceResponse;
-import gymmi.workspace.response.ContributedWorkingResponse;
 import gymmi.workspace.response.InsideWorkspaceResponse;
 import gymmi.workspace.response.JoinedWorkspaceResponse;
 import gymmi.workspace.response.MatchingWorkspacePasswordResponse;
@@ -19,6 +18,7 @@ import gymmi.workspace.response.MissionResponse;
 import gymmi.workspace.response.OpeningTasksBoxResponse;
 import gymmi.workspace.response.WorkingScoreResponse;
 import gymmi.workspace.response.WorkoutContextResponse;
+import gymmi.workspace.response.WorkoutRecordResponse;
 import gymmi.workspace.response.WorkspaceIntroductionResponse;
 import gymmi.workspace.response.WorkspaceResponse;
 import gymmi.workspace.service.WorkspaceCommandService;
@@ -157,6 +157,19 @@ public class WorkspaceController {
         WorkoutContextResponse response = workspaceQueryService.getWorkoutContext(user, workspaceId, userId);
         return ResponseEntity.ok().body(response);
     }
+
+    @GetMapping("/workspaces/{workspaceId}/workout-histories/{userId}/{workoutHistoryId}")
+    public ResponseEntity<List<WorkoutRecordResponse>> seeWorkoutRecordsOfWorkoutHistory(
+            @Logined User user,
+            @PathVariable Long workspaceId,
+            @PathVariable Long workoutHistoryId
+    ) {
+        List<WorkoutRecordResponse> response = workspaceQueryService.getWorkoutRecordsInWorkoutHistory(
+                user, workspaceId, workoutHistoryId
+        );
+        return ResponseEntity.ok().body(response);
+    }
+
 
     @GetMapping("/workspaces/{workspaceId}/tasks")
     public ResponseEntity<OpeningTasksBoxResponse> openTasksBoxInWorkspace(

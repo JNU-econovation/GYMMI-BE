@@ -29,6 +29,7 @@ public enum ErrorCode {
     INVALID_WORKSPACE_MISSION_NAME_LENGTH("미션 글자수는 20자까지 가능합니다.", 400),
     INVALID_WORKSPACE_GOAL_SCORE("목표점수는 100점에서 1000점까지 가능합니다.", 400),
     INVALID_WORKSPACE_MISSION_SCORE("미션 점수는 1~10점까지 가능합니다.", 400),
+    NO_WORKOUT_HISTORY_EXIST_IN_WORKSPACE("해당 워크스페이스의 운동 기록이 아니에요", 403),
 
 
     // user

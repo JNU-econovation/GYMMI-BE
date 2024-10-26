@@ -1,22 +1,19 @@
 package gymmi.workspace.response;
 
+import gymmi.workspace.domain.WorkoutRecord;
 import lombok.Getter;
-
-import java.time.LocalDateTime;
 
 @Getter
 public class WorkoutRecordResponse {
 
-    private final Long id;
-    private final boolean isApproved;
-    private final LocalDateTime createdAt;
-    private final Integer totalContributedScore;
+    private final String Mission;
+    private final Integer count;
+    private final Integer totalScore;
 
-    public WorkoutRecordResponse(Long id, boolean isApproved, LocalDateTime createdAt, Integer totalContributedScore) {
-        this.id = id;
-        this.isApproved = isApproved;
-        this.createdAt = createdAt;
-        this.totalContributedScore = totalContributedScore;
+    public WorkoutRecordResponse(WorkoutRecord workoutRecord) {
+        this.Mission = workoutRecord.getMission().getName();
+        this.count = workoutRecord.getCount();
+        this.totalScore = workoutRecord.getSum();
     }
 
 }

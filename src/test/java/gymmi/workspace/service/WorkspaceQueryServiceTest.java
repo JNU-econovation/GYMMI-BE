@@ -28,7 +28,7 @@ class WorkspaceQueryServiceTest {
     WorkspaceQueryService workspaceQueryService;
 
     @Test
-    void 참여자의_운동_현황을_확인_할_수_있다() {
+    void 참여자의_운동_현황을_확인_한다() {
         // given
         User creator = persister.persistUser();
         User user = persister.persistUser();

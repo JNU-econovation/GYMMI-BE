@@ -17,7 +17,7 @@ class WorkspaceEditManagerTest {
                 .create();
         Worker worker = Instancio.of(Worker.class)
                 .set(Select.field(Worker::getWorkspace), workspace)
-                .filter(Select.field(Worker::getUser), (User u) -> !equals(workspace.getCreator()))
+                .filter(Select.field(Worker::getUser), (User user) -> !user.equals(workspace.getCreator()))
                 .create();
 
         //when, then

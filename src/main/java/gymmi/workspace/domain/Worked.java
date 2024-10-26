@@ -1,14 +1,25 @@
 package gymmi.workspace.domain;
 
+import static gymmi.exception.message.ErrorCode.NO_WORKOUT_HISTORY_EXIST_IN_WORKSPACE;
+
 import gymmi.entity.TimeEntity;
-import jakarta.persistence.*;
+import gymmi.exception.class1.NotHavePermissionException;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
@@ -61,6 +72,12 @@ public class Worked extends TimeEntity {
         return workoutRecords.stream()
                 .map(WorkoutRecord::getSum)
                 .reduce(0, Integer::sum);
+    }
+
+    public void canBeReadIn(Workspace workspace) {
+        if (!worker.isJoinedIn(workspace)) {
+            throw new NotHavePermissionException(NO_WORKOUT_HISTORY_EXIST_IN_WORKSPACE);
+        }
     }
 
 }

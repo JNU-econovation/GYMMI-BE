@@ -7,12 +7,14 @@ import gymmi.workspace.domain.Mission;
 import gymmi.workspace.domain.Worked;
 import gymmi.workspace.domain.Worker;
 import gymmi.workspace.domain.WorkoutMetric;
+import gymmi.workspace.domain.WorkoutRecord;
 import gymmi.workspace.domain.Workspace;
 import gymmi.workspace.domain.WorkspaceGateChecker;
 import gymmi.workspace.domain.WorkspaceStatus;
 import gymmi.workspace.repository.MissionRepository;
 import gymmi.workspace.repository.WorkedRepository;
 import gymmi.workspace.repository.WorkerRepository;
+import gymmi.workspace.repository.WorkoutRecordRepository;
 import gymmi.workspace.repository.WorkspaceRepository;
 import gymmi.workspace.response.CheckingCreationOfWorkspaceResponse;
 import gymmi.workspace.response.CheckingEntranceOfWorkspaceResponse;
@@ -21,6 +23,7 @@ import gymmi.workspace.response.JoinedWorkspaceResponse;
 import gymmi.workspace.response.MatchingWorkspacePasswordResponse;
 import gymmi.workspace.response.MissionResponse;
 import gymmi.workspace.response.WorkoutContextResponse;
+import gymmi.workspace.response.WorkoutRecordResponse;
 import gymmi.workspace.response.WorkspaceIntroductionResponse;
 import gymmi.workspace.response.WorkspaceResponse;
 import java.util.List;
@@ -42,6 +45,7 @@ public class WorkspaceQueryService {
     private final WorkerRepository workerRepository;
     private final MissionRepository missionRepository;
     private final WorkedRepository workedRepository;
+    private final WorkoutRecordRepository workoutRecordRepository;
 
     public WorkspaceIntroductionResponse getWorkspaceIntroduction(User loginedUser, Long workspaceId) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
@@ -107,6 +111,21 @@ public class WorkspaceQueryService {
                 workoutMetric.getScoreGapFrom(firstPlaceScore),
                 workoutHistories
         );
+    }
+
+    public List<WorkoutRecordResponse> getWorkoutRecordsInWorkoutHistory(
+            User loginedUser,
+            Long workspaceId,
+            Long workoutHistoryId
+    ) {
+        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
+        validateIfWorkerIsInWorkspace(loginedUser.getId(), workspace.getId());
+        Worked worked = workedRepository.getById(workoutHistoryId);
+        worked.canBeReadIn(workspace);
+        List<WorkoutRecord> workoutRecords = workoutRecordRepository.getAllByWorkoutHistoryId(workoutHistoryId);
+        return workoutRecords.stream()
+                .map(WorkoutRecordResponse::new)
+                .toList();
     }
 
     public CheckingEntranceOfWorkspaceResponse checkEnteringWorkspace(User loginedUser, Long workspaceId) {

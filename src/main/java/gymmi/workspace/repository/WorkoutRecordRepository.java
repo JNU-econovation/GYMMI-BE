@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface WorkoutRecordRepository extends JpaRepository<WorkoutRecord, Long> {
 
-    @Query("select w from WorkoutRecord w where w.worked.worker.id = :workerId")
-    List<WorkoutRecord> getAllByWorkerId(Long workerId);
+    @Query("select w from WorkoutRecord w where w.worked.id = :workoutHistoryId")
+    List<WorkoutRecord> getAllByWorkoutHistoryId(Long workoutHistoryId);
 
 }
