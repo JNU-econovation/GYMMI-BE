@@ -4,6 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import gymmi.exceptionhandler.message.ErrorCode;
+import gymmi.workspace.domain.entity.Mission;
+import gymmi.workspace.domain.entity.WorkoutHistory;
+import gymmi.workspace.domain.entity.Worker;
+import gymmi.workspace.domain.entity.Workspace;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -82,11 +86,11 @@ class WorkspaceProgressManagerTest {
             int sum = mission.getScore() * missionCount + mission1.getScore() * missionCount1;
 
             // when
-            Worked worked = workspaceProgressManager.doWorkout(worker, workouts);
+            WorkoutHistory workoutHistory = workspaceProgressManager.doWorkout(worker, workouts);
 
             // then
-            assertThat(worked.getSum()).isEqualTo(sum);
-            assertThat(worked.getWorkoutRecords()).hasSize(2);
+            assertThat(workoutHistory.getSum()).isEqualTo(sum);
+            assertThat(workoutHistory.getWorkoutRecords()).hasSize(2);
 //            assertThat(worked.getWorkoutRecords()).containsExactlyInAnyOrder(
 //                            new WorkoutRecord(mission, missionCount),
 //                            new WorkoutRecord(mission1, missionCount1)

@@ -3,26 +3,17 @@ package gymmi.workspace.service;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import gymmi.entity.User;
-import gymmi.helper.Persister;
-import gymmi.workspace.domain.Mission;
-import gymmi.workspace.domain.Worker;
-import gymmi.workspace.domain.Workspace;
 import gymmi.workspace.domain.WorkspaceStatus;
+import gymmi.workspace.domain.entity.Mission;
+import gymmi.workspace.domain.entity.Worker;
+import gymmi.workspace.domain.entity.Workspace;
 import gymmi.workspace.response.WorkoutContextResponse;
-import jakarta.transaction.Transactional;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 
-@SpringBootTest
-@Transactional
-@Import(Persister.class)
-class WorkspaceQueryServiceTest {
 
-    @Autowired
-    Persister persister;
+class WorkspaceQueryServiceTest extends IntegrationTest {
 
     @Autowired
     WorkspaceQueryService workspaceQueryService;

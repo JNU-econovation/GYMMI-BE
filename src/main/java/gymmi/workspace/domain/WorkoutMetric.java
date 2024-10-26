@@ -1,13 +1,14 @@
 package gymmi.workspace.domain;
 
+import gymmi.workspace.domain.entity.WorkoutHistory;
 import java.util.Collections;
 import java.util.List;
 
 public class WorkoutMetric {
 
-    private final List<Worked> workoutHistories;
+    private final List<WorkoutHistory> workoutHistories;
 
-    public WorkoutMetric(List<Worked> workoutHistories) {
+    public WorkoutMetric(List<WorkoutHistory> workoutHistories) {
         this.workoutHistories = Collections.unmodifiableList(workoutHistories);
     }
 
@@ -25,7 +26,7 @@ public class WorkoutMetric {
 
     public int getSum() {
         return workoutHistories.stream()
-                .map(Worked::getTotalScore)
+                .map(WorkoutHistory::getTotalScore)
                 .reduce(0, Integer::sum);
     }
 

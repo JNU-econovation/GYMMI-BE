@@ -1,4 +1,4 @@
-package gymmi.workspace.domain;
+package gymmi.workspace.domain.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -25,7 +25,7 @@ public class WorkoutRecord {
 
     @JoinColumn(name = "working_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    private Worked worked;
+    private WorkoutHistory workoutHistory;
 
     @JoinColumn(name = "mission_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
@@ -39,8 +39,8 @@ public class WorkoutRecord {
         this.count = count;
     }
 
-    void setWorked(Worked worked) {
-        this.worked = worked;
+    void setWorkoutHistory(WorkoutHistory workoutHistory) {
+        this.workoutHistory = workoutHistory;
     }
 
     public int getSum() {

@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import gymmi.entity.User;
 import gymmi.exceptionhandler.message.ErrorCode;
+import gymmi.workspace.domain.entity.Mission;
+import gymmi.workspace.domain.entity.Workspace;
 import gymmi.workspace.request.CreatingWorkspaceRequest;
 import gymmi.workspace.request.MissionRequest;
 import java.util.List;

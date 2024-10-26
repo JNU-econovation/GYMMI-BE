@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 
 @Disabled
-public class MyPageIntegrationTest extends IntegrationTest {
+public class MyPageEndToEndTest extends EndToEndTest {
 
     String defaultUserToken;
     String user1Token;

@@ -7,15 +7,14 @@ import static org.instancio.Select.field;
 
 import gymmi.entity.User;
 import gymmi.exceptionhandler.message.ErrorCode;
-import gymmi.helper.Persister;
-import gymmi.workspace.domain.Mission;
-import gymmi.workspace.domain.Task;
-import gymmi.workspace.domain.Worker;
-import gymmi.workspace.domain.Workspace;
+import gymmi.workspace.domain.entity.Mission;
+import gymmi.workspace.domain.entity.Task;
+import gymmi.workspace.domain.entity.Worker;
+import gymmi.workspace.domain.entity.Workspace;
 import gymmi.workspace.domain.WorkspaceStatus;
 import gymmi.workspace.repository.FavoriteMissionRepository;
 import gymmi.workspace.repository.MissionRepository;
-import gymmi.workspace.repository.WorkedRepository;
+import gymmi.workspace.repository.WorkoutHistoryRepository;
 import gymmi.workspace.repository.WorkerRepository;
 import gymmi.workspace.repository.WorkspaceRepository;
 import gymmi.workspace.request.CreatingWorkspaceRequest;
@@ -28,14 +27,8 @@ import org.instancio.Select;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
-import org.springframework.transaction.annotation.Transactional;
 
-@SpringBootTest
-@Transactional
-@Import(Persister.class)
-class WorkspaceCommandServiceTest {
+class WorkspaceCommandServiceTest extends IntegrationTest {
 
     @Autowired
     WorkspaceCommandService workspaceCommandService;
@@ -47,15 +40,12 @@ class WorkspaceCommandServiceTest {
     @Autowired
     MissionRepository missionRepository;
     @Autowired
-    WorkedRepository workedRepository;
+    WorkoutHistoryRepository workoutHistoryRepository;
     @Autowired
     FavoriteMissionRepository favoriteMissionRepository;
 
     @Autowired
     EntityManager entityManager;
-
-    @Autowired
-    Persister persister;
 
     @Nested
     class 워크스페이스_생성 {
@@ -144,7 +134,7 @@ class WorkspaceCommandServiceTest {
         workspaceCommandService.workMissionsInWorkspace(user, workspace.getId(), requests);
 
         // then
-        assertThat(workedRepository.getAllByWorkerId(worker.getId())).hasSize(1);
+        assertThat(workoutHistoryRepository.getAllByWorkerId(worker.getId())).hasSize(1);
         assertThat(worker.getContributedScore()).isEqualTo(mission.getScore() * count);
         assertThat(workspace.getStatus()).isEqualTo(WorkspaceStatus.COMPLETED);
     }

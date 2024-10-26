@@ -1,6 +1,6 @@
 package gymmi.workspace.response;
 
-import gymmi.workspace.domain.Workspace;
+import gymmi.workspace.domain.entity.Workspace;
 import lombok.Getter;
 
 @Getter

@@ -1,10 +1,10 @@
 package gymmi.exceptionhandler.exception;
 
 import gymmi.exceptionhandler.message.ErrorCode;
-import gymmi.exceptionhandler.message.ExceptionCode;
+import gymmi.exceptionhandler.message.ExceptionType;
 
 public class UnsupportedException extends GymmiException {
-    public static final ExceptionCode EXCEPTION_CODE = ExceptionCode.UNSUPPORTED;
+    public static final ExceptionType EXCEPTION_CODE = ExceptionType.UNSUPPORTED;
 
     public UnsupportedException(ErrorCode errorCode) {
         super(errorCode, EXCEPTION_CODE);

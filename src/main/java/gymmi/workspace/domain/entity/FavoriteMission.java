@@ -1,4 +1,4 @@
-package gymmi.workspace.domain;
+package gymmi.workspace.domain.entity;
 
 import gymmi.entity.TimeEntity;
 import jakarta.persistence.Entity;
@@ -8,7 +8,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import java.awt.print.Pageable;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

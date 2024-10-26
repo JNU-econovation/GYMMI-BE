@@ -1,6 +1,6 @@
 package gymmi.exceptionhandler.message;
 
-public enum ExceptionCode {
+public enum ExceptionType {
     //@formatter:off
     ALREADY_EXISTS("(어떠한 것이든) 이미 존재하는 경우"),
 
@@ -28,7 +28,7 @@ public enum ExceptionCode {
     //@formatter:off
     private final String description;
 
-    ExceptionCode(String description) {
+    ExceptionType(String description) {
         this.description = description;
     }
 

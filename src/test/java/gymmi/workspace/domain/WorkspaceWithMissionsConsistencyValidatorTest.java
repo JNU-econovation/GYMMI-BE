@@ -5,6 +5,8 @@ import static gymmi.workspace.domain.WorkspaceWithMissionsConsistencyValidator.v
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import gymmi.exceptionhandler.message.ErrorCode;
+import gymmi.workspace.domain.entity.Mission;
+import gymmi.workspace.domain.entity.Workspace;
 import java.util.List;
 import org.instancio.Instancio;
 import org.instancio.Select;

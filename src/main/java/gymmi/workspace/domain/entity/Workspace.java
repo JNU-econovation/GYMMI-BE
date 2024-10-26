@@ -1,4 +1,4 @@
-package gymmi.workspace.domain;
+package gymmi.workspace.domain.entity;
 
 import static gymmi.utils.Regexpressions.REGEX_영어_한글_숫자_만;
 import static gymmi.utils.Regexpressions.REGEX_영어_한글_쉼표_만;
@@ -9,6 +9,7 @@ import gymmi.exceptionhandler.exception.InvalidNumberException;
 import gymmi.exceptionhandler.exception.InvalidPatternException;
 import gymmi.exceptionhandler.exception.InvalidRangeException;
 import gymmi.exceptionhandler.message.ErrorCode;
+import gymmi.workspace.domain.WorkspaceStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

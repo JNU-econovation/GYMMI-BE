@@ -48,7 +48,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 
 @Disabled
-public class WorkspaceIntegrationTest extends IntegrationTest {
+public class WorkspaceEndToEndTest extends EndToEndTest {
 
     String defaultUserToken;
     String user1Token;

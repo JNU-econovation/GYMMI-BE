@@ -1,5 +1,7 @@
 package gymmi.workspace.domain;
 
+import gymmi.workspace.domain.entity.Worker;
+import gymmi.workspace.domain.entity.Workspace;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -1,5 +1,7 @@
 package gymmi.workspace.domain;
 
+import gymmi.workspace.domain.entity.Mission;
+import gymmi.workspace.domain.entity.WorkoutRecord;
 import java.util.List;
 
 public class WorkoutSummation {

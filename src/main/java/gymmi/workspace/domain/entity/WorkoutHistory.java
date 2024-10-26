@@ -1,4 +1,4 @@
-package gymmi.workspace.domain;
+package gymmi.workspace.domain.entity;
 
 import static gymmi.exceptionhandler.message.ErrorCode.NO_WORKOUT_HISTORY_EXIST_IN_WORKSPACE;
 
@@ -25,7 +25,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
-public class Worked extends TimeEntity {
+public class WorkoutHistory extends TimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,10 +41,10 @@ public class Worked extends TimeEntity {
     @Column(nullable = false)
     private Integer totalScore;
 
-    @OneToMany(mappedBy = "worked", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @OneToMany(mappedBy = "workoutHistory", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<WorkoutRecord> workoutRecords = new ArrayList<>();
 
-    public Worked(Worker worker, List<WorkoutRecord> workoutRecords) {
+    public WorkoutHistory(Worker worker, List<WorkoutRecord> workoutRecords) {
         this.worker = worker;
         this.workoutRecords = new ArrayList<>(workoutRecords);
         setRelations(workoutRecords);
@@ -54,7 +54,7 @@ public class Worked extends TimeEntity {
 
     private void setRelations(List<WorkoutRecord> workoutRecords) {
         workoutRecords.stream()
-                .forEach(workoutRecord -> workoutRecord.setWorked(this));
+                .forEach(workoutRecord -> workoutRecord.setWorkoutHistory(this));
     }
 
     public void apply() {

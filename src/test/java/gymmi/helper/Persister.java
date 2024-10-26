@@ -4,12 +4,12 @@ import static org.instancio.Select.field;
 
 import gymmi.entity.User;
 import gymmi.repository.UserRepository;
-import gymmi.workspace.domain.Mission;
-import gymmi.workspace.domain.Task;
-import gymmi.workspace.domain.Worked;
-import gymmi.workspace.domain.Worker;
-import gymmi.workspace.domain.WorkoutRecord;
-import gymmi.workspace.domain.Workspace;
+import gymmi.workspace.domain.entity.Mission;
+import gymmi.workspace.domain.entity.Task;
+import gymmi.workspace.domain.entity.WorkoutHistory;
+import gymmi.workspace.domain.entity.Worker;
+import gymmi.workspace.domain.entity.WorkoutRecord;
+import gymmi.workspace.domain.entity.Workspace;
 import gymmi.workspace.domain.WorkspaceStatus;
 import gymmi.workspace.repository.WorkerRepository;
 import gymmi.workspace.repository.WorkspaceRepository;
@@ -100,15 +100,15 @@ public class Persister {
         return worker;
     }
 
-    public Worked persistWorkoutHistoryAndApply(Worker worker, Map<Mission, Integer> workouts) {
+    public WorkoutHistory persistWorkoutHistoryAndApply(Worker worker, Map<Mission, Integer> workouts) {
         List<WorkoutRecord> workoutRecords = workouts.entrySet().stream()
                 .map(workout -> new WorkoutRecord(workout.getKey(), workout.getValue()))
                 .toList();
         Worker managedWorker = entityManager.find(Worker.class, worker.getId());
-        Worked worked = new Worked(managedWorker, workoutRecords);
-        entityManager.persist(worked);
-        worked.apply();
-        return worked;
+        WorkoutHistory workoutHistory = new WorkoutHistory(managedWorker, workoutRecords);
+        entityManager.persist(workoutHistory);
+        workoutHistory.apply();
+        return workoutHistory;
     }
 
 

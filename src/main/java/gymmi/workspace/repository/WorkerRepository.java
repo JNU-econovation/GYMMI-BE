@@ -2,7 +2,7 @@ package gymmi.workspace.repository;
 
 import gymmi.exceptionhandler.exception.NotFoundException;
 import gymmi.exceptionhandler.message.ErrorCode;
-import gymmi.workspace.domain.Worker;
+import gymmi.workspace.domain.entity.Worker;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;

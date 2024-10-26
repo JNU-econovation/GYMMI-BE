@@ -1,11 +1,11 @@
 package gymmi.exceptionhandler.exception;
 
 import gymmi.exceptionhandler.message.ErrorCode;
-import gymmi.exceptionhandler.message.ExceptionCode;
+import gymmi.exceptionhandler.message.ExceptionType;
 
 public class FileException extends GymmiException {
 
-    public static final ExceptionCode EXCEPTION_CODE = ExceptionCode.FILE_RELATED;
+    public static final ExceptionType EXCEPTION_CODE = ExceptionType.FILE_RELATED;
 
     public FileException(ErrorCode errorCode) {
         super(errorCode, EXCEPTION_CODE);
@@ -15,12 +15,12 @@ public class FileException extends GymmiException {
         super(errorCode, EXCEPTION_CODE, throwable);
     }
 
-    protected FileException(ErrorCode errorCode, ExceptionCode exceptionCode) {
-        super(errorCode, exceptionCode);
+    protected FileException(ErrorCode errorCode, ExceptionType exceptionType) {
+        super(errorCode, exceptionType);
     }
 
-    protected FileException(ErrorCode errorCode, ExceptionCode exceptionCode, Throwable throwable) {
-        super(errorCode, exceptionCode, throwable);
+    protected FileException(ErrorCode errorCode, ExceptionType exceptionType, Throwable throwable) {
+        super(errorCode, exceptionType, throwable);
     }
 
 }

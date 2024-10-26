@@ -1,10 +1,10 @@
 package gymmi.exceptionhandler.exception;
 
 import gymmi.exceptionhandler.message.ErrorCode;
-import gymmi.exceptionhandler.message.ExceptionCode;
+import gymmi.exceptionhandler.message.ExceptionType;
 
 public class InvalidNumberException extends GymmiException {
-    public static final ExceptionCode EXCEPTION_CODE = ExceptionCode.INVALID_NUMBER;
+    public static final ExceptionType EXCEPTION_CODE = ExceptionType.INVALID_NUMBER;
 
     public InvalidNumberException(ErrorCode errorCode) {
         super(errorCode, EXCEPTION_CODE);

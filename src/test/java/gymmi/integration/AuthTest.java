@@ -25,7 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 
 @Disabled
-public class AuthTest extends IntegrationTest {
+public class AuthTest extends EndToEndTest {
 
     @Nested
     class 회원_가입 {

@@ -1,6 +1,6 @@
 package gymmi.workspace.response;
 
-import gymmi.workspace.domain.Worked;
+import gymmi.workspace.domain.entity.WorkoutHistory;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -13,10 +13,10 @@ public class WorkoutHistoryResponse {
     private LocalDateTime createdAt;
     private Integer sumOfScore;
 
-    public WorkoutHistoryResponse(Worked worked) {
-        this.id = worked.getId();
-        this.isApproved = worked.isApproved();
-        this.createdAt = worked.getCreatedAt();
-        this.sumOfScore = worked.getSum();
+    public WorkoutHistoryResponse(WorkoutHistory workoutHistory) {
+        this.id = workoutHistory.getId();
+        this.isApproved = workoutHistory.isApproved();
+        this.createdAt = workoutHistory.getCreatedAt();
+        this.sumOfScore = workoutHistory.getSum();
     }
 }

@@ -3,18 +3,18 @@ package gymmi.workspace.service;
 import gymmi.entity.User;
 import gymmi.exceptionhandler.exception.NotHavePermissionException;
 import gymmi.exceptionhandler.message.ErrorCode;
-import gymmi.workspace.domain.FavoriteMission;
-import gymmi.workspace.domain.Mission;
-import gymmi.workspace.domain.Worked;
-import gymmi.workspace.domain.Worker;
+import gymmi.workspace.domain.entity.FavoriteMission;
+import gymmi.workspace.domain.entity.Mission;
+import gymmi.workspace.domain.entity.WorkoutHistory;
+import gymmi.workspace.domain.entity.Worker;
 import gymmi.workspace.domain.WorkoutMetric;
-import gymmi.workspace.domain.WorkoutRecord;
-import gymmi.workspace.domain.Workspace;
+import gymmi.workspace.domain.entity.WorkoutRecord;
+import gymmi.workspace.domain.entity.Workspace;
 import gymmi.workspace.domain.WorkspaceGateChecker;
 import gymmi.workspace.domain.WorkspaceStatus;
 import gymmi.workspace.repository.FavoriteMissionRepository;
 import gymmi.workspace.repository.MissionRepository;
-import gymmi.workspace.repository.WorkedRepository;
+import gymmi.workspace.repository.WorkoutHistoryRepository;
 import gymmi.workspace.repository.WorkerRepository;
 import gymmi.workspace.repository.WorkoutRecordRepository;
 import gymmi.workspace.repository.WorkspaceRepository;
@@ -46,7 +46,7 @@ public class WorkspaceQueryService {
     private final WorkspaceRepository workspaceRepository;
     private final WorkerRepository workerRepository;
     private final MissionRepository missionRepository;
-    private final WorkedRepository workedRepository;
+    private final WorkoutHistoryRepository workoutHistoryRepository;
     private final WorkoutRecordRepository workoutRecordRepository;
     private final FavoriteMissionRepository favoriteMissionRepository;
 
@@ -105,7 +105,7 @@ public class WorkspaceQueryService {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
         validateIfWorkerIsInWorkspace(loginedUser.getId(), workspace.getId());
         Worker targetWorker = validateIfWorkerIsInWorkspace(userId, workspace.getId());
-        List<Worked> workoutHistories = workedRepository.getAllByWorkerId(targetWorker.getId());
+        List<WorkoutHistory> workoutHistories = workoutHistoryRepository.getAllByWorkerId(targetWorker.getId());
         int firstPlaceScore = workspaceRepository.getFirstPlaceScoreIn(workspace.getId());
 
         WorkoutMetric workoutMetric = new WorkoutMetric(workoutHistories);
@@ -123,8 +123,8 @@ public class WorkspaceQueryService {
     ) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
         validateIfWorkerIsInWorkspace(loginedUser.getId(), workspace.getId());
-        Worked worked = workedRepository.getById(workoutHistoryId);
-        worked.canBeReadIn(workspace);
+        WorkoutHistory workoutHistory = workoutHistoryRepository.getById(workoutHistoryId);
+        workoutHistory.canBeReadIn(workspace);
         List<WorkoutRecord> workoutRecords = workoutRecordRepository.getAllByWorkoutHistoryId(workoutHistoryId);
         return workoutRecords.stream()
                 .map(WorkoutRecordResponse::new)

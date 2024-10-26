@@ -1,7 +1,7 @@
 package gymmi.workspace.repository;
 
 import gymmi.exceptionhandler.legacy.NotFoundResourcesException;
-import gymmi.workspace.domain.Mission;
+import gymmi.workspace.domain.entity.Mission;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;

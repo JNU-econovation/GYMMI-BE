@@ -1,4 +1,4 @@
-package gymmi.workspace.domain;
+package gymmi.workspace.domain.entity;
 
 import gymmi.exceptionhandler.exception.InvalidRangeException;
 import gymmi.exceptionhandler.exception.NotHavePermissionException;

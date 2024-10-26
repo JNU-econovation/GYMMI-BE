@@ -1,4 +1,4 @@
-package gymmi.workspace.domain;
+package gymmi.workspace.domain.entity;
 
 import gymmi.entity.TimeEntity;
 import gymmi.entity.User;

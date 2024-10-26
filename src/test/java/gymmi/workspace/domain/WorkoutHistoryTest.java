@@ -5,12 +5,17 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import gymmi.entity.User;
 import gymmi.exceptionhandler.message.ErrorCode;
+import gymmi.workspace.domain.entity.Task;
+import gymmi.workspace.domain.entity.WorkoutHistory;
+import gymmi.workspace.domain.entity.Worker;
+import gymmi.workspace.domain.entity.WorkoutRecord;
+import gymmi.workspace.domain.entity.Workspace;
 import java.util.List;
 import org.instancio.Instancio;
 import org.instancio.Select;
 import org.junit.jupiter.api.Test;
 
-class WorkedTest {
+class WorkoutHistoryTest {
 
     @Test
     void 운동점수가_반영된다() {
@@ -20,14 +25,14 @@ class WorkedTest {
         Task task = Instancio.create(Task.class);
         List<WorkoutRecord> workoutRecords = Instancio.ofList(WorkoutRecord.class).size(2).create();
         Worker worker = new Worker(user, workspace, task);
-        Worked worked = new Worked(worker, workoutRecords);
+        WorkoutHistory workoutHistory = new WorkoutHistory(worker, workoutRecords);
         assertThat(worker.getContributedScore()).isEqualTo(0);
 
         // when
-        worked.apply();
+        workoutHistory.apply();
 
         // then
-        assertThat(worker.getContributedScore()).isEqualTo(worked.getSum());
+        assertThat(worker.getContributedScore()).isEqualTo(workoutHistory.getSum());
     }
 
     @Test
@@ -38,13 +43,13 @@ class WorkedTest {
                 .set(Select.field(Worker::getWorkspace), workspace)
                 .create();
         List<WorkoutRecord> workoutRecords = Instancio.ofList(WorkoutRecord.class).size(2).create();
-        Worked worked = new Worked(worker, workoutRecords);
+        WorkoutHistory workoutHistory = new WorkoutHistory(worker, workoutRecords);
         Workspace workspace1 = Instancio.of(Workspace.class)
                 .filter(Select.field(Workspace::getId), (Long id) -> !id.equals(workspace.getId()))
                 .create();
 
         // when, then
-        assertThatThrownBy(() -> worked.canBeReadIn(workspace1))
+        assertThatThrownBy(() -> workoutHistory.canBeReadIn(workspace1))
                 .hasMessage(ErrorCode.NO_WORKOUT_HISTORY_EXIST_IN_WORKSPACE.getMessage());
     }
 

@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 @Disabled
-public class DuplicationCheckTest extends IntegrationTest {
+public class DuplicationCheckTest extends EndToEndTest {
 
     private static final String TYPE = "type";
     private static final String VALUE = "value";
