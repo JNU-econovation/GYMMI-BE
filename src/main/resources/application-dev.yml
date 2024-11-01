@@ -30,3 +30,14 @@ jwt:
 
 file:
   storage-path: ${FILE_STORAGE_PATH}
+
+
+cloud:
+  aws:
+    s3:
+      bucket: ${BUCKET_NAME} # S3 버킷 이름
+      path: ${FILE_PATH} # S3에서 이미지 저장에 활용할 기본 경로
+    region:
+      static: ${REGION} # AWS Region
+    stack:
+      auto: false
