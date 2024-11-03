@@ -23,7 +23,7 @@ public class WorkoutRecord {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JoinColumn(name = "working_id", nullable = false)
+    @JoinColumn(name = "workout_history_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private WorkoutHistory workoutHistory;
 

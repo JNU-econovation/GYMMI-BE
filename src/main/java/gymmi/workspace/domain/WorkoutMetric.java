@@ -1,6 +1,7 @@
 package gymmi.workspace.domain;
 
 import gymmi.workspace.domain.entity.WorkoutHistory;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class WorkoutMetric {
     public int getBestWorkoutScore() {
         return workoutHistories.stream()
                 .mapToInt(w -> w.getTotalScore())
-                .max().getAsInt();
+                .max().orElse(0);
     }
 
     public int getSum() {
