@@ -17,16 +17,16 @@ public class S3Controller {
     @GetMapping("/images/workout-proof/presignedUrl")
     public ResponseEntity<PresignedUrlResponse> s3(
     ) {
-        PresignedUrlResponse response = s3Service.getPutPresignedUrl();
+        PresignedUrlResponse response = s3Service.getPresingedUrlWithPut();
         return ResponseEntity.ok().body(response);
     }
 
     @GetMapping("/images/workout-proof/presignedUrl/get")
     public ResponseEntity<String> s3(
-            @RequestParam("imageUrl") String imageUrl
+            @RequestParam("imageUrl") String filenmae
     ) {
-        String url = s3Service.getPresignedUrl(imageUrl);
-        return ResponseEntity.ok().body(url);
+        String presignedUrl = s3Service.getPresignedUrl(filenmae);
+        return ResponseEntity.ok().body(presignedUrl);
     }
 
 

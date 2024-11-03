@@ -18,9 +18,6 @@ spring:
 cloud:
   aws:
     s3:
-      bucket: abc # S3 버킷 이름
-      path: abc # S3에서 이미지 저장에 활용할 기본 경로
-    region:
-      static: abc # AWS Region
+      bucket: abc
     stack:
       auto: false

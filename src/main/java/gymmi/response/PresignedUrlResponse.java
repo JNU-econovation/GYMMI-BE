@@ -8,8 +8,8 @@ public class PresignedUrlResponse {
     private final String presignedUrl;
     private final String imageUrl;
 
-    public PresignedUrlResponse(String presignedUrl, String imageUrl) {
+    public PresignedUrlResponse(String presignedUrl, String filename) {
         this.presignedUrl = presignedUrl;
-        this.imageUrl = imageUrl;
+        this.imageUrl = filename;
     }
 }

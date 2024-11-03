@@ -1,5 +1,6 @@
 package gymmi.global;
 
+import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,7 +16,7 @@ public class S3Config {
     @Bean
     public AmazonS3 amazonS3() {
         return AmazonS3ClientBuilder.standard()
-                .withRegion(region)
+                .withRegion(Regions.AP_NORTHEAST_2)
                 .build();
     }
 }
