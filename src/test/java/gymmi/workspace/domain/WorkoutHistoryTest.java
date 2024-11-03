@@ -6,8 +6,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import gymmi.entity.User;
 import gymmi.exceptionhandler.message.ErrorCode;
 import gymmi.workspace.domain.entity.Task;
-import gymmi.workspace.domain.entity.WorkoutHistory;
 import gymmi.workspace.domain.entity.Worker;
+import gymmi.workspace.domain.entity.WorkoutHistory;
+import gymmi.workspace.domain.entity.WorkoutProof;
 import gymmi.workspace.domain.entity.WorkoutRecord;
 import gymmi.workspace.domain.entity.Workspace;
 import java.util.List;
@@ -25,7 +26,8 @@ class WorkoutHistoryTest {
         Task task = Instancio.create(Task.class);
         List<WorkoutRecord> workoutRecords = Instancio.ofList(WorkoutRecord.class).size(2).create();
         Worker worker = new Worker(user, workspace, task);
-        WorkoutHistory workoutHistory = new WorkoutHistory(worker, workoutRecords);
+        WorkoutProof workoutProof = Instancio.of(WorkoutProof.class).create();
+        WorkoutHistory workoutHistory = new WorkoutHistory(worker, workoutRecords, workoutProof);
         assertThat(worker.getContributedScore()).isEqualTo(0);
 
         // when
@@ -43,7 +45,8 @@ class WorkoutHistoryTest {
                 .set(Select.field(Worker::getWorkspace), workspace)
                 .create();
         List<WorkoutRecord> workoutRecords = Instancio.ofList(WorkoutRecord.class).size(2).create();
-        WorkoutHistory workoutHistory = new WorkoutHistory(worker, workoutRecords);
+        WorkoutProof workoutProof = Instancio.of(WorkoutProof.class).create();
+        WorkoutHistory workoutHistory = new WorkoutHistory(worker, workoutRecords, workoutProof);
         Workspace workspace1 = Instancio.of(Workspace.class)
                 .filter(Select.field(Workspace::getId), (Long id) -> !id.equals(workspace.getId()))
                 .create();

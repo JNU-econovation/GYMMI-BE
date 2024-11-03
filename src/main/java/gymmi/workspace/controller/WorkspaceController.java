@@ -9,6 +9,7 @@ import gymmi.workspace.request.EditingIntroductionOfWorkspaceRequest;
 import gymmi.workspace.request.JoiningWorkspaceRequest;
 import gymmi.workspace.request.MatchingWorkspacePasswordRequest;
 import gymmi.workspace.request.WorkingMissionInWorkspaceRequest;
+import gymmi.workspace.request.WorkoutRequest;
 import gymmi.workspace.response.CheckingCreationOfWorkspaceResponse;
 import gymmi.workspace.response.CheckingEntranceOfWorkspaceResponse;
 import gymmi.workspace.response.InsideWorkspaceResponse;
@@ -142,9 +143,9 @@ public class WorkspaceController {
     public ResponseEntity<WorkingScoreResponse> workMissionsInWorkspace(
             @Logined User user,
             @PathVariable Long workspaceId,
-            @RequestBody List<WorkingMissionInWorkspaceRequest> requests
+            @RequestBody WorkoutRequest request
     ) {
-        Integer workingScore = workspaceCommandService.workMissionsInWorkspace(user, workspaceId, requests);
+        Integer workingScore = workspaceCommandService.workMissionsInWorkspace(user, workspaceId, request);
         return ResponseEntity.ok().body(new WorkingScoreResponse(workingScore));
     }
 

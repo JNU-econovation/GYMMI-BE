@@ -14,6 +14,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
@@ -35,6 +36,10 @@ public class WorkoutHistory extends TimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Worker worker;
 
+    @JoinColumn(name = "workout_proof_id", nullable = false)
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    private WorkoutProof workoutProof;
+
     @Column(nullable = false)
     private boolean isApproved;
 
@@ -44,12 +49,13 @@ public class WorkoutHistory extends TimeEntity {
     @OneToMany(mappedBy = "workoutHistory", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<WorkoutRecord> workoutRecords = new ArrayList<>();
 
-    public WorkoutHistory(Worker worker, List<WorkoutRecord> workoutRecords) {
+    public WorkoutHistory(Worker worker, List<WorkoutRecord> workoutRecords, WorkoutProof workoutProof) {
         this.worker = worker;
         this.workoutRecords = new ArrayList<>(workoutRecords);
         setRelations(workoutRecords);
         this.isApproved = true;
         this.totalScore = calculateSum();
+        this.workoutProof = workoutProof;
     }
 
     private void setRelations(List<WorkoutRecord> workoutRecords) {

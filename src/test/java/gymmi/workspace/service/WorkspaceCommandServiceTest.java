@@ -7,23 +7,23 @@ import static org.instancio.Select.field;
 
 import gymmi.entity.User;
 import gymmi.exceptionhandler.message.ErrorCode;
+import gymmi.workspace.domain.WorkspaceStatus;
 import gymmi.workspace.domain.entity.Mission;
 import gymmi.workspace.domain.entity.Task;
 import gymmi.workspace.domain.entity.Worker;
 import gymmi.workspace.domain.entity.Workspace;
-import gymmi.workspace.domain.WorkspaceStatus;
 import gymmi.workspace.repository.FavoriteMissionRepository;
 import gymmi.workspace.repository.MissionRepository;
-import gymmi.workspace.repository.WorkoutHistoryRepository;
 import gymmi.workspace.repository.WorkerRepository;
+import gymmi.workspace.repository.WorkoutHistoryRepository;
 import gymmi.workspace.repository.WorkspaceRepository;
 import gymmi.workspace.request.CreatingWorkspaceRequest;
 import gymmi.workspace.request.MissionRequest;
 import gymmi.workspace.request.WorkingMissionInWorkspaceRequest;
+import gymmi.workspace.request.WorkoutRequest;
 import jakarta.persistence.EntityManager;
 import java.util.List;
 import org.instancio.Instancio;
-import org.instancio.Select;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -127,10 +127,13 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
         List<WorkingMissionInWorkspaceRequest> requests = List.of(
                 new WorkingMissionInWorkspaceRequest(mission.getId(), count)
         );
+        WorkoutRequest request = Instancio.of(WorkoutRequest.class)
+                .set(field(WorkoutRequest::getMissions), requests)
+                .create();
         assertThat(worker.getContributedScore()).isEqualTo(0);
 
         // when
-        workspaceCommandService.workMissionsInWorkspace(user, workspace.getId(), requests);
+        workspaceCommandService.workMissionsInWorkspace(user, workspace.getId(), request);
 
         // then
         assertThat(workoutHistoryRepository.getAllByWorkerId(worker.getId())).hasSize(1);

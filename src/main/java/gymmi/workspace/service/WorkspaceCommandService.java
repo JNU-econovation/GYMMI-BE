@@ -5,27 +5,29 @@ import gymmi.exceptionhandler.exception.AlreadyExistException;
 import gymmi.exceptionhandler.exception.InvalidStateException;
 import gymmi.exceptionhandler.exception.NotHavePermissionException;
 import gymmi.exceptionhandler.message.ErrorCode;
-import gymmi.workspace.domain.entity.FavoriteMission;
-import gymmi.workspace.domain.entity.Mission;
-import gymmi.workspace.domain.entity.Task;
-import gymmi.workspace.domain.entity.WorkoutHistory;
-import gymmi.workspace.domain.entity.Worker;
 import gymmi.workspace.domain.WorkerLeavedEvent;
-import gymmi.workspace.domain.entity.Workspace;
 import gymmi.workspace.domain.WorkspaceDrawManager;
 import gymmi.workspace.domain.WorkspaceEditManager;
 import gymmi.workspace.domain.WorkspaceInitializer;
 import gymmi.workspace.domain.WorkspacePreparingManager;
 import gymmi.workspace.domain.WorkspaceProgressManager;
+import gymmi.workspace.domain.entity.FavoriteMission;
+import gymmi.workspace.domain.entity.Mission;
+import gymmi.workspace.domain.entity.Task;
+import gymmi.workspace.domain.entity.Worker;
+import gymmi.workspace.domain.entity.WorkoutHistory;
+import gymmi.workspace.domain.entity.WorkoutProof;
+import gymmi.workspace.domain.entity.Workspace;
 import gymmi.workspace.repository.FavoriteMissionRepository;
 import gymmi.workspace.repository.MissionRepository;
-import gymmi.workspace.repository.WorkoutHistoryRepository;
 import gymmi.workspace.repository.WorkerRepository;
+import gymmi.workspace.repository.WorkoutHistoryRepository;
 import gymmi.workspace.repository.WorkspaceRepository;
 import gymmi.workspace.request.CreatingWorkspaceRequest;
 import gymmi.workspace.request.EditingIntroductionOfWorkspaceRequest;
 import gymmi.workspace.request.JoiningWorkspaceRequest;
 import gymmi.workspace.request.WorkingMissionInWorkspaceRequest;
+import gymmi.workspace.request.WorkoutRequest;
 import gymmi.workspace.response.OpeningTasksBoxResponse;
 import java.util.HashMap;
 import java.util.List;
@@ -114,15 +116,20 @@ public class WorkspaceCommandService {
     public Integer workMissionsInWorkspace(
             User loginedUser,
             Long workspaceId,
-            List<WorkingMissionInWorkspaceRequest> requests
+            WorkoutRequest workoutRequest
     ) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
         Worker worker = workerRepository.getByUserIdAndWorkspaceId(loginedUser.getId(), workspace.getId());
         List<Mission> missions = missionRepository.getAllByWorkspaceId(workspace.getId());
-        Map<Mission, Integer> workouts = getWorkouts(requests);
+        Map<Mission, Integer> workouts = getWorkouts(workoutRequest.getMissions());
 
         WorkspaceProgressManager workspaceProgressManager = new WorkspaceProgressManager(workspace, missions);
-        WorkoutHistory workoutHistory = workspaceProgressManager.doWorkout(worker, workouts);
+
+        WorkoutHistory workoutHistory = workspaceProgressManager.doWorkout(
+                worker,
+                workouts,
+                new WorkoutProof(workoutRequest.getImageUrl(), workoutRequest.getComment())
+        );
         workoutHistory.apply();
 
         workoutHistoryRepository.save(workoutHistory);
