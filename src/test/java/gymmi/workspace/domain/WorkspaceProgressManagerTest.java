@@ -3,7 +3,12 @@ package gymmi.workspace.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import gymmi.exception.message.ErrorCode;
+import gymmi.exceptionhandler.message.ErrorCode;
+import gymmi.workspace.domain.entity.Mission;
+import gymmi.workspace.domain.entity.Worker;
+import gymmi.workspace.domain.entity.WorkoutHistory;
+import gymmi.workspace.domain.entity.WorkoutProof;
+import gymmi.workspace.domain.entity.Workspace;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -41,10 +46,12 @@ class WorkspaceProgressManagerTest {
                     .filter(Select.field(Worker::getWorkspace), (Workspace ws) -> !ws.equals(workspace))
                     .create();
             Map<Mission, Integer> workouts = Map.of(missions.get(0), 1);
+            WorkoutProof workoutProof = Instancio.of(WorkoutProof.class).create();
 
             // when, then
-            assertThatThrownBy(() -> workspaceProgressManager.doWorkout(worker, workouts))
-                    .hasMessage(ErrorCode.NOT_JOINED_WORKSPACE.getMessage());
+            assertThatThrownBy(
+                    () -> workspaceProgressManager.doWorkout(worker, workouts, workoutProof)
+            ).hasMessage(ErrorCode.NOT_JOINED_WORKSPACE.getMessage());
 
         }
 
@@ -59,9 +66,10 @@ class WorkspaceProgressManagerTest {
                     .filter(Select.field(Mission::getWorkspace), (Workspace ws) -> !ws.equals(workspace))
                     .create();
             Map<Mission, Integer> workouts = Map.of(mission, 1);
+            WorkoutProof workoutProof = Instancio.of(WorkoutProof.class).create();
 
             // when, then
-            assertThatThrownBy(() -> workspaceProgressManager.doWorkout(worker, workouts))
+            assertThatThrownBy(() -> workspaceProgressManager.doWorkout(worker, workouts, workoutProof))
                     .hasMessage(ErrorCode.NOT_REGISTERED_WORKSPACE_MISSION.getMessage());
         }
 
@@ -80,13 +88,14 @@ class WorkspaceProgressManagerTest {
             Map<Mission, Integer> workouts = Map.of(mission, missionCount, mission1, missionCount1);
 
             int sum = mission.getScore() * missionCount + mission1.getScore() * missionCount1;
+            WorkoutProof workoutProof = Instancio.of(WorkoutProof.class).create();
 
             // when
-            Worked worked = workspaceProgressManager.doWorkout(worker, workouts);
+            WorkoutHistory workoutHistory = workspaceProgressManager.doWorkout(worker, workouts, workoutProof);
 
             // then
-            assertThat(worked.getSum()).isEqualTo(sum);
-            assertThat(worked.getWorkoutRecords()).hasSize(2);
+            assertThat(workoutHistory.getSum()).isEqualTo(sum);
+            assertThat(workoutHistory.getWorkoutRecords()).hasSize(2);
 //            assertThat(worked.getWorkoutRecords()).containsExactlyInAnyOrder(
 //                            new WorkoutRecord(mission, missionCount),
 //                            new WorkoutRecord(mission1, missionCount1)

@@ -1,7 +1,9 @@
 package gymmi.workspace.domain;
 
-import gymmi.exception.class1.NotHavePermissionException;
-import gymmi.exception.message.ErrorCode;
+import gymmi.exceptionhandler.exception.NotHavePermissionException;
+import gymmi.exceptionhandler.message.ErrorCode;
+import gymmi.workspace.domain.entity.Worker;
+import gymmi.workspace.domain.entity.Workspace;
 
 public class WorkspaceEditManager {
 

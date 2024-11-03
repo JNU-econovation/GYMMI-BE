@@ -1,6 +1,6 @@
 package gymmi.workspace.repository;
 
-import gymmi.workspace.domain.Task;
+import gymmi.workspace.domain.entity.Task;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

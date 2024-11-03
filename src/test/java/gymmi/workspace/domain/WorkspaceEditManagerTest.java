@@ -3,7 +3,9 @@ package gymmi.workspace.domain;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import gymmi.entity.User;
-import gymmi.exception.message.ErrorCode;
+import gymmi.exceptionhandler.message.ErrorCode;
+import gymmi.workspace.domain.entity.Worker;
+import gymmi.workspace.domain.entity.Workspace;
 import org.instancio.Instancio;
 import org.instancio.Select;
 import org.junit.jupiter.api.Test;
@@ -17,7 +19,7 @@ class WorkspaceEditManagerTest {
                 .create();
         Worker worker = Instancio.of(Worker.class)
                 .set(Select.field(Worker::getWorkspace), workspace)
-                .filter(Select.field(Worker::getUser), (User u) -> !equals(workspace.getCreator()))
+                .filter(Select.field(Worker::getUser), (User user) -> !user.equals(workspace.getCreator()))
                 .create();
 
         //when, then

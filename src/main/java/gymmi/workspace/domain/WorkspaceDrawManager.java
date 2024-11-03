@@ -1,9 +1,12 @@
 package gymmi.workspace.domain;
 
-import static gymmi.exception.message.ErrorCode.NOT_JOINED_WORKSPACE;
+import static gymmi.exceptionhandler.message.ErrorCode.NOT_JOINED_WORKSPACE;
 
-import gymmi.exception.class1.InvalidStateException;
-import gymmi.exception.message.ErrorCode;
+import gymmi.exceptionhandler.exception.InvalidStateException;
+import gymmi.exceptionhandler.message.ErrorCode;
+import gymmi.workspace.domain.entity.Task;
+import gymmi.workspace.domain.entity.Worker;
+import gymmi.workspace.domain.entity.Workspace;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;

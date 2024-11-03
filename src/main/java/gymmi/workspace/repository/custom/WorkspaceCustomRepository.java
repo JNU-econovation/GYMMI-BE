@@ -1,6 +1,6 @@
 package gymmi.workspace.repository.custom;
 
-import gymmi.workspace.domain.Workspace;
+import gymmi.workspace.domain.entity.Workspace;
 import gymmi.workspace.domain.WorkspaceStatus;
 import java.util.List;
 import java.util.Map;

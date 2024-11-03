@@ -1,6 +1,7 @@
 package gymmi.global;
 
-import gymmi.exception.NotMatchedException;
+import gymmi.exceptionhandler.exception.NotMatchedException;
+import gymmi.exceptionhandler.message.ErrorCode;
 import gymmi.workspace.domain.WorkspaceStatus;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,6 +22,6 @@ public class StringToWorkspaceStatusConverter implements Converter<String, Works
         if (queryParamValueMapping.containsKey(source)) {
             return queryParamValueMapping.get(source);
         }
-        throw new NotMatchedException("잘못된 query param value 입니다. : " + source);
+        throw new NotMatchedException(ErrorCode.INVALID_WORKSPACE_STATUS_VALUE);
     }
 }

@@ -1,7 +1,7 @@
 package gymmi.workspace.repository;
 
-import gymmi.exception.NotFoundResourcesException;
-import gymmi.workspace.domain.Workspace;
+import gymmi.exceptionhandler.legacy.NotFoundResourcesException;
+import gymmi.workspace.domain.entity.Workspace;
 import gymmi.workspace.repository.custom.WorkspaceCustomRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -18,5 +18,8 @@ public interface WorkspaceRepository extends JpaRepository<Workspace, Long>, Wor
 
     @Query("select sum(w.contributedScore) from Worker w join w.workspace ws where ws.id = :workspaceId")
     int getAchievementScore(Long workspaceId);
+
+    @Query("select max(w.contributedScore) From Worker w join w.workspace ws where ws.id = :workspaceId")
+    int getFirstPlaceScoreIn(Long workspaceId);
 
 }

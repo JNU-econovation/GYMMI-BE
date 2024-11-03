@@ -1,7 +1,7 @@
 package gymmi.repository;
 
 import gymmi.entity.User;
-import gymmi.exception.NotFoundResourcesException;
+import gymmi.exceptionhandler.legacy.NotFoundResourcesException;
 import gymmi.repository.custom.UserCustomRepository;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;

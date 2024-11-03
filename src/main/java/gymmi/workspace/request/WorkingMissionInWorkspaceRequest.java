@@ -1,5 +1,6 @@
 package gymmi.workspace.request;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -7,7 +8,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class WorkingMissionInWorkspaceRequest {
 
+    @NotNull
     private Long id;
+
+    @NotNull
     private Integer count;
 
     public WorkingMissionInWorkspaceRequest(Long id, Integer count) {

@@ -1,7 +1,7 @@
 package gymmi.workspace.response;
 
-import gymmi.exception.ServerLogicFaultException;
-import gymmi.workspace.domain.Task;
+import gymmi.exceptionhandler.legacy.ServerLogicFaultException;
+import gymmi.workspace.domain.entity.Task;
 import java.util.List;
 import lombok.Getter;
 

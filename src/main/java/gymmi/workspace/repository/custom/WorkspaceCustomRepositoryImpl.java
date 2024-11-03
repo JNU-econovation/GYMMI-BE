@@ -1,15 +1,15 @@
 package gymmi.workspace.repository.custom;
 
-import static gymmi.workspace.domain.QWorker.worker;
-import static gymmi.workspace.domain.QWorkspace.workspace;
+import static gymmi.workspace.domain.entity.QWorker.worker;
+import static gymmi.workspace.domain.entity.QWorkspace.workspace;
 
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import gymmi.workspace.domain.Workspace;
 import gymmi.workspace.domain.WorkspaceStatus;
+import gymmi.workspace.domain.entity.Workspace;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;

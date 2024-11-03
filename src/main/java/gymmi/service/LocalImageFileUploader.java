@@ -1,14 +1,14 @@
 package gymmi.service;
 
-import static gymmi.exception.message.ErrorCode.EMPTY_FILE;
-import static gymmi.exception.message.ErrorCode.FAILED_FILE_UPLOAD;
-import static gymmi.exception.message.ErrorCode.MISSING_FILE_EXTENSION;
-import static gymmi.exception.message.ErrorCode.NOT_FOUND_FILE;
-import static gymmi.exception.message.ErrorCode.UNSUPPORTED_FILE;
+import static gymmi.exceptionhandler.message.ErrorCode.EMPTY_FILE;
+import static gymmi.exceptionhandler.message.ErrorCode.FAILED_FILE_UPLOAD;
+import static gymmi.exceptionhandler.message.ErrorCode.MISSING_FILE_EXTENSION;
+import static gymmi.exceptionhandler.message.ErrorCode.NOT_FOUND_FILE;
+import static gymmi.exceptionhandler.message.ErrorCode.UNSUPPORTED_FILE;
 
-import gymmi.exception.class1.FileIOFailException;
-import gymmi.exception.class1.InvalidFileException;
-import gymmi.exception.class1.NotFoundException;
+import gymmi.exceptionhandler.exception.FileIOFailException;
+import gymmi.exceptionhandler.exception.InvalidFileException;
+import gymmi.exceptionhandler.exception.NotFoundException;
 import java.io.File;
 import java.io.IOException;
 import org.springframework.beans.factory.annotation.Value;

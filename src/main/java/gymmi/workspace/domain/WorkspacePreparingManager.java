@@ -1,19 +1,22 @@
 package gymmi.workspace.domain;
 
-import static gymmi.exception.message.ErrorCode.ALREADY_ACTIVATED_WORKSPACE;
-import static gymmi.exception.message.ErrorCode.BELOW_MINIMUM_WORKER;
-import static gymmi.exception.message.ErrorCode.EXIST_WORKERS_EXCLUDE_CREATOR;
-import static gymmi.exception.message.ErrorCode.FULL_WORKSPACE;
-import static gymmi.exception.message.ErrorCode.NOT_JOINED_WORKSPACE;
-import static gymmi.exception.message.ErrorCode.NOT_MATCHED_PASSWORD;
-import static gymmi.exception.message.ErrorCode.NOT_WORKSPACE_CREATOR;
+import static gymmi.exceptionhandler.message.ErrorCode.ALREADY_ACTIVATED_WORKSPACE;
+import static gymmi.exceptionhandler.message.ErrorCode.BELOW_MINIMUM_WORKER;
+import static gymmi.exceptionhandler.message.ErrorCode.EXIST_WORKERS_EXCLUDE_CREATOR;
+import static gymmi.exceptionhandler.message.ErrorCode.FULL_WORKSPACE;
+import static gymmi.exceptionhandler.message.ErrorCode.NOT_JOINED_WORKSPACE;
+import static gymmi.exceptionhandler.message.ErrorCode.NOT_MATCHED_PASSWORD;
+import static gymmi.exceptionhandler.message.ErrorCode.NOT_WORKSPACE_CREATOR;
 
 import gymmi.entity.User;
-import gymmi.exception.class1.AlreadyExistException;
-import gymmi.exception.class1.InvalidStateException;
-import gymmi.exception.class1.NotHavePermissionException;
-import gymmi.exception.class1.NotMatchedException;
-import gymmi.exception.message.ErrorCode;
+import gymmi.exceptionhandler.exception.AlreadyExistException;
+import gymmi.exceptionhandler.exception.InvalidStateException;
+import gymmi.exceptionhandler.exception.NotHavePermissionException;
+import gymmi.exceptionhandler.exception.NotMatchedException;
+import gymmi.exceptionhandler.message.ErrorCode;
+import gymmi.workspace.domain.entity.Task;
+import gymmi.workspace.domain.entity.Worker;
+import gymmi.workspace.domain.entity.Workspace;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;

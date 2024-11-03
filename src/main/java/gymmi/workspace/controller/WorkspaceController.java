@@ -9,15 +9,17 @@ import gymmi.workspace.request.EditingIntroductionOfWorkspaceRequest;
 import gymmi.workspace.request.JoiningWorkspaceRequest;
 import gymmi.workspace.request.MatchingWorkspacePasswordRequest;
 import gymmi.workspace.request.WorkingMissionInWorkspaceRequest;
+import gymmi.workspace.request.WorkoutRequest;
 import gymmi.workspace.response.CheckingCreationOfWorkspaceResponse;
 import gymmi.workspace.response.CheckingEntranceOfWorkspaceResponse;
-import gymmi.workspace.response.ContributedWorkingResponse;
 import gymmi.workspace.response.InsideWorkspaceResponse;
 import gymmi.workspace.response.JoinedWorkspaceResponse;
 import gymmi.workspace.response.MatchingWorkspacePasswordResponse;
 import gymmi.workspace.response.MissionResponse;
 import gymmi.workspace.response.OpeningTasksBoxResponse;
 import gymmi.workspace.response.WorkingScoreResponse;
+import gymmi.workspace.response.WorkoutContextResponse;
+import gymmi.workspace.response.WorkoutRecordResponse;
 import gymmi.workspace.response.WorkspaceIntroductionResponse;
 import gymmi.workspace.response.WorkspaceResponse;
 import gymmi.workspace.service.WorkspaceCommandService;
@@ -141,22 +143,34 @@ public class WorkspaceController {
     public ResponseEntity<WorkingScoreResponse> workMissionsInWorkspace(
             @Logined User user,
             @PathVariable Long workspaceId,
-            @RequestBody List<WorkingMissionInWorkspaceRequest> requests
+            @RequestBody WorkoutRequest request
     ) {
-        Integer workingScore = workspaceCommandService.workMissionsInWorkspace(user, workspaceId, requests);
+        Integer workingScore = workspaceCommandService.workMissionsInWorkspace(user, workspaceId, request);
         return ResponseEntity.ok().body(new WorkingScoreResponse(workingScore));
     }
 
-    @GetMapping("/workspaces/{workspaceId}/workings/{userId}")
-    public ResponseEntity<List<ContributedWorkingResponse>> seeSumOfWorkingsInWorkspace(
+    @GetMapping("/workspaces/{workspaceId}/workout-context/{userId}")
+    public ResponseEntity<WorkoutContextResponse> seeWorkoutContextInWorkspace(
             @Logined User user,
             @PathVariable Long workspaceId,
             @PathVariable Long userId
     ) {
-        List<ContributedWorkingResponse> responses =
-                workspaceQueryService.getContributedWorkoutOfWorkerInWorkspace(user, workspaceId, userId);
-        return ResponseEntity.ok().body(responses);
+        WorkoutContextResponse response = workspaceQueryService.getWorkoutContext(user, workspaceId, userId);
+        return ResponseEntity.ok().body(response);
     }
+
+    @GetMapping("/workspaces/{workspaceId}/workout-histories/{userId}/{workoutHistoryId}")
+    public ResponseEntity<List<WorkoutRecordResponse>> seeWorkoutRecordsOfWorkoutHistory(
+            @Logined User user,
+            @PathVariable Long workspaceId,
+            @PathVariable Long workoutHistoryId
+    ) {
+        List<WorkoutRecordResponse> response = workspaceQueryService.getWorkoutRecordsInWorkoutHistory(
+                user, workspaceId, workoutHistoryId
+        );
+        return ResponseEntity.ok().body(response);
+    }
+
 
     @GetMapping("/workspaces/{workspaceId}/tasks")
     public ResponseEntity<OpeningTasksBoxResponse> openTasksBoxInWorkspace(
@@ -194,4 +208,25 @@ public class WorkspaceController {
         CheckingCreationOfWorkspaceResponse response = workspaceQueryService.checkCreatingOfWorkspace(user);
         return ResponseEntity.ok().body(response);
     }
+
+    @PostMapping("/workspace/{workspaceId}/missions/{missionId}")
+    public ResponseEntity<Void> toggleRegistrationOfFavoriteMission(
+            @Logined User user,
+            @PathVariable Long workspaceId,
+            @PathVariable Long missionId
+    ) {
+        workspaceCommandService.toggleRegistrationOfFavoriteMission(user, workspaceId, missionId);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/workspace/{workspaceId}/missions/favorite")
+    public ResponseEntity<List<MissionResponse>> seeFavoriteMissions(
+            @Logined User user,
+            @PathVariable Long workspaceId
+    ) {
+        List<MissionResponse> responses = workspaceQueryService.getFavoriteMissions(user, workspaceId);
+        return ResponseEntity.ok().body(responses);
+    }
+
+
 }

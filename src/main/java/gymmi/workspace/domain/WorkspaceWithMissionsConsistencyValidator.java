@@ -1,7 +1,9 @@
 package gymmi.workspace.domain;
 
-import gymmi.exception.class1.InvalidStateException;
-import gymmi.exception.message.ErrorCode;
+import gymmi.exceptionhandler.exception.InvalidStateException;
+import gymmi.exceptionhandler.message.ErrorCode;
+import gymmi.workspace.domain.entity.Mission;
+import gymmi.workspace.domain.entity.Workspace;
 import java.util.List;
 import lombok.Getter;
 

@@ -3,7 +3,10 @@ package gymmi.workspace.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import gymmi.exception.message.ErrorCode;
+import gymmi.exceptionhandler.message.ErrorCode;
+import gymmi.workspace.domain.entity.Task;
+import gymmi.workspace.domain.entity.Worker;
+import gymmi.workspace.domain.entity.Workspace;
 import java.util.List;
 import org.instancio.Instancio;
 import org.instancio.Select;

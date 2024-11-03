@@ -2,8 +2,8 @@ package gymmi.service;
 
 import gymmi.entity.ProfileImage;
 import gymmi.entity.User;
-import gymmi.exception.class1.AlreadyExistException;
-import gymmi.exception.message.ErrorCode;
+import gymmi.exceptionhandler.exception.AlreadyExistException;
+import gymmi.exceptionhandler.message.ErrorCode;
 import gymmi.repository.ProfileImageRepository;
 import gymmi.repository.UserRepository;
 import gymmi.request.EditingMyPageRequest;

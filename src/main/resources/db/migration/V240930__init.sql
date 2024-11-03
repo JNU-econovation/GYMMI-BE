@@ -88,7 +88,7 @@ create table worker
     foreign key (workspace_id) references workspace (id)
 ) engine=InnoDB;
 
-create table worked
+create table workoutHistory
 (
     id               bigint       not null auto_increment primary key,
     last_modified_at timestamp(3) not null,
@@ -106,5 +106,5 @@ create table workout_record
     created_at       timestamp(3) not null,
     last_modified_at timestamp(3) not null,
     foreign key (mission_id) references mission (id),
-    foreign key (working_id) references worked (id)
+    foreign key (working_id) references workoutHistory (id)
 ) engine=InnoDB;

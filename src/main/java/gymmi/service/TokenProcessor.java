@@ -1,7 +1,7 @@
 package gymmi.service;
 
-import gymmi.exception.class1.AuthenticationFailException;
-import gymmi.exception.message.ErrorCode;
+import gymmi.exceptionhandler.exception.AuthenticationFailException;
+import gymmi.exceptionhandler.message.ErrorCode;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;

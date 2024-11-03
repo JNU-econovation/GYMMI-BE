@@ -3,7 +3,7 @@ package gymmi.repository;
 import static org.instancio.Select.field;
 
 import gymmi.entity.User;
-import gymmi.workspace.domain.Workspace;
+import gymmi.workspace.domain.entity.Workspace;
 import gymmi.workspace.repository.WorkspaceRepository;
 import jakarta.persistence.EntityManager;
 import java.util.List;

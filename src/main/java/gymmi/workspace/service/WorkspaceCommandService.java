@@ -1,32 +1,38 @@
 package gymmi.workspace.service;
 
 import gymmi.entity.User;
-import gymmi.exception.class1.AlreadyExistException;
-import gymmi.exception.class1.InvalidStateException;
-import gymmi.exception.message.ErrorCode;
-import gymmi.workspace.domain.Mission;
-import gymmi.workspace.domain.Task;
-import gymmi.workspace.domain.Worked;
-import gymmi.workspace.domain.Worker;
+import gymmi.exceptionhandler.exception.AlreadyExistException;
+import gymmi.exceptionhandler.exception.InvalidStateException;
+import gymmi.exceptionhandler.exception.NotHavePermissionException;
+import gymmi.exceptionhandler.message.ErrorCode;
 import gymmi.workspace.domain.WorkerLeavedEvent;
-import gymmi.workspace.domain.Workspace;
 import gymmi.workspace.domain.WorkspaceDrawManager;
 import gymmi.workspace.domain.WorkspaceEditManager;
 import gymmi.workspace.domain.WorkspaceInitializer;
 import gymmi.workspace.domain.WorkspacePreparingManager;
 import gymmi.workspace.domain.WorkspaceProgressManager;
+import gymmi.workspace.domain.entity.FavoriteMission;
+import gymmi.workspace.domain.entity.Mission;
+import gymmi.workspace.domain.entity.Task;
+import gymmi.workspace.domain.entity.Worker;
+import gymmi.workspace.domain.entity.WorkoutHistory;
+import gymmi.workspace.domain.entity.WorkoutProof;
+import gymmi.workspace.domain.entity.Workspace;
+import gymmi.workspace.repository.FavoriteMissionRepository;
 import gymmi.workspace.repository.MissionRepository;
-import gymmi.workspace.repository.WorkedRepository;
 import gymmi.workspace.repository.WorkerRepository;
+import gymmi.workspace.repository.WorkoutHistoryRepository;
 import gymmi.workspace.repository.WorkspaceRepository;
 import gymmi.workspace.request.CreatingWorkspaceRequest;
 import gymmi.workspace.request.EditingIntroductionOfWorkspaceRequest;
 import gymmi.workspace.request.JoiningWorkspaceRequest;
 import gymmi.workspace.request.WorkingMissionInWorkspaceRequest;
+import gymmi.workspace.request.WorkoutRequest;
 import gymmi.workspace.response.OpeningTasksBoxResponse;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,7 +44,8 @@ public class WorkspaceCommandService {
     private final WorkspaceRepository workspaceRepository;
     private final WorkerRepository workerRepository;
     private final MissionRepository missionRepository;
-    private final WorkedRepository workedRepository;
+    private final WorkoutHistoryRepository workoutHistoryRepository;
+    private final FavoriteMissionRepository favoriteMissionRepository;
 
     @Transactional
     // 중복 요청
@@ -109,22 +116,27 @@ public class WorkspaceCommandService {
     public Integer workMissionsInWorkspace(
             User loginedUser,
             Long workspaceId,
-            List<WorkingMissionInWorkspaceRequest> requests
+            WorkoutRequest workoutRequest
     ) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
         Worker worker = workerRepository.getByUserIdAndWorkspaceId(loginedUser.getId(), workspace.getId());
         List<Mission> missions = missionRepository.getAllByWorkspaceId(workspace.getId());
-        Map<Mission, Integer> workouts = getWorkouts(requests);
+        Map<Mission, Integer> workouts = getWorkouts(workoutRequest.getMissions());
 
         WorkspaceProgressManager workspaceProgressManager = new WorkspaceProgressManager(workspace, missions);
-        Worked worked = workspaceProgressManager.doWorkout(worker, workouts);
-        worked.apply();
 
-        workedRepository.save(worked);
+        WorkoutHistory workoutHistory = workspaceProgressManager.doWorkout(
+                worker,
+                workouts,
+                new WorkoutProof(workoutRequest.getImageUrl(), workoutRequest.getComment())
+        );
+        workoutHistory.apply();
+
+        workoutHistoryRepository.save(workoutHistory);
         int achievementScore = workspaceRepository.getAchievementScore(workspaceId);
 
         workspaceProgressManager.completeWhenGoalScoreIsAchieved(achievementScore);
-        return worked.getSum();
+        return workoutHistory.getSum();
     }
 
     private Map<Mission, Integer> getWorkouts(List<WorkingMissionInWorkspaceRequest> requests) {
@@ -160,6 +172,26 @@ public class WorkspaceCommandService {
 
         WorkspaceEditManager workspaceEditManager = new WorkspaceEditManager(workspace, worker);
         workspaceEditManager.edit(request.getDescription(), request.getTag());
+    }
+
+    public void toggleRegistrationOfFavoriteMission(User loginedUser, Long workspaceId, Long missionId) {
+        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
+        Worker worker = validateIfWorkerIsInWorkspace(loginedUser.getId(), workspace.getId());
+        Mission mission = missionRepository.getByMissionId(missionId);
+
+        mission.canBeReadIn(workspace);
+
+        Optional<FavoriteMission> favoriteMission =
+                favoriteMissionRepository.findByWorkerIdAndMissionId(worker.getId(), missionId);
+        favoriteMission.ifPresentOrElse(
+                fm -> favoriteMissionRepository.deleteById(fm.getId()),
+                () -> favoriteMissionRepository.save(new FavoriteMission(worker, mission))
+        );
+    }
+
+    private Worker validateIfWorkerIsInWorkspace(Long userId, Long workspaceId) {
+        return workerRepository.findByUserIdAndWorkspaceId(userId, workspaceId)
+                .orElseThrow(() -> new NotHavePermissionException(ErrorCode.NOT_JOINED_WORKSPACE));
     }
 
 }

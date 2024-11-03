@@ -30,3 +30,12 @@ jwt:
 
 file:
   storage-path: ${FILE_STORAGE_PATH}
+
+
+cloud:
+  aws:
+    s3:
+      bucket: ${BUCKET_NAME}
+    stack:
+      auto: false
+

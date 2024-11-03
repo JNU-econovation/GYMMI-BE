@@ -1,8 +1,8 @@
 package gymmi.workspace.response;
 
 import gymmi.entity.User;
-import gymmi.workspace.domain.Worker;
-import gymmi.workspace.domain.Workspace;
+import gymmi.workspace.domain.entity.Worker;
+import gymmi.workspace.domain.entity.Workspace;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Builder;

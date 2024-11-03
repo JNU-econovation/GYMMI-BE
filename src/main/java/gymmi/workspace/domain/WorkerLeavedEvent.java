@@ -1,5 +1,6 @@
 package gymmi.workspace.domain;
 
+import gymmi.workspace.domain.entity.Worker;
 import lombok.Getter;
 
 @Getter

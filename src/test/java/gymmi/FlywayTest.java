@@ -2,6 +2,7 @@ package gymmi;
 
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -26,4 +27,6 @@ public class FlywayTest {
                 .load();
         flyway.migrate();
     }
+
+
 }
