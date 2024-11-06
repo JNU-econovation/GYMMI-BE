@@ -45,9 +45,6 @@ public class S3Client {
                 .withMethod(httpMethod)
                 .withExpiration(getPreSignedUrlExpiration());
         request.addRequestParameter(Headers.S3_CANNED_ACL, CannedAccessControlList.Private.toString());
-        request.putCustomRequestHeader(Headers.CONTENT_TYPE, "1");
-        request.putCustomRequestHeader(Headers.CONTENT_LENGTH, "1");
-
         return request;
     }
 
