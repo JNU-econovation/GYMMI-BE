@@ -8,20 +8,8 @@ import gymmi.workspace.request.CreatingWorkspaceRequest;
 import gymmi.workspace.request.EditingIntroductionOfWorkspaceRequest;
 import gymmi.workspace.request.JoiningWorkspaceRequest;
 import gymmi.workspace.request.MatchingWorkspacePasswordRequest;
-import gymmi.workspace.request.WorkingMissionInWorkspaceRequest;
 import gymmi.workspace.request.WorkoutRequest;
-import gymmi.workspace.response.CheckingCreationOfWorkspaceResponse;
-import gymmi.workspace.response.CheckingEntranceOfWorkspaceResponse;
-import gymmi.workspace.response.InsideWorkspaceResponse;
-import gymmi.workspace.response.JoinedWorkspaceResponse;
-import gymmi.workspace.response.MatchingWorkspacePasswordResponse;
-import gymmi.workspace.response.MissionResponse;
-import gymmi.workspace.response.OpeningTasksBoxResponse;
-import gymmi.workspace.response.WorkingScoreResponse;
-import gymmi.workspace.response.WorkoutContextResponse;
-import gymmi.workspace.response.WorkoutRecordResponse;
-import gymmi.workspace.response.WorkspaceIntroductionResponse;
-import gymmi.workspace.response.WorkspaceResponse;
+import gymmi.workspace.response.*;
 import gymmi.workspace.service.WorkspaceCommandService;
 import gymmi.workspace.service.WorkspaceQueryService;
 import java.util.List;
@@ -220,11 +208,11 @@ public class WorkspaceController {
     }
 
     @GetMapping("/workspace/{workspaceId}/missions/favorite")
-    public ResponseEntity<List<MissionResponse>> seeFavoriteMissions(
+    public ResponseEntity<List<FavoriteMissionResponse>> seeFavoriteMissions(
             @Logined User user,
             @PathVariable Long workspaceId
     ) {
-        List<MissionResponse> responses = workspaceQueryService.getFavoriteMissions(user, workspaceId);
+        List<FavoriteMissionResponse> responses = workspaceQueryService.getFavoriteMissions(user, workspaceId);
         return ResponseEntity.ok().body(responses);
     }
 

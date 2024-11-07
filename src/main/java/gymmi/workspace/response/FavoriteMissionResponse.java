@@ -7,18 +7,16 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED) // for test
-public class MissionResponse {
+public class FavoriteMissionResponse {
 
     private Long id;
     private String mission;
     private Integer score;
-    private Boolean isFavorite;
 
-    public MissionResponse(Mission mission, boolean isFavorite) {
+    public FavoriteMissionResponse(Mission mission) {
         this.id = mission.getId();
         this.mission = mission.getName();
         this.score = mission.getScore();
-        this.isFavorite = isFavorite;
     }
 
 }
