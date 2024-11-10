@@ -216,5 +216,15 @@ public class WorkspaceController {
         return ResponseEntity.ok().body(responses);
     }
 
+    @GetMapping("/workspaces/{workspaceId}/workout-confirmations/{workoutConfirmationId}")
+    public ResponseEntity<WorkoutConfirmationDetailResponse> seeWorkoutConfirmations(
+            @Logined User user,
+            @PathVariable Long workspaceId,
+            @PathVariable Long workoutConfirmationId
+    ) {
+        WorkoutConfirmationDetailResponse response = workspaceQueryService.getWorkoutConfirmation(user, workspaceId, workoutConfirmationId);
+        return ResponseEntity.ok().body(response);
+    }
+
 
 }

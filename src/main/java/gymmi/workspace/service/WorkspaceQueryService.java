@@ -145,9 +145,9 @@ public class WorkspaceQueryService {
         return new InsideWorkspaceResponse(workspace, workers, achievementScore, logiendUser);
     }
 
-    public List<MissionResponse> getFavoriteMissions(User logiendUser, Long workspaceId) {
+    public List<MissionResponse> getFavoriteMissions(User loginedUser, Long workspaceId) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
-        Worker worker = validateIfWorkerIsInWorkspace(logiendUser.getId(), workspace.getId());
+        Worker worker = validateIfWorkerIsInWorkspace(loginedUser.getId(), workspace.getId());
         List<FavoriteMission> favoriteMissions = favoriteMissionRepository.getAllByWorkerId(worker.getId());
 
         return favoriteMissions.stream()
@@ -156,9 +156,9 @@ public class WorkspaceQueryService {
                 .toList();
     }
 
-    public List<WorkoutConfirmationResponse> getWorkoutConfirmations(User logiendUser, Long workspaceId, int page) {
+    public List<WorkoutConfirmationResponse> getWorkoutConfirmations(User loginedUser, Long workspaceId, int page) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
-        validateIfWorkerIsInWorkspace(logiendUser.getId(), workspace.getId());
+        validateIfWorkerIsInWorkspace(loginedUser.getId(), workspace.getId());
         Pageable pageable = PageRequest.of(page, DEFAULT_PAGE_SIZE);
         List<WorkoutHistory> workoutHistories = workoutHistoryRepository.getAllByWorkspaceId(workspace.getId(), pageable);
 
@@ -169,5 +169,18 @@ public class WorkspaceQueryService {
             responses.add(new WorkoutConfirmationResponse(workoutHistory, imagePresignedUrl));
         }
         return responses;
+    }
+
+    public WorkoutConfirmationDetailResponse getWorkoutConfirmation(User loginedUser, Long workspaceId, Long workoutProofId) {
+        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
+        validateIfWorkerIsInWorkspace(loginedUser.getId(), workspace.getId());
+        WorkoutHistory workoutHistory = workoutHistoryRepository.getByWorkoutProofId(workoutProofId);
+
+        workoutHistory.canBeReadIn(workspace);
+        WorkoutProof workoutProof = workoutHistory.getWorkoutProof();
+
+        String imagePresignedUrl = s3Service.getPresignedUrl(workoutProof.getFilename());
+
+        return new WorkoutConfirmationDetailResponse(workoutHistory.getWorker().getUser(), imagePresignedUrl, workoutProof.getComment());
     }
 }

@@ -19,4 +19,7 @@ public interface WorkoutHistoryRepository extends JpaRepository<WorkoutHistory, 
         return workoutHistory;
     }
 
+    @Query("select w from WorkoutHistory w join fetch w.workoutProof wf join fetch w.worker where wf.id =:workoutProofId")
+    WorkoutHistory getByWorkoutProofId(Long workoutProofId);
+
 }
