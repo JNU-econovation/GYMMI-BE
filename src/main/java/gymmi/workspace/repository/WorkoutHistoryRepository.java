@@ -2,11 +2,13 @@ package gymmi.workspace.repository;
 
 import gymmi.exceptionhandler.legacy.NotFoundResourcesException;
 import gymmi.workspace.domain.entity.WorkoutHistory;
-import java.util.List;
+import gymmi.workspace.repository.custom.WorkoutHistoryCustomRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-public interface WorkoutHistoryRepository extends JpaRepository<WorkoutHistory, Long> {
+import java.util.List;
+
+public interface WorkoutHistoryRepository extends JpaRepository<WorkoutHistory, Long>, WorkoutHistoryCustomRepository {
 
     @Query("select w from WorkoutHistory w join fetch w.workoutRecords where w.worker.id =:workerId")
     List<WorkoutHistory> getAllByWorkerId(Long workerId);
@@ -16,4 +18,5 @@ public interface WorkoutHistoryRepository extends JpaRepository<WorkoutHistory, 
                 .orElseThrow(() -> new NotFoundResourcesException("해당 운동 기록이 존재하지 않아요."));
         return workoutHistory;
     }
+
 }

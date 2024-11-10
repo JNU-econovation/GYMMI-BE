@@ -144,5 +144,19 @@ public class Persister {
         return workoutHistory;
     }
 
+    public WorkoutHistory persistWorkoutHistoryAndApply(Worker worker, Map<Mission, Integer> workouts, WorkoutProof workoutProof) {
+        List<WorkoutRecord> workoutRecords = workouts.entrySet().stream()
+                .map(workout -> new WorkoutRecord(workout.getKey(), workout.getValue()))
+                .toList();
+        Worker managedWorker = entityManager.find(Worker.class, worker.getId());
+        entityManager.persist(workoutProof);
+        WorkoutHistory workoutHistory = new WorkoutHistory(
+                managedWorker, workoutRecords, workoutProof
+        );
+        entityManager.persist(workoutHistory);
+        workoutHistory.apply();
+        return workoutHistory;
+    }
+
 
 }

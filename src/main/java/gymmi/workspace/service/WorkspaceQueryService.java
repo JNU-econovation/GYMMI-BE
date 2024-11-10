@@ -3,38 +3,22 @@ package gymmi.workspace.service;
 import gymmi.entity.User;
 import gymmi.exceptionhandler.exception.NotHavePermissionException;
 import gymmi.exceptionhandler.message.ErrorCode;
-import gymmi.workspace.domain.entity.FavoriteMission;
-import gymmi.workspace.domain.entity.Mission;
-import gymmi.workspace.domain.entity.WorkoutHistory;
-import gymmi.workspace.domain.entity.Worker;
+import gymmi.service.S3Service;
 import gymmi.workspace.domain.WorkoutMetric;
-import gymmi.workspace.domain.entity.WorkoutRecord;
-import gymmi.workspace.domain.entity.Workspace;
 import gymmi.workspace.domain.WorkspaceGateChecker;
 import gymmi.workspace.domain.WorkspaceStatus;
-import gymmi.workspace.repository.FavoriteMissionRepository;
-import gymmi.workspace.repository.MissionRepository;
-import gymmi.workspace.repository.WorkoutHistoryRepository;
-import gymmi.workspace.repository.WorkerRepository;
-import gymmi.workspace.repository.WorkoutRecordRepository;
-import gymmi.workspace.repository.WorkspaceRepository;
-import gymmi.workspace.response.CheckingCreationOfWorkspaceResponse;
-import gymmi.workspace.response.CheckingEntranceOfWorkspaceResponse;
-import gymmi.workspace.response.InsideWorkspaceResponse;
-import gymmi.workspace.response.JoinedWorkspaceResponse;
-import gymmi.workspace.response.MatchingWorkspacePasswordResponse;
-import gymmi.workspace.response.MissionResponse;
-import gymmi.workspace.response.WorkoutContextResponse;
-import gymmi.workspace.response.WorkoutRecordResponse;
-import gymmi.workspace.response.WorkspaceIntroductionResponse;
-import gymmi.workspace.response.WorkspaceResponse;
-import java.util.List;
-import java.util.Map;
+import gymmi.workspace.domain.entity.*;
+import gymmi.workspace.repository.*;
+import gymmi.workspace.response.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -49,6 +33,8 @@ public class WorkspaceQueryService {
     private final WorkoutHistoryRepository workoutHistoryRepository;
     private final WorkoutRecordRepository workoutRecordRepository;
     private final FavoriteMissionRepository favoriteMissionRepository;
+
+    private final S3Service s3Service;
 
     public WorkspaceIntroductionResponse getWorkspaceIntroduction(User loginedUser, Long workspaceId) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
@@ -159,9 +145,9 @@ public class WorkspaceQueryService {
         return new InsideWorkspaceResponse(workspace, workers, achievementScore, logiendUser);
     }
 
-    public List<MissionResponse> getFavoriteMissions(User user, Long workspaceId) {
+    public List<MissionResponse> getFavoriteMissions(User logiendUser, Long workspaceId) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
-        Worker worker = validateIfWorkerIsInWorkspace(user.getId(), workspace.getId());
+        Worker worker = validateIfWorkerIsInWorkspace(logiendUser.getId(), workspace.getId());
         List<FavoriteMission> favoriteMissions = favoriteMissionRepository.getAllByWorkerId(worker.getId());
 
         return favoriteMissions.stream()
@@ -170,4 +156,18 @@ public class WorkspaceQueryService {
                 .toList();
     }
 
+    public List<WorkoutConfirmationResponse> getWorkoutConfirmations(User logiendUser, Long workspaceId, int page) {
+        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
+        validateIfWorkerIsInWorkspace(logiendUser.getId(), workspace.getId());
+        Pageable pageable = PageRequest.of(page, DEFAULT_PAGE_SIZE);
+        List<WorkoutHistory> workoutHistories = workoutHistoryRepository.getAllByWorkspaceId(workspace.getId(), pageable);
+
+        List<WorkoutConfirmationResponse> responses = new ArrayList<>();
+        for (WorkoutHistory workoutHistory : workoutHistories) {
+            WorkoutProof workoutProof = workoutHistory.getWorkoutProof();
+            String imagePresignedUrl = s3Service.getPresignedUrl(workoutProof.getFilename());
+            responses.add(new WorkoutConfirmationResponse(workoutHistory, imagePresignedUrl));
+        }
+        return responses;
+    }
 }

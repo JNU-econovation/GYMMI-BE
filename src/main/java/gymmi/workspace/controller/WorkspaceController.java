@@ -4,38 +4,16 @@ import gymmi.entity.User;
 import gymmi.global.Logined;
 import gymmi.response.IdResponse;
 import gymmi.workspace.domain.WorkspaceStatus;
-import gymmi.workspace.request.CreatingWorkspaceRequest;
-import gymmi.workspace.request.EditingIntroductionOfWorkspaceRequest;
-import gymmi.workspace.request.JoiningWorkspaceRequest;
-import gymmi.workspace.request.MatchingWorkspacePasswordRequest;
-import gymmi.workspace.request.WorkingMissionInWorkspaceRequest;
-import gymmi.workspace.request.WorkoutRequest;
-import gymmi.workspace.response.CheckingCreationOfWorkspaceResponse;
-import gymmi.workspace.response.CheckingEntranceOfWorkspaceResponse;
-import gymmi.workspace.response.InsideWorkspaceResponse;
-import gymmi.workspace.response.JoinedWorkspaceResponse;
-import gymmi.workspace.response.MatchingWorkspacePasswordResponse;
-import gymmi.workspace.response.MissionResponse;
-import gymmi.workspace.response.OpeningTasksBoxResponse;
-import gymmi.workspace.response.WorkingScoreResponse;
-import gymmi.workspace.response.WorkoutContextResponse;
-import gymmi.workspace.response.WorkoutRecordResponse;
-import gymmi.workspace.response.WorkspaceIntroductionResponse;
-import gymmi.workspace.response.WorkspaceResponse;
+import gymmi.workspace.request.*;
+import gymmi.workspace.response.*;
 import gymmi.workspace.service.WorkspaceCommandService;
 import gymmi.workspace.service.WorkspaceQueryService;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -225,6 +203,16 @@ public class WorkspaceController {
             @PathVariable Long workspaceId
     ) {
         List<MissionResponse> responses = workspaceQueryService.getFavoriteMissions(user, workspaceId);
+        return ResponseEntity.ok().body(responses);
+    }
+
+    @GetMapping("/workspaces/{workspaceId}/workout-confirmations")
+    public ResponseEntity<List<WorkoutConfirmationResponse>> seeWorkoutConfirmations(
+            @Logined User user,
+            @PathVariable Long workspaceId,
+            @RequestParam int pageNumber
+    ) {
+        List<WorkoutConfirmationResponse> responses = workspaceQueryService.getWorkoutConfirmations(user, workspaceId, pageNumber);
         return ResponseEntity.ok().body(responses);
     }
 
