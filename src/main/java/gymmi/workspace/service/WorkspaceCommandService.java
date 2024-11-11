@@ -5,37 +5,19 @@ import gymmi.exceptionhandler.exception.AlreadyExistException;
 import gymmi.exceptionhandler.exception.InvalidStateException;
 import gymmi.exceptionhandler.exception.NotHavePermissionException;
 import gymmi.exceptionhandler.message.ErrorCode;
-import gymmi.workspace.domain.WorkerLeavedEvent;
-import gymmi.workspace.domain.WorkspaceDrawManager;
-import gymmi.workspace.domain.WorkspaceEditManager;
-import gymmi.workspace.domain.WorkspaceInitializer;
-import gymmi.workspace.domain.WorkspacePreparingManager;
-import gymmi.workspace.domain.WorkspaceProgressManager;
-import gymmi.workspace.domain.entity.FavoriteMission;
-import gymmi.workspace.domain.entity.Mission;
-import gymmi.workspace.domain.entity.Task;
-import gymmi.workspace.domain.entity.Worker;
-import gymmi.workspace.domain.entity.WorkoutHistory;
-import gymmi.workspace.domain.entity.WorkoutProof;
-import gymmi.workspace.domain.entity.Workspace;
-import gymmi.workspace.repository.FavoriteMissionRepository;
-import gymmi.workspace.repository.MissionRepository;
-import gymmi.workspace.repository.WorkerRepository;
-import gymmi.workspace.repository.WorkoutHistoryRepository;
-import gymmi.workspace.repository.WorkspaceRepository;
-import gymmi.workspace.request.CreatingWorkspaceRequest;
-import gymmi.workspace.request.EditingIntroductionOfWorkspaceRequest;
-import gymmi.workspace.request.JoiningWorkspaceRequest;
-import gymmi.workspace.request.WorkingMissionInWorkspaceRequest;
-import gymmi.workspace.request.WorkoutRequest;
+import gymmi.workspace.domain.*;
+import gymmi.workspace.domain.entity.*;
+import gymmi.workspace.repository.*;
+import gymmi.workspace.request.*;
 import gymmi.workspace.response.OpeningTasksBoxResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -46,6 +28,7 @@ public class WorkspaceCommandService {
     private final MissionRepository missionRepository;
     private final WorkoutHistoryRepository workoutHistoryRepository;
     private final FavoriteMissionRepository favoriteMissionRepository;
+    private final TackleRepository tackleRepository;
 
     @Transactional
     // 중복 요청
@@ -194,4 +177,19 @@ public class WorkspaceCommandService {
                 .orElseThrow(() -> new NotHavePermissionException(ErrorCode.NOT_JOINED_WORKSPACE));
     }
 
+    public void tackleToWorkoutConfirmation(User loginedUser, Long workspaceId, Long workoutConfirmationId, TackleRequest request) {
+        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
+        Worker worker = validateIfWorkerIsInWorkspace(loginedUser.getId(), workspaceId);
+        WorkoutHistory workoutHistory = workoutHistoryRepository.getByWorkoutProofId(workoutConfirmationId);
+        workoutHistory.canBeReadIn(workspace);
+        if (tackleRepository.findByWorkoutConfirmationId(workoutConfirmationId).isPresent()) {
+            throw new AlreadyExistException(ErrorCode.ALREADY_TACKLED);
+        }
+        Tackle tackle = Tackle.builder()
+                .worker(worker)
+                .reason(request.getReason())
+                .workoutProof(workoutHistory.getWorkoutProof())
+                .build();
+        tackleRepository.save(tackle);
+    }
 }

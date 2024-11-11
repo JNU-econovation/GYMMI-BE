@@ -183,4 +183,6 @@ public class WorkspaceQueryService {
 
         return new WorkoutConfirmationDetailResponse(workoutHistory.getWorker().getUser(), imagePresignedUrl, workoutProof.getComment());
     }
+
+
 }

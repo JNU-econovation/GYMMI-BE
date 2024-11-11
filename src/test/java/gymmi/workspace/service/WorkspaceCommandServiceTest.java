@@ -1,32 +1,24 @@
 package gymmi.workspace.service;
 
-import static gymmi.exceptionhandler.message.ErrorCode.EXCEED_MAX_JOINED_WORKSPACE;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.instancio.Select.field;
-
 import gymmi.entity.User;
 import gymmi.exceptionhandler.message.ErrorCode;
 import gymmi.workspace.domain.WorkspaceStatus;
-import gymmi.workspace.domain.entity.Mission;
-import gymmi.workspace.domain.entity.Task;
-import gymmi.workspace.domain.entity.Worker;
-import gymmi.workspace.domain.entity.Workspace;
-import gymmi.workspace.repository.FavoriteMissionRepository;
-import gymmi.workspace.repository.MissionRepository;
-import gymmi.workspace.repository.WorkerRepository;
-import gymmi.workspace.repository.WorkoutHistoryRepository;
-import gymmi.workspace.repository.WorkspaceRepository;
-import gymmi.workspace.request.CreatingWorkspaceRequest;
-import gymmi.workspace.request.MissionRequest;
-import gymmi.workspace.request.WorkingMissionInWorkspaceRequest;
-import gymmi.workspace.request.WorkoutRequest;
+import gymmi.workspace.domain.entity.*;
+import gymmi.workspace.repository.*;
+import gymmi.workspace.request.*;
 import jakarta.persistence.EntityManager;
-import java.util.List;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
+import java.util.Map;
+
+import static gymmi.exceptionhandler.message.ErrorCode.EXCEED_MAX_JOINED_WORKSPACE;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.instancio.Select.field;
 
 class WorkspaceCommandServiceTest extends IntegrationTest {
 
@@ -42,6 +34,9 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
     WorkoutHistoryRepository workoutHistoryRepository;
     @Autowired
     FavoriteMissionRepository favoriteMissionRepository;
+
+    @Autowired
+    TackleRepository tackleRepository;
 
     @Autowired
     EntityManager entityManager;
@@ -155,6 +150,28 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
 
         workspaceCommandService.toggleRegistrationOfFavoriteMission(user, workspace.getId(), mission.getId());
         assertThat(favoriteMissionRepository.findByWorkerIdAndMissionId(worker.getId(), mission.getId())).isEmpty();
+    }
+
+    @Test
+    void 운동인증에_이의_신청을_한다() {
+        // given
+        User creator = persister.persistUser();
+        User user = persister.persistUser();
+        Workspace workspace = persister.persistWorkspace(creator, WorkspaceStatus.IN_PROGRESS);
+        Worker creatorWorker = persister.persistWorker(creator, workspace);
+        Worker userWorker = persister.persistWorker(user, workspace);
+        Mission mission = persister.persistMission(workspace, 1);
+        Mission mission1 = persister.persistMission(workspace, 5);
+        WorkoutProof workoutProof = new WorkoutProof("creator", "a");
+        WorkoutHistory workoutHistory = persister.persistWorkoutHistoryAndApply(creatorWorker, Map.of(mission, 2, mission1, 2), workoutProof);
+        TackleRequest request = new TackleRequest("이유");
+        Long workoutConfirmationId = workoutHistory.getWorkoutProof().getId();
+
+        // when
+        workspaceCommandService.tackleToWorkoutConfirmation(user, workspace.getId(), workoutConfirmationId, request);
+
+        // then
+        assertThat(tackleRepository.findByWorkoutConfirmationId(workoutConfirmationId)).isNotEmpty();
     }
 
     private List<Workspace> persistWorkspacesNotCompletedWithWorker(User user, int size) {
