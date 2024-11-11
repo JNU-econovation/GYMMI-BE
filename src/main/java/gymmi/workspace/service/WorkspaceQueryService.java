@@ -109,7 +109,7 @@ public class WorkspaceQueryService {
     ) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
         validateIfWorkerIsInWorkspace(loginedUser.getId(), workspace.getId());
-        WorkoutHistory workoutHistory = workoutHistoryRepository.getById(workoutHistoryId);
+        WorkoutHistory workoutHistory = workoutHistoryRepository.getByWorkoutHistoryId(workoutHistoryId);
         workoutHistory.canBeReadIn(workspace);
         List<WorkoutRecord> workoutRecords = workoutRecordRepository.getAllByWorkoutHistoryId(workoutHistoryId);
         return workoutRecords.stream()

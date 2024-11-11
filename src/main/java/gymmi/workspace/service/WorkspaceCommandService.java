@@ -29,6 +29,7 @@ public class WorkspaceCommandService {
     private final WorkoutHistoryRepository workoutHistoryRepository;
     private final FavoriteMissionRepository favoriteMissionRepository;
     private final TackleRepository tackleRepository;
+    private final VoteRepository voteRepository;
 
     @Transactional
     // 중복 요청
@@ -186,10 +187,23 @@ public class WorkspaceCommandService {
             throw new AlreadyExistException(ErrorCode.ALREADY_TACKLED);
         }
         Tackle tackle = Tackle.builder()
-                .worker(worker)
+                .subject(worker)
                 .reason(request.getReason())
                 .workoutProof(workoutHistory.getWorkoutProof())
                 .build();
         tackleRepository.save(tackle);
+    }
+
+    public void voteToTackle(User loginedUser, Long workspaceId, Long tackleId, VoteRequest request) {
+        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
+        Worker worker = validateIfWorkerIsInWorkspace(loginedUser.getId(), workspaceId);
+        Tackle tackle = tackleRepository.getByTackleId(tackleId);
+        tackle.canBeReadIn(workspace);
+
+        TackleManager voteManager = new TackleManager(tackle);
+        Vote vote = voteManager.createVote(worker, request.getIsAgree());
+        voteRepository.save(vote);
+
+        voteManager.closeIfOnMajorityOrDone(workspace.getHeadCount());
     }
 }

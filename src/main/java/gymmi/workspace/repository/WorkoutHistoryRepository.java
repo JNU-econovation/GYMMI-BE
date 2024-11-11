@@ -14,7 +14,7 @@ public interface WorkoutHistoryRepository extends JpaRepository<WorkoutHistory, 
     @Query("select w from WorkoutHistory w join fetch w.workoutRecords where w.worker.id =:workerId")
     List<WorkoutHistory> getAllByWorkerId(Long workerId);
 
-    default WorkoutHistory getById(Long workoutHistoryId) {
+    default WorkoutHistory getByWorkoutHistoryId(Long workoutHistoryId) {
         WorkoutHistory workoutHistory = findById(workoutHistoryId)
                 .orElseThrow(() -> new NotFoundResourcesException("해당 운동 기록이 존재하지 않아요."));
         return workoutHistory;

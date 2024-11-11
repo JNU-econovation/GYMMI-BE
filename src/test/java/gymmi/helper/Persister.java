@@ -1,27 +1,23 @@
 package gymmi.helper;
 
-import static org.instancio.Select.field;
-
 import gymmi.entity.User;
 import gymmi.repository.UserRepository;
 import gymmi.workspace.domain.WorkspaceStatus;
-import gymmi.workspace.domain.entity.Mission;
-import gymmi.workspace.domain.entity.Task;
-import gymmi.workspace.domain.entity.Worker;
-import gymmi.workspace.domain.entity.WorkoutHistory;
-import gymmi.workspace.domain.entity.WorkoutProof;
-import gymmi.workspace.domain.entity.WorkoutRecord;
-import gymmi.workspace.domain.entity.Workspace;
+import gymmi.workspace.domain.entity.*;
 import gymmi.workspace.repository.WorkerRepository;
 import gymmi.workspace.repository.WorkspaceRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
-import java.util.List;
-import java.util.Map;
 import org.instancio.Instancio;
 import org.instancio.Select;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import static org.instancio.Select.field;
 
 @Component
 @Transactional
@@ -149,13 +145,43 @@ public class Persister {
                 .map(workout -> new WorkoutRecord(workout.getKey(), workout.getValue()))
                 .toList();
         Worker managedWorker = entityManager.find(Worker.class, worker.getId());
-        entityManager.persist(workoutProof);
         WorkoutHistory workoutHistory = new WorkoutHistory(
                 managedWorker, workoutRecords, workoutProof
         );
         entityManager.persist(workoutHistory);
         workoutHistory.apply();
         return workoutHistory;
+    }
+
+    public Tackle persistTackle(Worker subject, boolean isOpen, WorkoutProof workoutProof) {
+        Tackle tackle = Instancio.of(Tackle.class)
+                .set(field(Tackle::getSubject), subject)
+                .set(field(Tackle::isOpen), isOpen)
+                .set(field(Tackle::getWorkoutProof), workoutProof)
+                .set(field(Tackle::getVotes), new ArrayList<>())
+                .ignore(field(Tackle::getId))
+                .create();
+        entityManager.persist(tackle);
+        return tackle;
+    }
+
+    public WorkoutProof persistWorkoutProof() {
+        WorkoutProof workoutProof = Instancio.of(WorkoutProof.class)
+                .ignore(field(WorkoutProof::getId))
+                .create();
+        entityManager.persist(workoutProof);
+        return workoutProof;
+    }
+
+    public Vote persistVote(Worker worker, Tackle tackle, boolean isAgree) {
+        Vote vote = Instancio.of(Vote.class)
+                .set(field(Vote::getWorker), worker)
+                .set(field(Vote::getTackle), tackle)
+                .set(field(Vote::getIsAgree), isAgree)
+                .ignore(field(Vote::getId))
+                .create();
+        entityManager.persist(vote);
+        return vote;
     }
 
 

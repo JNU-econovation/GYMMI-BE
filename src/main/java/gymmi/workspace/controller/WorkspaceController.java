@@ -236,4 +236,16 @@ public class WorkspaceController {
         workspaceCommandService.tackleToWorkoutConfirmation(user, workspaceId, workoutConfirmationId, request);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/workspaces/{workspaceId}/tackles/{tackleId}")
+    public ResponseEntity<Void> voteToTackle(
+            @Logined User user,
+            @PathVariable Long workspaceId,
+            @PathVariable Long tackleId,
+            @Validated @RequestBody VoteRequest request
+    ) {
+        workspaceCommandService.voteToTackle(user, workspaceId, tackleId, request);
+        return ResponseEntity.ok().build();
+    }
+
 }

@@ -36,7 +36,7 @@ public class WorkoutHistory extends TimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Worker worker;
 
-    @JoinColumn(name = "workout_proof_id", nullable = false)
+    @JoinColumn(name = "workout_proof_id", nullable = false, unique = true)
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private WorkoutProof workoutProof;
 

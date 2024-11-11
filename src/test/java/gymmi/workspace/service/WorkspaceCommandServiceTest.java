@@ -34,7 +34,8 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
     WorkoutHistoryRepository workoutHistoryRepository;
     @Autowired
     FavoriteMissionRepository favoriteMissionRepository;
-
+    @Autowired
+    VoteRepository voteRepository;
     @Autowired
     TackleRepository tackleRepository;
 
@@ -162,7 +163,7 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
         Worker userWorker = persister.persistWorker(user, workspace);
         Mission mission = persister.persistMission(workspace, 1);
         Mission mission1 = persister.persistMission(workspace, 5);
-        WorkoutProof workoutProof = new WorkoutProof("creator", "a");
+        WorkoutProof workoutProof = persister.persistWorkoutProof();
         WorkoutHistory workoutHistory = persister.persistWorkoutHistoryAndApply(creatorWorker, Map.of(mission, 2, mission1, 2), workoutProof);
         TackleRequest request = new TackleRequest("이유");
         Long workoutConfirmationId = workoutHistory.getWorkoutProof().getId();
@@ -172,6 +173,26 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
 
         // then
         assertThat(tackleRepository.findByWorkoutConfirmationId(workoutConfirmationId)).isNotEmpty();
+    }
+
+    @Test
+    void 태클에_투표를_한다() {
+        // given
+        User creator = persister.persistUser();
+        User user = persister.persistUser();
+        Workspace workspace = persister.persistWorkspace(creator, WorkspaceStatus.IN_PROGRESS, 100, 3);
+        Worker creatorWorker = persister.persistWorker(creator, workspace);
+        Worker userWorker = persister.persistWorker(user, workspace);
+        WorkoutProof workoutProof = persister.persistWorkoutProof();
+        Tackle tackle = persister.persistTackle(userWorker, true, workoutProof);
+        VoteRequest request = new VoteRequest(true);
+
+        // when
+        workspaceCommandService.voteToTackle(creator, workspace.getId(), tackle.getId(), request);
+
+        // then
+        assertThat(voteRepository.findAll().size()).isEqualTo(1);
+        assertThat(tackle.isOpen()).isEqualTo(true);
     }
 
     private List<Workspace> persistWorkspacesNotCompletedWithWorker(User user, int size) {
