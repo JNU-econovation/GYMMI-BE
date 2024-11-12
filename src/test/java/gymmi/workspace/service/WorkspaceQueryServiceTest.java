@@ -64,11 +64,11 @@ class WorkspaceQueryServiceTest extends IntegrationTest {
         Worker userWorker = persister.persistWorker(user, workspace);
         Mission mission = persister.persistMission(workspace, 1);
         Mission mission1 = persister.persistMission(workspace, 5);
-        WorkoutProof workoutProof = new WorkoutProof("creator", "a");
-        WorkoutProof workoutProof1 = new WorkoutProof("user", "b");
+        WorkoutConfirmation workoutConfirmation = new WorkoutConfirmation("creator", "a");
+        WorkoutConfirmation workoutConfirmation1 = new WorkoutConfirmation("user", "b");
 
-        WorkoutHistory workoutHistory = persister.persistWorkoutHistoryAndApply(creatorWorker, Map.of(mission, 2, mission1, 2), workoutProof);
-        WorkoutHistory workoutHistory1 = persister.persistWorkoutHistoryAndApply(userWorker, Map.of(mission, 2, mission1, 2), workoutProof1);
+        WorkoutHistory workoutHistory = persister.persistWorkoutHistoryAndApply(creatorWorker, Map.of(mission, 2, mission1, 2), workoutConfirmation);
+        WorkoutHistory workoutHistory1 = persister.persistWorkoutHistoryAndApply(userWorker, Map.of(mission, 2, mission1, 2), workoutConfirmation1);
 
         // when
         List<WorkoutConfirmationResponse> responses = workspaceQueryService.getWorkoutConfirmations(user, workspace.getId(), 0);
@@ -78,11 +78,11 @@ class WorkspaceQueryServiceTest extends IntegrationTest {
         WorkoutConfirmationResponse response = responses.get(0);
         assertThat(response.getNickname()).isEqualTo(user.getNickname());
         assertThat(response.getProfileImageUrl()).isEqualTo(user.getProfileImageName());
-        assertThat(response.getWorkoutConfirmationId()).isEqualTo(workoutHistory1.getWorkoutProof().getId());
+        assertThat(response.getWorkoutConfirmationId()).isEqualTo(workoutHistory1.getWorkoutConfirmation().getId());
         WorkoutConfirmationResponse response1 = responses.get(1);
         assertThat(response1.getNickname()).isEqualTo(creator.getNickname());
         assertThat(response1.getProfileImageUrl()).isEqualTo(creator.getProfileImageName());
-        assertThat(response1.getWorkoutConfirmationId()).isEqualTo(workoutHistory.getWorkoutProof().getId());
+        assertThat(response1.getWorkoutConfirmationId()).isEqualTo(workoutHistory.getWorkoutConfirmation().getId());
     }
 
     @Test
@@ -95,11 +95,11 @@ class WorkspaceQueryServiceTest extends IntegrationTest {
         Worker userWorker = persister.persistWorker(user, workspace);
         Mission mission = persister.persistMission(workspace, 1);
         Mission mission1 = persister.persistMission(workspace, 5);
-        WorkoutProof workoutProof = new WorkoutProof("creator", "a");
-        WorkoutHistory workoutHistory = persister.persistWorkoutHistoryAndApply(creatorWorker, Map.of(mission, 2, mission1, 2), workoutProof);
+        WorkoutConfirmation workoutConfirmation = new WorkoutConfirmation("creator", "a");
+        WorkoutHistory workoutHistory = persister.persistWorkoutHistoryAndApply(creatorWorker, Map.of(mission, 2, mission1, 2), workoutConfirmation);
 
         // when
-        WorkoutConfirmationDetailResponse response = workspaceQueryService.getWorkoutConfirmation(user, workspace.getId(), workoutProof.getId());
+        WorkoutConfirmationDetailResponse response = workspaceQueryService.getWorkoutConfirmation(user, workspace.getId(), workoutConfirmation.getId());
 
         // then
         assertThat(response.getComment()).isEqualTo("a");

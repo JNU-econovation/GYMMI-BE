@@ -3,37 +3,37 @@ package gymmi.workspace.domain;
 import gymmi.exceptionhandler.exception.AlreadyExistException;
 import gymmi.exceptionhandler.exception.InvalidStateException;
 import gymmi.exceptionhandler.message.ErrorCode;
-import gymmi.workspace.domain.entity.Tackle;
+import gymmi.workspace.domain.entity.Objection;
 import gymmi.workspace.domain.entity.Vote;
 import gymmi.workspace.domain.entity.Worker;
 import lombok.Getter;
 
 @Getter
-public class TackleManager {
-    private final Tackle tackle;
+public class ObjectionManager {
+    private final Objection objection;
 
-    public TackleManager(Tackle tackle) {
-        this.tackle = tackle;
+    public ObjectionManager(Objection objection) {
+        this.objection = objection;
     }
 
-    public Vote createVote(Worker worker, boolean isAgree) {
-        if (!tackle.isOpen()) {
-            throw new InvalidStateException(ErrorCode.ALREADY_CLOSED_TACKLE);
+    public Vote createVote(Worker worker, boolean isApproved) {
+        if (!objection.isInProgress()) {
+            throw new InvalidStateException(ErrorCode.ALREADY_CLOSED_OBJECTION);
         }
-        if (tackle.hasVoteBy(worker)) {
+        if (objection.hasVoteBy(worker)) {
             throw new AlreadyExistException(ErrorCode.ALREADY_VOTED);
         }
-        return new Vote(worker, tackle, isAgree);
+        return new Vote(worker, objection, isApproved);
     }
 
     public void closeIfOnMajorityOrDone(int headCount) {
         int majority = getMajority(headCount);
-        if (tackle.getAgreeCount() >= majority || tackle.getDisAgreeCount() >= majority) {
-            tackle.close();
+        if (objection.getAgreeCount() >= majority || objection.getDisAgreeCount() >= majority) {
+            objection.close();
             return;
         }
-        if (tackle.getVoteCount() >= headCount) {
-            tackle.close();
+        if (objection.getVoteCount() >= headCount) {
+            objection.close();
         }
     }
 

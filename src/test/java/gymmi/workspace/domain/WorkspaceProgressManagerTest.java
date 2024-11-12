@@ -4,11 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import gymmi.exceptionhandler.message.ErrorCode;
-import gymmi.workspace.domain.entity.Mission;
-import gymmi.workspace.domain.entity.Worker;
-import gymmi.workspace.domain.entity.WorkoutHistory;
-import gymmi.workspace.domain.entity.WorkoutProof;
-import gymmi.workspace.domain.entity.Workspace;
+import gymmi.workspace.domain.entity.*;
+import gymmi.workspace.domain.entity.WorkoutConfirmation;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +44,7 @@ class WorkspaceProgressManagerTest {
                     .filter(Select.field(Worker::getWorkspace), (Workspace ws) -> !ws.equals(workspace))
                     .create();
             Map<Mission, Integer> workouts = Map.of(missions.get(0), 1);
-            WorkoutProof workoutProof = Instancio.of(WorkoutProof.class).create();
+            WorkoutConfirmation workoutProof = Instancio.of(WorkoutConfirmation.class).create();
 
             // when, then
             assertThatThrownBy(
@@ -66,7 +64,7 @@ class WorkspaceProgressManagerTest {
                     .filter(Select.field(Mission::getWorkspace), (Workspace ws) -> !ws.equals(workspace))
                     .create();
             Map<Mission, Integer> workouts = Map.of(mission, 1);
-            WorkoutProof workoutProof = Instancio.of(WorkoutProof.class).create();
+            WorkoutConfirmation workoutProof = Instancio.of(WorkoutConfirmation.class).create();
 
             // when, then
             assertThatThrownBy(() -> workspaceProgressManager.doWorkout(worker, workouts, workoutProof))
@@ -88,7 +86,7 @@ class WorkspaceProgressManagerTest {
             Map<Mission, Integer> workouts = Map.of(mission, missionCount, mission1, missionCount1);
 
             int sum = mission.getScore() * missionCount + mission1.getScore() * missionCount1;
-            WorkoutProof workoutProof = Instancio.of(WorkoutProof.class).create();
+            WorkoutConfirmation workoutProof = Instancio.of(WorkoutConfirmation.class).create();
 
             // when
             WorkoutHistory workoutHistory = workspaceProgressManager.doWorkout(worker, workouts, workoutProof);

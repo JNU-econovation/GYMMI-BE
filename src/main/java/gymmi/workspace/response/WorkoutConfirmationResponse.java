@@ -15,7 +15,7 @@ public class WorkoutConfirmationResponse {
     private final LocalDateTime createdAt;
 
     public WorkoutConfirmationResponse(WorkoutHistory workoutHistory, String workoutConfirmationImageUrl) {
-        this.workoutConfirmationId = workoutHistory.getWorkoutProof().getId();
+        this.workoutConfirmationId = workoutHistory.getWorkoutConfirmation().getId();
         this.nickname = workoutHistory.getWorker().getUser().getNickname();
         this.profileImageUrl = workoutHistory.getWorker().getUser().getProfileImageName();
         this.workoutConfirmationImageUrl = workoutConfirmationImageUrl;

@@ -7,8 +7,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"worker_id", "tackle_id"})})
@@ -24,22 +22,22 @@ public class Vote extends TimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Worker worker;
 
-    @JoinColumn(name = "tackle_id", nullable = false)
+    @JoinColumn(name = "objection_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    private Tackle tackle;
+    private Objection objection;
 
     @Column(nullable = false)
-    private Boolean isAgree;
+    private Boolean isApproved;
 
-    public Vote(Worker worker, Tackle tackle, Boolean isAgree) {
+    public Vote(Worker worker, Objection objection, Boolean isApproved) {
         this.worker = worker;
-        this.tackle = tackle;
-        this.isAgree = isAgree;
-        setRelations(tackle);
+        this.objection = objection;
+        this.isApproved = isApproved;
+        setRelations(objection);
     }
 
-    private void setRelations(Tackle tackle) {
-        tackle.add(this);
+    private void setRelations(Objection objection) {
+        objection.add(this);
     }
 
 }

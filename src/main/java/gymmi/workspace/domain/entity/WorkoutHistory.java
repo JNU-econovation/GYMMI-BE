@@ -36,9 +36,9 @@ public class WorkoutHistory extends TimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Worker worker;
 
-    @JoinColumn(name = "workout_proof_id", nullable = false, unique = true)
+    @JoinColumn(name = "workout_confirmation_id", nullable = false, unique = true)
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
-    private WorkoutProof workoutProof;
+    private WorkoutConfirmation workoutConfirmation;
 
     @Column(nullable = false)
     private boolean isApproved;
@@ -49,13 +49,13 @@ public class WorkoutHistory extends TimeEntity {
     @OneToMany(mappedBy = "workoutHistory", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<WorkoutRecord> workoutRecords = new ArrayList<>();
 
-    public WorkoutHistory(Worker worker, List<WorkoutRecord> workoutRecords, WorkoutProof workoutProof) {
+    public WorkoutHistory(Worker worker, List<WorkoutRecord> workoutRecords, WorkoutConfirmation workoutConfirmation) {
         this.worker = worker;
         this.workoutRecords = new ArrayList<>(workoutRecords);
         setRelations(workoutRecords);
         this.isApproved = true;
         this.totalScore = calculateSum();
-        this.workoutProof = workoutProof;
+        this.workoutConfirmation = workoutConfirmation;
     }
 
     private void setRelations(List<WorkoutRecord> workoutRecords) {

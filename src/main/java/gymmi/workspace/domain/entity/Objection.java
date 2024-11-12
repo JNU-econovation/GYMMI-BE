@@ -14,7 +14,7 @@ import static gymmi.exceptionhandler.message.ErrorCode.NO_WORKOUT_HISTORY_EXIST_
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Getter
-public class Tackle extends TimeEntity {
+public class Objection extends TimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,24 +25,24 @@ public class Tackle extends TimeEntity {
     private Worker subject;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "workout_proof_id", nullable = false, unique = true)
-    private WorkoutProof workoutProof;
+    @JoinColumn(name = "workout_confirmation_id", nullable = false, unique = true)
+    private WorkoutConfirmation workoutConfirmation;
 
     @Column(nullable = false)
     private String reason;
 
     @Column(nullable = false)
-    private boolean isOpen;
+    private boolean isInProgress;
 
-    @OneToMany(mappedBy = "tackle")
+    @OneToMany(mappedBy = "objection")
     private List<Vote> votes = new ArrayList<>();
 
     @Builder
-    public Tackle(Worker subject, WorkoutProof workoutProof, String reason) {
+    public Objection(Worker subject, WorkoutConfirmation workoutConfirmation, String reason) {
         this.subject = subject;
-        this.workoutProof = workoutProof;
+        this.workoutConfirmation = workoutConfirmation;
         this.reason = reason;
-        this.isOpen = true;
+        this.isInProgress = true;
     }
 
     public boolean hasVoteBy(Worker worker) {
@@ -54,7 +54,7 @@ public class Tackle extends TimeEntity {
 
     public int getAgreeCount() {
         return votes.stream()
-                .filter(vote -> vote.getIsAgree() == true)
+                .filter(vote -> vote.getIsApproved() == true)
                 .toList().size();
     }
 
@@ -64,12 +64,12 @@ public class Tackle extends TimeEntity {
 
     public int getDisAgreeCount() {
         return votes.stream()
-                .filter(vote -> vote.getIsAgree() == false)
+                .filter(vote -> vote.getIsApproved() == false)
                 .toList().size();
     }
 
     public void close() {
-        this.isOpen = false;
+        this.isInProgress = false;
     }
 
     public void canBeReadIn(Workspace workspace) {

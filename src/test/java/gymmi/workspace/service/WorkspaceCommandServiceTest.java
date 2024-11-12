@@ -37,7 +37,7 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
     @Autowired
     VoteRepository voteRepository;
     @Autowired
-    TackleRepository tackleRepository;
+    ObjectionRepository objectionRepository;
 
     @Autowired
     EntityManager entityManager;
@@ -163,16 +163,16 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
         Worker userWorker = persister.persistWorker(user, workspace);
         Mission mission = persister.persistMission(workspace, 1);
         Mission mission1 = persister.persistMission(workspace, 5);
-        WorkoutProof workoutProof = persister.persistWorkoutProof();
-        WorkoutHistory workoutHistory = persister.persistWorkoutHistoryAndApply(creatorWorker, Map.of(mission, 2, mission1, 2), workoutProof);
-        TackleRequest request = new TackleRequest("이유");
-        Long workoutConfirmationId = workoutHistory.getWorkoutProof().getId();
+        WorkoutConfirmation workoutConfirmation = persister.persistWorkoutConfirmation();
+        WorkoutHistory workoutHistory = persister.persistWorkoutHistoryAndApply(creatorWorker, Map.of(mission, 2, mission1, 2), workoutConfirmation);
+        ObjectionRequest request = new ObjectionRequest("이유");
+        Long workoutConfirmationId = workoutHistory.getWorkoutConfirmation().getId();
 
         // when
-        workspaceCommandService.tackleToWorkoutConfirmation(user, workspace.getId(), workoutConfirmationId, request);
+        workspaceCommandService.objectToWorkoutConfirmation(user, workspace.getId(), workoutConfirmationId, request);
 
         // then
-        assertThat(tackleRepository.findByWorkoutConfirmationId(workoutConfirmationId)).isNotEmpty();
+        assertThat(objectionRepository.findByWorkoutConfirmationId(workoutConfirmationId)).isNotEmpty();
     }
 
     @Test
@@ -183,16 +183,16 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
         Workspace workspace = persister.persistWorkspace(creator, WorkspaceStatus.IN_PROGRESS, 100, 3);
         Worker creatorWorker = persister.persistWorker(creator, workspace);
         Worker userWorker = persister.persistWorker(user, workspace);
-        WorkoutProof workoutProof = persister.persistWorkoutProof();
-        Tackle tackle = persister.persistTackle(userWorker, true, workoutProof);
+        WorkoutConfirmation workoutConfirmation = persister.persistWorkoutConfirmation();
+        Objection objection = persister.persistObjection(userWorker, true, workoutConfirmation);
         VoteRequest request = new VoteRequest(true);
 
         // when
-        workspaceCommandService.voteToTackle(creator, workspace.getId(), tackle.getId(), request);
+        workspaceCommandService.voteToObjection(creator, workspace.getId(), objection.getId(), request);
 
         // then
         assertThat(voteRepository.findAll().size()).isEqualTo(1);
-        assertThat(tackle.isOpen()).isEqualTo(true);
+        assertThat(objection.isInProgress()).isEqualTo(true);
     }
 
     private List<Workspace> persistWorkspacesNotCompletedWithWorker(User user, int size) {

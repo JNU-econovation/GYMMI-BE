@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(of = {"id"})
 @Getter
-public class WorkoutProof {
+public class WorkoutConfirmation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,7 +22,7 @@ public class WorkoutProof {
     @Column(nullable = false)
     private String comment;
 
-    public WorkoutProof(String filename, String comment) {
+    public WorkoutConfirmation(String filename, String comment) {
         this.filename = filename;
         this.comment = comment;
     }

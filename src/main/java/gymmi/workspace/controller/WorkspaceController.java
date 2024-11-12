@@ -217,7 +217,7 @@ public class WorkspaceController {
     }
 
     @GetMapping("/workspaces/{workspaceId}/workout-confirmations/{workoutConfirmationId}")
-    public ResponseEntity<WorkoutConfirmationDetailResponse> seeWorkoutConfirmations(
+    public ResponseEntity<WorkoutConfirmationDetailResponse> seeWorkoutConfirmation(
             @Logined User user,
             @PathVariable Long workspaceId,
             @PathVariable Long workoutConfirmationId
@@ -227,24 +227,24 @@ public class WorkspaceController {
     }
 
     @PostMapping("/workspaces/{workspaceId}/workout-confirmations/{workoutConfirmationId}")
-    public ResponseEntity<Void> tackleToWorkoutConfirmation(
+    public ResponseEntity<Void> objectToWorkoutConfirmation(
             @Logined User user,
             @PathVariable Long workspaceId,
             @PathVariable Long workoutConfirmationId,
-            @Validated @RequestBody TackleRequest request
+            @Validated @RequestBody ObjectionRequest request
     ) {
-        workspaceCommandService.tackleToWorkoutConfirmation(user, workspaceId, workoutConfirmationId, request);
+        workspaceCommandService.objectToWorkoutConfirmation(user, workspaceId, workoutConfirmationId, request);
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/workspaces/{workspaceId}/tackles/{tackleId}")
-    public ResponseEntity<Void> voteToTackle(
+    @PostMapping("/workspaces/{workspaceId}/objections/{objectionId}")
+    public ResponseEntity<Void> voteToObjection(
             @Logined User user,
             @PathVariable Long workspaceId,
-            @PathVariable Long tackleId,
+            @PathVariable Long objectionId,
             @Validated @RequestBody VoteRequest request
     ) {
-        workspaceCommandService.voteToTackle(user, workspaceId, tackleId, request);
+        workspaceCommandService.voteToObjection(user, workspaceId, objectionId, request);
         return ResponseEntity.ok().build();
     }
 

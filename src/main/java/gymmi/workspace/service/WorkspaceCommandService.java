@@ -28,7 +28,7 @@ public class WorkspaceCommandService {
     private final MissionRepository missionRepository;
     private final WorkoutHistoryRepository workoutHistoryRepository;
     private final FavoriteMissionRepository favoriteMissionRepository;
-    private final TackleRepository tackleRepository;
+    private final ObjectionRepository objectionRepository;
     private final VoteRepository voteRepository;
 
     @Transactional
@@ -112,7 +112,7 @@ public class WorkspaceCommandService {
         WorkoutHistory workoutHistory = workspaceProgressManager.doWorkout(
                 worker,
                 workouts,
-                new WorkoutProof(workoutRequest.getImageUrl(), workoutRequest.getComment())
+                new WorkoutConfirmation(workoutRequest.getImageUrl(), workoutRequest.getComment())
         );
         workoutHistory.apply();
 
@@ -178,32 +178,32 @@ public class WorkspaceCommandService {
                 .orElseThrow(() -> new NotHavePermissionException(ErrorCode.NOT_JOINED_WORKSPACE));
     }
 
-    public void tackleToWorkoutConfirmation(User loginedUser, Long workspaceId, Long workoutConfirmationId, TackleRequest request) {
+    public void objectToWorkoutConfirmation(User loginedUser, Long workspaceId, Long workoutConfirmationId, ObjectionRequest request) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
         Worker worker = validateIfWorkerIsInWorkspace(loginedUser.getId(), workspaceId);
-        WorkoutHistory workoutHistory = workoutHistoryRepository.getByWorkoutProofId(workoutConfirmationId);
+        WorkoutHistory workoutHistory = workoutHistoryRepository.getByWorkoutConfirmationId(workoutConfirmationId);
         workoutHistory.canBeReadIn(workspace);
-        if (tackleRepository.findByWorkoutConfirmationId(workoutConfirmationId).isPresent()) {
-            throw new AlreadyExistException(ErrorCode.ALREADY_TACKLED);
+        if (objectionRepository.findByWorkoutConfirmationId(workoutConfirmationId).isPresent()) {
+            throw new AlreadyExistException(ErrorCode.ALREADY_OBJECTED);
         }
-        Tackle tackle = Tackle.builder()
+        Objection objection = Objection.builder()
                 .subject(worker)
                 .reason(request.getReason())
-                .workoutProof(workoutHistory.getWorkoutProof())
+                .workoutConfirmation(workoutHistory.getWorkoutConfirmation())
                 .build();
-        tackleRepository.save(tackle);
+        objectionRepository.save(objection);
     }
 
-    public void voteToTackle(User loginedUser, Long workspaceId, Long tackleId, VoteRequest request) {
+    public void voteToObjection(User loginedUser, Long workspaceId, Long objectionId, VoteRequest request) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
         Worker worker = validateIfWorkerIsInWorkspace(loginedUser.getId(), workspaceId);
-        Tackle tackle = tackleRepository.getByTackleId(tackleId);
-        tackle.canBeReadIn(workspace);
+        Objection objection = objectionRepository.getByObjectionId(objectionId);
+        objection.canBeReadIn(workspace);
 
-        TackleManager voteManager = new TackleManager(tackle);
-        Vote vote = voteManager.createVote(worker, request.getIsAgree());
+        ObjectionManager objectionManager = new ObjectionManager(objection);
+        Vote vote = objectionManager.createVote(worker, request.getWillApprove());
         voteRepository.save(vote);
 
-        voteManager.closeIfOnMajorityOrDone(workspace.getHeadCount());
+        objectionManager.closeIfOnMajorityOrDone(workspace.getHeadCount());
     }
 }

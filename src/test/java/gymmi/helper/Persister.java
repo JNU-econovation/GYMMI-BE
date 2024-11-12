@@ -128,56 +128,56 @@ public class Persister {
                 .map(workout -> new WorkoutRecord(workout.getKey(), workout.getValue()))
                 .toList();
         Worker managedWorker = entityManager.find(Worker.class, worker.getId());
-        WorkoutProof workoutProof = Instancio.of(WorkoutProof.class)
-                .ignore(Select.field(WorkoutProof::getId))
+        WorkoutConfirmation workoutConfirmation = Instancio.of(WorkoutConfirmation.class)
+                .ignore(Select.field(WorkoutConfirmation::getId))
                 .create();
-        entityManager.persist(workoutProof);
+        entityManager.persist(workoutConfirmation);
         WorkoutHistory workoutHistory = new WorkoutHistory(
-                managedWorker, workoutRecords, workoutProof
+                managedWorker, workoutRecords, workoutConfirmation
         );
         entityManager.persist(workoutHistory);
         workoutHistory.apply();
         return workoutHistory;
     }
 
-    public WorkoutHistory persistWorkoutHistoryAndApply(Worker worker, Map<Mission, Integer> workouts, WorkoutProof workoutProof) {
+    public WorkoutHistory persistWorkoutHistoryAndApply(Worker worker, Map<Mission, Integer> workouts, WorkoutConfirmation workoutConfirmation) {
         List<WorkoutRecord> workoutRecords = workouts.entrySet().stream()
                 .map(workout -> new WorkoutRecord(workout.getKey(), workout.getValue()))
                 .toList();
         Worker managedWorker = entityManager.find(Worker.class, worker.getId());
         WorkoutHistory workoutHistory = new WorkoutHistory(
-                managedWorker, workoutRecords, workoutProof
+                managedWorker, workoutRecords, workoutConfirmation
         );
         entityManager.persist(workoutHistory);
         workoutHistory.apply();
         return workoutHistory;
     }
 
-    public Tackle persistTackle(Worker subject, boolean isOpen, WorkoutProof workoutProof) {
-        Tackle tackle = Instancio.of(Tackle.class)
-                .set(field(Tackle::getSubject), subject)
-                .set(field(Tackle::isOpen), isOpen)
-                .set(field(Tackle::getWorkoutProof), workoutProof)
-                .set(field(Tackle::getVotes), new ArrayList<>())
-                .ignore(field(Tackle::getId))
+    public Objection persistObjection(Worker subject, boolean isOpen, WorkoutConfirmation workoutConfirmation) {
+        Objection objection = Instancio.of(Objection.class)
+                .set(field(Objection::getSubject), subject)
+                .set(field(Objection::isInProgress), isOpen)
+                .set(field(Objection::getWorkoutConfirmation), workoutConfirmation)
+                .set(field(Objection::getVotes), new ArrayList<>())
+                .ignore(field(Objection::getId))
                 .create();
-        entityManager.persist(tackle);
-        return tackle;
+        entityManager.persist(objection);
+        return objection;
     }
 
-    public WorkoutProof persistWorkoutProof() {
-        WorkoutProof workoutProof = Instancio.of(WorkoutProof.class)
-                .ignore(field(WorkoutProof::getId))
+    public WorkoutConfirmation persistWorkoutConfirmation() {
+        WorkoutConfirmation workoutConfirmation = Instancio.of(WorkoutConfirmation.class)
+                .ignore(field(WorkoutConfirmation::getId))
                 .create();
-        entityManager.persist(workoutProof);
-        return workoutProof;
+        entityManager.persist(workoutConfirmation);
+        return workoutConfirmation;
     }
 
-    public Vote persistVote(Worker worker, Tackle tackle, boolean isAgree) {
+    public Vote persistVote(Worker worker, Objection objection, boolean isApproved) {
         Vote vote = Instancio.of(Vote.class)
                 .set(field(Vote::getWorker), worker)
-                .set(field(Vote::getTackle), tackle)
-                .set(field(Vote::getIsAgree), isAgree)
+                .set(field(Vote::getObjection), objection)
+                .set(field(Vote::getIsApproved), isApproved)
                 .ignore(field(Vote::getId))
                 .create();
         entityManager.persist(vote);

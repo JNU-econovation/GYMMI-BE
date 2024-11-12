@@ -164,24 +164,24 @@ public class WorkspaceQueryService {
 
         List<WorkoutConfirmationResponse> responses = new ArrayList<>();
         for (WorkoutHistory workoutHistory : workoutHistories) {
-            WorkoutProof workoutProof = workoutHistory.getWorkoutProof();
-            String imagePresignedUrl = s3Service.getPresignedUrl(workoutProof.getFilename());
+            WorkoutConfirmation workoutConfirmation = workoutHistory.getWorkoutConfirmation();
+            String imagePresignedUrl = s3Service.getPresignedUrl(workoutConfirmation.getFilename());
             responses.add(new WorkoutConfirmationResponse(workoutHistory, imagePresignedUrl));
         }
         return responses;
     }
 
-    public WorkoutConfirmationDetailResponse getWorkoutConfirmation(User loginedUser, Long workspaceId, Long workoutProofId) {
+    public WorkoutConfirmationDetailResponse getWorkoutConfirmation(User loginedUser, Long workspaceId, Long workoutConfirmationId) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
         validateIfWorkerIsInWorkspace(loginedUser.getId(), workspace.getId());
-        WorkoutHistory workoutHistory = workoutHistoryRepository.getByWorkoutProofId(workoutProofId);
+        WorkoutHistory workoutHistory = workoutHistoryRepository.getByWorkoutConfirmationId(workoutConfirmationId);
 
         workoutHistory.canBeReadIn(workspace);
-        WorkoutProof workoutProof = workoutHistory.getWorkoutProof();
+        WorkoutConfirmation workoutConfirmation = workoutHistory.getWorkoutConfirmation();
 
-        String imagePresignedUrl = s3Service.getPresignedUrl(workoutProof.getFilename());
+        String imagePresignedUrl = s3Service.getPresignedUrl(workoutConfirmation.getFilename());
 
-        return new WorkoutConfirmationDetailResponse(workoutHistory.getWorker().getUser(), imagePresignedUrl, workoutProof.getComment());
+        return new WorkoutConfirmationDetailResponse(workoutHistory.getWorker().getUser(), imagePresignedUrl, workoutConfirmation.getComment());
     }
 
 

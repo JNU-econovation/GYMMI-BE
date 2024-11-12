@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 public class VoteRequest {
 
     @NotBlank
-    private Boolean isAgree;
+    private Boolean willApprove;
 
-    public VoteRequest(Boolean isAgree) {
-        this.isAgree = isAgree;
+    public VoteRequest(Boolean willApprove) {
+        this.willApprove = willApprove;
     }
 }
