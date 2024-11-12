@@ -131,7 +131,7 @@ public class WorkspaceController {
     public ResponseEntity<WorkingScoreResponse> workMissionsInWorkspace(
             @Logined User user,
             @PathVariable Long workspaceId,
-            @RequestBody WorkoutRequest request
+            @Validated @RequestBody WorkoutRequest request
     ) {
         Integer workingScore = workspaceCommandService.workMissionsInWorkspace(user, workspaceId, request);
         return ResponseEntity.ok().body(new WorkingScoreResponse(workingScore));
