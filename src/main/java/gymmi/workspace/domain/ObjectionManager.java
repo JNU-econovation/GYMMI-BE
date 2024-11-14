@@ -28,7 +28,7 @@ public class ObjectionManager {
 
     public void closeIfOnMajorityOrDone(int headCount) {
         int majority = getMajority(headCount);
-        if (objection.getAgreeCount() >= majority || objection.getDisAgreeCount() >= majority) {
+        if (objection.getApprovalCount() >= majority || objection.getRejectionCount() >= majority) {
             objection.close();
             return;
         }

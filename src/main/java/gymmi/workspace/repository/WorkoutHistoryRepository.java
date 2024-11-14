@@ -21,11 +21,11 @@ public interface WorkoutHistoryRepository extends JpaRepository<WorkoutHistory, 
     }
 
     @Query("select w from WorkoutHistory w join fetch w.workoutConfirmation wf join fetch w.worker where wf.id =:workoutProofId")
-    Optional<WorkoutHistory> findByWorkoutProofId(Long workoutProofId);
+    Optional<WorkoutHistory> findByWorkoutConfirmationId(Long workoutProofId);
 
 
-    default WorkoutHistory getByWorkoutConfirmationId(Long workoutProofId) {
-        WorkoutHistory workoutHistory = findByWorkoutProofId(workoutProofId)
+    default WorkoutHistory getByWorkoutConfirmationId(Long workoutConfirmationId) {
+        WorkoutHistory workoutHistory = findByWorkoutConfirmationId(workoutConfirmationId)
                 .orElseThrow(() -> new NotFoundResourcesException("해당 운동 기록이 존재하지 않아요."));
         return workoutHistory;
     }

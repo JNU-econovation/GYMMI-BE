@@ -153,10 +153,10 @@ public class Persister {
         return workoutHistory;
     }
 
-    public Objection persistObjection(Worker subject, boolean isOpen, WorkoutConfirmation workoutConfirmation) {
+    public Objection persistObjection(Worker subject, boolean isInProgress, WorkoutConfirmation workoutConfirmation) {
         Objection objection = Instancio.of(Objection.class)
                 .set(field(Objection::getSubject), subject)
-                .set(field(Objection::isInProgress), isOpen)
+                .set(field(Objection::isInProgress), isInProgress)
                 .set(field(Objection::getWorkoutConfirmation), workoutConfirmation)
                 .set(field(Objection::getVotes), new ArrayList<>())
                 .ignore(field(Objection::getId))
@@ -180,6 +180,7 @@ public class Persister {
                 .set(field(Vote::getIsApproved), isApproved)
                 .ignore(field(Vote::getId))
                 .create();
+        objection.add(vote);
         entityManager.persist(vote);
         return vote;
     }

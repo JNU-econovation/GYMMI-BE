@@ -13,8 +13,8 @@ public interface ObjectionRepository extends JpaRepository<Objection, Long> {
     @Query("select o from Objection o where o.workoutConfirmation.id =:workoutConfirmationId")
     Optional<Objection> findByWorkoutConfirmationId(Long workoutConfirmationId);
 
-    default Objection getByObjectionId(Long tackleId) {
-        Objection objection = findById(tackleId)
+    default Objection getByObjectionId(Long objectionId) {
+        Objection objection = findById(objectionId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_OBJECTION));
         return objection;
     }

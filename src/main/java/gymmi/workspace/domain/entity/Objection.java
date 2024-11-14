@@ -5,6 +5,7 @@ import gymmi.exceptionhandler.exception.NotHavePermissionException;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +16,8 @@ import static gymmi.exceptionhandler.message.ErrorCode.NO_WORKOUT_HISTORY_EXIST_
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Getter
 public class Objection extends TimeEntity {
+
+    private static final int PERIOD_HOUR = 24;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,7 +55,7 @@ public class Objection extends TimeEntity {
                 .contains(worker);
     }
 
-    public int getAgreeCount() {
+    public int getApprovalCount() {
         return votes.stream()
                 .filter(vote -> vote.getIsApproved() == true)
                 .toList().size();
@@ -62,7 +65,7 @@ public class Objection extends TimeEntity {
         return votes.size();
     }
 
-    public int getDisAgreeCount() {
+    public int getRejectionCount() {
         return votes.stream()
                 .filter(vote -> vote.getIsApproved() == false)
                 .toList().size();
@@ -82,6 +85,9 @@ public class Objection extends TimeEntity {
         votes.add(vote);
     }
 
+    public LocalDateTime getDeadline() {
+        return getCreatedAt().plusHours(PERIOD_HOUR);
+    }
 }
 
 

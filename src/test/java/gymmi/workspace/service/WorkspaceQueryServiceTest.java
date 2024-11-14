@@ -4,9 +4,11 @@ import gymmi.entity.User;
 import gymmi.service.S3Service;
 import gymmi.workspace.domain.WorkspaceStatus;
 import gymmi.workspace.domain.entity.*;
+import gymmi.workspace.response.ObjectionResponse;
 import gymmi.workspace.response.WorkoutConfirmationDetailResponse;
 import gymmi.workspace.response.WorkoutConfirmationResponse;
 import gymmi.workspace.response.WorkoutContextResponse;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -108,4 +110,86 @@ class WorkspaceQueryServiceTest extends IntegrationTest {
         assertThat(response.getNickname()).isEqualTo(creator.getNickname());
     }
 
+    @Nested
+    class 이의_신청_확인 {
+
+        @Test
+        void 투표_o_마감_x() {
+            // given
+            User creator = persister.persistUser();
+            User user = persister.persistUser();
+            Workspace workspace = persister.persistWorkspace(creator, WorkspaceStatus.IN_PROGRESS, 100, 5);
+            Worker creatorWorker = persister.persistWorker(creator, workspace);
+            Worker userWorker = persister.persistWorker(user, workspace);
+            WorkoutConfirmation workoutConfirmation = persister.persistWorkoutConfirmation();
+            Objection objection = persister.persistObjection(userWorker, true, workoutConfirmation);
+            persister.persistVote(userWorker, objection, true);
+            persister.persistVote(creatorWorker, objection, false);
+
+            // when
+            ObjectionResponse response = workspaceQueryService.getObjection(user, workspace.getId(), objection.getId());
+
+            // then
+            assertThat(response.getDeadline()).isEqualTo(objection.getCreatedAt().plusHours(24));
+            assertThat(response.getInInProgress()).isTrue();
+            assertThat(response.getVoteCompletion()).isTrue();
+            assertThat(response.getApprovalCount()).isEqualTo(1);
+            assertThat(response.getRejectionCount()).isEqualTo(1);
+            assertThat(response.getVoteParticipationCount()).isEqualTo(2);
+            assertThat(response.getConfirmationCompletion()).isNull();
+        }
+
+        @Test
+        void 투표_x_마감_x() {
+            // given
+            User creator = persister.persistUser();
+            User user = persister.persistUser();
+            Workspace workspace = persister.persistWorkspace(creator, WorkspaceStatus.IN_PROGRESS, 100, 5);
+            Worker creatorWorker = persister.persistWorker(creator, workspace);
+            Worker userWorker = persister.persistWorker(user, workspace);
+            WorkoutConfirmation workoutConfirmation = persister.persistWorkoutConfirmation();
+            Objection objection = persister.persistObjection(userWorker, true, workoutConfirmation);
+            persister.persistVote(creatorWorker, objection, false);
+
+            // when
+            ObjectionResponse response = workspaceQueryService.getObjection(user, workspace.getId(), objection.getId());
+
+            // then
+            assertThat(response.getDeadline()).isEqualTo(objection.getCreatedAt().plusHours(24));
+            assertThat(response.getInInProgress()).isTrue();
+            assertThat(response.getVoteCompletion()).isFalse();
+            assertThat(response.getApprovalCount()).isNull();
+            assertThat(response.getRejectionCount()).isNull();
+            assertThat(response.getVoteParticipationCount()).isEqualTo(1);
+            assertThat(response.getConfirmationCompletion()).isNull();
+        }
+
+        @Test
+        void 투표_x_마감_o() {
+            // given
+            User creator = persister.persistUser();
+            User user = persister.persistUser();
+            Workspace workspace = persister.persistWorkspace(creator, WorkspaceStatus.IN_PROGRESS, 100, 3);
+            Worker creatorWorker = persister.persistWorker(creator, workspace);
+            Worker userWorker = persister.persistWorker(user, workspace);
+            Mission mission = persister.persistMission(workspace, 10);
+            WorkoutConfirmation workoutConfirmation = persister.persistWorkoutConfirmation();
+            persister.persistWorkoutHistoryAndApply(creatorWorker, Map.of(mission, 1), workoutConfirmation);
+            Objection objection = persister.persistObjection(userWorker, false, workoutConfirmation);
+            persister.persistVote(creatorWorker, objection, false);;
+
+            // when
+            ObjectionResponse response = workspaceQueryService.getObjection(user, workspace.getId(), objection.getId());
+
+            // then
+            assertThat(response.getDeadline()).isEqualTo(objection.getCreatedAt().plusHours(24));
+            assertThat(response.getInInProgress()).isFalse();
+            assertThat(response.getVoteCompletion()).isFalse();
+            assertThat(response.getApprovalCount()).isEqualTo(0);
+            assertThat(response.getRejectionCount()).isEqualTo(1);
+            assertThat(response.getVoteParticipationCount()).isEqualTo(1);
+            assertThat(response.getConfirmationCompletion()).isTrue();
+        }
+
+    }
 }

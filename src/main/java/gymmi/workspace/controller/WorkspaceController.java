@@ -248,4 +248,14 @@ public class WorkspaceController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/workspaces/{workspaceId}/objections/{objectionId}")
+    public ResponseEntity<ObjectionResponse> seeObjection(
+            @Logined User user,
+            @PathVariable Long workspaceId,
+            @PathVariable Long objectionId
+    ) {
+        ObjectionResponse response = workspaceQueryService.getObjection(user, workspaceId, objectionId);
+        return ResponseEntity.ok().body(response);
+    }
+
 }

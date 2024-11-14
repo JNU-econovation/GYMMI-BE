@@ -33,6 +33,7 @@ public class WorkspaceQueryService {
     private final WorkoutHistoryRepository workoutHistoryRepository;
     private final WorkoutRecordRepository workoutRecordRepository;
     private final FavoriteMissionRepository favoriteMissionRepository;
+    private final ObjectionRepository objectionRepository;
 
     private final S3Service s3Service;
 
@@ -184,5 +185,23 @@ public class WorkspaceQueryService {
         return new WorkoutConfirmationDetailResponse(workoutHistory.getWorker().getUser(), imagePresignedUrl, workoutConfirmation.getComment());
     }
 
+    public ObjectionResponse getObjection(User loginedUser, Long workspaceId, Long objectionId) {
+        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
+        Worker worker = validateIfWorkerIsInWorkspace(loginedUser.getId(), workspace.getId());
+        Objection objection = objectionRepository.getByObjectionId(objectionId);
+        objection.canBeReadIn(workspace);
 
+        if (objection.isInProgress() && objection.hasVoteBy(worker)) {
+            return ObjectionResponse.objectionInProgressWithVoteCompletion(objection);
+        }
+
+        if (objection.isInProgress() && !objection.hasVoteBy(worker)) {
+            return ObjectionResponse.objectionInProgressWithVoteInCompletion(objection);
+        }
+
+        WorkoutHistory workoutHistory = workoutHistoryRepository.getByWorkoutConfirmationId(objection.getWorkoutConfirmation().getId());
+
+        workoutHistory.canBeReadIn(workspace);
+        return ObjectionResponse.closedObjection(objection, objection.hasVoteBy(worker), workoutHistory.isApproved());
+    }
 }
