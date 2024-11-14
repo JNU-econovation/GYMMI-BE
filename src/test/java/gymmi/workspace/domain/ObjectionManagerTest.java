@@ -51,15 +51,14 @@ class ObjectionManagerTest {
 
     @ParameterizedTest
     @CsvSource(value = {
-            "4,3,1,true",
-            "4,2,1,false",
-            "5,2,2,false",
-            "4,2,2,true",
+            "4,3,1,true, true",
+            "4,2,1,false, false",
+            "5,2,2,false, false",
+            "4,2,2,true, false",
     })
-    void 투표에_따라_투표가_종료된다(int headcount, int agreeCount, int disagreeCount, boolean isClose) {
+    void 투표에_따라_투표가_종료된다(int workerCount, int agreeCount, int disagreeCount, boolean isClosed, boolean isApproved) {
         // given
         Objection objection = getTackle(true);
-        int headCount = headcount;
         List<Vote> agreeVotes = getVotes(agreeCount, objection, true);
         List<Vote> disagreeVotes = getVotes(disagreeCount, objection, false);
         agreeVotes.addAll(disagreeVotes);
@@ -68,17 +67,19 @@ class ObjectionManagerTest {
         ObjectionManager tackleManager = new ObjectionManager(objection);
 
         // when
-        tackleManager.closeIfOnMajorityOrDone(headCount);
+        boolean result = tackleManager.closeIfOnMajorityOrDone(workerCount);
 
         // then
-        assertThat(!tackleManager.getObjection().isInProgress()).isEqualTo(isClose);
+        assertThat(!tackleManager.getObjection().isInProgress()).isEqualTo(isClosed);
+        assertThat(result).isEqualTo(isClosed);
+        assertThat(tackleManager.isApproved()).isEqualTo(isApproved);
     }
 
-    private List<Vote> getVotes(int size, Objection objection, boolean isAgree) {
+    private List<Vote> getVotes(int size, Objection objection, boolean isApproved) {
         List<Vote> agreeVotes = Instancio.ofList(Vote.class)
                 .size(size)
                 .set(Select.field(Vote::getObjection), objection)
-                .set(Select.field(Vote::getIsApproved), isAgree)
+                .set(Select.field(Vote::getIsApproved), isApproved)
                 .create();
         return agreeVotes;
     }

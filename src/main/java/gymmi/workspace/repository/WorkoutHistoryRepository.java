@@ -29,4 +29,10 @@ public interface WorkoutHistoryRepository extends JpaRepository<WorkoutHistory, 
                 .orElseThrow(() -> new NotFoundResourcesException("해당 운동 기록이 존재하지 않아요."));
         return workoutHistory;
     }
+
+    default WorkoutHistory getByObjectionId(Long objectionId) {
+        WorkoutHistory workoutHistory = findByWorkoutConfirmationId(objectionId)
+                .orElseThrow(() -> new NotFoundResourcesException("해당 운동 기록이 존재하지 않아요."));
+        return workoutHistory;
+    }
 }

@@ -21,6 +21,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class WorkspaceCommandService {
 
     private final WorkspaceRepository workspaceRepository;
@@ -204,6 +205,17 @@ public class WorkspaceCommandService {
         Vote vote = objectionManager.createVote(worker, request.getWillApprove());
         voteRepository.save(vote);
 
-        objectionManager.closeIfOnMajorityOrDone(workspace.getHeadCount());
+        List<Worker> workers = workerRepository.getAllByWorkspaceId(workspaceId);
+
+        if (objectionManager.closeIfOnMajorityOrDone(workers.size())) {
+            WorkoutHistory workoutHistory = workoutHistoryRepository.getByWorkoutConfirmationId(objection.getWorkoutConfirmation().getId());
+            rejectWorkoutHistory(objectionManager, workoutHistory);
+        }
+    }
+
+    private void rejectWorkoutHistory(ObjectionManager objectionManager, WorkoutHistory workoutHistory) {
+        if (objectionManager.isApproved()) {
+            workoutHistory.cancel();
+        }
     }
 }

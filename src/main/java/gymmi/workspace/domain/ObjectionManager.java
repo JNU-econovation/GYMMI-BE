@@ -11,9 +11,11 @@ import lombok.Getter;
 @Getter
 public class ObjectionManager {
     private final Objection objection;
+    private boolean isApproved;
 
     public ObjectionManager(Objection objection) {
         this.objection = objection;
+        this.isApproved = false;
     }
 
     public Vote createVote(Worker worker, boolean isApproved) {
@@ -26,24 +28,30 @@ public class ObjectionManager {
         return new Vote(worker, objection, isApproved);
     }
 
-    public void closeIfOnMajorityOrDone(int headCount) {
-        int majority = getMajority(headCount);
-        if (objection.getApprovalCount() >= majority || objection.getRejectionCount() >= majority) {
+    public boolean closeIfOnMajorityOrDone(int workerCount) {
+        int majority = getMajority(workerCount);
+        if (objection.getApprovalCount() >= majority) {
             objection.close();
-            return;
+            isApproved = true;
+            return true;
         }
-        if (objection.getVoteCount() >= headCount) {
+        if (objection.getRejectionCount() >= majority) {
             objection.close();
+            return true;
         }
+        if (objection.getVoteCount() >= workerCount) {
+            objection.close();
+            return true;
+        }
+        return false;
     }
 
-    private int getMajority(int headCount) {
-        if (headCount % 2 == 0) {
-            return (headCount / 2) + 1;
+
+    private int getMajority(int workerCount) {
+        if (workerCount % 2 == 0) {
+            return (workerCount / 2) + 1;
         }
-        if (headCount % 2 == 1) {
-            return (int) Math.round(headCount / 2.0);
-        }
-        throw new IllegalStateException();
+        return (int) Math.round(workerCount / 2.0);
     }
+
 }

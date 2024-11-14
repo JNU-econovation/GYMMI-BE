@@ -1,26 +1,17 @@
 package gymmi.workspace.domain.entity;
 
-import static gymmi.exceptionhandler.message.ErrorCode.NO_WORKOUT_HISTORY_EXIST_IN_WORKSPACE;
-
 import gymmi.entity.TimeEntity;
 import gymmi.exceptionhandler.exception.NotHavePermissionException;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import java.util.ArrayList;
-import java.util.List;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static gymmi.exceptionhandler.message.ErrorCode.NO_WORKOUT_HISTORY_EXIST_IN_WORKSPACE;
 
 @Entity
 @Getter
@@ -66,6 +57,10 @@ public class WorkoutHistory extends TimeEntity {
     public void apply() {
         // 변경감지 기능 사용하는 메서드(worker)... 더 좋은 대안 없을까??
         worker.addWorkingScore(totalScore);
+    }
+
+    public void cancel() {
+        isApproved = false;
     }
 
     public int getSum() {
