@@ -108,6 +108,7 @@ class WorkspaceQueryServiceTest extends IntegrationTest {
         assertThat(response.getProfileImageUrl()).isEqualTo(creator.getProfileImageName());
         assertThat(response.getLoginId()).isEqualTo(creator.getLoginId());
         assertThat(response.getNickname()).isEqualTo(creator.getNickname());
+        assertThat(response.getObjectionId()).isEqualTo(null);
     }
 
     @Nested
@@ -176,7 +177,8 @@ class WorkspaceQueryServiceTest extends IntegrationTest {
             WorkoutConfirmation workoutConfirmation = persister.persistWorkoutConfirmation();
             persister.persistWorkoutHistoryAndApply(creatorWorker, Map.of(mission, 1), workoutConfirmation);
             Objection objection = persister.persistObjection(userWorker, false, workoutConfirmation);
-            persister.persistVote(creatorWorker, objection, false);;
+            persister.persistVote(creatorWorker, objection, false);
+            ;
 
             // when
             ObjectionResponse response = workspaceQueryService.getObjection(user, workspace.getId(), objection.getId());

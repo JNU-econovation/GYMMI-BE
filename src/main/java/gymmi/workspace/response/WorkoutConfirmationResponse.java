@@ -13,6 +13,7 @@ public class WorkoutConfirmationResponse {
     private final String profileImageUrl;
     private final String workoutConfirmationImageUrl;
     private final LocalDateTime createdAt;
+    private final String dayOfTheWeek;
 
     public WorkoutConfirmationResponse(WorkoutHistory workoutHistory, String workoutConfirmationImageUrl) {
         this.workoutConfirmationId = workoutHistory.getWorkoutConfirmation().getId();
@@ -20,6 +21,7 @@ public class WorkoutConfirmationResponse {
         this.profileImageUrl = workoutHistory.getWorker().getUser().getProfileImageName();
         this.workoutConfirmationImageUrl = workoutConfirmationImageUrl;
         this.createdAt = workoutHistory.getCreatedAt();
+        this.dayOfTheWeek = createdAt.getDayOfWeek().name();
     }
 
 
