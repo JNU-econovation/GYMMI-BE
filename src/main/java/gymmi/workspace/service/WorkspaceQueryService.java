@@ -77,11 +77,18 @@ public class WorkspaceQueryService {
     }
 
     public List<MissionResponse> getMissionsInWorkspace(User loginedUser, Long workspaceId) {
-        validateIfWorkerIsInWorkspace(loginedUser.getId(), workspaceId);
+        Worker worker = validateIfWorkerIsInWorkspace(loginedUser.getId(), workspaceId);
         List<Mission> missions = missionRepository.getAllByWorkspaceId(workspaceId);
-        return missions.stream()
-                .map(MissionResponse::new)
+        List<Mission> favoriteMissions = favoriteMissionRepository.getAllByWorkerId(worker.getId()).stream()
+                .map(favoriteMission -> favoriteMission.getMission())
                 .toList();
+
+        List<MissionResponse> responses = new ArrayList<>();
+        for (Mission mission : missions) {
+            boolean isFavorite = favoriteMissions.contains(mission);
+            responses.add(new MissionResponse(mission, isFavorite));
+        }
+        return responses;
     }
 
     public WorkoutContextResponse getWorkoutContext(
@@ -146,14 +153,13 @@ public class WorkspaceQueryService {
         return new InsideWorkspaceResponse(workspace, workers, achievementScore, logiendUser);
     }
 
-    public List<MissionResponse> getFavoriteMissions(User loginedUser, Long workspaceId) {
+    public List<FavoriteMissionResponse> getFavoriteMissions(User loginedUser, Long workspaceId) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
         Worker worker = validateIfWorkerIsInWorkspace(loginedUser.getId(), workspace.getId());
         List<FavoriteMission> favoriteMissions = favoriteMissionRepository.getAllByWorkerId(worker.getId());
-
         return favoriteMissions.stream()
                 .map(FavoriteMission::getMission)
-                .map(MissionResponse::new)
+                .map(FavoriteMissionResponse::new)
                 .toList();
     }
 

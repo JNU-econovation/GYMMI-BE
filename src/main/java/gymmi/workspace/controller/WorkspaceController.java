@@ -121,7 +121,7 @@ public class WorkspaceController {
     public ResponseEntity<WorkingScoreResponse> workMissionsInWorkspace(
             @Logined User user,
             @PathVariable Long workspaceId,
-            @RequestBody WorkoutRequest request
+            @Validated @RequestBody WorkoutRequest request
     ) {
         Integer workingScore = workspaceCommandService.workMissionsInWorkspace(user, workspaceId, request);
         return ResponseEntity.ok().body(new WorkingScoreResponse(workingScore));
@@ -198,11 +198,11 @@ public class WorkspaceController {
     }
 
     @GetMapping("/workspace/{workspaceId}/missions/favorite")
-    public ResponseEntity<List<MissionResponse>> seeFavoriteMissions(
+    public ResponseEntity<List<FavoriteMissionResponse>> seeFavoriteMissions(
             @Logined User user,
             @PathVariable Long workspaceId
     ) {
-        List<MissionResponse> responses = workspaceQueryService.getFavoriteMissions(user, workspaceId);
+        List<FavoriteMissionResponse> responses = workspaceQueryService.getFavoriteMissions(user, workspaceId);
         return ResponseEntity.ok().body(responses);
     }
 
