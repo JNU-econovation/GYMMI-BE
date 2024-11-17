@@ -66,7 +66,11 @@ public enum ErrorCode {
     UNSUPPORTED_TYPE("지원하지 않는 type 입니다.", 400),
     NOT_FOUND_WORKER("존재하지 않는 참여자 입니다.", 400),
     INVALID_DUPLICATION_CHECK_TYPE_VALUE("잘못된 query param value 입니다. : " + DuplicationCheckType.class.getName(), 400),
-    INVALID_WORKSPACE_STATUS_VALUE("잘못된 query param value 입니다. : " + WorkspaceStatus.class.getName(), 400);
+    INVALID_WORKSPACE_STATUS_VALUE("잘못된 query param value 입니다. : " + WorkspaceStatus.class.getName(), 400),
+
+    // photo feed
+    NOT_FOUND_PHOTO_FEED("존재하지 않는 사진피드 입니다.", 400),
+    NOT_FOUND_PHOTO_FEED_IMAGE("존재하지 않는 사진 입니다.", 400);
 
     private final String message;
     private final int statusCode;
@@ -83,4 +87,4 @@ public enum ErrorCode {
     public int getStatusCode() {
         return statusCode;
     }
-    }
+}

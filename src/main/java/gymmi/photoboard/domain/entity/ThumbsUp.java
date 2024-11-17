@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@EqualsAndHashCode(of = {"id"})
+@EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "photo_feed_id"})})
 public class ThumbsUp extends TimeEntity {
 

@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@EqualsAndHashCode(of = {"id"})
+@EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Getter
 public class PhotoFeed extends TimeEntity {
 
@@ -32,5 +32,9 @@ public class PhotoFeed extends TimeEntity {
         this.user = user;
         this.comment = comment;
         this.thumpsUpCount = 0;
+    }
+
+    public boolean isModified() {
+        return !getCreatedAt().isEqual(getLastModifiedAt());
     }
 }

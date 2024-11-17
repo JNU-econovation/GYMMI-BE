@@ -10,12 +10,13 @@ public class S3Service {
 
     private final S3Client s3Client;
 
-    public PresignedUrlResponse getPresingedUrlWithPut() {
-        return s3Client.generatePresignedUrlWithPut(ImageUse.WORKOUT_PROOF.getDirectory());
+    public PresignedUrlResponse getPresingedUrlWithPut(ImageUse imageUse) {
+        return s3Client.generatePresignedUrlWithPut(imageUse.getDirectory());
     }
 
-    public String getPresignedUrl(String filename) {
-        return s3Client.generatePresignedUrl(ImageUse.WORKOUT_PROOF.getDirectory(), filename);
+    public String getPresignedUrl(ImageUse imageUse, String filename) {
+        return s3Client.generatePresignedUrl(imageUse.getDirectory(), filename);
     }
+
 
 }
