@@ -8,10 +8,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"worker_id", "tackle_id"})})
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
-public class FavoriteMission extends TimeEntity {
+@Getter
+public class Vote extends TimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,13 +22,24 @@ public class FavoriteMission extends TimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Worker worker;
 
-    @JoinColumn(name = "mission_id", nullable = false)
+    @JoinColumn(name = "objection_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    private Mission mission;
+    private Objection objection;
 
-    public FavoriteMission(Worker worker, Mission mission) {
+    @Column(nullable = false)
+    private Boolean isApproved;
+
+    public Vote(Worker worker, Objection objection, Boolean isApproved) {
         this.worker = worker;
-        this.mission = mission;
+        this.objection = objection;
+        this.isApproved = isApproved;
+        setRelations(objection);
+    }
+
+    private void setRelations(Objection objection) {
+        objection.add(this);
     }
 
 }
+
+

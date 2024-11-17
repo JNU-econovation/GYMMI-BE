@@ -33,6 +33,11 @@ public enum ErrorCode {
     INVALID_WORKSPACE_GOAL_SCORE("목표점수는 100점에서 1000점까지 가능합니다.", 400),
     INVALID_WORKSPACE_MISSION_SCORE("미션 점수는 1~10점까지 가능합니다.", 400),
     NO_WORKOUT_HISTORY_EXIST_IN_WORKSPACE("해당 워크스페이스의 운동 기록이 아니에요", 403),
+    NO_OBJECTION_EXIST_IN_WORKSPACE("해당 워크스페이스와 관련 정보가 아니에요", 403),
+    ALREADY_OBJECTED("이미 이의 신청되었어요.", 400),
+    NOT_FOUND_OBJECTION("해당 이의 신청이 존재하지 않습니다.", 404),
+    ALREADY_VOTED("이미 투표하였습니다.", 400),
+    ALREADY_CLOSED_OBJECTION("이미 종료되었습니다", 400),
 
 
     // user
@@ -61,10 +66,7 @@ public enum ErrorCode {
     UNSUPPORTED_TYPE("지원하지 않는 type 입니다.", 400),
     NOT_FOUND_WORKER("존재하지 않는 참여자 입니다.", 400),
     INVALID_DUPLICATION_CHECK_TYPE_VALUE("잘못된 query param value 입니다. : " + DuplicationCheckType.class.getName(), 400),
-    INVALID_WORKSPACE_STATUS_VALUE("잘못된 query param value 입니다. : " + WorkspaceStatus.class.getName(), 400),
-
-
-    ;
+    INVALID_WORKSPACE_STATUS_VALUE("잘못된 query param value 입니다. : " + WorkspaceStatus.class.getName(), 400);
 
     private final String message;
     private final int statusCode;
@@ -81,4 +83,4 @@ public enum ErrorCode {
     public int getStatusCode() {
         return statusCode;
     }
-}
+    }

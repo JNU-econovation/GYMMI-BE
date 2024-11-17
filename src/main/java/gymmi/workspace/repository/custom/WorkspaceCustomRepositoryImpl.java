@@ -18,7 +18,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 @RequiredArgsConstructor
-@Repository
 public class WorkspaceCustomRepositoryImpl implements WorkspaceCustomRepository {
 
     private final JPAQueryFactory jpaQueryFactory;

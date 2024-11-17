@@ -3,38 +3,22 @@ package gymmi.workspace.service;
 import gymmi.entity.User;
 import gymmi.exceptionhandler.exception.NotHavePermissionException;
 import gymmi.exceptionhandler.message.ErrorCode;
-import gymmi.workspace.domain.entity.FavoriteMission;
-import gymmi.workspace.domain.entity.Mission;
-import gymmi.workspace.domain.entity.WorkoutHistory;
-import gymmi.workspace.domain.entity.Worker;
+import gymmi.service.S3Service;
 import gymmi.workspace.domain.WorkoutMetric;
-import gymmi.workspace.domain.entity.WorkoutRecord;
-import gymmi.workspace.domain.entity.Workspace;
 import gymmi.workspace.domain.WorkspaceGateChecker;
 import gymmi.workspace.domain.WorkspaceStatus;
-import gymmi.workspace.repository.FavoriteMissionRepository;
-import gymmi.workspace.repository.MissionRepository;
-import gymmi.workspace.repository.WorkoutHistoryRepository;
-import gymmi.workspace.repository.WorkerRepository;
-import gymmi.workspace.repository.WorkoutRecordRepository;
-import gymmi.workspace.repository.WorkspaceRepository;
-import gymmi.workspace.response.CheckingCreationOfWorkspaceResponse;
-import gymmi.workspace.response.CheckingEntranceOfWorkspaceResponse;
-import gymmi.workspace.response.InsideWorkspaceResponse;
-import gymmi.workspace.response.JoinedWorkspaceResponse;
-import gymmi.workspace.response.MatchingWorkspacePasswordResponse;
-import gymmi.workspace.response.MissionResponse;
-import gymmi.workspace.response.WorkoutContextResponse;
-import gymmi.workspace.response.WorkoutRecordResponse;
-import gymmi.workspace.response.WorkspaceIntroductionResponse;
-import gymmi.workspace.response.WorkspaceResponse;
-import java.util.List;
-import java.util.Map;
+import gymmi.workspace.domain.entity.*;
+import gymmi.workspace.repository.*;
+import gymmi.workspace.response.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -49,6 +33,9 @@ public class WorkspaceQueryService {
     private final WorkoutHistoryRepository workoutHistoryRepository;
     private final WorkoutRecordRepository workoutRecordRepository;
     private final FavoriteMissionRepository favoriteMissionRepository;
+    private final ObjectionRepository objectionRepository;
+
+    private final S3Service s3Service;
 
     public WorkspaceIntroductionResponse getWorkspaceIntroduction(User loginedUser, Long workspaceId) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
@@ -90,11 +77,18 @@ public class WorkspaceQueryService {
     }
 
     public List<MissionResponse> getMissionsInWorkspace(User loginedUser, Long workspaceId) {
-        validateIfWorkerIsInWorkspace(loginedUser.getId(), workspaceId);
+        Worker worker = validateIfWorkerIsInWorkspace(loginedUser.getId(), workspaceId);
         List<Mission> missions = missionRepository.getAllByWorkspaceId(workspaceId);
-        return missions.stream()
-                .map(MissionResponse::new)
+        List<Mission> favoriteMissions = favoriteMissionRepository.getAllByWorkerId(worker.getId()).stream()
+                .map(favoriteMission -> favoriteMission.getMission())
                 .toList();
+
+        List<MissionResponse> responses = new ArrayList<>();
+        for (Mission mission : missions) {
+            boolean isFavorite = favoriteMissions.contains(mission);
+            responses.add(new MissionResponse(mission, isFavorite));
+        }
+        return responses;
     }
 
     public WorkoutContextResponse getWorkoutContext(
@@ -123,7 +117,7 @@ public class WorkspaceQueryService {
     ) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
         validateIfWorkerIsInWorkspace(loginedUser.getId(), workspace.getId());
-        WorkoutHistory workoutHistory = workoutHistoryRepository.getById(workoutHistoryId);
+        WorkoutHistory workoutHistory = workoutHistoryRepository.getByWorkoutHistoryId(workoutHistoryId);
         workoutHistory.canBeReadIn(workspace);
         List<WorkoutRecord> workoutRecords = workoutRecordRepository.getAllByWorkoutHistoryId(workoutHistoryId);
         return workoutRecords.stream()
@@ -159,15 +153,63 @@ public class WorkspaceQueryService {
         return new InsideWorkspaceResponse(workspace, workers, achievementScore, logiendUser);
     }
 
-    public List<MissionResponse> getFavoriteMissions(User user, Long workspaceId) {
+    public List<FavoriteMissionResponse> getFavoriteMissions(User loginedUser, Long workspaceId) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
-        Worker worker = validateIfWorkerIsInWorkspace(user.getId(), workspace.getId());
+        Worker worker = validateIfWorkerIsInWorkspace(loginedUser.getId(), workspace.getId());
         List<FavoriteMission> favoriteMissions = favoriteMissionRepository.getAllByWorkerId(worker.getId());
-
         return favoriteMissions.stream()
                 .map(FavoriteMission::getMission)
-                .map(MissionResponse::new)
+                .map(FavoriteMissionResponse::new)
                 .toList();
     }
 
+    public List<WorkoutConfirmationResponse> getWorkoutConfirmations(User loginedUser, Long workspaceId, int page) {
+        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
+        validateIfWorkerIsInWorkspace(loginedUser.getId(), workspace.getId());
+        Pageable pageable = PageRequest.of(page, DEFAULT_PAGE_SIZE);
+        List<WorkoutHistory> workoutHistories = workoutHistoryRepository.getAllByWorkspaceId(workspace.getId(), pageable);
+
+        List<WorkoutConfirmationResponse> responses = new ArrayList<>();
+        for (WorkoutHistory workoutHistory : workoutHistories) {
+            WorkoutConfirmation workoutConfirmation = workoutHistory.getWorkoutConfirmation();
+            String imagePresignedUrl = s3Service.getPresignedUrl(workoutConfirmation.getFilename());
+            responses.add(new WorkoutConfirmationResponse(workoutHistory, imagePresignedUrl));
+        }
+        return responses;
+    }
+
+    public WorkoutConfirmationDetailResponse getWorkoutConfirmation(User loginedUser, Long workspaceId, Long workoutConfirmationId) {
+        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
+        validateIfWorkerIsInWorkspace(loginedUser.getId(), workspace.getId());
+        WorkoutHistory workoutHistory = workoutHistoryRepository.getByWorkoutConfirmationId(workoutConfirmationId);
+
+        workoutHistory.canBeReadIn(workspace);
+        WorkoutConfirmation workoutConfirmation = workoutHistory.getWorkoutConfirmation();
+
+        String imagePresignedUrl = s3Service.getPresignedUrl(workoutConfirmation.getFilename());
+        Objection objection = objectionRepository.findByWorkoutConfirmationId(workoutConfirmationId)
+                .orElseGet(() -> null);
+
+        return new WorkoutConfirmationDetailResponse(workoutHistory.getWorker().getUser(), imagePresignedUrl, workoutConfirmation.getComment(), objection);
+    }
+
+    public ObjectionResponse getObjection(User loginedUser, Long workspaceId, Long objectionId) {
+        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
+        Worker worker = validateIfWorkerIsInWorkspace(loginedUser.getId(), workspace.getId());
+        Objection objection = objectionRepository.getByObjectionId(objectionId);
+        objection.canBeReadIn(workspace);
+
+        if (objection.isInProgress() && objection.hasVoteBy(worker)) {
+            return ObjectionResponse.objectionInProgressWithVoteCompletion(objection);
+        }
+
+        if (objection.isInProgress() && !objection.hasVoteBy(worker)) {
+            return ObjectionResponse.objectionInProgressWithVoteInCompletion(objection);
+        }
+
+        WorkoutHistory workoutHistory = workoutHistoryRepository.getByWorkoutConfirmationId(objection.getWorkoutConfirmation().getId());
+
+        workoutHistory.canBeReadIn(workspace);
+        return ObjectionResponse.closedObjection(objection, objection.hasVoteBy(worker), workoutHistory.isApproved());
+    }
 }

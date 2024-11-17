@@ -23,9 +23,9 @@ public class S3Controller {
 
     @GetMapping("/images/workout-proof/presignedUrl/get")
     public ResponseEntity<String> s3(
-            @RequestParam("imageUrl") String filenmae
+            @RequestParam("filename") String filename
     ) {
-        String presignedUrl = s3Service.getPresignedUrl(filenmae);
+        String presignedUrl = s3Service.getPresignedUrl(filename);
         return ResponseEntity.ok().body(presignedUrl);
     }
 

@@ -1,27 +1,23 @@
 package gymmi.helper;
 
-import static org.instancio.Select.field;
-
 import gymmi.entity.User;
 import gymmi.repository.UserRepository;
 import gymmi.workspace.domain.WorkspaceStatus;
-import gymmi.workspace.domain.entity.Mission;
-import gymmi.workspace.domain.entity.Task;
-import gymmi.workspace.domain.entity.Worker;
-import gymmi.workspace.domain.entity.WorkoutHistory;
-import gymmi.workspace.domain.entity.WorkoutProof;
-import gymmi.workspace.domain.entity.WorkoutRecord;
-import gymmi.workspace.domain.entity.Workspace;
+import gymmi.workspace.domain.entity.*;
 import gymmi.workspace.repository.WorkerRepository;
 import gymmi.workspace.repository.WorkspaceRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
-import java.util.List;
-import java.util.Map;
 import org.instancio.Instancio;
 import org.instancio.Select;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import static org.instancio.Select.field;
 
 @Component
 @Transactional
@@ -132,16 +128,61 @@ public class Persister {
                 .map(workout -> new WorkoutRecord(workout.getKey(), workout.getValue()))
                 .toList();
         Worker managedWorker = entityManager.find(Worker.class, worker.getId());
-        WorkoutProof workoutProof = Instancio.of(WorkoutProof.class)
-                .ignore(Select.field(WorkoutProof::getId))
+        WorkoutConfirmation workoutConfirmation = Instancio.of(WorkoutConfirmation.class)
+                .ignore(Select.field(WorkoutConfirmation::getId))
                 .create();
-        entityManager.persist(workoutProof);
+        entityManager.persist(workoutConfirmation);
         WorkoutHistory workoutHistory = new WorkoutHistory(
-                managedWorker, workoutRecords, workoutProof
+                managedWorker, workoutRecords, workoutConfirmation
         );
         entityManager.persist(workoutHistory);
         workoutHistory.apply();
         return workoutHistory;
+    }
+
+    public WorkoutHistory persistWorkoutHistoryAndApply(Worker worker, Map<Mission, Integer> workouts, WorkoutConfirmation workoutConfirmation) {
+        List<WorkoutRecord> workoutRecords = workouts.entrySet().stream()
+                .map(workout -> new WorkoutRecord(workout.getKey(), workout.getValue()))
+                .toList();
+        Worker managedWorker = entityManager.find(Worker.class, worker.getId());
+        WorkoutHistory workoutHistory = new WorkoutHistory(
+                managedWorker, workoutRecords, workoutConfirmation
+        );
+        entityManager.persist(workoutHistory);
+        workoutHistory.apply();
+        return workoutHistory;
+    }
+
+    public Objection persistObjection(Worker subject, boolean isInProgress, WorkoutConfirmation workoutConfirmation) {
+        Objection objection = Instancio.of(Objection.class)
+                .set(field(Objection::getSubject), subject)
+                .set(field(Objection::isInProgress), isInProgress)
+                .set(field(Objection::getWorkoutConfirmation), workoutConfirmation)
+                .set(field(Objection::getVotes), new ArrayList<>())
+                .ignore(field(Objection::getId))
+                .create();
+        entityManager.persist(objection);
+        return objection;
+    }
+
+    public WorkoutConfirmation persistWorkoutConfirmation() {
+        WorkoutConfirmation workoutConfirmation = Instancio.of(WorkoutConfirmation.class)
+                .ignore(field(WorkoutConfirmation::getId))
+                .create();
+        entityManager.persist(workoutConfirmation);
+        return workoutConfirmation;
+    }
+
+    public Vote persistVote(Worker worker, Objection objection, boolean isApproved) {
+        Vote vote = Instancio.of(Vote.class)
+                .set(field(Vote::getWorker), worker)
+                .set(field(Vote::getObjection), objection)
+                .set(field(Vote::getIsApproved), isApproved)
+                .ignore(field(Vote::getId))
+                .create();
+        objection.add(vote);
+        entityManager.persist(vote);
+        return vote;
     }
 
 
