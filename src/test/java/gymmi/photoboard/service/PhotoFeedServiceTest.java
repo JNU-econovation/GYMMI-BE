@@ -3,12 +3,14 @@ package gymmi.photoboard.service;
 import gymmi.entity.User;
 import gymmi.photoboard.domain.entity.PhotoFeed;
 import gymmi.photoboard.domain.entity.PhotoFeedImage;
+import gymmi.photoboard.repository.PhotoFeedImageRepository;
 import gymmi.photoboard.repository.PhotoFeedRepository;
 import gymmi.photoboard.repository.ThumbsUpRepository;
 import gymmi.photoboard.request.CreatePhotoFeedRequest;
 import gymmi.photoboard.response.PhotoFeedResponse;
 import gymmi.service.S3Service;
 import gymmi.workspace.service.IntegrationTest;
+import jakarta.persistence.EntityManager;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +30,13 @@ class PhotoFeedServiceTest extends IntegrationTest {
     PhotoFeedRepository photoFeedRepository;
 
     @Autowired
+    PhotoFeedImageRepository photoFeedImageRepository;
+
+    @Autowired
     ThumbsUpRepository thumbsUpRepository;
+
+    @Autowired
+    EntityManager entityManager;
 
     @MockBean
     S3Service s3Service;
@@ -85,5 +93,22 @@ class PhotoFeedServiceTest extends IntegrationTest {
         // then
         assertThat(photoFeed.getThumpsUpCount()).isEqualTo(0);
         assertThat(thumbsUpRepository.findByUserId(user1.getId())).isEmpty();
+    }
+
+    @Test
+    void 사진_피드를_삭제한다() {
+        // given
+        User user = persister.persistUser();
+        PhotoFeed photoFeed = persister.persistPhotoFeed(user);
+        PhotoFeedImage photoFeedImage = persister.persistPhotoFeedImage(photoFeed);
+
+        // when
+        photoFeedService.delete(user, photoFeed.getId());
+
+        // then
+        entityManager.flush();
+        entityManager.clear();
+        assertThat(photoFeedImageRepository.findByPhotoFeedId(photoFeed.getId())).isEmpty();
+        assertThat(photoFeedRepository.findById(photoFeed.getId())).isEmpty();
     }
 }

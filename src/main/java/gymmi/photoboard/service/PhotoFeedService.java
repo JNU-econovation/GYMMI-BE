@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class PhotoFeedService {
+    private static final ImageUse PHOTO_FEED = ImageUse.PHOTO_FEED;
 
     private final S3Service s3Service;
     private final PhotoFeedRepository photoFeedRepository;
@@ -37,7 +38,7 @@ public class PhotoFeedService {
         PhotoFeed photoFeed = photoFeedRepository.getByPhotoFeedId(photoFeedId);
         PhotoFeedImage photoFeedImage = photoFeedImageRepository.getByPhotoFeedId(photoFeedId);
 
-        String photoImagePresignedUrl = s3Service.getPresignedUrl(ImageUse.PHOTO_FEED, photoFeedImage.getFilename());
+        String photoImagePresignedUrl = s3Service.getPresignedUrl(PHOTO_FEED, photoFeedImage.getFilename());
         return new PhotoFeedResponse(photoFeed, photoImagePresignedUrl);
     }
 
@@ -56,5 +57,17 @@ public class PhotoFeedService {
                             thumbsUpRepository.save(thumbsUp);
                         }
                 );
+    }
+
+    @Transactional
+    public void delete(User loginedUser, Long photoFeedId) {
+        PhotoFeed photoFeed = photoFeedRepository.getByPhotoFeedId(photoFeedId);
+
+        photoFeed.checkWriter(loginedUser);
+
+        PhotoFeedImage photoFeedImage = photoFeedImageRepository.getByPhotoFeedId(photoFeedId);
+        photoFeedImageRepository.delete(photoFeedImage);
+        photoFeedRepository.delete(photoFeed);
+        s3Service.delete(PHOTO_FEED, photoFeedImage.getFilename());
     }
 }

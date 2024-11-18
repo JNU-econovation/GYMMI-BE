@@ -48,6 +48,14 @@ public class S3Client {
         return request;
     }
 
+    public boolean doesObjectExist(String directory, String filename) {
+        return amazonS3.doesObjectExist(bucketName, directory + filename);
+    }
+
+    public void deleteObject(String directory, String filename) {
+        amazonS3.deleteObject(bucketName, directory + filename);
+    }
+
     private Date getPreSignedUrlExpiration() {
         Date expiration = new Date();
         long expTimeMillis = expiration.getTime();

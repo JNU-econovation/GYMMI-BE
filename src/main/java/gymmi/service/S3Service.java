@@ -18,5 +18,8 @@ public class S3Service {
         return s3Client.generatePresignedUrl(imageUse.getDirectory(), filename);
     }
 
+    public void delete(ImageUse imageUse, String filename) {
+        s3Client.deleteObject(imageUse.getDirectory(), filename);
+    }
 
 }

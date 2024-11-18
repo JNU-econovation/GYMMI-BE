@@ -42,5 +42,14 @@ public class PhotoBoardController {
         return ResponseEntity.ok().build();
     }
 
+    @DeleteMapping("/photos/{photoId}")
+    public ResponseEntity<Void> deletePhotoFeed(
+            @Logined User user,
+            @PathVariable(name = "photoId") Long photoFeedId
+    ) {
+        photoFeedService.delete(user, photoFeedId);
+        return ResponseEntity.ok().build();
+    }
+
 
 }
