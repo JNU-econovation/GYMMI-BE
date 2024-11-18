@@ -197,6 +197,16 @@ public class Persister {
         return photoFeed;
     }
 
+    public PhotoFeed persistPhotoFeed(User user, int thumpsUpCount) {
+        PhotoFeed photoFeed = Instancio.of(PhotoFeed.class)
+                .set(field(PhotoFeed::getUser), user)
+                .set(field(PhotoFeed::getThumpsUpCount), thumpsUpCount)
+                .ignore(field(PhotoFeed::getId))
+                .create();
+        entityManager.persist(photoFeed);
+        return photoFeed;
+    }
+
     public PhotoFeed persistPhotoFeed(User user, LocalDateTime createdAt, LocalDateTime lastModifiedAt) {
         PhotoFeed photoFeed = Instancio.of(PhotoFeed.class)
                 .set(field(PhotoFeed::getUser), user)

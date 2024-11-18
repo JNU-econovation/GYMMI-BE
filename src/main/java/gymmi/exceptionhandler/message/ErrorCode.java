@@ -70,7 +70,8 @@ public enum ErrorCode {
 
     // photo feed
     NOT_FOUND_PHOTO_FEED("존재하지 않는 사진피드 입니다.", 400),
-    NOT_FOUND_PHOTO_FEED_IMAGE("존재하지 않는 사진 입니다.", 400);
+    NOT_FOUND_PHOTO_FEED_IMAGE("존재하지 않는 사진 입니다.", 400),
+    ;
 
     private final String message;
     private final int statusCode;

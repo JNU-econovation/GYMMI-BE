@@ -37,4 +37,12 @@ public class PhotoFeed extends TimeEntity {
     public boolean isModified() {
         return !getCreatedAt().isEqual(getLastModifiedAt());
     }
+
+    public void increase() {
+        thumpsUpCount = thumpsUpCount + 1;
+    }
+
+    public void decrease() {
+        thumpsUpCount = thumpsUpCount - 1;
+    }
 }

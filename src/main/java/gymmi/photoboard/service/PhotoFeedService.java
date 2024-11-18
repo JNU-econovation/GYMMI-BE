@@ -3,8 +3,10 @@ package gymmi.photoboard.service;
 import gymmi.entity.User;
 import gymmi.photoboard.domain.entity.PhotoFeed;
 import gymmi.photoboard.domain.entity.PhotoFeedImage;
+import gymmi.photoboard.domain.entity.ThumbsUp;
 import gymmi.photoboard.repository.PhotoFeedImageRepository;
 import gymmi.photoboard.repository.PhotoFeedRepository;
+import gymmi.photoboard.repository.ThumbsUpRepository;
 import gymmi.photoboard.request.CreatePhotoFeedRequest;
 import gymmi.photoboard.response.PhotoFeedResponse;
 import gymmi.service.ImageUse;
@@ -15,11 +17,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class PhotoService {
+public class PhotoFeedService {
 
     private final S3Service s3Service;
     private final PhotoFeedRepository photoFeedRepository;
     private final PhotoFeedImageRepository photoFeedImageRepository;
+    private final ThumbsUpRepository thumbsUpRepository;
 
     @Transactional
     public void createPhotoFeed(User loginedUser, CreatePhotoFeedRequest request) {
@@ -38,4 +41,20 @@ public class PhotoService {
         return new PhotoFeedResponse(photoFeed, photoImagePresignedUrl);
     }
 
+    @Transactional
+    public void likePhotoFeed(User loginedUser, Long photoFeedId) {
+        PhotoFeed photoFeed = photoFeedRepository.getByPhotoFeedId(photoFeedId);
+        thumbsUpRepository.findByUserId(loginedUser.getId())
+                .ifPresentOrElse(
+                        (thumbsUp) -> {
+                            photoFeed.decrease();
+                            thumbsUpRepository.delete(thumbsUp);
+                        },
+                        () -> {
+                            ThumbsUp thumbsUp = new ThumbsUp(loginedUser, photoFeed);
+                            photoFeed.increase();
+                            thumbsUpRepository.save(thumbsUp);
+                        }
+                );
+    }
 }

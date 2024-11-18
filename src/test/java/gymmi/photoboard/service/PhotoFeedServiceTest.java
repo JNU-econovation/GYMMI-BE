@@ -4,6 +4,7 @@ import gymmi.entity.User;
 import gymmi.photoboard.domain.entity.PhotoFeed;
 import gymmi.photoboard.domain.entity.PhotoFeedImage;
 import gymmi.photoboard.repository.PhotoFeedRepository;
+import gymmi.photoboard.repository.ThumbsUpRepository;
 import gymmi.photoboard.request.CreatePhotoFeedRequest;
 import gymmi.photoboard.response.PhotoFeedResponse;
 import gymmi.service.S3Service;
@@ -18,13 +19,16 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class PhotoServiceTest extends IntegrationTest {
+class PhotoFeedServiceTest extends IntegrationTest {
 
     @Autowired
-    PhotoService photoService;
+    PhotoFeedService photoFeedService;
 
     @Autowired
     PhotoFeedRepository photoFeedRepository;
+
+    @Autowired
+    ThumbsUpRepository thumbsUpRepository;
 
     @MockBean
     S3Service s3Service;
@@ -36,7 +40,7 @@ class PhotoServiceTest extends IntegrationTest {
         CreatePhotoFeedRequest request = new CreatePhotoFeedRequest(UUID.randomUUID().toString(), Instancio.gen().string().get());
 
         // when
-        photoService.createPhotoFeed(user, request);
+        photoFeedService.createPhotoFeed(user, request);
 
         // then
         assertThat(photoFeedRepository.findAll().size()).isEqualTo(1);
@@ -50,7 +54,7 @@ class PhotoServiceTest extends IntegrationTest {
         PhotoFeedImage photoFeedImage = persister.persistPhotoFeedImage(photoFeed);
 
         // when
-        PhotoFeedResponse result = photoService.getPhotoFeed(photoFeed.getId());
+        PhotoFeedResponse result = photoFeedService.getPhotoFeed(photoFeed.getId());
 
         // then
         assertThat(result.getIsModified()).isFalse();
@@ -58,5 +62,28 @@ class PhotoServiceTest extends IntegrationTest {
         assertThat(result.getCreatedAt()).isEqualTo(photoFeed.getCreatedAt());
         assertThat(result.getProfileImageUrl()).isEqualTo(user.getProfileImageName());
         assertThat(result.getComment()).isEqualTo(photoFeed.getComment());
+    }
+
+    @Test
+    void 사진_피드에_좋아요를_누르거나_취소한다() {
+        // given
+        User user = persister.persistUser();
+        User user1 = persister.persistUser();
+        PhotoFeed photoFeed = persister.persistPhotoFeed(user, 0);
+        PhotoFeedImage photoFeedImage = persister.persistPhotoFeedImage(photoFeed);
+
+        // when
+        photoFeedService.likePhotoFeed(user1, photoFeed.getId());
+
+        // then
+        assertThat(photoFeed.getThumpsUpCount()).isEqualTo(1);
+        assertThat(thumbsUpRepository.findByUserId(user1.getId())).isNotEmpty();
+
+        // when
+        photoFeedService.likePhotoFeed(user1, photoFeed.getId());
+
+        // then
+        assertThat(photoFeed.getThumpsUpCount()).isEqualTo(0);
+        assertThat(thumbsUpRepository.findByUserId(user1.getId())).isEmpty();
     }
 }

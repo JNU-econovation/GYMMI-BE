@@ -25,4 +25,8 @@ public class ThumbsUp extends TimeEntity {
     @JoinColumn(name = "photo_feed_id", nullable = false)
     private PhotoFeed photoFeed;
 
+    public ThumbsUp(User user, PhotoFeed photoFeed) {
+        this.user = user;
+        this.photoFeed = photoFeed;
+    }
 }
