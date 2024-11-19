@@ -82,6 +82,12 @@ public class Persister {
         return mission;
     }
 
+    public FavoriteMission persistFavoriteMission(Worker worker, Mission mission) {
+        FavoriteMission favoriteMission = new FavoriteMission(worker, mission);
+        entityManager.persist(favoriteMission);
+        return favoriteMission;
+    }
+
     public Workspace persistWorkspace(User creator, WorkspaceStatus workspaceStatus, int goalScore, int headCount) {
         Workspace workspace = Instancio.of(Workspace.class)
                 .set(field(Workspace::getStatus), workspaceStatus)
@@ -226,6 +232,4 @@ public class Persister {
         entityManager.persist(photoFeedImage);
         return photoFeedImage;
     }
-
-
 }

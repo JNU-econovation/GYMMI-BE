@@ -12,7 +12,6 @@ import jakarta.persistence.EntityManager;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
@@ -24,7 +23,8 @@ import static gymmi.exceptionhandler.message.ErrorCode.EXCEED_MAX_JOINED_WORKSPA
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.field;
-import static org.mockito.BDDMockito.*;
+import static org.mockito.BDDMockito.any;
+import static org.mockito.BDDMockito.given;
 
 class WorkspaceCommandServiceTest extends IntegrationTest {
 
@@ -36,6 +36,8 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
     WorkerRepository workerRepository;
     @Autowired
     MissionRepository missionRepository;
+    @Autowired
+    TaskRepository taskRepository;
     @Autowired
     WorkoutHistoryRepository workoutHistoryRepository;
     @Autowired
@@ -105,11 +107,13 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
 
 
     @Test
-    void 방장이_워크스페이스를_떠나는_경우_워크스페이스도_삭제된다() {
+    void 방장이_워크스페이스를_떠나는_경우_워크스페이스와_관련_정보도_삭제된다() {
         // given
         User user = persister.persistUser();
         Workspace workspace = persister.persistWorkspace(user, WorkspaceStatus.PREPARING);
         Worker worker = persister.persistWorker(user, workspace);
+        List<Mission> missions = persister.persistMissions(workspace, 3);
+        persister.persistFavoriteMission(worker, missions.get(0));
 
         // when
         workspaceCommandService.leaveWorkspace(user, workspace.getId());
@@ -117,7 +121,10 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
         // then
         assertThat(workspaceRepository.findById(workspace.getId())).isEmpty();
         assertThat(workerRepository.findById(worker.getId())).isEmpty();
-        assertThat(entityManager.find(Task.class, worker.getTask().getId())).isNull();
+        assertThat(taskRepository.findAll()).isEmpty();
+        assertThat(missionRepository.findAll()).isEmpty();
+        assertThat(favoriteMissionRepository.findAll()).isEmpty();
+        assertThat(workerRepository.findById(worker.getId())).isEmpty();
     }
 
 
