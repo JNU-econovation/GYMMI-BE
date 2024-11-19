@@ -5,6 +5,10 @@ import gymmi.exceptionhandler.exception.AlreadyExistException;
 import gymmi.exceptionhandler.exception.InvalidStateException;
 import gymmi.exceptionhandler.exception.NotHavePermissionException;
 import gymmi.exceptionhandler.message.ErrorCode;
+import gymmi.photoboard.domain.entity.PhotoFeedImage;
+import gymmi.photoboard.request.CreatePhotoFeedRequest;
+import gymmi.photoboard.service.PhotoFeedService;
+import gymmi.service.S3Service;
 import gymmi.workspace.domain.*;
 import gymmi.workspace.domain.entity.*;
 import gymmi.workspace.repository.*;
@@ -31,6 +35,9 @@ public class WorkspaceCommandService {
     private final FavoriteMissionRepository favoriteMissionRepository;
     private final ObjectionRepository objectionRepository;
     private final VoteRepository voteRepository;
+
+    private final S3Service s3Service;
+    private final PhotoFeedService photoFeedService;
 
     @Transactional
     // 중복 요청
@@ -97,7 +104,7 @@ public class WorkspaceCommandService {
         }
     }
 
-    @Transactional // 동시성 문제
+    @Transactional // 동시성 문제, 이벤트 사용하면 좋을듯
     public Integer workMissionsInWorkspace(
             User loginedUser,
             Long workspaceId,
@@ -117,10 +124,15 @@ public class WorkspaceCommandService {
         );
         workoutHistory.apply();
 
+        s3Service.checkObjectExist(WorkoutConfirmation.IMAGE_USE, workoutRequest.getImageUrl());
         workoutHistoryRepository.save(workoutHistory);
         int achievementScore = workspaceRepository.getAchievementScore(workspaceId);
 
         workspaceProgressManager.completeWhenGoalScoreIsAchieved(achievementScore);
+        if (workoutRequest.getWillLink()) {
+            String filename = s3Service.copy(WorkoutConfirmation.IMAGE_USE, workoutRequest.getImageUrl(), PhotoFeedImage.IMAGE_USE);
+            photoFeedService.createPhotoFeed(loginedUser, new CreatePhotoFeedRequest(filename, workoutRequest.getComment()));
+        }
         return workoutHistory.getSum();
     }
 

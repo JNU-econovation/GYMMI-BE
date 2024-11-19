@@ -24,12 +24,16 @@ public class S3Client {
     private String bucketName;
 
     public PresignedUrlResponse generatePresignedUrlWithPut(String directory) {
-        String filename = UUID.randomUUID().toString();
+        String filename = generateFilename();
         String imageUrl = directory + filename;
         GeneratePresignedUrlRequest generatePresignedUrlRequest = createPresignedUrlRequest(imageUrl, HttpMethod.PUT);
         URL url = amazonS3.generatePresignedUrl(generatePresignedUrlRequest);
         String presignedUrl = url.toString();
         return new PresignedUrlResponse(presignedUrl, filename);
+    }
+
+    private String generateFilename() {
+        return UUID.randomUUID().toString();
     }
 
     public String generatePresignedUrl(String directory, String filename) {
@@ -62,6 +66,12 @@ public class S3Client {
         expTimeMillis += 1000 * 60 * 1;
         expiration.setTime(expTimeMillis);
         return expiration;
+    }
+
+    public String copyObject(String sourceDirectory, String sourceFilename, String destinationDirectory) {
+        String filename = generateFilename();
+        amazonS3.copyObject(bucketName, sourceDirectory + sourceFilename, bucketName, destinationDirectory + filename);
+        return filename;
     }
 
 }

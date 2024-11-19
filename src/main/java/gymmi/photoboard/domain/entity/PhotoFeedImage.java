@@ -1,5 +1,6 @@
 package gymmi.photoboard.domain.entity;
 
+import gymmi.service.ImageUse;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -11,6 +12,8 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(of = {"id"})
 @Getter
 public class PhotoFeedImage {
+
+    public static final ImageUse IMAGE_USE = ImageUse.PHOTO_FEED;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

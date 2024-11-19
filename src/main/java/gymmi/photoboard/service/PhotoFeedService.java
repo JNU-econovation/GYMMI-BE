@@ -9,7 +9,6 @@ import gymmi.photoboard.repository.PhotoFeedRepository;
 import gymmi.photoboard.repository.ThumbsUpRepository;
 import gymmi.photoboard.request.CreatePhotoFeedRequest;
 import gymmi.photoboard.response.PhotoFeedResponse;
-import gymmi.service.ImageUse;
 import gymmi.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class PhotoFeedService {
-    private static final ImageUse PHOTO_FEED = ImageUse.PHOTO_FEED;
 
     private final S3Service s3Service;
     private final PhotoFeedRepository photoFeedRepository;
@@ -29,6 +27,7 @@ public class PhotoFeedService {
     public void createPhotoFeed(User loginedUser, CreatePhotoFeedRequest request) {
         PhotoFeed photoFeed = new PhotoFeed(loginedUser, request.getComment());
         PhotoFeedImage photoFeedImage = new PhotoFeedImage(photoFeed, request.getFilename());
+        s3Service.checkObjectExist(PhotoFeedImage.IMAGE_USE, photoFeedImage.getFilename());
         photoFeedRepository.save(photoFeed);
         photoFeedImageRepository.save(photoFeedImage);
     }
@@ -38,7 +37,7 @@ public class PhotoFeedService {
         PhotoFeed photoFeed = photoFeedRepository.getByPhotoFeedId(photoFeedId);
         PhotoFeedImage photoFeedImage = photoFeedImageRepository.getByPhotoFeedId(photoFeedId);
 
-        String photoImagePresignedUrl = s3Service.getPresignedUrl(PHOTO_FEED, photoFeedImage.getFilename());
+        String photoImagePresignedUrl = s3Service.getPresignedUrl(PhotoFeedImage.IMAGE_USE, photoFeedImage.getFilename());
         return new PhotoFeedResponse(photoFeed, photoImagePresignedUrl);
     }
 
@@ -68,6 +67,15 @@ public class PhotoFeedService {
         PhotoFeedImage photoFeedImage = photoFeedImageRepository.getByPhotoFeedId(photoFeedId);
         photoFeedImageRepository.delete(photoFeedImage);
         photoFeedRepository.delete(photoFeed);
-        s3Service.delete(PHOTO_FEED, photoFeedImage.getFilename());
+        s3Service.delete(PhotoFeedImage.IMAGE_USE, photoFeedImage.getFilename());
+    }
+
+    @Transactional()
+    public void linkWithWorkoutConfirmation(User loginedUser, CreatePhotoFeedRequest request) {
+        PhotoFeed photoFeed = new PhotoFeed(loginedUser, request.getComment());
+        PhotoFeedImage photoFeedImage = new PhotoFeedImage(photoFeed, request.getFilename());
+        s3Service.checkObjectExist(PhotoFeedImage.IMAGE_USE, photoFeedImage.getFilename());
+        photoFeedRepository.save(photoFeed);
+        photoFeedImageRepository.save(photoFeedImage);
     }
 }

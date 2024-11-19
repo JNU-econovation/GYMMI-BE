@@ -2,6 +2,8 @@ package gymmi.workspace.service;
 
 import gymmi.entity.User;
 import gymmi.exceptionhandler.message.ErrorCode;
+import gymmi.photoboard.repository.PhotoFeedRepository;
+import gymmi.service.S3Service;
 import gymmi.workspace.domain.WorkspaceStatus;
 import gymmi.workspace.domain.entity.*;
 import gymmi.workspace.repository.*;
@@ -10,15 +12,19 @@ import jakarta.persistence.EntityManager;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import static gymmi.exceptionhandler.message.ErrorCode.EXCEED_MAX_JOINED_WORKSPACE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.field;
+import static org.mockito.BDDMockito.*;
 
 class WorkspaceCommandServiceTest extends IntegrationTest {
 
@@ -38,6 +44,11 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
     VoteRepository voteRepository;
     @Autowired
     ObjectionRepository objectionRepository;
+    @Autowired
+    PhotoFeedRepository photoFeedRepository;
+
+    @MockBean
+    S3Service s3Service;
 
     @Autowired
     EntityManager entityManager;
@@ -111,7 +122,7 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
 
 
     @Test
-    void 워크스페이스_운동시_참여자의_점수가_반영된다() {
+    void 워크스페이스_운동시_참여자의_점수가_반영되고_연동_여부에_따라_사진_피드가_등록_된다() {
         // given
         User user = persister.persistUser();
         Workspace workspace = persister.persistWorkspace(user, WorkspaceStatus.IN_PROGRESS);
@@ -125,8 +136,10 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
         );
         WorkoutRequest request = Instancio.of(WorkoutRequest.class)
                 .set(field(WorkoutRequest::getMissions), requests)
+                .set(field(WorkoutRequest::getWillLink), true)
                 .create();
         assertThat(worker.getContributedScore()).isEqualTo(0);
+        given(s3Service.copy(any(), any(), any())).willReturn(UUID.randomUUID().toString());
 
         // when
         workspaceCommandService.workMissionsInWorkspace(user, workspace.getId(), request);
@@ -135,6 +148,7 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
         assertThat(workoutHistoryRepository.getAllByWorkerId(worker.getId())).hasSize(1);
         assertThat(worker.getContributedScore()).isEqualTo(mission.getScore() * count);
         assertThat(workspace.getStatus()).isEqualTo(WorkspaceStatus.COMPLETED);
+        assertThat(assertThat(photoFeedRepository.findAll()).hasSize(1));
     }
 
     @Test

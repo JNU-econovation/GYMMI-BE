@@ -1,5 +1,6 @@
 package gymmi.workspace.domain.entity;
 
+import gymmi.service.ImageUse;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -11,6 +12,8 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(of = {"id"})
 @Getter
 public class WorkoutConfirmation {
+
+    public static final ImageUse IMAGE_USE = ImageUse.WORKOUT_CONFIRMATION;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
