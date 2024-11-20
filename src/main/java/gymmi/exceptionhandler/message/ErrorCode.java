@@ -39,6 +39,9 @@ public enum ErrorCode {
     ALREADY_VOTED("이미 투표하였습니다.", 400),
     ALREADY_CLOSED_OBJECTION("이미 종료되었습니다", 400),
 
+    // 운동 기록
+    EXCEED_MAX_DAILY_WORKOUT_HISTORY_COUNT("일일 가능한 운동을 초과했어요! (3회까지 가능)", 400),
+
 
     // user
     ALREADY_USED_LOGIN_ID("이미 사용중인 아이디 입니다.", 400),

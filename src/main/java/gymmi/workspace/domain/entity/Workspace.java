@@ -1,8 +1,5 @@
 package gymmi.workspace.domain.entity;
 
-import static gymmi.utils.Regexpressions.REGEX_영어_한글_숫자_만;
-import static gymmi.utils.Regexpressions.REGEX_영어_한글_쉼표_만;
-
 import gymmi.entity.TimeEntity;
 import gymmi.entity.User;
 import gymmi.exceptionhandler.exception.InvalidNumberException;
@@ -10,23 +7,16 @@ import gymmi.exceptionhandler.exception.InvalidPatternException;
 import gymmi.exceptionhandler.exception.InvalidRangeException;
 import gymmi.exceptionhandler.message.ErrorCode;
 import gymmi.workspace.domain.WorkspaceStatus;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import java.security.SecureRandom;
-import java.time.LocalDateTime;
-import java.util.regex.Pattern;
-
+import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.util.StringUtils;
+
+import java.security.SecureRandom;
+import java.util.regex.Pattern;
+
+import static gymmi.utils.Regexpressions.REGEX_영어_한글_숫자_만;
+import static gymmi.utils.Regexpressions.REGEX_영어_한글_쉼표_만;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -183,6 +173,13 @@ public class Workspace extends TimeEntity {
         this.status = status;
     }
 
+    public void editDescription(String description) {
+        this.description = validateDescription(description);
+    }
+
+    public void editTag(String tag) {
+        this.tag = validateTag(tag);
+    }
 
 
 }

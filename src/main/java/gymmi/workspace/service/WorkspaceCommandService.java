@@ -18,10 +18,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.time.LocalDate;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -115,6 +113,7 @@ public class WorkspaceCommandService {
         Worker worker = workerRepository.getByUserIdAndWorkspaceId(loginedUser.getId(), workspace.getId());
         List<Mission> missions = missionRepository.getAllByWorkspaceId(workspace.getId());
         Map<Mission, Integer> workouts = getWorkouts(workoutRequest.getMissions());
+        validateDailyWorkoutHistoryCount();
 
         WorkspaceProgressManager workspaceProgressManager = new WorkspaceProgressManager(workspace, missions);
 
@@ -135,6 +134,13 @@ public class WorkspaceCommandService {
             photoFeedService.createPhotoFeed(loginedUser, new CreatePhotoFeedRequest(filename, workoutRequest.getComment()));
         }
         return workoutHistory.getSum();
+    }
+
+    private void validateDailyWorkoutHistoryCount() {
+        List<WorkoutHistory> workoutHistories = workoutHistoryRepository.getAllByDate(LocalDate.now());
+        if (workoutHistories.size() >= 3) {
+            throw new InvalidStateException(ErrorCode.EXCEED_MAX_DAILY_WORKOUT_HISTORY_COUNT);
+        }
     }
 
     private Map<Mission, Integer> getWorkouts(List<WorkingMissionInWorkspaceRequest> requests) {
@@ -234,4 +240,5 @@ public class WorkspaceCommandService {
             workoutHistory.cancel();
         }
     }
+
 }
