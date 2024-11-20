@@ -23,16 +23,15 @@ import jakarta.persistence.ManyToOne;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.regex.Pattern;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.util.StringUtils;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
+@Getter
 public class Workspace extends TimeEntity {
 
     public static final int MIN_GOAL_SCORE = 100;
@@ -184,69 +183,6 @@ public class Workspace extends TimeEntity {
         this.status = status;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public WorkspaceStatus getStatus() {
-        return status;
-    }
-
-    public User getCreator() {
-        return creator;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public Integer getGoalScore() {
-        return goalScore;
-    }
-
-    public void editDescription(String description) {
-        this.description = validateDescription(description);
-    }
-
-    public void editTag(String tag) {
-        this.tag = validateTag(tag);
-    }
-
-    public Integer getHeadCount() {
-        return headCount;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return super.getCreatedAt();
-    }
-
-    public String getTag() {
-        return tag;
-    }
-
-    @Override
-    public String toString() {
-        return "Workspace{" +
-                "id=" + id +
-                ", creator=" + creator +
-                ", name='" + name + '\'' +
-                ", password='" + password + '\'' +
-                ", description='" + description + '\'' +
-                ", status=" + status +
-                ", goalScore=" + goalScore +
-                ", headCount=" + headCount +
-                ", createdAt=" + getCreatedAt() +
-                ", tag='" + tag + '\'' +
-                '}';
-    }
 
 
 }

@@ -50,14 +50,14 @@ public class Objection extends TimeEntity {
 
     public boolean hasVoteBy(Worker worker) {
         return votes.stream()
-                .map(vote -> vote.getWorker())
+                .map(Vote::getWorker)
                 .toList()
                 .contains(worker);
     }
 
     public int getApprovalCount() {
         return votes.stream()
-                .filter(vote -> vote.getIsApproved() == true)
+                .filter(Vote::getIsApproved)
                 .toList().size();
     }
 
@@ -67,7 +67,7 @@ public class Objection extends TimeEntity {
 
     public int getRejectionCount() {
         return votes.stream()
-                .filter(vote -> vote.getIsApproved() == false)
+                .filter(vote -> !vote.getIsApproved())
                 .toList().size();
     }
 

@@ -40,8 +40,7 @@ public class S3Client {
         String imageUrl = directory + filename;
         GeneratePresignedUrlRequest request = createPresignedUrlRequest(imageUrl, HttpMethod.GET);
         URL url = amazonS3.generatePresignedUrl(request);
-        String presignedUrl = url.toString();
-        return presignedUrl;
+        return url.toString();
     }
 
     private GeneratePresignedUrlRequest createPresignedUrlRequest(String imageUrl, HttpMethod httpMethod) {

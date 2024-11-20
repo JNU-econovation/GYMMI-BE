@@ -200,6 +200,9 @@ public class WorkspaceCommandService {
         if (objectionRepository.findByWorkoutConfirmationId(workoutConfirmationId).isPresent()) {
             throw new AlreadyExistException(ErrorCode.ALREADY_OBJECTED);
         }
+        if (!workspace.isInProgress()) {
+            throw new InvalidStateException(ErrorCode.INACTIVE_WORKSPACE);
+        }
         Objection objection = Objection.builder()
                 .subject(worker)
                 .reason(request.getReason())
