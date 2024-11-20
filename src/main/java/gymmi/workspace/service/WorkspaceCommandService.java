@@ -5,6 +5,10 @@ import gymmi.exceptionhandler.exception.AlreadyExistException;
 import gymmi.exceptionhandler.exception.InvalidStateException;
 import gymmi.exceptionhandler.exception.NotHavePermissionException;
 import gymmi.exceptionhandler.message.ErrorCode;
+import gymmi.photoboard.domain.entity.PhotoFeedImage;
+import gymmi.photoboard.request.CreatePhotoFeedRequest;
+import gymmi.photoboard.service.PhotoFeedService;
+import gymmi.service.S3Service;
 import gymmi.workspace.domain.*;
 import gymmi.workspace.domain.entity.*;
 import gymmi.workspace.repository.*;
@@ -14,10 +18,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.time.LocalDate;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +33,9 @@ public class WorkspaceCommandService {
     private final FavoriteMissionRepository favoriteMissionRepository;
     private final ObjectionRepository objectionRepository;
     private final VoteRepository voteRepository;
+
+    private final S3Service s3Service;
+    private final PhotoFeedService photoFeedService;
 
     @Transactional
     // 중복 요청
@@ -90,6 +95,7 @@ public class WorkspaceCommandService {
         WorkspacePreparingManager workspacePreparingManager = new WorkspacePreparingManager(workspace, workers);
         WorkerLeavedEvent workerLeavedEvent = workspacePreparingManager.release(worker);
 
+        favoriteMissionRepository.deleteAllByWorkerId(workerLeavedEvent.getWorker().getId());
         workerRepository.delete(workerLeavedEvent.getWorker());
         if (workerLeavedEvent.isLastOne()) {
             missionRepository.deleteAllByWorkspaceId(workspace.getId());
@@ -97,7 +103,7 @@ public class WorkspaceCommandService {
         }
     }
 
-    @Transactional // 동시성 문제
+    @Transactional // 동시성 문제, 이벤트 사용하면 좋을듯
     public Integer workMissionsInWorkspace(
             User loginedUser,
             Long workspaceId,
@@ -107,6 +113,7 @@ public class WorkspaceCommandService {
         Worker worker = workerRepository.getByUserIdAndWorkspaceId(loginedUser.getId(), workspace.getId());
         List<Mission> missions = missionRepository.getAllByWorkspaceId(workspace.getId());
         Map<Mission, Integer> workouts = getWorkouts(workoutRequest.getMissions());
+        validateDailyWorkoutHistoryCount();
 
         WorkspaceProgressManager workspaceProgressManager = new WorkspaceProgressManager(workspace, missions);
 
@@ -117,11 +124,23 @@ public class WorkspaceCommandService {
         );
         workoutHistory.apply();
 
+        s3Service.checkObjectExist(WorkoutConfirmation.IMAGE_USE, workoutRequest.getImageUrl());
         workoutHistoryRepository.save(workoutHistory);
         int achievementScore = workspaceRepository.getAchievementScore(workspaceId);
 
         workspaceProgressManager.completeWhenGoalScoreIsAchieved(achievementScore);
+        if (workoutRequest.getWillLink()) {
+            String filename = s3Service.copy(WorkoutConfirmation.IMAGE_USE, workoutRequest.getImageUrl(), PhotoFeedImage.IMAGE_USE);
+            photoFeedService.createPhotoFeed(loginedUser, new CreatePhotoFeedRequest(filename, workoutRequest.getComment()));
+        }
         return workoutHistory.getSum();
+    }
+
+    private void validateDailyWorkoutHistoryCount() {
+        List<WorkoutHistory> workoutHistories = workoutHistoryRepository.getAllByDate(LocalDate.now());
+        if (workoutHistories.size() >= 3) {
+            throw new InvalidStateException(ErrorCode.EXCEED_MAX_DAILY_WORKOUT_HISTORY_COUNT);
+        }
     }
 
     private Map<Mission, Integer> getWorkouts(List<WorkingMissionInWorkspaceRequest> requests) {
@@ -187,6 +206,9 @@ public class WorkspaceCommandService {
         if (objectionRepository.findByWorkoutConfirmationId(workoutConfirmationId).isPresent()) {
             throw new AlreadyExistException(ErrorCode.ALREADY_OBJECTED);
         }
+        if (!workspace.isInProgress()) {
+            throw new InvalidStateException(ErrorCode.INACTIVE_WORKSPACE);
+        }
         Objection objection = Objection.builder()
                 .subject(worker)
                 .reason(request.getReason())
@@ -218,4 +240,5 @@ public class WorkspaceCommandService {
             workoutHistory.cancel();
         }
     }
+
 }

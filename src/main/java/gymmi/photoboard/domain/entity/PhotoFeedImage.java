@@ -1,4 +1,4 @@
-package gymmi.workspace.domain.entity;
+package gymmi.photoboard.domain.entity;
 
 import gymmi.service.ImageUse;
 import jakarta.persistence.*;
@@ -11,22 +11,23 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(of = {"id"})
 @Getter
-public class WorkoutConfirmation {
+public class PhotoFeedImage {
 
-    public static final ImageUse IMAGE_USE = ImageUse.WORKOUT_CONFIRMATION;
+    public static final ImageUse IMAGE_USE = ImageUse.PHOTO_FEED;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne
+    @JoinColumn(name = "photo_feed_id", nullable = false)
+    private PhotoFeed photoFeed;
+
     @Column(nullable = false)
     private String filename;
 
-    @Column(nullable = false)
-    private String comment;
-
-    public WorkoutConfirmation(String filename, String comment) {
+    public PhotoFeedImage(PhotoFeed photoFeed, String filename) {
+        this.photoFeed = photoFeed;
         this.filename = filename;
-        this.comment = comment;
     }
 }

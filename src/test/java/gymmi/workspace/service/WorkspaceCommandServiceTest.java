@@ -2,6 +2,8 @@ package gymmi.workspace.service;
 
 import gymmi.entity.User;
 import gymmi.exceptionhandler.message.ErrorCode;
+import gymmi.photoboard.repository.PhotoFeedRepository;
+import gymmi.service.S3Service;
 import gymmi.workspace.domain.WorkspaceStatus;
 import gymmi.workspace.domain.entity.*;
 import gymmi.workspace.repository.*;
@@ -11,14 +13,18 @@ import org.instancio.Instancio;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import static gymmi.exceptionhandler.message.ErrorCode.EXCEED_MAX_JOINED_WORKSPACE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.field;
+import static org.mockito.BDDMockito.any;
+import static org.mockito.BDDMockito.given;
 
 class WorkspaceCommandServiceTest extends IntegrationTest {
 
@@ -31,6 +37,8 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
     @Autowired
     MissionRepository missionRepository;
     @Autowired
+    TaskRepository taskRepository;
+    @Autowired
     WorkoutHistoryRepository workoutHistoryRepository;
     @Autowired
     FavoriteMissionRepository favoriteMissionRepository;
@@ -38,6 +46,11 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
     VoteRepository voteRepository;
     @Autowired
     ObjectionRepository objectionRepository;
+    @Autowired
+    PhotoFeedRepository photoFeedRepository;
+
+    @MockBean
+    S3Service s3Service;
 
     @Autowired
     EntityManager entityManager;
@@ -94,11 +107,13 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
 
 
     @Test
-    void 방장이_워크스페이스를_떠나는_경우_워크스페이스도_삭제된다() {
+    void 방장이_워크스페이스를_떠나는_경우_워크스페이스와_관련_정보도_삭제된다() {
         // given
         User user = persister.persistUser();
         Workspace workspace = persister.persistWorkspace(user, WorkspaceStatus.PREPARING);
         Worker worker = persister.persistWorker(user, workspace);
+        List<Mission> missions = persister.persistMissions(workspace, 3);
+        persister.persistFavoriteMission(worker, missions.get(0));
 
         // when
         workspaceCommandService.leaveWorkspace(user, workspace.getId());
@@ -106,36 +121,71 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
         // then
         assertThat(workspaceRepository.findById(workspace.getId())).isEmpty();
         assertThat(workerRepository.findById(worker.getId())).isEmpty();
-        assertThat(entityManager.find(Task.class, worker.getTask().getId())).isNull();
+        assertThat(taskRepository.findAll()).isEmpty();
+        assertThat(missionRepository.findAll()).isEmpty();
+        assertThat(favoriteMissionRepository.findAll()).isEmpty();
+        assertThat(workerRepository.findById(worker.getId())).isEmpty();
     }
 
 
-    @Test
-    void 워크스페이스_운동시_참여자의_점수가_반영된다() {
-        // given
-        User user = persister.persistUser();
-        Workspace workspace = persister.persistWorkspace(user, WorkspaceStatus.IN_PROGRESS);
-        Worker worker = persister.persistWorker(user, workspace);
-        List<Mission> missions = persister.persistMissions(workspace, 1);
-        Mission mission = missions.get(0);
-        int count = 100;
+    @Nested
+    class 워크스페이스_운동 {
+        @Test
+        void 워크스페이스_운동시_참여자의_점수가_반영되고_연동_여부에_따라_사진_피드가_등록_된다() {
+            // given
+            User user = persister.persistUser();
+            Workspace workspace = persister.persistWorkspace(user, WorkspaceStatus.IN_PROGRESS);
+            Worker worker = persister.persistWorker(user, workspace);
+            Mission mission = persister.persistMission(workspace, 10);
+            int count = 100;
 
-        List<WorkingMissionInWorkspaceRequest> requests = List.of(
-                new WorkingMissionInWorkspaceRequest(mission.getId(), count)
-        );
-        WorkoutRequest request = Instancio.of(WorkoutRequest.class)
-                .set(field(WorkoutRequest::getMissions), requests)
-                .create();
-        assertThat(worker.getContributedScore()).isEqualTo(0);
+            List<WorkingMissionInWorkspaceRequest> requests = List.of(
+                    new WorkingMissionInWorkspaceRequest(mission.getId(), count)
+            );
+            WorkoutRequest request = Instancio.of(WorkoutRequest.class)
+                    .set(field(WorkoutRequest::getMissions), requests)
+                    .set(field(WorkoutRequest::getWillLink), true)
+                    .create();
+            assertThat(worker.getContributedScore()).isEqualTo(0);
+            given(s3Service.copy(any(), any(), any())).willReturn(UUID.randomUUID().toString());
 
-        // when
-        workspaceCommandService.workMissionsInWorkspace(user, workspace.getId(), request);
+            // when
+            workspaceCommandService.workMissionsInWorkspace(user, workspace.getId(), request);
 
-        // then
-        assertThat(workoutHistoryRepository.getAllByWorkerId(worker.getId())).hasSize(1);
-        assertThat(worker.getContributedScore()).isEqualTo(mission.getScore() * count);
-        assertThat(workspace.getStatus()).isEqualTo(WorkspaceStatus.COMPLETED);
+            // then
+            assertThat(workoutHistoryRepository.getAllByWorkerId(worker.getId())).hasSize(1);
+            assertThat(worker.getContributedScore()).isEqualTo(mission.getScore() * count);
+            assertThat(workspace.getStatus()).isEqualTo(WorkspaceStatus.COMPLETED);
+            assertThat(assertThat(photoFeedRepository.findAll()).hasSize(1));
+        }
+
+        @Test
+        void 워크스페이스_일일_운동_횟수를_초과한_경우_예외가_발생_한다() {
+            // given
+            User user = persister.persistUser();
+            Workspace workspace = persister.persistWorkspace(user, WorkspaceStatus.IN_PROGRESS);
+            Worker worker = persister.persistWorker(user, workspace);
+            Mission mission = persister.persistMission(workspace, 10);
+
+            persister.persistWorkoutHistoryAndApply(worker, Map.of(mission, 2));
+            persister.persistWorkoutHistoryAndApply(worker, Map.of(mission, 2));
+            persister.persistWorkoutHistoryAndApply(worker, Map.of(mission, 2));
+
+            List<WorkingMissionInWorkspaceRequest> requests = List.of(
+                    new WorkingMissionInWorkspaceRequest(mission.getId(), 10)
+            );
+            WorkoutRequest request = Instancio.of(WorkoutRequest.class)
+                    .set(field(WorkoutRequest::getMissions), requests)
+                    .set(field(WorkoutRequest::getWillLink), true)
+                    .create();
+
+            // when, then
+            assertThatThrownBy(() -> workspaceCommandService.workMissionsInWorkspace(user, workspace.getId(), request))
+                    .hasMessage(ErrorCode.EXCEED_MAX_DAILY_WORKOUT_HISTORY_COUNT.getMessage());
+        }
+
     }
+
 
     @Test
     void 미션을_즐겨찾기에_추가_또는_삭제_한다() {

@@ -1,6 +1,8 @@
 package gymmi.helper;
 
 import gymmi.entity.User;
+import gymmi.photoboard.domain.entity.PhotoFeed;
+import gymmi.photoboard.domain.entity.PhotoFeedImage;
 import gymmi.repository.UserRepository;
 import gymmi.workspace.domain.WorkspaceStatus;
 import gymmi.workspace.domain.entity.*;
@@ -13,6 +15,7 @@ import org.instancio.Select;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -77,6 +80,12 @@ public class Persister {
                 .create();
         entityManager.persist(mission);
         return mission;
+    }
+
+    public FavoriteMission persistFavoriteMission(Worker worker, Mission mission) {
+        FavoriteMission favoriteMission = new FavoriteMission(worker, mission);
+        entityManager.persist(favoriteMission);
+        return favoriteMission;
     }
 
     public Workspace persistWorkspace(User creator, WorkspaceStatus workspaceStatus, int goalScore, int headCount) {
@@ -185,5 +194,42 @@ public class Persister {
         return vote;
     }
 
+    public PhotoFeed persistPhotoFeed(User user) {
+        PhotoFeed photoFeed = Instancio.of(PhotoFeed.class)
+                .set(field(PhotoFeed::getUser), user)
+                .ignore(field(PhotoFeed::getId))
+                .create();
+        entityManager.persist(photoFeed);
+        return photoFeed;
+    }
 
+    public PhotoFeed persistPhotoFeed(User user, int thumpsUpCount) {
+        PhotoFeed photoFeed = Instancio.of(PhotoFeed.class)
+                .set(field(PhotoFeed::getUser), user)
+                .set(field(PhotoFeed::getThumpsUpCount), thumpsUpCount)
+                .ignore(field(PhotoFeed::getId))
+                .create();
+        entityManager.persist(photoFeed);
+        return photoFeed;
+    }
+
+    public PhotoFeed persistPhotoFeed(User user, LocalDateTime createdAt, LocalDateTime lastModifiedAt) {
+        PhotoFeed photoFeed = Instancio.of(PhotoFeed.class)
+                .set(field(PhotoFeed::getUser), user)
+                .set(field(PhotoFeed::getLastModifiedAt), lastModifiedAt)
+                .set(field(PhotoFeed::getCreatedAt), createdAt)
+                .ignore(field(PhotoFeed::getId))
+                .create();
+        entityManager.persist(photoFeed);
+        return photoFeed;
+    }
+
+    public PhotoFeedImage persistPhotoFeedImage(PhotoFeed photoFeed) {
+        PhotoFeedImage photoFeedImage = Instancio.of(PhotoFeedImage.class)
+                .set(field(PhotoFeedImage::getPhotoFeed), photoFeed)
+                .ignore(field(PhotoFeedImage::getId))
+                .create();
+        entityManager.persist(photoFeedImage);
+        return photoFeedImage;
+    }
 }

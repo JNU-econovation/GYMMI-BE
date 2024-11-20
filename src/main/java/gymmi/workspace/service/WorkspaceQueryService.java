@@ -3,6 +3,7 @@ package gymmi.workspace.service;
 import gymmi.entity.User;
 import gymmi.exceptionhandler.exception.NotHavePermissionException;
 import gymmi.exceptionhandler.message.ErrorCode;
+import gymmi.service.ImageUse;
 import gymmi.service.S3Service;
 import gymmi.workspace.domain.WorkoutMetric;
 import gymmi.workspace.domain.WorkspaceGateChecker;
@@ -172,7 +173,7 @@ public class WorkspaceQueryService {
         List<WorkoutConfirmationResponse> responses = new ArrayList<>();
         for (WorkoutHistory workoutHistory : workoutHistories) {
             WorkoutConfirmation workoutConfirmation = workoutHistory.getWorkoutConfirmation();
-            String imagePresignedUrl = s3Service.getPresignedUrl(workoutConfirmation.getFilename());
+            String imagePresignedUrl = s3Service.getPresignedUrl(ImageUse.WORKOUT_CONFIRMATION, workoutConfirmation.getFilename());
             responses.add(new WorkoutConfirmationResponse(workoutHistory, imagePresignedUrl));
         }
         return responses;
@@ -186,7 +187,7 @@ public class WorkspaceQueryService {
         workoutHistory.canBeReadIn(workspace);
         WorkoutConfirmation workoutConfirmation = workoutHistory.getWorkoutConfirmation();
 
-        String imagePresignedUrl = s3Service.getPresignedUrl(workoutConfirmation.getFilename());
+        String imagePresignedUrl = s3Service.getPresignedUrl(ImageUse.WORKOUT_CONFIRMATION, workoutConfirmation.getFilename());
         Objection objection = objectionRepository.findByWorkoutConfirmationId(workoutConfirmationId)
                 .orElseGet(() -> null);
 

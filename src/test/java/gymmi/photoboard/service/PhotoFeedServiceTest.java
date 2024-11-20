@@ -1,0 +1,114 @@
+package gymmi.photoboard.service;
+
+import gymmi.entity.User;
+import gymmi.photoboard.domain.entity.PhotoFeed;
+import gymmi.photoboard.domain.entity.PhotoFeedImage;
+import gymmi.photoboard.repository.PhotoFeedImageRepository;
+import gymmi.photoboard.repository.PhotoFeedRepository;
+import gymmi.photoboard.repository.ThumbsUpRepository;
+import gymmi.photoboard.request.CreatePhotoFeedRequest;
+import gymmi.photoboard.response.PhotoFeedResponse;
+import gymmi.service.S3Service;
+import gymmi.workspace.service.IntegrationTest;
+import jakarta.persistence.EntityManager;
+import org.instancio.Instancio;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+class PhotoFeedServiceTest extends IntegrationTest {
+
+    @Autowired
+    PhotoFeedService photoFeedService;
+
+    @Autowired
+    PhotoFeedRepository photoFeedRepository;
+
+    @Autowired
+    PhotoFeedImageRepository photoFeedImageRepository;
+
+    @Autowired
+    ThumbsUpRepository thumbsUpRepository;
+
+    @Autowired
+    EntityManager entityManager;
+
+    @MockBean
+    S3Service s3Service;
+
+    @Test
+    void 사진_등록을_한다() {
+        // given
+        User user = persister.persistUser();
+        CreatePhotoFeedRequest request = new CreatePhotoFeedRequest(UUID.randomUUID().toString(), Instancio.gen().string().get());
+
+        // when
+        photoFeedService.createPhotoFeed(user, request);
+
+        // then
+        assertThat(photoFeedRepository.findAll().size()).isEqualTo(1);
+    }
+
+    @Test
+    void 사진_피드를_확인_한다() {
+        // given
+        User user = persister.persistUser();
+        PhotoFeed photoFeed = persister.persistPhotoFeed(user, LocalDateTime.now(), LocalDateTime.now().plusDays(1));
+        PhotoFeedImage photoFeedImage = persister.persistPhotoFeedImage(photoFeed);
+
+        // when
+        PhotoFeedResponse result = photoFeedService.getPhotoFeed(photoFeed.getId());
+
+        // then
+        assertThat(result.getIsModified()).isFalse();
+        assertThat(result.getThumpsUpCount()).isEqualTo(photoFeed.getThumpsUpCount());
+        assertThat(result.getCreatedAt()).isEqualTo(photoFeed.getCreatedAt());
+        assertThat(result.getProfileImageUrl()).isEqualTo(user.getProfileImageName());
+        assertThat(result.getComment()).isEqualTo(photoFeed.getComment());
+    }
+
+    @Test
+    void 사진_피드에_좋아요를_누르거나_취소한다() {
+        // given
+        User user = persister.persistUser();
+        User user1 = persister.persistUser();
+        PhotoFeed photoFeed = persister.persistPhotoFeed(user, 0);
+        PhotoFeedImage photoFeedImage = persister.persistPhotoFeedImage(photoFeed);
+
+        // when
+        photoFeedService.likePhotoFeed(user1, photoFeed.getId());
+
+        // then
+        assertThat(photoFeed.getThumpsUpCount()).isEqualTo(1);
+        assertThat(thumbsUpRepository.findByUserId(user1.getId())).isNotEmpty();
+
+        // when
+        photoFeedService.likePhotoFeed(user1, photoFeed.getId());
+
+        // then
+        assertThat(photoFeed.getThumpsUpCount()).isEqualTo(0);
+        assertThat(thumbsUpRepository.findByUserId(user1.getId())).isEmpty();
+    }
+
+    @Test
+    void 사진_피드를_삭제한다() {
+        // given
+        User user = persister.persistUser();
+        PhotoFeed photoFeed = persister.persistPhotoFeed(user);
+        PhotoFeedImage photoFeedImage = persister.persistPhotoFeedImage(photoFeed);
+
+        // when
+        photoFeedService.delete(user, photoFeed.getId());
+
+        // then
+        entityManager.flush();
+        entityManager.clear();
+        assertThat(photoFeedImageRepository.findByPhotoFeedId(photoFeed.getId())).isEmpty();
+        assertThat(photoFeedRepository.findById(photoFeed.getId())).isEmpty();
+    }
+}

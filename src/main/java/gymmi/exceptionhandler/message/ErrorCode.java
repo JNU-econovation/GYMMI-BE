@@ -39,6 +39,9 @@ public enum ErrorCode {
     ALREADY_VOTED("이미 투표하였습니다.", 400),
     ALREADY_CLOSED_OBJECTION("이미 종료되었습니다", 400),
 
+    // 운동 기록
+    EXCEED_MAX_DAILY_WORKOUT_HISTORY_COUNT("일일 가능한 운동을 초과했어요! (3회까지 가능)", 400),
+
 
     // user
     ALREADY_USED_LOGIN_ID("이미 사용중인 아이디 입니다.", 400),
@@ -65,8 +68,15 @@ public enum ErrorCode {
     NOT_MATCHED_PASSWORD("비밀번호가 일치하지 않습니다.", 400),
     UNSUPPORTED_TYPE("지원하지 않는 type 입니다.", 400),
     NOT_FOUND_WORKER("존재하지 않는 참여자 입니다.", 400),
+    NOT_FOUND_IMAGE_OBJECT("존재하지 않은 이미지 object 입니다.", 400),
     INVALID_DUPLICATION_CHECK_TYPE_VALUE("잘못된 query param value 입니다. : " + DuplicationCheckType.class.getName(), 400),
-    INVALID_WORKSPACE_STATUS_VALUE("잘못된 query param value 입니다. : " + WorkspaceStatus.class.getName(), 400);
+    INVALID_WORKSPACE_STATUS_VALUE("잘못된 query param value 입니다. : " + WorkspaceStatus.class.getName(), 400),
+
+    // photo feed
+    NOT_FOUND_PHOTO_FEED("존재하지 않는 사진피드 입니다.", 400),
+    NOT_FOUND_PHOTO_FEED_IMAGE("존재하지 않는 사진 입니다.", 400),
+    NOT_PHOTO_FEED_WRITER("사진피드 작성자가 아니에요", 400),
+    ;
 
     private final String message;
     private final int statusCode;
@@ -83,4 +93,4 @@ public enum ErrorCode {
     public int getStatusCode() {
         return statusCode;
     }
-    }
+}
