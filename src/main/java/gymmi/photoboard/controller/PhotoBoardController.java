@@ -3,12 +3,15 @@ package gymmi.photoboard.controller;
 import gymmi.entity.User;
 import gymmi.global.Logined;
 import gymmi.photoboard.request.CreatePhotoFeedRequest;
+import gymmi.photoboard.response.PhotoFeedDetailResponse;
 import gymmi.photoboard.response.PhotoFeedResponse;
 import gymmi.photoboard.service.PhotoFeedService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,11 +29,19 @@ public class PhotoBoardController {
     }
 
     @GetMapping("/photos/{photoId}")
-    public ResponseEntity<PhotoFeedResponse> seePhotoFeed(
+    public ResponseEntity<PhotoFeedDetailResponse> seePhotoFeed(
             @PathVariable(name = "photoId") Long photoFeedId
     ) {
-        PhotoFeedResponse response = photoFeedService.getPhotoFeed(photoFeedId);
+        PhotoFeedDetailResponse response = photoFeedService.getPhotoFeed(photoFeedId);
         return ResponseEntity.ok().body(response);
+    }
+
+    @GetMapping("/photos")
+    public ResponseEntity<List<PhotoFeedResponse>> seePhotoFeeds(
+            @RequestParam(name = "pageNumber") int pageNumber
+    ) {
+        List<PhotoFeedResponse> responses = photoFeedService.getPhotoFeeds(pageNumber);
+        return ResponseEntity.ok().body(responses);
     }
 
     @PostMapping("/photos/{photoId}/thumps-up")
