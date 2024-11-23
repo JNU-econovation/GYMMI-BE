@@ -4,9 +4,10 @@ import gymmi.entity.User;
 import gymmi.service.S3Service;
 import gymmi.workspace.domain.WorkspaceStatus;
 import gymmi.workspace.domain.entity.*;
+import gymmi.workspace.repository.WorkoutHistoryRepository;
 import gymmi.workspace.response.ObjectionResponse;
 import gymmi.workspace.response.WorkoutConfirmationDetailResponse;
-import gymmi.workspace.response.WorkoutConfirmationResponse;
+import gymmi.workspace.response.WorkoutConfirmationOrObjectionResponse;
 import gymmi.workspace.response.WorkoutContextResponse;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -21,8 +22,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class WorkspaceQueryServiceTest extends IntegrationTest {
 
+
     @Autowired
     WorkspaceQueryService workspaceQueryService;
+
+    @Autowired
+    WorkoutHistoryRepository workoutHistoryRepository;
 
     @MockBean
     S3Service s3Service;
@@ -68,23 +73,31 @@ class WorkspaceQueryServiceTest extends IntegrationTest {
         Mission mission1 = persister.persistMission(workspace, 5);
         WorkoutConfirmation workoutConfirmation = new WorkoutConfirmation("creator", "a");
         WorkoutConfirmation workoutConfirmation1 = new WorkoutConfirmation("user", "b");
-
         WorkoutHistory workoutHistory = persister.persistWorkoutHistoryAndApply(creatorWorker, Map.of(mission, 2, mission1, 2), workoutConfirmation);
+        Objection objection = persister.persistObjection(userWorker, true, workoutConfirmation);
         WorkoutHistory workoutHistory1 = persister.persistWorkoutHistoryAndApply(userWorker, Map.of(mission, 2, mission1, 2), workoutConfirmation1);
 
+
         // when
-        List<WorkoutConfirmationResponse> responses = workspaceQueryService.getWorkoutConfirmations(user, workspace.getId(), 0);
+        List<WorkoutConfirmationOrObjectionResponse> responses = workspaceQueryService.getWorkoutConfirmations(user, workspace.getId(), 0);
 
         // then
-        assertThat(responses).hasSize(2);
-        WorkoutConfirmationResponse response = responses.get(0);
-        assertThat(response.getNickname()).isEqualTo(user.getNickname());
+        assertThat(responses).hasSize(3);
+
+        WorkoutConfirmationOrObjectionResponse response = responses.get(0);
+        assertThat(response.getIsMine()).isEqualTo(true);
         assertThat(response.getProfileImageUrl()).isEqualTo(user.getProfileImageName());
         assertThat(response.getWorkoutConfirmationId()).isEqualTo(workoutHistory1.getWorkoutConfirmation().getId());
-        WorkoutConfirmationResponse response1 = responses.get(1);
+        assertThat(response.getIsObjection()).isEqualTo(false);
+        assertThat(response.getObjectionId()).isEqualTo(null);
+
+        WorkoutConfirmationOrObjectionResponse response1 = responses.get(1);
         assertThat(response1.getNickname()).isEqualTo(creator.getNickname());
         assertThat(response1.getProfileImageUrl()).isEqualTo(creator.getProfileImageName());
-        assertThat(response1.getWorkoutConfirmationId()).isEqualTo(workoutHistory.getWorkoutConfirmation().getId());
+        assertThat(response1.getWorkoutConfirmationId()).isEqualTo(null);
+        assertThat(response1.getObjectionId()).isEqualTo(objection.getId());
+        assertThat(response1.getIsMine()).isEqualTo(false);
+        assertThat(response1.getIsObjection()).isEqualTo(true);
     }
 
     @Test

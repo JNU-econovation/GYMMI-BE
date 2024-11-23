@@ -207,12 +207,12 @@ public class WorkspaceController {
     }
 
     @GetMapping("/workspaces/{workspaceId}/workout-confirmations")
-    public ResponseEntity<List<WorkoutConfirmationResponse>> seeWorkoutConfirmations(
+    public ResponseEntity<List<WorkoutConfirmationOrObjectionResponse>> seeWorkoutConfirmations(
             @Logined User user,
             @PathVariable Long workspaceId,
             @RequestParam int pageNumber
     ) {
-        List<WorkoutConfirmationResponse> responses = workspaceQueryService.getWorkoutConfirmations(user, workspaceId, pageNumber);
+        List<WorkoutConfirmationOrObjectionResponse> responses = workspaceQueryService.getWorkoutConfirmations(user, workspaceId, pageNumber);
         return ResponseEntity.ok().body(responses);
     }
 

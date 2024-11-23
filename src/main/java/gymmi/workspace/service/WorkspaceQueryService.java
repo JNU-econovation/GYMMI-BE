@@ -164,22 +164,30 @@ public class WorkspaceQueryService {
                 .toList();
     }
 
-    public List<WorkoutConfirmationResponse> getWorkoutConfirmations(User loginedUser, Long workspaceId, int page) {
+    public List<WorkoutConfirmationOrObjectionResponse> getWorkoutConfirmations(User loginedUser, Long workspaceId, int page) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
         validateIfWorkerIsInWorkspace(loginedUser.getId(), workspace.getId());
-        Pageable pageable = PageRequest.of(page, DEFAULT_PAGE_SIZE);
-        List<WorkoutHistory> workoutHistories = workoutHistoryRepository.getAllByWorkspaceId(workspace.getId(), pageable);
+        List<WorkoutConfirmationOrObjectionProjection> dtos = workoutHistoryRepository.getWorkoutConfirmationAndObjectionDto(workspace.getId(), page);
 
-        List<WorkoutConfirmationResponse> responses = new ArrayList<>();
-        for (WorkoutHistory workoutHistory : workoutHistories) {
-            WorkoutConfirmation workoutConfirmation = workoutHistory.getWorkoutConfirmation();
-            String imagePresignedUrl = s3Service.getPresignedUrl(ImageUse.WORKOUT_CONFIRMATION, workoutConfirmation.getFilename());
-            responses.add(new WorkoutConfirmationResponse(workoutHistory, imagePresignedUrl));
+        List<WorkoutConfirmationOrObjectionResponse> responses = new ArrayList<>();
+        for (WorkoutConfirmationOrObjectionProjection dto : dtos) {
+            if (dto.getType().equals("workoutHistory")) {
+                WorkoutHistory workoutHistory = workoutHistoryRepository.getByWorkoutHistoryId(dto.getId());
+                WorkoutConfirmation workoutConfirmation = workoutHistory.getWorkoutConfirmation();
+                String imagePresignedUrl = s3Service.getPresignedUrl(ImageUse.WORKOUT_CONFIRMATION, workoutConfirmation.getFilename());
+                responses.add(WorkoutConfirmationOrObjectionResponse.workoutConfirmation(loginedUser, workoutHistory, imagePresignedUrl));
+            }
+            if (dto.getType().equals("objection")) {
+                Objection objection = objectionRepository.getByObjectionId(dto.getId());
+                WorkoutHistory workoutHistory = workoutHistoryRepository.getByWorkoutConfirmationId(objection.getWorkoutConfirmation().getId());
+                responses.add(WorkoutConfirmationOrObjectionResponse.objection(loginedUser, objection, workoutHistory.getWorker().getUser()));
+            }
         }
         return responses;
     }
 
-    public WorkoutConfirmationDetailResponse getWorkoutConfirmation(User loginedUser, Long workspaceId, Long workoutConfirmationId) {
+    public WorkoutConfirmationDetailResponse getWorkoutConfirmation(User loginedUser, Long workspaceId, Long
+            workoutConfirmationId) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
         validateIfWorkerIsInWorkspace(loginedUser.getId(), workspace.getId());
         WorkoutHistory workoutHistory = workoutHistoryRepository.getByWorkoutConfirmationId(workoutConfirmationId);
