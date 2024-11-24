@@ -14,6 +14,7 @@ public class PhotoFeedDetailResponse {
     private final Integer thumpsUpCount;
     private final LocalDateTime createdAt;
     private final Boolean isModified;
+    private final String nickname;
 
     public PhotoFeedDetailResponse(PhotoFeed photoFeed, String photoImageUrl) {
         this.profileImageUrl = photoFeed.getUser().getProfileImageName();
@@ -22,6 +23,7 @@ public class PhotoFeedDetailResponse {
         this.thumpsUpCount = photoFeed.getThumpsUpCount();
         this.createdAt = photoFeed.getCreatedAt();
         this.isModified = photoFeed.isModified();
+        this.nickname = photoFeed.getUser().getNickname();
     }
 
 }

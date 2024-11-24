@@ -72,6 +72,7 @@ class PhotoFeedServiceTest extends IntegrationTest {
         assertThat(result.getCreatedAt()).isEqualTo(photoFeed.getCreatedAt());
         assertThat(result.getProfileImageUrl()).isEqualTo(user.getProfileImageName());
         assertThat(result.getComment()).isEqualTo(photoFeed.getComment());
+        assertThat(result.getNickname()).isEqualTo(user.getNickname());
     }
 
     @Test
