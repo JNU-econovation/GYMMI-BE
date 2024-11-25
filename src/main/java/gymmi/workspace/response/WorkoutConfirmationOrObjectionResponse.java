@@ -57,7 +57,7 @@ public class WorkoutConfirmationOrObjectionResponse {
         LocalDateTime createdAt = objection.getCreatedAt();
         return WorkoutConfirmationOrObjectionResponse.builder()
                 .objectionId(objection.getId())
-                .workoutConfirmationId(null)
+                .workoutConfirmationId(objection.getWorkoutConfirmation().getId())
                 .nickname(objectionTargetUser.getNickname())
                 .profileImageUrl(objectionTargetUser.getProfileImageName())
                 .workoutConfirmationImageUrl(null)
