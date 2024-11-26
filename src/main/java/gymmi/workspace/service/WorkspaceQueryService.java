@@ -208,17 +208,18 @@ public class WorkspaceQueryService {
         Objection objection = objectionRepository.getByObjectionId(objectionId);
         objection.canBeReadIn(workspace);
 
+        Integer headCount = workspace.getHeadCount();
         if (objection.isInProgress() && objection.hasVoteBy(worker)) {
-            return ObjectionResponse.objectionInProgressWithVoteCompletion(objection);
+            return ObjectionResponse.objectionInProgressWithVoteCompletion(objection, headCount);
         }
 
         if (objection.isInProgress() && !objection.hasVoteBy(worker)) {
-            return ObjectionResponse.objectionInProgressWithVoteInCompletion(objection);
+            return ObjectionResponse.objectionInProgressWithVoteInCompletion(objection, headCount);
         }
 
         WorkoutHistory workoutHistory = workoutHistoryRepository.getByWorkoutConfirmationId(objection.getWorkoutConfirmation().getId());
 
         workoutHistory.canBeReadIn(workspace);
-        return ObjectionResponse.closedObjection(objection, objection.hasVoteBy(worker), workoutHistory.isApproved());
+        return ObjectionResponse.closedObjection(objection, objection.hasVoteBy(worker), workoutHistory.isApproved(), headCount);
     }
 }
