@@ -31,9 +31,10 @@ public class PhotoBoardController {
 
     @GetMapping("/photos/{photoId}")
     public ResponseEntity<PhotoFeedDetailResponse> seePhotoFeed(
+            @Logined User user,
             @PathVariable(name = "photoId") Long photoFeedId
     ) {
-        PhotoFeedDetailResponse response = photoFeedService.getPhotoFeed(photoFeedId);
+        PhotoFeedDetailResponse response = photoFeedService.getPhotoFeed(user, photoFeedId);
         return ResponseEntity.ok().body(response);
     }
 

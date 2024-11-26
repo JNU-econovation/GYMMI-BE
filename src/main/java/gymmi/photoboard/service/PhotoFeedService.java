@@ -43,12 +43,14 @@ public class PhotoFeedService {
     }
 
     @Transactional(readOnly = true)
-    public PhotoFeedDetailResponse getPhotoFeed(Long photoFeedId) {
+    public PhotoFeedDetailResponse getPhotoFeed(User loginedUser, Long photoFeedId) {
         PhotoFeed photoFeed = photoFeedRepository.getByPhotoFeedId(photoFeedId);
         PhotoFeedImage photoFeedImage = photoFeedImageRepository.getByPhotoFeedId(photoFeedId);
-
         String photoImagePresignedUrl = s3Service.getPresignedUrl(PhotoFeedImage.IMAGE_USE, photoFeedImage.getFilename());
-        return new PhotoFeedDetailResponse(photoFeed, photoImagePresignedUrl);
+        if (thumbsUpRepository.findByUserId(loginedUser.getId()).isEmpty()) {
+            return new PhotoFeedDetailResponse(photoFeed, photoImagePresignedUrl, photoFeed.isWriter(loginedUser), false);
+        }
+        return new PhotoFeedDetailResponse(photoFeed, photoImagePresignedUrl, photoFeed.isWriter(loginedUser), true);
     }
 
     @Transactional

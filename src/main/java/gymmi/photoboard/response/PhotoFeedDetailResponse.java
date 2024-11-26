@@ -15,8 +15,10 @@ public class PhotoFeedDetailResponse {
     private final LocalDateTime createdAt;
     private final Boolean isModified;
     private final String nickname;
+    private final Boolean isMine;
+    private final Boolean hasMyThumbsUp;
 
-    public PhotoFeedDetailResponse(PhotoFeed photoFeed, String photoImageUrl) {
+    public PhotoFeedDetailResponse(PhotoFeed photoFeed, String photoImageUrl, boolean isMine, boolean hasMyThumbsUp) {
         this.profileImageUrl = photoFeed.getUser().getProfileImageName();
         this.photoImageUrl = photoImageUrl;
         this.comment = photoFeed.getComment();
@@ -24,7 +26,8 @@ public class PhotoFeedDetailResponse {
         this.createdAt = photoFeed.getCreatedAt();
         this.isModified = photoFeed.isModified();
         this.nickname = photoFeed.getUser().getNickname();
+        this.isMine = isMine;
+        this.hasMyThumbsUp = hasMyThumbsUp;
     }
-
 }
 
