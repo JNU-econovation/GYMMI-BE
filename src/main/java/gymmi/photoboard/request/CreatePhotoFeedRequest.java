@@ -11,7 +11,6 @@ public class CreatePhotoFeedRequest {
     @NotBlank
     private String filename;
 
-    @NotBlank
     private String comment;
 
     public CreatePhotoFeedRequest(String filename, String comment) {

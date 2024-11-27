@@ -12,7 +12,6 @@ public class WorkoutRequest {
     @NotNull
     private String imageUrl;
 
-    @NotNull
     private String comment;
 
     @NotNull

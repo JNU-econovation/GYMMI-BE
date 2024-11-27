@@ -24,7 +24,7 @@ public class PhotoFeed extends TimeEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(nullable = false)
+    @Column
     private String comment;
 
     @Column(nullable = false)
