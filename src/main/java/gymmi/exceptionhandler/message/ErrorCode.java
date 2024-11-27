@@ -1,6 +1,7 @@
 package gymmi.exceptionhandler.message;
 
 import gymmi.global.DuplicationCheckType;
+import gymmi.workspace.domain.ObjectionStatus;
 import gymmi.workspace.domain.WorkspaceStatus;
 
 public enum ErrorCode {
@@ -71,6 +72,7 @@ public enum ErrorCode {
     NOT_FOUND_IMAGE_OBJECT("존재하지 않은 이미지 object 입니다.", 400),
     INVALID_DUPLICATION_CHECK_TYPE_VALUE("잘못된 query param value 입니다. : " + DuplicationCheckType.class.getName(), 400),
     INVALID_WORKSPACE_STATUS_VALUE("잘못된 query param value 입니다. : " + WorkspaceStatus.class.getName(), 400),
+    INVALID_OBJECTION_STATUS_VALUE("잘못된 query param value 입니다. : " + ObjectionStatus.class.getName(), 400),
 
     // photo feed
     NOT_FOUND_PHOTO_FEED("존재하지 않는 사진피드 입니다.", 400),

@@ -3,6 +3,7 @@ package gymmi.workspace.controller;
 import gymmi.entity.User;
 import gymmi.global.Logined;
 import gymmi.response.IdResponse;
+import gymmi.workspace.domain.ObjectionStatus;
 import gymmi.workspace.domain.WorkspaceStatus;
 import gymmi.workspace.request.*;
 import gymmi.workspace.response.*;
@@ -256,6 +257,17 @@ public class WorkspaceController {
     ) {
         ObjectionResponse response = workspaceQueryService.getObjection(user, workspaceId, objectionId);
         return ResponseEntity.ok().body(response);
+    }
+
+    @GetMapping("/workspaces/{workspaceId}/objections")
+    public ResponseEntity<List<ObjectionAlarmResponse>> seeObjections(
+            @Logined User user,
+            @PathVariable Long workspaceId,
+            @RequestParam int pageNumber,
+            @RequestParam("status") ObjectionStatus objectionStatus
+    ) {
+        List<ObjectionAlarmResponse> responses = workspaceQueryService.getObjections(user, workspaceId, pageNumber, objectionStatus);
+        return ResponseEntity.ok().body(responses);
     }
 
 }

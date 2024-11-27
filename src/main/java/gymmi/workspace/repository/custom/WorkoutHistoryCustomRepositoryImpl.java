@@ -46,18 +46,4 @@ public class WorkoutHistoryCustomRepositoryImpl implements WorkoutHistoryCustomR
                 .fetch();
     }
 
-    private List<WorkoutHistory> a(Long workspaceId, Pageable pageable) {
-        List<Tuple> fetch = jpaQueryFactory.select(workoutHistory, objection)
-                .from(workoutHistory)
-                .join(workoutHistory.workoutConfirmation, workoutConfirmation).fetchJoin()
-                .join(workoutHistory.worker, worker).fetchJoin()
-                .leftJoin(objection).on(workoutHistory.workoutConfirmation.id.eq(objection.workoutConfirmation.id)).fetchJoin()
-                .where(worker.workspace.id.eq(workspaceId))
-                .orderBy(workoutHistory.createdAt.desc())
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
-        return null;
-    }
-
 }
