@@ -270,5 +270,4 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
         }
         return workspaces;
     }
-
 }

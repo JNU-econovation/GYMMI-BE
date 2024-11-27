@@ -3,11 +3,14 @@ package gymmi.workspace.repository;
 import gymmi.exceptionhandler.legacy.NotFoundResourcesException;
 import gymmi.workspace.domain.entity.WorkoutHistory;
 import gymmi.workspace.repository.custom.WorkoutHistoryCustomRepository;
+import gymmi.workspace.response.WorkoutConfirmationOrObjectionProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import java.time.LocalDate;
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface WorkoutHistoryRepository extends JpaRepository<WorkoutHistory, Long>, WorkoutHistoryCustomRepository {
@@ -31,4 +34,29 @@ public interface WorkoutHistoryRepository extends JpaRepository<WorkoutHistory, 
         return workoutHistory;
     }
 
+    @Query(nativeQuery = true,
+            value = "SELECT w.id as id, w.created_at as createdAt, 'workoutHistory' as type " +
+                    "FROM workout_history as w " +
+                    "join worker as wo on w.worker_id = wo.id " +
+                    "where wo.workspace_id =:workspaceId " +
+                    "UNION ALL " +
+                    "SELECT o.id as id, o.created_at as createdAt,'objection' as type " +
+                    "FROM objection as o " +
+                    "join worker as wo on o.worker_id = wo.id " +
+                    "where wo.workspace_id =:workspaceId " +
+                    "ORDER BY createdAt DESC " +
+                    "LIMIT 10 OFFSET :pageNumber")
+    List<Map<String, Object>> getWorkoutConfirmationAndObjection(Long workspaceId, int pageNumber);
+
+    default List<WorkoutConfirmationOrObjectionProjection> getWorkoutConfirmationAndObjectionDto(Long workspaceId, int pageNumber) {
+        pageNumber = 10 * pageNumber;
+        List<Map<String, Object>> results = getWorkoutConfirmationAndObjection(workspaceId, pageNumber);
+        List<WorkoutConfirmationOrObjectionProjection> dtos = new ArrayList<>();
+        for (Map<String, Object> result : results) {
+            dtos.add(new WorkoutConfirmationOrObjectionProjection(
+                    (Long) result.get("id"), ((Timestamp) result.get("createdAt")).toLocalDateTime(), (String) result.get("type"))
+            );
+        }
+        return dtos;
+    }
 }

@@ -7,6 +7,7 @@ import gymmi.photoboard.repository.PhotoFeedImageRepository;
 import gymmi.photoboard.repository.PhotoFeedRepository;
 import gymmi.photoboard.repository.ThumbsUpRepository;
 import gymmi.photoboard.request.CreatePhotoFeedRequest;
+import gymmi.photoboard.response.PhotoFeedDetailResponse;
 import gymmi.photoboard.response.PhotoFeedResponse;
 import gymmi.service.S3Service;
 import gymmi.workspace.service.IntegrationTest;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -62,7 +64,7 @@ class PhotoFeedServiceTest extends IntegrationTest {
         PhotoFeedImage photoFeedImage = persister.persistPhotoFeedImage(photoFeed);
 
         // when
-        PhotoFeedResponse result = photoFeedService.getPhotoFeed(photoFeed.getId());
+        PhotoFeedDetailResponse result = photoFeedService.getPhotoFeed(user, photoFeed.getId());
 
         // then
         assertThat(result.getIsModified()).isFalse();
@@ -70,6 +72,9 @@ class PhotoFeedServiceTest extends IntegrationTest {
         assertThat(result.getCreatedAt()).isEqualTo(photoFeed.getCreatedAt());
         assertThat(result.getProfileImageUrl()).isEqualTo(user.getProfileImageName());
         assertThat(result.getComment()).isEqualTo(photoFeed.getComment());
+        assertThat(result.getNickname()).isEqualTo(user.getNickname());
+        assertThat(result.getIsMine()).isEqualTo(true);
+        assertThat(result.getHasMyThumbsUp()).isEqualTo(false);
     }
 
     @Test
@@ -110,5 +115,23 @@ class PhotoFeedServiceTest extends IntegrationTest {
         entityManager.clear();
         assertThat(photoFeedImageRepository.findByPhotoFeedId(photoFeed.getId())).isEmpty();
         assertThat(photoFeedRepository.findById(photoFeed.getId())).isEmpty();
+    }
+
+    @Test
+    void 사진_피드_목록을_확인한다() {
+        // given
+        User user = persister.persistUser();
+        PhotoFeed photoFeed = persister.persistPhotoFeed(user);
+        PhotoFeedImage photoFeedImage = persister.persistPhotoFeedImage(photoFeed);
+        PhotoFeed photoFeed1 = persister.persistPhotoFeed(user);
+        PhotoFeedImage photoFeedImage1 = persister.persistPhotoFeedImage(photoFeed1);
+
+        // when
+        List<PhotoFeedResponse> responses = photoFeedService.getPhotoFeeds(0);
+
+        // then
+        assertThat(responses).hasSize(2);
+        assertThat(responses.get(0).getPhotoId()).isEqualTo(photoFeedImage1.getId());
+        assertThat(responses.get(1).getPhotoId()).isEqualTo(photoFeedImage.getId());
     }
 }

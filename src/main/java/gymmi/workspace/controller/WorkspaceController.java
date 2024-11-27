@@ -3,6 +3,7 @@ package gymmi.workspace.controller;
 import gymmi.entity.User;
 import gymmi.global.Logined;
 import gymmi.response.IdResponse;
+import gymmi.workspace.domain.ObjectionStatus;
 import gymmi.workspace.domain.WorkspaceStatus;
 import gymmi.workspace.request.*;
 import gymmi.workspace.response.*;
@@ -207,12 +208,12 @@ public class WorkspaceController {
     }
 
     @GetMapping("/workspaces/{workspaceId}/workout-confirmations")
-    public ResponseEntity<List<WorkoutConfirmationResponse>> seeWorkoutConfirmations(
+    public ResponseEntity<List<WorkoutConfirmationOrObjectionResponse>> seeWorkoutConfirmations(
             @Logined User user,
             @PathVariable Long workspaceId,
             @RequestParam int pageNumber
     ) {
-        List<WorkoutConfirmationResponse> responses = workspaceQueryService.getWorkoutConfirmations(user, workspaceId, pageNumber);
+        List<WorkoutConfirmationOrObjectionResponse> responses = workspaceQueryService.getWorkoutConfirmations(user, workspaceId, pageNumber);
         return ResponseEntity.ok().body(responses);
     }
 
@@ -256,6 +257,17 @@ public class WorkspaceController {
     ) {
         ObjectionResponse response = workspaceQueryService.getObjection(user, workspaceId, objectionId);
         return ResponseEntity.ok().body(response);
+    }
+
+    @GetMapping("/workspaces/{workspaceId}/objections")
+    public ResponseEntity<List<ObjectionAlarmResponse>> seeObjections(
+            @Logined User user,
+            @PathVariable Long workspaceId,
+            @RequestParam int pageNumber,
+            @RequestParam("status") ObjectionStatus objectionStatus
+    ) {
+        List<ObjectionAlarmResponse> responses = workspaceQueryService.getObjections(user, workspaceId, pageNumber, objectionStatus);
+        return ResponseEntity.ok().body(responses);
     }
 
 }

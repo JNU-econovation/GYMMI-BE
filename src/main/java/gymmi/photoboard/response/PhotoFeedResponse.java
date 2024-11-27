@@ -8,21 +8,14 @@ import java.time.LocalDateTime;
 @Getter
 public class PhotoFeedResponse {
 
-    private final String profileImageUrl;
+    private final Long photoId;
     private final String photoImageUrl;
-    private final String comment;
-    private final Integer thumpsUpCount;
     private final LocalDateTime createdAt;
-    private final Boolean isModified;
 
-    public PhotoFeedResponse(PhotoFeed photoFeed, String photoImageUrl) {
-        this.profileImageUrl = photoFeed.getUser().getProfileImageName();
+    public PhotoFeedResponse(Long photoId, String photoImageUrl, LocalDateTime createdAt) {
+        this.photoId = photoId;
         this.photoImageUrl = photoImageUrl;
-        this.comment = photoFeed.getComment();
-        this.thumpsUpCount = photoFeed.getThumpsUpCount();
-        this.createdAt = photoFeed.getCreatedAt();
-        this.isModified = photoFeed.isModified();
+        this.createdAt = createdAt;
     }
-
 }
 

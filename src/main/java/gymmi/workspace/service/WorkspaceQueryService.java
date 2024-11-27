@@ -5,6 +5,7 @@ import gymmi.exceptionhandler.exception.NotHavePermissionException;
 import gymmi.exceptionhandler.message.ErrorCode;
 import gymmi.service.ImageUse;
 import gymmi.service.S3Service;
+import gymmi.workspace.domain.ObjectionStatus;
 import gymmi.workspace.domain.WorkoutMetric;
 import gymmi.workspace.domain.WorkspaceGateChecker;
 import gymmi.workspace.domain.WorkspaceStatus;
@@ -35,6 +36,7 @@ public class WorkspaceQueryService {
     private final WorkoutRecordRepository workoutRecordRepository;
     private final FavoriteMissionRepository favoriteMissionRepository;
     private final ObjectionRepository objectionRepository;
+    private final VoteRepository voteRepository;
 
     private final S3Service s3Service;
 
@@ -164,22 +166,30 @@ public class WorkspaceQueryService {
                 .toList();
     }
 
-    public List<WorkoutConfirmationResponse> getWorkoutConfirmations(User loginedUser, Long workspaceId, int page) {
+    public List<WorkoutConfirmationOrObjectionResponse> getWorkoutConfirmations(User loginedUser, Long workspaceId, int page) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
         validateIfWorkerIsInWorkspace(loginedUser.getId(), workspace.getId());
-        Pageable pageable = PageRequest.of(page, DEFAULT_PAGE_SIZE);
-        List<WorkoutHistory> workoutHistories = workoutHistoryRepository.getAllByWorkspaceId(workspace.getId(), pageable);
+        List<WorkoutConfirmationOrObjectionProjection> dtos = workoutHistoryRepository.getWorkoutConfirmationAndObjectionDto(workspace.getId(), page);
 
-        List<WorkoutConfirmationResponse> responses = new ArrayList<>();
-        for (WorkoutHistory workoutHistory : workoutHistories) {
-            WorkoutConfirmation workoutConfirmation = workoutHistory.getWorkoutConfirmation();
-            String imagePresignedUrl = s3Service.getPresignedUrl(ImageUse.WORKOUT_CONFIRMATION, workoutConfirmation.getFilename());
-            responses.add(new WorkoutConfirmationResponse(workoutHistory, imagePresignedUrl));
+        List<WorkoutConfirmationOrObjectionResponse> responses = new ArrayList<>();
+        for (WorkoutConfirmationOrObjectionProjection dto : dtos) {
+            if (dto.getType().equals("workoutHistory")) {
+                WorkoutHistory workoutHistory = workoutHistoryRepository.getByWorkoutHistoryId(dto.getId());
+                WorkoutConfirmation workoutConfirmation = workoutHistory.getWorkoutConfirmation();
+                String imagePresignedUrl = s3Service.getPresignedUrl(ImageUse.WORKOUT_CONFIRMATION, workoutConfirmation.getFilename());
+                responses.add(WorkoutConfirmationOrObjectionResponse.workoutConfirmation(loginedUser, workoutHistory, imagePresignedUrl));
+            }
+            if (dto.getType().equals("objection")) {
+                Objection objection = objectionRepository.getByObjectionId(dto.getId());
+                WorkoutHistory workoutHistory = workoutHistoryRepository.getByWorkoutConfirmationId(objection.getWorkoutConfirmation().getId());
+                responses.add(WorkoutConfirmationOrObjectionResponse.objection(loginedUser, objection, workoutHistory.getWorker().getUser()));
+            }
         }
         return responses;
     }
 
-    public WorkoutConfirmationDetailResponse getWorkoutConfirmation(User loginedUser, Long workspaceId, Long workoutConfirmationId) {
+    public WorkoutConfirmationDetailResponse getWorkoutConfirmation(User loginedUser, Long workspaceId, Long
+            workoutConfirmationId) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
         validateIfWorkerIsInWorkspace(loginedUser.getId(), workspace.getId());
         WorkoutHistory workoutHistory = workoutHistoryRepository.getByWorkoutConfirmationId(workoutConfirmationId);
@@ -200,17 +210,37 @@ public class WorkspaceQueryService {
         Objection objection = objectionRepository.getByObjectionId(objectionId);
         objection.canBeReadIn(workspace);
 
+        Integer headCount = workspace.getHeadCount();
         if (objection.isInProgress() && objection.hasVoteBy(worker)) {
-            return ObjectionResponse.objectionInProgressWithVoteCompletion(objection);
+            return ObjectionResponse.objectionInProgressWithVoteCompletion(objection, headCount);
         }
 
         if (objection.isInProgress() && !objection.hasVoteBy(worker)) {
-            return ObjectionResponse.objectionInProgressWithVoteInCompletion(objection);
+            return ObjectionResponse.objectionInProgressWithVoteInCompletion(objection, headCount);
         }
 
         WorkoutHistory workoutHistory = workoutHistoryRepository.getByWorkoutConfirmationId(objection.getWorkoutConfirmation().getId());
 
         workoutHistory.canBeReadIn(workspace);
-        return ObjectionResponse.closedObjection(objection, objection.hasVoteBy(worker), workoutHistory.isApproved());
+        return ObjectionResponse.closedObjection(objection, objection.hasVoteBy(worker), workoutHistory.isApproved(), headCount);
     }
+
+    public List<ObjectionAlarmResponse> getObjections(User loginedUser, Long workspaceId, int pageNumber, ObjectionStatus objectionStatus) {
+        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
+        Worker worker = validateIfWorkerIsInWorkspace(loginedUser.getId(), workspace.getId());
+        PageRequest pageRequest = PageRequest.of(pageNumber, 10);
+        List<Objection> objections = objectionRepository.getAllBy(workspaceId, worker.getId(), objectionStatus, pageRequest);
+        return generateObjectionAlarmResponse(worker, objections);
+    }
+
+    private List<ObjectionAlarmResponse> generateObjectionAlarmResponse(Worker worker, List<Objection> objections) {
+        List<ObjectionAlarmResponse> responses = new ArrayList<>();
+        for (Objection objection : objections) {
+            WorkoutHistory workoutHistory = workoutHistoryRepository.getByWorkoutConfirmationId(objection.getWorkoutConfirmation().getId());
+            boolean voteCompletion = objection.hasVoteBy(worker);
+            responses.add(new ObjectionAlarmResponse(objection, workoutHistory.getWorker().getNickname(), voteCompletion));
+        }
+        return responses;
+    }
+
 }

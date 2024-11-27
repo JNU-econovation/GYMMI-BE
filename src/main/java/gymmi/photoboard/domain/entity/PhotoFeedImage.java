@@ -20,7 +20,7 @@ public class PhotoFeedImage {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "photo_feed_id", nullable = false)
+    @JoinColumn(name = "photo_feed_id", nullable = false, unique = true)
     private PhotoFeed photoFeed;
 
     @Column(nullable = false)

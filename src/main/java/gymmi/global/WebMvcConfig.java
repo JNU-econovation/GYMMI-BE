@@ -1,6 +1,7 @@
 package gymmi.global;
 
 import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
@@ -34,5 +35,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addFormatters(FormatterRegistry registry) {
         registry.addConverter(new StringToDuplicationCheckTypeConverter());
         registry.addConverter(new StringToWorkspaceStatusConverter());
+        registry.addConverter(new StringToObejctionStatusConverter());
     }
 }

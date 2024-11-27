@@ -1,6 +1,8 @@
 package gymmi.workspace.repository.custom;
 
+import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import gymmi.workspace.domain.entity.Objection;
 import gymmi.workspace.domain.entity.WorkoutHistory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -9,6 +11,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static gymmi.workspace.domain.entity.QObjection.objection;
 import static gymmi.workspace.domain.entity.QWorker.worker;
 import static gymmi.workspace.domain.entity.QWorkoutConfirmation.workoutConfirmation;
 import static gymmi.workspace.domain.entity.QWorkoutHistory.workoutHistory;
@@ -42,4 +45,5 @@ public class WorkoutHistoryCustomRepositoryImpl implements WorkoutHistoryCustomR
                 ))
                 .fetch();
     }
+
 }

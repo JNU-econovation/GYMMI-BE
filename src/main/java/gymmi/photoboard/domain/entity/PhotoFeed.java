@@ -53,4 +53,8 @@ public class PhotoFeed extends TimeEntity {
             throw new NotHavePermissionException(ErrorCode.NOT_PHOTO_FEED_WRITER);
         }
     }
+
+    public boolean isWriter(User user) {
+        return this.user.equals(user);
+    }
 }
