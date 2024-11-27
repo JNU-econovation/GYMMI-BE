@@ -33,21 +33,24 @@ public class PhotoFeedService {
     private final ThumbsUpRepository thumbsUpRepository;
 
     @Transactional
-    public void createPhotoFeed(User loginedUser, CreatePhotoFeedRequest request) {
+    public Long createPhotoFeed(User loginedUser, CreatePhotoFeedRequest request) {
         PhotoFeed photoFeed = new PhotoFeed(loginedUser, request.getComment());
         PhotoFeedImage photoFeedImage = new PhotoFeedImage(photoFeed, request.getFilename());
         s3Service.checkObjectExist(PhotoFeedImage.IMAGE_USE, photoFeedImage.getFilename());
-        photoFeedRepository.save(photoFeed);
+        PhotoFeed savedPhotoFeed = photoFeedRepository.save(photoFeed);
         photoFeedImageRepository.save(photoFeedImage);
+        return savedPhotoFeed.getId();
     }
 
     @Transactional(readOnly = true)
-    public PhotoFeedDetailResponse getPhotoFeed(Long photoFeedId) {
+    public PhotoFeedDetailResponse getPhotoFeed(User loginedUser, Long photoFeedId) {
         PhotoFeed photoFeed = photoFeedRepository.getByPhotoFeedId(photoFeedId);
         PhotoFeedImage photoFeedImage = photoFeedImageRepository.getByPhotoFeedId(photoFeedId);
-
         String photoImagePresignedUrl = s3Service.getPresignedUrl(PhotoFeedImage.IMAGE_USE, photoFeedImage.getFilename());
-        return new PhotoFeedDetailResponse(photoFeed, photoImagePresignedUrl);
+        if (thumbsUpRepository.findByUserId(loginedUser.getId()).isEmpty()) {
+            return new PhotoFeedDetailResponse(photoFeed, photoImagePresignedUrl, photoFeed.isWriter(loginedUser), false);
+        }
+        return new PhotoFeedDetailResponse(photoFeed, photoImagePresignedUrl, photoFeed.isWriter(loginedUser), true);
     }
 
     @Transactional

@@ -93,7 +93,7 @@ class WorkspaceQueryServiceTest extends IntegrationTest {
         WorkoutConfirmationOrObjectionResponse response1 = responses.get(1);
         assertThat(response1.getNickname()).isEqualTo(creator.getNickname());
         assertThat(response1.getProfileImageUrl()).isEqualTo(creator.getProfileImageName());
-        assertThat(response1.getWorkoutConfirmationId()).isEqualTo(null);
+        assertThat(response1.getWorkoutConfirmationId()).isEqualTo(objection.getWorkoutConfirmation().getId());
         assertThat(response1.getObjectionId()).isEqualTo(objection.getId());
         assertThat(response1.getIsMine()).isEqualTo(false);
         assertThat(response1.getIsObjection()).isEqualTo(true);

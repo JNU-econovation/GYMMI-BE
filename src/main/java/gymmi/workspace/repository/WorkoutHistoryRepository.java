@@ -49,6 +49,7 @@ public interface WorkoutHistoryRepository extends JpaRepository<WorkoutHistory, 
     List<Map<String, Object>> getWorkoutConfirmationAndObjection(Long workspaceId, int pageNumber);
 
     default List<WorkoutConfirmationOrObjectionProjection> getWorkoutConfirmationAndObjectionDto(Long workspaceId, int pageNumber) {
+        pageNumber = 10 * pageNumber;
         List<Map<String, Object>> results = getWorkoutConfirmationAndObjection(workspaceId, pageNumber);
         List<WorkoutConfirmationOrObjectionProjection> dtos = new ArrayList<>();
         for (Map<String, Object> result : results) {

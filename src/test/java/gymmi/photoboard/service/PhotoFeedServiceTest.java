@@ -64,7 +64,7 @@ class PhotoFeedServiceTest extends IntegrationTest {
         PhotoFeedImage photoFeedImage = persister.persistPhotoFeedImage(photoFeed);
 
         // when
-        PhotoFeedDetailResponse result = photoFeedService.getPhotoFeed(photoFeed.getId());
+        PhotoFeedDetailResponse result = photoFeedService.getPhotoFeed(user, photoFeed.getId());
 
         // then
         assertThat(result.getIsModified()).isFalse();
@@ -72,6 +72,9 @@ class PhotoFeedServiceTest extends IntegrationTest {
         assertThat(result.getCreatedAt()).isEqualTo(photoFeed.getCreatedAt());
         assertThat(result.getProfileImageUrl()).isEqualTo(user.getProfileImageName());
         assertThat(result.getComment()).isEqualTo(photoFeed.getComment());
+        assertThat(result.getNickname()).isEqualTo(user.getNickname());
+        assertThat(result.getIsMine()).isEqualTo(true);
+        assertThat(result.getHasMyThumbsUp()).isEqualTo(false);
     }
 
     @Test
