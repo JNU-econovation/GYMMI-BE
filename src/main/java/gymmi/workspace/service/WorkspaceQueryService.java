@@ -177,6 +177,7 @@ public class WorkspaceQueryService {
                 WorkoutHistory workoutHistory = workoutHistoryRepository.getByWorkoutHistoryId(dto.getId());
                 WorkoutConfirmation workoutConfirmation = workoutHistory.getWorkoutConfirmation();
                 String imagePresignedUrl = s3Service.getPresignedUrl(ImageUse.WORKOUT_CONFIRMATION, workoutConfirmation.getFilename());
+                Objection objection = objectionRepository.findByWorkoutConfirmationId(workoutConfirmation.getId()).orElseGet(null);
                 responses.add(WorkoutConfirmationOrObjectionResponse.workoutConfirmation(loginedUser, workoutHistory, imagePresignedUrl));
             }
             if (dto.getType().equals("objection")) {
@@ -188,8 +189,7 @@ public class WorkspaceQueryService {
         return responses;
     }
 
-    public WorkoutConfirmationDetailResponse getWorkoutConfirmation(User loginedUser, Long workspaceId, Long
-            workoutConfirmationId) {
+    public WorkoutConfirmationDetailResponse getWorkoutConfirmation(User loginedUser, Long workspaceId, Long workoutConfirmationId) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
         validateIfWorkerIsInWorkspace(loginedUser.getId(), workspace.getId());
         WorkoutHistory workoutHistory = workoutHistoryRepository.getByWorkoutConfirmationId(workoutConfirmationId);

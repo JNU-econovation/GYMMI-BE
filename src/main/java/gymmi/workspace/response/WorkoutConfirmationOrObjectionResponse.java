@@ -37,12 +37,12 @@ public class WorkoutConfirmationOrObjectionResponse {
         this.isObjection = isObjection;
     }
 
-    public static WorkoutConfirmationOrObjectionResponse workoutConfirmation(User loginedUser, WorkoutHistory workoutHistory, String workoutConfirmationImageUrl) {
+    public static WorkoutConfirmationOrObjectionResponse workoutConfirmation(User loginedUser, Objection objection, WorkoutHistory workoutHistory, String workoutConfirmationImageUrl) {
         User user = workoutHistory.getWorker().getUser();
         LocalDateTime createdAt = workoutHistory.getCreatedAt();
         return WorkoutConfirmationOrObjectionResponse.builder()
                 .workoutConfirmationId(workoutHistory.getWorkoutConfirmation().getId())
-                .objectionId(null)
+                .objectionId(getObjectId(objection))
                 .nickname(user.getNickname())
                 .profileImageUrl(user.getProfileImageName())
                 .workoutConfirmationImageUrl(workoutConfirmationImageUrl)
@@ -51,6 +51,13 @@ public class WorkoutConfirmationOrObjectionResponse {
                 .isObjection(false)
                 .isMine(loginedUser.equals(user))
                 .build();
+    }
+
+    private static Long getObjectId(Objection objection) {
+        if (objection == null) {
+            return null;
+        }
+        return objection.getId();
     }
 
     public static WorkoutConfirmationOrObjectionResponse objection(User loginedUser, Objection objection, User objectionTargetUser) {
