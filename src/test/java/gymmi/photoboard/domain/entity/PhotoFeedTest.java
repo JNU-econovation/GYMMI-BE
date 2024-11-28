@@ -15,23 +15,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class PhotoFeedTest {
 
-    @ParameterizedTest
-    @CsvSource(value = {"1,true", "0,false"})
-    void 수정여부를_확인_한다(int plusDay, boolean isModified) {
-        // given
-        LocalDateTime now = LocalDateTime.now();
-        PhotoFeed photoFeed = Instancio.of(PhotoFeed.class)
-                .set(Select.field(PhotoFeed::getCreatedAt), now)
-                .set(Select.field(PhotoFeed::getLastModifiedAt), now.plusDays(plusDay))
-                .create();
-
-        // when
-        boolean result = photoFeed.isModified();
-
-        // then
-        assertThat(result).isEqualTo(isModified);
-    }
-
     @Test
     void 작성자가_아닌_경우_예외가_발생한다() {
         // given

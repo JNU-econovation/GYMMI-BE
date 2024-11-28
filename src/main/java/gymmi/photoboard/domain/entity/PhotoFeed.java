@@ -28,16 +28,20 @@ public class PhotoFeed extends TimeEntity {
     private String comment;
 
     @Column(nullable = false)
+    private Boolean isModified;
+
+    @Column(nullable = false)
     private Integer thumpsUpCount;
 
     public PhotoFeed(User user, String comment) {
         this.user = user;
         this.comment = comment;
+        this.isModified = false;
         this.thumpsUpCount = 0;
     }
 
     public boolean isModified() {
-        return !getCreatedAt().isEqual(getLastModifiedAt());
+        return isModified;
     }
 
     public void increase() {
