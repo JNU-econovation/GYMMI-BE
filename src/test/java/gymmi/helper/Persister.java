@@ -15,7 +15,6 @@ import org.instancio.Select;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -213,11 +212,10 @@ public class Persister {
         return photoFeed;
     }
 
-    public PhotoFeed persistPhotoFeed(User user, LocalDateTime createdAt, LocalDateTime lastModifiedAt) {
+    public PhotoFeed persistPhotoFeed(User user, boolean isModified) {
         PhotoFeed photoFeed = Instancio.of(PhotoFeed.class)
                 .set(field(PhotoFeed::getUser), user)
-                .set(field(PhotoFeed::getLastModifiedAt), lastModifiedAt)
-                .set(field(PhotoFeed::getCreatedAt), createdAt)
+                .set(field(PhotoFeed::isModified), isModified)
                 .ignore(field(PhotoFeed::getId))
                 .create();
         entityManager.persist(photoFeed);
