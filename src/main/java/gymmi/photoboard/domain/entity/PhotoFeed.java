@@ -24,8 +24,11 @@ public class PhotoFeed extends TimeEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(nullable = false)
+    @Column
     private String comment;
+
+    @Column(nullable = false)
+    private Boolean isModified;
 
     @Column(nullable = false)
     private Integer thumpsUpCount;
@@ -33,11 +36,12 @@ public class PhotoFeed extends TimeEntity {
     public PhotoFeed(User user, String comment) {
         this.user = user;
         this.comment = comment;
+        this.isModified = false;
         this.thumpsUpCount = 0;
     }
 
     public boolean isModified() {
-        return !getCreatedAt().isEqual(getLastModifiedAt());
+        return isModified;
     }
 
     public void increase() {

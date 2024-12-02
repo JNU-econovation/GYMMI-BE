@@ -22,7 +22,7 @@ public class WorkoutConfirmation {
     @Column(nullable = false)
     private String filename;
 
-    @Column(nullable = false)
+    @Column
     private String comment;
 
     public WorkoutConfirmation(String filename, String comment) {

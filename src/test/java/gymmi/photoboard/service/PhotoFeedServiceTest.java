@@ -17,7 +17,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -60,7 +59,7 @@ class PhotoFeedServiceTest extends IntegrationTest {
     void 사진_피드를_확인_한다() {
         // given
         User user = persister.persistUser();
-        PhotoFeed photoFeed = persister.persistPhotoFeed(user, LocalDateTime.now(), LocalDateTime.now().plusDays(1));
+        PhotoFeed photoFeed = persister.persistPhotoFeed(user, false);
         PhotoFeedImage photoFeedImage = persister.persistPhotoFeedImage(photoFeed);
 
         // when
