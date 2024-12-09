@@ -44,7 +44,7 @@ public interface WorkoutHistoryRepository extends JpaRepository<WorkoutHistory, 
                     "FROM objection as o " +
                     "join worker as wo on o.worker_id = wo.id " +
                     "where wo.workspace_id =:workspaceId " +
-                    "ORDER BY createdAt DESC " +
+                    "ORDER BY createdAt ASC " +
                     "LIMIT 10 OFFSET :pageNumber")
     List<Map<String, Object>> getWorkoutConfirmationAndObjection(Long workspaceId, int pageNumber);
 
