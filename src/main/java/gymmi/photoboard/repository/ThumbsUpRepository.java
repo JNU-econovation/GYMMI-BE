@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface ThumbsUpRepository extends JpaRepository<ThumbsUp, Long> {
 
 
-    @Query("select t from ThumbsUp t where t.user.id =:userId")
-    Optional<ThumbsUp> findByUserId(Long userId);
+    @Query("select t from ThumbsUp t where t.user.id =:userId and t.photoFeed.id =:photoFeedId")
+    Optional<ThumbsUp> findByUserIdAndPhotoFeedId(Long userId, Long photoFeedId);
 
 }

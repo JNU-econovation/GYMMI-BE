@@ -89,14 +89,14 @@ class PhotoFeedServiceTest extends IntegrationTest {
 
         // then
         assertThat(photoFeed.getThumpsUpCount()).isEqualTo(1);
-        assertThat(thumbsUpRepository.findByUserId(user1.getId())).isNotEmpty();
+        assertThat(thumbsUpRepository.findByUserIdAndPhotoFeedId(user1.getId(), photoFeed.getId())).isNotEmpty();
 
         // when
         photoFeedService.likePhotoFeed(user1, photoFeed.getId());
 
         // then
         assertThat(photoFeed.getThumpsUpCount()).isEqualTo(0);
-        assertThat(thumbsUpRepository.findByUserId(user1.getId())).isEmpty();
+        assertThat(thumbsUpRepository.findByUserIdAndPhotoFeedId(user1.getId(), photoFeed.getId())).isEmpty();
     }
 
     @Test
