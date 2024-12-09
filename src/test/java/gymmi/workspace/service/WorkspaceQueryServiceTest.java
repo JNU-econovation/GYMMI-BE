@@ -88,7 +88,7 @@ class WorkspaceQueryServiceTest extends IntegrationTest {
         assertThat(response.getProfileImageUrl()).isEqualTo(creator.getProfileImageName());
         assertThat(response.getWorkoutConfirmationId()).isEqualTo(workoutHistory.getWorkoutConfirmation().getId());
         assertThat(response.getIsObjection()).isEqualTo(false);
-        assertThat(response.getObjectionId()).isEqualTo(1L);
+        assertThat(response.getObjectionId()).isEqualTo(objection.getId());
 
         WorkoutConfirmationOrObjectionResponse response1 = responses.get(1);
         assertThat(response1.getNickname()).isEqualTo(creator.getNickname());
@@ -233,7 +233,7 @@ class WorkspaceQueryServiceTest extends IntegrationTest {
                 List<ObjectionAlarmResponse> responses = workspaceQueryService.getObjections(creator, workspace.getId(), 0, ObjectionStatus.INCOMPLETION);
 
                 // then
-                assertThat(responses).hasSize (7);
+                assertThat(responses).hasSize(7);
                 assertThat(responses.get(6).getObjectionId()).isEqualTo(objections.get(2).getId());
                 assertThat(responses.get(6).getVoteCompletion()).isEqualTo(false);
                 assertThat(responses.get(6).getTargetWorkerNickname()).isEqualTo(creator.getNickname());
