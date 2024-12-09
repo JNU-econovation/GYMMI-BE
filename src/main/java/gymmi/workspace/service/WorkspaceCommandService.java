@@ -19,7 +19,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -113,7 +116,7 @@ public class WorkspaceCommandService {
         Worker worker = workerRepository.getByUserIdAndWorkspaceId(loginedUser.getId(), workspace.getId());
         List<Mission> missions = missionRepository.getAllByWorkspaceId(workspace.getId());
         Map<Mission, Integer> workouts = getWorkouts(workoutRequest.getMissions());
-        validateDailyWorkoutHistoryCount();
+        validateDailyWorkoutHistoryCount(worker.getId());
 
         WorkspaceProgressManager workspaceProgressManager = new WorkspaceProgressManager(workspace, missions);
 
@@ -136,8 +139,8 @@ public class WorkspaceCommandService {
         return workoutHistory.getSum();
     }
 
-    private void validateDailyWorkoutHistoryCount() {
-        List<WorkoutHistory> workoutHistories = workoutHistoryRepository.getAllByDate(LocalDate.now());
+    private void validateDailyWorkoutHistoryCount(Long workerId) {
+        List<WorkoutHistory> workoutHistories = workoutHistoryRepository.getAllByDate(workerId, LocalDate.now());
         if (workoutHistories.size() >= 3) {
             throw new InvalidStateException(ErrorCode.EXCEED_MAX_DAILY_WORKOUT_HISTORY_COUNT);
         }
