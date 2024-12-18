@@ -119,7 +119,6 @@ public class WorkspaceCommandService {
         validateDailyWorkoutHistoryCount(worker.getId());
 
         WorkspaceProgressManager workspaceProgressManager = new WorkspaceProgressManager(workspace, missions);
-
         WorkoutHistory workoutHistory = workspaceProgressManager.doWorkout(
                 worker,
                 workouts,
@@ -132,11 +131,15 @@ public class WorkspaceCommandService {
         int achievementScore = workspaceRepository.getAchievementScore(workspaceId);
 
         workspaceProgressManager.completeWhenGoalScoreIsAchieved(achievementScore);
+        linkToPhotoBoardIfRequested(loginedUser, workoutRequest);
+        return workoutHistory.getSum();
+    }
+
+    private void linkToPhotoBoardIfRequested(User loginedUser, WorkoutRequest workoutRequest) {
         if (workoutRequest.getWillLink()) {
             String filename = s3Service.copy(WorkoutConfirmation.IMAGE_USE, workoutRequest.getImageUrl(), PhotoFeedImage.IMAGE_USE);
             photoFeedService.createPhotoFeed(loginedUser, new CreatePhotoFeedRequest(filename, workoutRequest.getComment()));
         }
-        return workoutHistory.getSum();
     }
 
     private void validateDailyWorkoutHistoryCount(Long workerId) {
@@ -218,6 +221,7 @@ public class WorkspaceCommandService {
                 .workoutConfirmation(workoutHistory.getWorkoutConfirmation())
                 .build();
         objectionRepository.save(objection);
+        //리펙터링
     }
 
     public void voteToObjection(User loginedUser, Long workspaceId, Long objectionId, VoteRequest request) {
@@ -242,6 +246,7 @@ public class WorkspaceCommandService {
         if (objectionManager.isApproved()) {
             workoutHistory.cancel();
         }
+
     }
 
 
