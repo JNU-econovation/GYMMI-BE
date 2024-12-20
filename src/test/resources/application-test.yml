@@ -23,3 +23,4 @@ cloud:
       secretKey: abc
     stack:
       auto: false
+
