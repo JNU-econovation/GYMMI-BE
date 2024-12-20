@@ -36,6 +36,8 @@ cloud:
   aws:
     s3:
       bucket: ${BUCKET_NAME}
+      access-key: ${AK}
+      secret-key: ${SK}
     stack:
       auto: false
 
