@@ -166,11 +166,12 @@ public class WorkspaceQueryService {
                 .toList();
     }
 
-    public List<WorkoutConfirmationOrObjectionResponse> getWorkoutConfirmations(User loginedUser, Long workspaceId, int page) {
+    public WorkoutConfirmationResponse getWorkoutConfirmations(User loginedUser, Long workspaceId, int page) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
-        validateIfWorkerIsInWorkspace(loginedUser.getId(), workspace.getId());
+        Worker worker = validateIfWorkerIsInWorkspace(loginedUser.getId(), workspace.getId());
         List<WorkoutConfirmationOrObjectionProjection> dtos = workoutHistoryRepository.getWorkoutConfirmationAndObjectionDto(workspace.getId(), page);
 
+        int voteIncompletionCount = 0;
         List<WorkoutConfirmationOrObjectionResponse> responses = new ArrayList<>();
         for (WorkoutConfirmationOrObjectionProjection dto : dtos) {
             if (dto.getType().equals("workoutHistory")) {
@@ -184,9 +185,13 @@ public class WorkspaceQueryService {
                 Objection objection = objectionRepository.getByObjectionId(dto.getId());
                 WorkoutHistory workoutHistory = workoutHistoryRepository.getByWorkoutConfirmationId(objection.getWorkoutConfirmation().getId());
                 responses.add(WorkoutConfirmationOrObjectionResponse.objection(loginedUser, objection, workoutHistory.getWorker().getUser()));
+                if (objection.isInProgress() && !objection.hasVoteBy(worker)) {
+                    voteIncompletionCount++;
+                }
             }
         }
-        return responses;
+
+        return new WorkoutConfirmationResponse(responses, voteIncompletionCount);
     }
 
     public WorkoutConfirmationDetailResponse getWorkoutConfirmation(User loginedUser, Long workspaceId, Long workoutConfirmationId) {

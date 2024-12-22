@@ -208,13 +208,13 @@ public class WorkspaceController {
     }
 
     @GetMapping("/workspaces/{workspaceId}/workout-confirmations")
-    public ResponseEntity<List<WorkoutConfirmationOrObjectionResponse>> seeWorkoutConfirmations(
+    public ResponseEntity<WorkoutConfirmationResponse> seeWorkoutConfirmations(
             @Logined User user,
             @PathVariable Long workspaceId,
             @RequestParam int pageNumber
     ) {
-        List<WorkoutConfirmationOrObjectionResponse> responses = workspaceQueryService.getWorkoutConfirmations(user, workspaceId, pageNumber);
-        return ResponseEntity.ok().body(responses);
+        WorkoutConfirmationResponse response = workspaceQueryService.getWorkoutConfirmations(user, workspaceId, pageNumber);
+        return ResponseEntity.ok().body(response);
     }
 
     @GetMapping("/workspaces/{workspaceId}/workout-confirmations/{workoutConfirmationId}")

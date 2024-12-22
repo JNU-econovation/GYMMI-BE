@@ -59,14 +59,15 @@ class PhotoFeedServiceTest extends IntegrationTest {
     void 사진_피드를_확인_한다() {
         // given
         User user = persister.persistUser();
-        PhotoFeed photoFeed = persister.persistPhotoFeed(user, false);
+
+        PhotoFeed photoFeed = persister.persistPhotoFeed(user, true);
         PhotoFeedImage photoFeedImage = persister.persistPhotoFeedImage(photoFeed);
 
         // when
         PhotoFeedDetailResponse result = photoFeedService.getPhotoFeed(user, photoFeed.getId());
 
         // then
-        assertThat(result.getIsModified()).isFalse();
+        assertThat(result.getIsModified()).isTrue();
         assertThat(result.getThumpsUpCount()).isEqualTo(photoFeed.getThumpsUpCount());
         assertThat(result.getCreatedAt()).isEqualTo(photoFeed.getCreatedAt());
         assertThat(result.getProfileImageUrl()).isEqualTo(user.getProfileImageName());

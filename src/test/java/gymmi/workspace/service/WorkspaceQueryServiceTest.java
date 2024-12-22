@@ -75,13 +75,15 @@ class WorkspaceQueryServiceTest extends IntegrationTest {
         WorkoutHistory workoutHistory = persister.persistWorkoutHistoryAndApply(creatorWorker, Map.of(mission, 2, mission1, 2), workoutConfirmation);
         Objection objection = persister.persistObjection(userWorker, true, workoutConfirmation);
         WorkoutHistory workoutHistory1 = persister.persistWorkoutHistoryAndApply(userWorker, Map.of(mission, 2, mission1, 2), workoutConfirmation1);
-
+        persister.persistVote(userWorker, objection, false);
 
         // when
-        List<WorkoutConfirmationOrObjectionResponse> responses = workspaceQueryService.getWorkoutConfirmations(user, workspace.getId(), 0);
+        WorkoutConfirmationResponse workoutConfirmationResponse = workspaceQueryService.getWorkoutConfirmations(user, workspace.getId(), 0);
 
         // then
+        List<WorkoutConfirmationOrObjectionResponse> responses = workoutConfirmationResponse.getData();
         assertThat(responses).hasSize(3);
+        assertThat(workoutConfirmationResponse.getVoteIncompletionCount()).isEqualTo(0);
 
         WorkoutConfirmationOrObjectionResponse response = responses.get(0);
         assertThat(response.getIsMine()).isEqualTo(false);
