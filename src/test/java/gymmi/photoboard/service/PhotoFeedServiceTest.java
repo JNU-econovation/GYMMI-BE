@@ -106,6 +106,7 @@ class PhotoFeedServiceTest extends IntegrationTest {
         User user = persister.persistUser();
         PhotoFeed photoFeed = persister.persistPhotoFeed(user);
         PhotoFeedImage photoFeedImage = persister.persistPhotoFeedImage(photoFeed);
+        persister.persistThumpsUp(user, photoFeed);
 
         // when
         photoFeedService.delete(user, photoFeed.getId());

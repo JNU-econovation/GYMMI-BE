@@ -78,7 +78,9 @@ public class PhotoFeedService {
 
         PhotoFeedImage photoFeedImage = photoFeedImageRepository.getByPhotoFeedId(photoFeedId);
         photoFeedImageRepository.delete(photoFeedImage);
+        thumbsUpRepository.deleteByPhotoFeedId(photoFeed.getId());
         photoFeedRepository.delete(photoFeed);
+        // event?
         s3Service.delete(PhotoFeedImage.IMAGE_USE, photoFeedImage.getFilename());
     }
 
