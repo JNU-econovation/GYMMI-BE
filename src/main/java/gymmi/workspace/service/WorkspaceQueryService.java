@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -170,6 +171,7 @@ public class WorkspaceQueryService {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
         Worker worker = validateIfWorkerIsInWorkspace(loginedUser.getId(), workspace.getId());
         List<WorkoutConfirmationOrObjectionProjection> dtos = workoutHistoryRepository.getWorkoutConfirmationAndObjectionDto(workspace.getId(), page);
+        dtos.sort(Comparator.comparing(WorkoutConfirmationOrObjectionProjection::getCreatedAt));
 
         int voteIncompletionCount = 0;
         List<WorkoutConfirmationOrObjectionResponse> responses = new ArrayList<>();
