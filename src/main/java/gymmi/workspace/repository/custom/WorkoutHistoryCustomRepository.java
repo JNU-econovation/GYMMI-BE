@@ -12,4 +12,5 @@ public interface WorkoutHistoryCustomRepository {
     List<WorkoutHistory> getAllByWorkspaceId(Long workspaceId, Pageable pageable);
 
     List<WorkoutHistory> getAllByDate(LocalDate localDate);
+    List<WorkoutHistory> getAllByDate(Long workerId, LocalDate localDate);
 }

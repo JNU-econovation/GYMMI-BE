@@ -19,7 +19,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -113,10 +116,9 @@ public class WorkspaceCommandService {
         Worker worker = workerRepository.getByUserIdAndWorkspaceId(loginedUser.getId(), workspace.getId());
         List<Mission> missions = missionRepository.getAllByWorkspaceId(workspace.getId());
         Map<Mission, Integer> workouts = getWorkouts(workoutRequest.getMissions());
-        validateDailyWorkoutHistoryCount();
+        validateDailyWorkoutHistoryCount(worker.getId());
 
         WorkspaceProgressManager workspaceProgressManager = new WorkspaceProgressManager(workspace, missions);
-
         WorkoutHistory workoutHistory = workspaceProgressManager.doWorkout(
                 worker,
                 workouts,
@@ -129,15 +131,19 @@ public class WorkspaceCommandService {
         int achievementScore = workspaceRepository.getAchievementScore(workspaceId);
 
         workspaceProgressManager.completeWhenGoalScoreIsAchieved(achievementScore);
+        linkToPhotoBoardIfRequested(loginedUser, workoutRequest);
+        return workoutHistory.getSum();
+    }
+
+    private void linkToPhotoBoardIfRequested(User loginedUser, WorkoutRequest workoutRequest) {
         if (workoutRequest.getWillLink()) {
             String filename = s3Service.copy(WorkoutConfirmation.IMAGE_USE, workoutRequest.getImageUrl(), PhotoFeedImage.IMAGE_USE);
             photoFeedService.createPhotoFeed(loginedUser, new CreatePhotoFeedRequest(filename, workoutRequest.getComment()));
         }
-        return workoutHistory.getSum();
     }
 
-    private void validateDailyWorkoutHistoryCount() {
-        List<WorkoutHistory> workoutHistories = workoutHistoryRepository.getAllByDate(LocalDate.now());
+    private void validateDailyWorkoutHistoryCount(Long workerId) {
+        List<WorkoutHistory> workoutHistories = workoutHistoryRepository.getAllByDate(workerId, LocalDate.now());
         if (workoutHistories.size() >= 3) {
             throw new InvalidStateException(ErrorCode.EXCEED_MAX_DAILY_WORKOUT_HISTORY_COUNT);
         }
@@ -215,6 +221,7 @@ public class WorkspaceCommandService {
                 .workoutConfirmation(workoutHistory.getWorkoutConfirmation())
                 .build();
         objectionRepository.save(objection);
+        //리펙터링
     }
 
     public void voteToObjection(User loginedUser, Long workspaceId, Long objectionId, VoteRequest request) {
@@ -239,6 +246,7 @@ public class WorkspaceCommandService {
         if (objectionManager.isApproved()) {
             workoutHistory.cancel();
         }
+
     }
 
 

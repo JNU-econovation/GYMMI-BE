@@ -59,14 +59,15 @@ class PhotoFeedServiceTest extends IntegrationTest {
     void 사진_피드를_확인_한다() {
         // given
         User user = persister.persistUser();
-        PhotoFeed photoFeed = persister.persistPhotoFeed(user, false);
+
+        PhotoFeed photoFeed = persister.persistPhotoFeed(user, true);
         PhotoFeedImage photoFeedImage = persister.persistPhotoFeedImage(photoFeed);
 
         // when
         PhotoFeedDetailResponse result = photoFeedService.getPhotoFeed(user, photoFeed.getId());
 
         // then
-        assertThat(result.getIsModified()).isFalse();
+        assertThat(result.getIsModified()).isTrue();
         assertThat(result.getThumpsUpCount()).isEqualTo(photoFeed.getThumpsUpCount());
         assertThat(result.getCreatedAt()).isEqualTo(photoFeed.getCreatedAt());
         assertThat(result.getProfileImageUrl()).isEqualTo(user.getProfileImageName());
@@ -89,14 +90,14 @@ class PhotoFeedServiceTest extends IntegrationTest {
 
         // then
         assertThat(photoFeed.getThumpsUpCount()).isEqualTo(1);
-        assertThat(thumbsUpRepository.findByUserId(user1.getId())).isNotEmpty();
+        assertThat(thumbsUpRepository.findByUserIdAndPhotoFeedId(user1.getId(), photoFeed.getId())).isNotEmpty();
 
         // when
         photoFeedService.likePhotoFeed(user1, photoFeed.getId());
 
         // then
         assertThat(photoFeed.getThumpsUpCount()).isEqualTo(0);
-        assertThat(thumbsUpRepository.findByUserId(user1.getId())).isEmpty();
+        assertThat(thumbsUpRepository.findByUserIdAndPhotoFeedId(user1.getId(), photoFeed.getId())).isEmpty();
     }
 
     @Test
@@ -105,6 +106,7 @@ class PhotoFeedServiceTest extends IntegrationTest {
         User user = persister.persistUser();
         PhotoFeed photoFeed = persister.persistPhotoFeed(user);
         PhotoFeedImage photoFeedImage = persister.persistPhotoFeedImage(photoFeed);
+        persister.persistThumpsUp(user, photoFeed);
 
         // when
         photoFeedService.delete(user, photoFeed.getId());

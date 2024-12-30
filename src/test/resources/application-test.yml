@@ -19,5 +19,8 @@ cloud:
   aws:
     s3:
       bucket: abc
+      accesskey: abc
+      secretKey: abc
     stack:
       auto: false
+

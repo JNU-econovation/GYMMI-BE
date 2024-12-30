@@ -3,6 +3,7 @@ package gymmi.helper;
 import gymmi.entity.User;
 import gymmi.photoboard.domain.entity.PhotoFeed;
 import gymmi.photoboard.domain.entity.PhotoFeedImage;
+import gymmi.photoboard.domain.entity.ThumbsUp;
 import gymmi.repository.UserRepository;
 import gymmi.workspace.domain.WorkspaceStatus;
 import gymmi.workspace.domain.entity.*;
@@ -229,5 +230,11 @@ public class Persister {
                 .create();
         entityManager.persist(photoFeedImage);
         return photoFeedImage;
+    }
+
+    public ThumbsUp persistThumpsUp(User user, PhotoFeed photoFeed) {
+        ThumbsUp thumbsUp = new ThumbsUp(user, photoFeed);
+        entityManager.persist(thumbsUp);
+        return thumbsUp;
     }
 }

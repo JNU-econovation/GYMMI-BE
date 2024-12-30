@@ -47,7 +47,7 @@ public class PhotoFeedService {
         PhotoFeed photoFeed = photoFeedRepository.getByPhotoFeedId(photoFeedId);
         PhotoFeedImage photoFeedImage = photoFeedImageRepository.getByPhotoFeedId(photoFeedId);
         String photoImagePresignedUrl = s3Service.getPresignedUrl(PhotoFeedImage.IMAGE_USE, photoFeedImage.getFilename());
-        if (thumbsUpRepository.findByUserId(loginedUser.getId()).isEmpty()) {
+        if (thumbsUpRepository.findByUserIdAndPhotoFeedId(loginedUser.getId(), photoFeed.getId()).isEmpty()) {
             return new PhotoFeedDetailResponse(photoFeed, photoImagePresignedUrl, photoFeed.isWriter(loginedUser), false);
         }
         return new PhotoFeedDetailResponse(photoFeed, photoImagePresignedUrl, photoFeed.isWriter(loginedUser), true);
@@ -56,7 +56,7 @@ public class PhotoFeedService {
     @Transactional
     public void likePhotoFeed(User loginedUser, Long photoFeedId) {
         PhotoFeed photoFeed = photoFeedRepository.getByPhotoFeedId(photoFeedId);
-        thumbsUpRepository.findByUserId(loginedUser.getId())
+        thumbsUpRepository.findByUserIdAndPhotoFeedId(loginedUser.getId(), photoFeed.getId())
                 .ifPresentOrElse(
                         (thumbsUp) -> {
                             photoFeed.decrease();
@@ -78,7 +78,9 @@ public class PhotoFeedService {
 
         PhotoFeedImage photoFeedImage = photoFeedImageRepository.getByPhotoFeedId(photoFeedId);
         photoFeedImageRepository.delete(photoFeedImage);
+        thumbsUpRepository.deleteByPhotoFeedId(photoFeed.getId());
         photoFeedRepository.delete(photoFeed);
+        // event?
         s3Service.delete(PhotoFeedImage.IMAGE_USE, photoFeedImage.getFilename());
     }
 

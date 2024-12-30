@@ -75,20 +75,22 @@ class WorkspaceQueryServiceTest extends IntegrationTest {
         WorkoutHistory workoutHistory = persister.persistWorkoutHistoryAndApply(creatorWorker, Map.of(mission, 2, mission1, 2), workoutConfirmation);
         Objection objection = persister.persistObjection(userWorker, true, workoutConfirmation);
         WorkoutHistory workoutHistory1 = persister.persistWorkoutHistoryAndApply(userWorker, Map.of(mission, 2, mission1, 2), workoutConfirmation1);
-
+        persister.persistVote(userWorker, objection, false);
 
         // when
-        List<WorkoutConfirmationOrObjectionResponse> responses = workspaceQueryService.getWorkoutConfirmations(user, workspace.getId(), 0);
+        WorkoutConfirmationResponse workoutConfirmationResponse = workspaceQueryService.getWorkoutConfirmations(user, workspace.getId(), 0);
 
         // then
+        List<WorkoutConfirmationOrObjectionResponse> responses = workoutConfirmationResponse.getData();
         assertThat(responses).hasSize(3);
+        assertThat(workoutConfirmationResponse.getVoteIncompletionCount()).isEqualTo(0);
 
         WorkoutConfirmationOrObjectionResponse response = responses.get(0);
-        assertThat(response.getIsMine()).isEqualTo(true);
-        assertThat(response.getProfileImageUrl()).isEqualTo(user.getProfileImageName());
-        assertThat(response.getWorkoutConfirmationId()).isEqualTo(workoutHistory1.getWorkoutConfirmation().getId());
+        assertThat(response.getIsMine()).isEqualTo(false);
+        assertThat(response.getProfileImageUrl()).isEqualTo(creator.getProfileImageName());
+        assertThat(response.getWorkoutConfirmationId()).isEqualTo(workoutHistory.getWorkoutConfirmation().getId());
         assertThat(response.getIsObjection()).isEqualTo(false);
-        assertThat(response.getObjectionId()).isEqualTo(null);
+        assertThat(response.getObjectionId()).isEqualTo(objection.getId());
 
         WorkoutConfirmationOrObjectionResponse response1 = responses.get(1);
         assertThat(response1.getNickname()).isEqualTo(creator.getNickname());
@@ -233,7 +235,7 @@ class WorkspaceQueryServiceTest extends IntegrationTest {
                 List<ObjectionAlarmResponse> responses = workspaceQueryService.getObjections(creator, workspace.getId(), 0, ObjectionStatus.INCOMPLETION);
 
                 // then
-                assertThat(responses).hasSize (7);
+                assertThat(responses).hasSize(7);
                 assertThat(responses.get(6).getObjectionId()).isEqualTo(objections.get(2).getId());
                 assertThat(responses.get(6).getVoteCompletion()).isEqualTo(false);
                 assertThat(responses.get(6).getTargetWorkerNickname()).isEqualTo(creator.getNickname());
