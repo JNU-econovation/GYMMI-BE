@@ -270,4 +270,13 @@ public class WorkspaceController {
         return ResponseEntity.ok().body(responses);
     }
 
+    @PostMapping("/workspaces/{workspaceId}/objections")
+    public ResponseEntity<List<ObjectionAlarmResponse>> terminateObjections(
+            @Logined User user,
+            @PathVariable Long workspaceId
+    ) {
+        workspaceCommandService.terminateExpiredObjection(user, workspaceId);
+        return ResponseEntity.ok().build();
+    }
+
 }

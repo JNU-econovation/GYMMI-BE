@@ -6,11 +6,13 @@ import gymmi.workspace.domain.entity.Vote;
 import gymmi.workspace.domain.entity.Worker;
 import org.instancio.Instancio;
 import org.instancio.Select;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,34 +21,52 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class ObjectionManagerTest {
 
-    @Test
-    void 이미_투표에_참여한_경우_예외가_발생한다() {
-        // given
-        Objection objection = getTackle(true);
-        Vote vote = getVote(objection);
-        addVoteToTackle(objection, vote);
+    @Nested
+    class 투표_참여 {
 
-        Worker worker = vote.getWorker();
-        ObjectionManager tackleManager = new ObjectionManager(objection);
+        @Test
+        void 이미_투표에_참여한_경우_예외가_발생한다() {
+            // given
+            Objection objection = getObjection(true);
+            Vote vote = getVote(objection);
+            addVoteToObjection(objection, vote);
 
-        // when, then
-        assertThatThrownBy(() -> tackleManager.createVote(worker, true))
-                .hasMessage(ErrorCode.ALREADY_VOTED.getMessage());
+            Worker worker = vote.getWorker();
+            ObjectionManager tackleManager = new ObjectionManager(objection);
+
+            // when, then
+            assertThatThrownBy(() -> tackleManager.createVote(worker, true))
+                    .hasMessage(ErrorCode.ALREADY_VOTED.getMessage());
+        }
+
+        @Test
+        void 종료된_투표에_투표하는_경우_예외가_발생한다() {
+            // given
+            Objection objection = getObjection(false);
+            Vote vote = getVote(objection);
+            addVoteToObjection(objection, vote);
+
+            Worker worker = vote.getWorker();
+            ObjectionManager tackleManager = new ObjectionManager(objection);
+
+            // when, then
+            assertThatThrownBy(() -> tackleManager.createVote(worker, true))
+                    .hasMessage(ErrorCode.ALREADY_CLOSED_OBJECTION.getMessage());
+        }
+
     }
 
-    @Test
-    void 종료된_투표에_투표하는_경우_예외가_발생한다() {
+    @ParameterizedTest
+    @CsvSource(value = {"23,false", "24, true"})
+    void 마감기간이_지남_여부를_확인한다(int hours, boolean expired) {
         // given
-        Objection objection = getTackle(false);
-        Vote vote = getVote(objection);
-        addVoteToTackle(objection, vote);
+        Objection objection = getObjection(true, LocalDateTime.now().minusHours(hours));
 
-        Worker worker = vote.getWorker();
-        ObjectionManager tackleManager = new ObjectionManager(objection);
+        // when
+        boolean result = objection.isExpired();
 
-        // when, then
-        assertThatThrownBy(() -> tackleManager.createVote(worker, true))
-                .hasMessage(ErrorCode.ALREADY_CLOSED_OBJECTION.getMessage());
+        // then
+        assertThat(result).isEqualTo(expired);
     }
 
     @ParameterizedTest
@@ -58,11 +78,11 @@ class ObjectionManagerTest {
     })
     void 투표에_따라_투표가_종료된다(int workerCount, int agreeCount, int disagreeCount, boolean isClosed, boolean isApproved) {
         // given
-        Objection objection = getTackle(true);
+        Objection objection = getObjection(true);
         List<Vote> agreeVotes = getVotes(agreeCount, objection, true);
         List<Vote> disagreeVotes = getVotes(disagreeCount, objection, false);
         agreeVotes.addAll(disagreeVotes);
-        addVoteToTackle(objection, agreeVotes);
+        addVoteToObjection(objection, agreeVotes);
 
         ObjectionManager tackleManager = new ObjectionManager(objection);
 
@@ -90,17 +110,25 @@ class ObjectionManagerTest {
                 .create();
     }
 
-    private void addVoteToTackle(Objection objection, Vote... vote) {
+    private void addVoteToObjection(Objection objection, Vote... vote) {
         ReflectionTestUtils.setField(objection, "votes", List.of(vote));
     }
 
-    private void addVoteToTackle(Objection objection, List<Vote> votes) {
+    private void addVoteToObjection(Objection objection, List<Vote> votes) {
         ReflectionTestUtils.setField(objection, "votes", new ArrayList<>(votes));
     }
 
-    private Objection getTackle(boolean isOpen) {
+    private Objection getObjection(boolean isInProgress) {
         return Instancio.of(Objection.class)
-                .set(Select.field(Objection::isInProgress), isOpen)
+                .set(Select.field(Objection::isInProgress), isInProgress)
                 .create();
     }
+
+    private Objection getObjection(boolean isOpen, LocalDateTime createdAt) {
+        return Instancio.of(Objection.class)
+                .set(Select.field(Objection::isInProgress), isOpen)
+                .set(Select.field(Objection::getCreatedAt), createdAt)
+                .create();
+    }
+
 }

@@ -14,7 +14,10 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -251,6 +254,37 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
         assertThat(voteRepository.findAll().size()).isEqualTo(3);
         assertThat(objection.isInProgress()).isEqualTo(false);
         assertThat(workoutHistory.isApproved()).isFalse();
+    }
+
+    @Test
+    @Transactional
+    void 투표가_안되었지만_시간이_지난_이의신청은_찬성표를_통해_자동으로_종료시킨다() {
+        // given
+        User creator = persister.persistUser();
+        User user = persister.persistUser();
+        User user1 = persister.persistUser();
+        User user2 = persister.persistUser();
+        Workspace workspace = persister.persistWorkspace(creator, WorkspaceStatus.IN_PROGRESS, 100, 4);
+        Worker creatorWorker = persister.persistWorker(creator, workspace);
+        Worker userWorker = persister.persistWorker(user, workspace);
+        Worker user1Worker = persister.persistWorker(user1, workspace);
+        Worker user2Worker = persister.persistWorker(user2, workspace);
+        WorkoutConfirmation workoutConfirmation = persister.persistWorkoutConfirmation();
+        Mission mission = persister.persistMission(workspace, 10);
+        persister.persistWorkoutHistoryAndApply(creatorWorker, Map.of(mission, 1), workoutConfirmation);
+
+        Objection objection = persister.persistObjection(userWorker, true, workoutConfirmation);
+        persister.persistVote(userWorker, objection, false);
+        ReflectionTestUtils.setField(objection, "createdAt", LocalDateTime.now().minusHours(25));
+
+        // when
+        workspaceCommandService.terminateExpiredObjection(creator, workspace.getId());
+
+        // then
+        assertThat(objection.isInProgress()).isFalse();
+        assertThat(objection.getVoteCount()).isEqualTo(4);
+        assertThat(objection.getApprovalCount()).isEqualTo(3);
+
     }
 
     private List<Workspace> persistWorkspacesNotCompletedWithWorker(User user, int size) {

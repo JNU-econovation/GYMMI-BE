@@ -10,4 +10,6 @@ public interface ObjectionCustomRepository {
 
     List<Objection> getAllBy(Long workspaceId, Long workerId, ObjectionStatus objectionStatus, Pageable pageable);
 
+    List<Objection> getExpiredObjections(Long workspaceId);
+
 }

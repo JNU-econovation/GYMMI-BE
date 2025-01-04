@@ -8,6 +8,7 @@ import gymmi.workspace.domain.entity.Objection;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static gymmi.workspace.domain.entity.QObjection.objection;
@@ -25,7 +26,7 @@ public class ObjectionCustomRepositoryImpl implements ObjectionCustomRepository 
                 .from(objection)
                 .join(objection.subject, worker)
                 .where(
-                        worker.workspace.id.eq(workspaceId),
+                        inWorkspace(workspaceId),
                         objectionStatusEq(workerId, objectionStatus)
                 )
                 .orderBy(objection.createdAt.desc())
@@ -47,4 +48,25 @@ public class ObjectionCustomRepositoryImpl implements ObjectionCustomRepository 
         }
         return null;
     }
+
+    public List<Objection> getExpiredObjections(Long workspaceId) {
+        return jpaQueryFactory.select(objection)
+                .from(objection)
+                .join(objection.subject, worker)
+                .where(
+                        inWorkspace(workspaceId),
+                        expiredObjection()
+                )
+                .fetch();
+    }
+
+
+    private BooleanExpression expiredObjection() {
+        return objection.isInProgress.isTrue().and(objection.createdAt.before(LocalDateTime.now().minusHours(Objection.PERIOD_HOUR)));
+    }
+
+    private BooleanExpression inWorkspace(Long workspaceId) {
+        return worker.workspace.id.eq(workspaceId);
+    }
+
 }

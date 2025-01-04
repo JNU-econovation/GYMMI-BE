@@ -29,11 +29,23 @@ public class Vote extends TimeEntity {
     @Column(nullable = false)
     private Boolean isApproved;
 
+    @Column(nullable = false)
+    private Boolean automatic;
+
     public Vote(Worker worker, Objection objection, Boolean isApproved) {
+        this(worker, objection, isApproved, false);
+    }
+
+    public Vote(Worker worker, Objection objection, Boolean isApproved, Boolean automatic) {
         this.worker = worker;
         this.objection = objection;
         this.isApproved = isApproved;
+        this.automatic = automatic;
         setRelations(objection);
+    }
+
+    public static Vote autoVote(Worker worker, Objection objection) {
+        return new Vote(worker, objection, true, true);
     }
 
     private void setRelations(Objection objection) {

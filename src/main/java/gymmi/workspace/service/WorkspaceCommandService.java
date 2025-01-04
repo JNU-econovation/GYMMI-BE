@@ -246,7 +246,23 @@ public class WorkspaceCommandService {
         if (objectionManager.isApproved()) {
             workoutHistory.cancel();
         }
+    }
 
+    public void terminateExpiredObjection(User loginedUser, Long workspaceId) {
+        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
+        validateIfWorkerIsInWorkspace(loginedUser.getId(), workspaceId);
+        List<Objection> expiredObjections = objectionRepository.getExpiredObjections(workspace.getId());
+        List<Worker> workers = workerRepository.getAllByWorkspaceId(workspace.getId());
+
+        for (Objection expiredObjection : expiredObjections) {
+            ObjectionManager objectionManager = new ObjectionManager(expiredObjection);
+            List<Vote> votes = objectionManager.createAutoVote(workers);
+            voteRepository.saveAll(votes);
+            if (objectionManager.closeIfOnMajorityOrDone(workers.size())) {
+                WorkoutHistory workoutHistory = workoutHistoryRepository.getByWorkoutConfirmationId(expiredObjection.getWorkoutConfirmation().getId());
+                rejectWorkoutHistory(objectionManager, workoutHistory);
+            }
+        }
     }
 
 

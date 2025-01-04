@@ -8,6 +8,8 @@ import gymmi.workspace.domain.entity.Vote;
 import gymmi.workspace.domain.entity.Worker;
 import lombok.Getter;
 
+import java.util.List;
+
 @Getter
 public class ObjectionManager {
     private final Objection objection;
@@ -52,6 +54,13 @@ public class ObjectionManager {
             return (workerCount / 2) + 1;
         }
         return (int) Math.round(workerCount / 2.0);
+    }
+
+    public List<Vote> createAutoVote(List<Worker> workers) {
+        return workers.stream()
+                .filter(worker -> !objection.hasVoteBy(worker))
+                .map(worker -> Vote.autoVote(worker, objection))
+                .toList();
     }
 
 }
