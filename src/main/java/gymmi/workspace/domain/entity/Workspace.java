@@ -66,16 +66,20 @@ public class Workspace extends TimeEntity {
     @ColumnDefault("''")
     private String tag;
 
+    @Column(nullable = false)
+    private String task;
+
     @Builder
     public Workspace(
             User creator, String name, String description,
-            Integer goalScore, Integer headCount, String tag
+            Integer goalScore, Integer headCount, String tag, String task
     ) {
         this.creator = creator;
         this.name = validateName(name);
         this.goalScore = validateGoalScore(goalScore);
         this.headCount = validateHeadCount(headCount);
         this.tag = validateTag(tag);
+        this.task = task;
         this.description = validateDescription(description);
         this.password = generatePassword();
         this.status = WorkspaceStatus.PREPARING;

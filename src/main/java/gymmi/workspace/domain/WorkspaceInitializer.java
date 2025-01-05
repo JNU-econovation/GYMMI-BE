@@ -35,6 +35,7 @@ public class WorkspaceInitializer {
                 .goalScore(request.getGoalScore())
                 .description(request.getDescription())
                 .tag(request.getTag())
+                .task(request.getTask())
                 .build();
     }
 

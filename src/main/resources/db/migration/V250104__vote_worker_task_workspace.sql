@@ -5,4 +5,6 @@ alter table worker drop column task_id;
 
 drop table task;
 
+alter table workspace add column task varchar(255) not null;
+
 
