@@ -859,7 +859,7 @@ public class WorkspaceEndToEndTest extends EndToEndTest {
             // when
             Response response =
                     워크스페이스_설명_수정_요청(defaultUserToken, workspaceId,
-                            new EditingIntroductionOfWorkspaceRequest("수정", "태그"));
+                            new EditingIntroductionOfWorkspaceRequest("수정", "태그","테스크"));
 
             // then
             response.then()
@@ -881,7 +881,7 @@ public class WorkspaceEndToEndTest extends EndToEndTest {
 
             // when
             Response response =
-                    워크스페이스_설명_수정_요청(user1Token, workspaceId, new EditingIntroductionOfWorkspaceRequest("수정", "태그"));
+                    워크스페이스_설명_수정_요청(user1Token, workspaceId, new EditingIntroductionOfWorkspaceRequest("수정", "태그","테스크"));
 
             // then
             response.then()

@@ -167,7 +167,7 @@ public class WorkspaceCommandService {
         Worker worker = workerRepository.getByUserIdAndWorkspaceId(loginedUser.getId(), workspace.getId());
 
         WorkspaceEditManager workspaceEditManager = new WorkspaceEditManager(workspace, worker);
-        workspaceEditManager.edit(request.getDescription(), request.getTag());
+        workspaceEditManager.edit(request.getDescription(), request.getTag(),request.getTask());
     }
 
     public void toggleRegistrationOfFavoriteMission(User loginedUser, Long workspaceId, Long missionId) {

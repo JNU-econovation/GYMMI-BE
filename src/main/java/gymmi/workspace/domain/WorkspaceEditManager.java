@@ -23,10 +23,10 @@ public class WorkspaceEditManager {
         return worker;
     }
 
-    public void edit(String description, String tag) {
+    public void edit(String description, String tag, String task) {
         workspace.editDescription(description);
         workspace.editTag(tag);
+        workspace.editTask(task);
     }
-
 
 }

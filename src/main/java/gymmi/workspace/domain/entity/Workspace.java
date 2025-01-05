@@ -5,6 +5,7 @@ import gymmi.entity.User;
 import gymmi.exceptionhandler.exception.InvalidNumberException;
 import gymmi.exceptionhandler.exception.InvalidPatternException;
 import gymmi.exceptionhandler.exception.InvalidRangeException;
+import gymmi.exceptionhandler.exception.InvalidStateException;
 import gymmi.exceptionhandler.message.ErrorCode;
 import gymmi.workspace.domain.WorkspaceStatus;
 import jakarta.persistence.*;
@@ -185,5 +186,13 @@ public class Workspace extends TimeEntity {
         this.tag = validateTag(tag);
     }
 
-
+    public void editTask(String task) {
+        if (this.task.equals(task)) {
+            return;
+        }
+        if (!isPreparing()) {
+            throw new InvalidStateException(ErrorCode.ALREADY_ACTIVATED_WORKSPACE);
+        }
+        this.task = task;
+    }
 }
