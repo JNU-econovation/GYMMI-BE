@@ -27,15 +27,13 @@ class WorkspacePreparingManagerTest {
             WorkspacePreparingManager workspacePreparingManager = new WorkspacePreparingManager(workspace, workers);
 
             User user = Instancio.of(User.class).create();
-            String taskName = Instancio.gen().string().get();
 
             // when
-            Worker worker = workspacePreparingManager.allow(user, workspace.getPassword(), taskName);
+            Worker worker = workspacePreparingManager.allow(user, workspace.getPassword());
 
             // then
             assertThat(workspacePreparingManager.getWorkers()).hasSize(2);
             assertThat(worker.getWorkspace()).isEqualTo(workspace);
-            assertThat(worker.getTask().getName()).isEqualTo(taskName);
         }
 
         @Test
@@ -47,10 +45,9 @@ class WorkspacePreparingManagerTest {
 
             User user = Instancio.of(User.class).create();
             String wrongPassword = "1235";
-            String taskName = Instancio.gen().string().get();
 
             // when, then
-            assertThatThrownBy(() -> workspacePreparingManager.allow(user, wrongPassword, taskName))
+            assertThatThrownBy(() -> workspacePreparingManager.allow(user, wrongPassword))
                     .hasMessage(ErrorCode.NOT_MATCHED_PASSWORD.getMessage());
         }
 
@@ -62,10 +59,9 @@ class WorkspacePreparingManagerTest {
             WorkspacePreparingManager workspacePreparingManager = new WorkspacePreparingManager(workspace, workers);
 
             User user = Instancio.of(User.class).create();
-            String taskName = Instancio.gen().string().get();
 
             // when, then
-            assertThatThrownBy(() -> workspacePreparingManager.allow(user, workspace.getPassword(), taskName))
+            assertThatThrownBy(() -> workspacePreparingManager.allow(user, workspace.getPassword()))
                     .hasMessage(ErrorCode.FULL_WORKSPACE.getMessage());
         }
 
@@ -78,10 +74,9 @@ class WorkspacePreparingManagerTest {
             WorkspacePreparingManager workspacePreparingManager = new WorkspacePreparingManager(workspace, workers);
 
             User user = Instancio.of(User.class).create();
-            String taskName = Instancio.gen().string().get();
 
             // when, then
-            assertThatThrownBy(() -> workspacePreparingManager.allow(user, workspace.getPassword(), taskName))
+            assertThatThrownBy(() -> workspacePreparingManager.allow(user, workspace.getPassword()))
                     .hasMessage(ErrorCode.ALREADY_ACTIVATED_WORKSPACE.getMessage());
         }
 
@@ -93,10 +88,9 @@ class WorkspacePreparingManagerTest {
             WorkspacePreparingManager workspacePreparingManager = new WorkspacePreparingManager(workspace, workers);
 
             User user = workers.get(0).getUser();
-            String taskName = Instancio.gen().string().get();
 
             // when, then
-            assertThatThrownBy(() -> workspacePreparingManager.allow(user, workspace.getPassword(), taskName))
+            assertThatThrownBy(() -> workspacePreparingManager.allow(user, workspace.getPassword()))
                     .hasMessage(ErrorCode.ALREADY_JOINED_WORKSPACE.getMessage());
         }
     }

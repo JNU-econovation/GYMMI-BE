@@ -13,7 +13,6 @@ import gymmi.workspace.domain.*;
 import gymmi.workspace.domain.entity.*;
 import gymmi.workspace.repository.*;
 import gymmi.workspace.request.*;
-import gymmi.workspace.response.OpeningTasksBoxResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -66,7 +65,7 @@ public class WorkspaceCommandService {
         List<Worker> workers = workerRepository.getAllByWorkspaceId(workspace.getId());
 
         WorkspacePreparingManager workspacePreparingManager = new WorkspacePreparingManager(workspace, workers);
-        Worker worker = workspacePreparingManager.allow(loginedUser, request.getPassword(), request.getTask());
+        Worker worker = workspacePreparingManager.allow(loginedUser, request.getPassword());
 
         workerRepository.save(worker);
     }
@@ -156,19 +155,6 @@ public class WorkspaceCommandService {
             workouts.put(mission, request.getCount());
         }
         return workouts;
-    }
-
-
-    @Transactional
-    public OpeningTasksBoxResponse openTaskBoxInWorkspace(User loginedUser, Long workspaceId) {
-        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
-        Worker worker = workerRepository.getByUserIdAndWorkspaceId(loginedUser.getId(), workspace.getId());
-        List<Worker> workers = workerRepository.getAllByWorkspaceId(workspace.getId());
-
-        WorkspaceDrawManager workspaceDrawManager = new WorkspaceDrawManager(workspace, workers);
-        workspaceDrawManager.drawIfNotPicked();
-        List<Task> tasks = workspaceDrawManager.getTasks(worker);
-        return new OpeningTasksBoxResponse(tasks);
     }
 
     @Transactional

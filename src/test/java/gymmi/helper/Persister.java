@@ -126,7 +126,7 @@ public class Persister {
     }
 
     public Worker persistWorker(User user, Workspace workspace) {
-        Worker worker = new Worker(user, workspace, new Task(Instancio.gen().string().get()));
+        Worker worker = new Worker(user, workspace);
         workerRepository.save(worker);
         return worker;
     }

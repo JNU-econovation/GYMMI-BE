@@ -14,7 +14,6 @@ import gymmi.exceptionhandler.exception.InvalidStateException;
 import gymmi.exceptionhandler.exception.NotHavePermissionException;
 import gymmi.exceptionhandler.exception.NotMatchedException;
 import gymmi.exceptionhandler.message.ErrorCode;
-import gymmi.workspace.domain.entity.Task;
 import gymmi.workspace.domain.entity.Worker;
 import gymmi.workspace.domain.entity.Workspace;
 import java.util.ArrayList;
@@ -33,7 +32,7 @@ public class WorkspacePreparingManager {
         this.workers = new ArrayList<>(workers);
     }
 
-    public Worker allow(User user, String password, String taskName) {
+    public Worker allow(User user, String password) {
         if (!workspace.matchesPassword(password)) {
             throw new NotMatchedException(NOT_MATCHED_PASSWORD);
         }
@@ -48,7 +47,7 @@ public class WorkspacePreparingManager {
             throw new AlreadyExistException(ErrorCode.ALREADY_JOINED_WORKSPACE);
         }
 
-        Worker worker = createWorker(user, taskName);
+        Worker worker = new Worker(user, workspace);
         workers.add(worker);
         return worker;
     }
@@ -80,12 +79,6 @@ public class WorkspacePreparingManager {
             throw new InvalidStateException(BELOW_MINIMUM_WORKER);
         }
         workspace.changeStatusTo(WorkspaceStatus.IN_PROGRESS);
-    }
-
-    private Worker createWorker(User user, String taskName) {
-        Task task = new Task(taskName);
-        Worker worker = new Worker(user, workspace, task);
-        return worker;
     }
 
 }

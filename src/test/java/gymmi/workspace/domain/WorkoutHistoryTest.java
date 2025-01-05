@@ -20,9 +20,8 @@ class WorkoutHistoryTest {
         // given
         Workspace workspace = Instancio.create(Workspace.class);
         User user = Instancio.create(User.class);
-        Task task = Instancio.create(Task.class);
         List<WorkoutRecord> workoutRecords = Instancio.ofList(WorkoutRecord.class).size(2).create();
-        Worker worker = new Worker(user, workspace, task);
+        Worker worker = new Worker(user, workspace);
         WorkoutConfirmation workoutProof = Instancio.of(WorkoutConfirmation.class).create();
         WorkoutHistory workoutHistory = new WorkoutHistory(worker, workoutRecords, workoutProof);
         assertThat(worker.getContributedScore()).isEqualTo(0);

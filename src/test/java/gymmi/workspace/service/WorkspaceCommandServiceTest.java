@@ -40,8 +40,6 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
     @Autowired
     MissionRepository missionRepository;
     @Autowired
-    TaskRepository taskRepository;
-    @Autowired
     WorkoutHistoryRepository workoutHistoryRepository;
     @Autowired
     FavoriteMissionRepository favoriteMissionRepository;
@@ -124,7 +122,6 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
         // then
         assertThat(workspaceRepository.findById(workspace.getId())).isEmpty();
         assertThat(workerRepository.findById(worker.getId())).isEmpty();
-        assertThat(taskRepository.findAll()).isEmpty();
         assertThat(missionRepository.findAll()).isEmpty();
         assertThat(favoriteMissionRepository.findAll()).isEmpty();
         assertThat(workerRepository.findById(worker.getId())).isEmpty();
@@ -299,7 +296,7 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
                 .create();
         workspaceRepository.saveAll(workspaces);
         for (Workspace workspace : workspaces) {
-            Worker worker = new Worker(user, workspace, new Task(Instancio.gen().string().get()));
+            Worker worker = new Worker(user, workspace);
             entityManager.persist(worker);
         }
         return workspaces;

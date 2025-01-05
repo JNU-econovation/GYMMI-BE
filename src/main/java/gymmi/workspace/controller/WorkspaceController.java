@@ -150,16 +150,6 @@ public class WorkspaceController {
         return ResponseEntity.ok().body(response);
     }
 
-
-    @GetMapping("/workspaces/{workspaceId}/tasks")
-    public ResponseEntity<OpeningTasksBoxResponse> openTasksBoxInWorkspace(
-            @Logined User user,
-            @PathVariable Long workspaceId
-    ) {
-        OpeningTasksBoxResponse response = workspaceCommandService.openTaskBoxInWorkspace(user, workspaceId);
-        return ResponseEntity.ok().body(response);
-    }
-
     @PutMapping("/workspaces/{workspaceId}/edit")
     public ResponseEntity<Void> editDescriptionOfWorkspace(
             @Logined User user,

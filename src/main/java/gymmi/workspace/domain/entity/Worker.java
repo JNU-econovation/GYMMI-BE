@@ -42,15 +42,10 @@ public class Worker extends TimeEntity {
     @Column(nullable = false)
     private Integer contributedScore;
 
-    @JoinColumn(name = "task_id")
-    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
-    private Task task;
-
     @Builder
-    public Worker(User user, Workspace workspace, Task task) {
+    public Worker(User user, Workspace workspace) {
         this.user = user;
         this.workspace = workspace;
-        this.task = task;
         this.contributedScore = 0;
     }
 

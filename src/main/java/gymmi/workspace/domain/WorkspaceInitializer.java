@@ -4,7 +4,6 @@ import gymmi.entity.User;
 import gymmi.exceptionhandler.exception.InvalidRangeException;
 import gymmi.exceptionhandler.message.ErrorCode;
 import gymmi.workspace.domain.entity.Mission;
-import gymmi.workspace.domain.entity.Task;
 import gymmi.workspace.domain.entity.Worker;
 import gymmi.workspace.domain.entity.Workspace;
 import gymmi.workspace.request.CreatingWorkspaceRequest;
@@ -25,7 +24,7 @@ public class WorkspaceInitializer {
     public void init(User creator, CreatingWorkspaceRequest request) {
         this.workspace = createWorkspace(creator, request);
         this.missions = createMissions(request.getMissionBoard());
-        this.worker = createWorker(creator, request.getTask());
+        this.worker = createWorker(creator);
     }
 
     private Workspace createWorkspace(User creator, CreatingWorkspaceRequest request) {
@@ -55,11 +54,10 @@ public class WorkspaceInitializer {
         return missions;
     }
 
-    private Worker createWorker(User creator, String taskName) {
+    private Worker createWorker(User creator) {
         return Worker.builder()
                 .workspace(workspace)
                 .user(creator)
-                .task(new Task(taskName))
                 .build();
     }
 
