@@ -60,6 +60,18 @@ public class ObjectionCustomRepositoryImpl implements ObjectionCustomRepository 
                 .fetch();
     }
 
+    @Override
+    public boolean existsByInProgress(Long workspaceId) {
+        Objection result = jpaQueryFactory.select(objection)
+                .from(objection)
+                .join(objection.subject, worker)
+                .where(
+                        inWorkspace(workspaceId),
+                        objection.isInProgress.isTrue()
+                )
+                .fetchFirst();
+        return result != null;
+    }
 
     private BooleanExpression expiredObjection() {
         return objection.isInProgress.isTrue().and(objection.createdAt.before(LocalDateTime.now().minusHours(Objection.PERIOD_HOUR)));

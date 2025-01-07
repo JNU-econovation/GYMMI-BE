@@ -12,4 +12,6 @@ public interface ObjectionCustomRepository {
 
     List<Objection> getExpiredObjections(Long workspaceId);
 
+    boolean existsByInProgress(Long workspaceId);
+
 }

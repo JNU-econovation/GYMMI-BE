@@ -2,23 +2,8 @@ package gymmi.workspace.domain.entity;
 
 import gymmi.entity.TimeEntity;
 import gymmi.entity.User;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
 @Getter
@@ -63,5 +48,17 @@ public class Worker extends TimeEntity {
 
     public String getNickname() {
         return user.getNickname();
+    }
+
+    public boolean isTie(Worker worker) {
+        return this.contributedScore.equals(worker.getContributedScore());
+    }
+
+    @Override
+    public String toString() {
+        return "Worker{" +
+                "id=" + id +
+                ", contributedScore=" + contributedScore +
+                '}';
     }
 }

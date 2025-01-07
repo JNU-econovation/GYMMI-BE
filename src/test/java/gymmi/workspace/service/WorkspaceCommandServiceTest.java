@@ -284,6 +284,24 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
 
     }
 
+    @Test
+    void 최종_결과_확인시_진행중인_이의_신청이_존재하는_경우_예외가_발생한다() {
+        // given
+        User creator = persister.persistUser();
+        Workspace workspace = persister.persistWorkspace(creator, WorkspaceStatus.COMPLETED, 100, 4);
+        Worker creatorWorker = persister.persistWorker(creator, workspace);
+        Mission mission = persister.persistMission(workspace, 10);
+
+        WorkoutConfirmation workoutConfirmation = persister.persistWorkoutConfirmation();
+        persister.persistWorkoutHistoryAndApply(creatorWorker, Map.of(mission, 1), workoutConfirmation);
+
+        Objection objection = persister.persistObjection(creatorWorker, true, workoutConfirmation);
+
+        // when, then
+        assertThatThrownBy(() -> workspaceCommandService.getWorkspaceResult(creator, workspace.getId()))
+                .hasMessage(ErrorCode.EXIST_OBJECTION_IN_PROGRESS.getMessage());
+    }
+
     private List<Workspace> persistWorkspacesNotCompletedWithWorker(User user, int size) {
         List<Workspace> workspaces = Instancio.ofList(Workspace.class)
                 .size(size)

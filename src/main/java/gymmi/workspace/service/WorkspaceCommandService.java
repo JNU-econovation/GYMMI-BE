@@ -13,15 +13,13 @@ import gymmi.workspace.domain.*;
 import gymmi.workspace.domain.entity.*;
 import gymmi.workspace.repository.*;
 import gymmi.workspace.request.*;
+import gymmi.workspace.response.WorkspaceResultResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -35,6 +33,7 @@ public class WorkspaceCommandService {
     private final FavoriteMissionRepository favoriteMissionRepository;
     private final ObjectionRepository objectionRepository;
     private final VoteRepository voteRepository;
+    private final WorkspaceResultRepository workspaceResultRepository;
 
     private final S3Service s3Service;
     private final PhotoFeedService photoFeedService;
@@ -167,7 +166,7 @@ public class WorkspaceCommandService {
         Worker worker = workerRepository.getByUserIdAndWorkspaceId(loginedUser.getId(), workspace.getId());
 
         WorkspaceEditManager workspaceEditManager = new WorkspaceEditManager(workspace, worker);
-        workspaceEditManager.edit(request.getDescription(), request.getTag(),request.getTask());
+        workspaceEditManager.edit(request.getDescription(), request.getTag(), request.getTask());
     }
 
     public void toggleRegistrationOfFavoriteMission(User loginedUser, Long workspaceId, Long missionId) {
@@ -236,7 +235,7 @@ public class WorkspaceCommandService {
 
     public void terminateExpiredObjection(User loginedUser, Long workspaceId) {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
-        validateIfWorkerIsInWorkspace(loginedUser.getId(), workspaceId);
+        validateIfWorkerIsInWorkspace(loginedUser.getId(), workspace.getId());
         List<Objection> expiredObjections = objectionRepository.getExpiredObjections(workspace.getId());
         List<Worker> workers = workerRepository.getAllByWorkspaceId(workspace.getId());
 
@@ -251,5 +250,37 @@ public class WorkspaceCommandService {
         }
     }
 
+    public WorkspaceResultResponse getWorkspaceResult(User loginedUser, Long workspaceId) {
+        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
+        validateIfWorkerIsInWorkspace(loginedUser.getId(), workspace.getId());
+        List<Worker> workers = workerRepository.getAllByWorkspaceId(workspace.getId());
+        if (objectionRepository.existsByInProgress(workspace.getId())) {
+            throw new InvalidStateException(ErrorCode.EXIST_OBJECTION_IN_PROGRESS);
+        }
 
+        if (workspace.isFullyCompleted()) {
+            WorkspaceResult workspaceResult = workspaceResultRepository.getByWorkspaceId(workspace.getId());
+            return getWorkspaceResultResponse(workspace, workers, workspaceResult);
+        }
+
+        WorkspaceDrawManger workspaceDrawManger = new WorkspaceDrawManger(workspace, workers);
+        WorkspaceResult workspaceResult = workspaceDrawManger.draw();
+
+        workspaceResultRepository.save(workspaceResult);
+        return getWorkspaceResultResponse(workspace, workers, workspaceResult);
+    }
+
+    private WorkspaceResultResponse getWorkspaceResultResponse(Workspace workspace, List<Worker> workers, WorkspaceResult workspaceResult) {
+        List<Worker> result = sortResult(workspaceResult.getWinner(), workspaceResult.getLoser(), workers);
+        return new WorkspaceResultResponse(workspace.getTask(), result);
+    }
+
+    private List<Worker> sortResult(Worker winner, Worker loser, List<Worker> workers) {
+        LinkedList<Worker> result = new LinkedList<>(workers);
+        result.remove(winner);
+        result.remove(loser);
+        result.addFirst(winner);
+        result.addLast(loser);
+        return result;
+    }
 }

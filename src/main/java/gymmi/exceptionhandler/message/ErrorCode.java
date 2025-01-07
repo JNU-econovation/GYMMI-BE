@@ -13,6 +13,7 @@ public enum ErrorCode {
     NOT_CONSISTENT_WORKERS_COUNT("워크스페이스 인원이 잘못 되었습니다.", 500),
     NOT_CONSISTENT_MISSIONS_COUNT("미션 수가 잘못 되었습니다.", 500),
     ALREADY_ACTIVATED_WORKSPACE("이미 진행중이거나 종료된 워크스페이스 입니다.", 400),
+    NOT_COMPLETED_WORKSPACE("종료되지 않은 워크스페이스 입니다.", 400),
     EXIST_WORKERS_EXCLUDE_CREATOR("방장 이외에 참여자가 존재합니다.", 400),
     BELOW_MINIMUM_WORKER("최소 인원인 2명을 채워주세요.", 400),
     EXCEED_MAX_JOINED_WORKSPACE("워크스페이스는 5개까지 참여 가능합니다.(완료된 워크스페이스 제외)", 400),
@@ -42,6 +43,9 @@ public enum ErrorCode {
 
     // 운동 기록
     EXCEED_MAX_DAILY_WORKOUT_HISTORY_COUNT("일일 가능한 운동을 초과했어요! (3회까지 가능)", 400),
+
+    // 이의 신청
+    EXIST_OBJECTION_IN_PROGRESS("진행중인 이의신청이 존재합니다.", 400),
 
 
     // user
