@@ -41,3 +41,5 @@ cloud:
     stack:
       auto: false
 
+firebase:
+  key-path: ${KEY_PATH}

@@ -28,3 +28,6 @@ jwt:
 
 file:
   storage-path: "/Users/lookh/temp/" # use in Integration test (need to change)
+
+firebase:
+  key-path: "/Users/lookh/Desktop/gymmi-fcm-firebase-adminsdk.json"

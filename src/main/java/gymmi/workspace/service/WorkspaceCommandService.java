@@ -1,6 +1,7 @@
 package gymmi.workspace.service;
 
 import gymmi.entity.User;
+import gymmi.eventlistener.event.WorkspaceStartedEvent;
 import gymmi.exceptionhandler.exception.AlreadyExistException;
 import gymmi.exceptionhandler.exception.InvalidStateException;
 import gymmi.exceptionhandler.exception.NotHavePermissionException;
@@ -15,6 +16,7 @@ import gymmi.workspace.repository.*;
 import gymmi.workspace.request.*;
 import gymmi.workspace.response.WorkspaceResultResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +39,7 @@ public class WorkspaceCommandService {
 
     private final S3Service s3Service;
     private final PhotoFeedService photoFeedService;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Transactional
     // 중복 요청
@@ -85,6 +88,8 @@ public class WorkspaceCommandService {
 
         WorkspacePreparingManager workspacePreparingManager = new WorkspacePreparingManager(workspace, workers);
         workspacePreparingManager.startBy(worker);
+
+        applicationEventPublisher.publishEvent(new WorkspaceStartedEvent(workspace.getId()));
     }
 
     @Transactional

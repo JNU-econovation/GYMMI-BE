@@ -1,29 +1,15 @@
 package gymmi.entity;
 
-import static gymmi.utils.Regexpressions.REGEX_숫자;
-import static gymmi.utils.Regexpressions.REGEX_영어;
-import static gymmi.utils.Regexpressions.REGEX_영어_숫자_만;
-import static gymmi.utils.Regexpressions.REGEX_영어_한글_초성_숫자_만;
-import static gymmi.utils.Regexpressions.SPECIAL_CHARACTER;
-
 import gymmi.exceptionhandler.legacy.InvalidPatternException;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
-import java.util.regex.Pattern;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.util.StringUtils;
+
+import java.util.regex.Pattern;
+
+import static gymmi.utils.Regexpressions.*;
 
 @Entity
 @Table(name = "uuser")
@@ -167,6 +153,10 @@ public class User extends TimeEntity {
 
     public String getEmail() {
         return email;
+    }
+
+    public String getAlarmToken() {
+        return fcmToken.getToken();
     }
 
     @Override
