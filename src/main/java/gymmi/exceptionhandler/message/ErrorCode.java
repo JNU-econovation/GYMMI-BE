@@ -82,6 +82,9 @@ public enum ErrorCode {
     NOT_FOUND_PHOTO_FEED("존재하지 않는 사진피드 입니다.", 400),
     NOT_FOUND_PHOTO_FEED_IMAGE("존재하지 않는 사진 입니다.", 400),
     NOT_PHOTO_FEED_WRITER("사진피드 작성자가 아니에요", 400),
+
+    // etc
+    RETRY_AFTER_LOGOUT("로그아웃 후 다시 시도해 주세요", 500),
     ;
 
     private final String message;

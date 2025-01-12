@@ -62,6 +62,9 @@ public class User extends TimeEntity {
     @OneToOne(mappedBy = "owner", fetch = FetchType.LAZY)
     private ProfileImage profileImage; // 지연 로딩 안됨.
 
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+    private FCMToken fcmToken;
+
     @Builder
     public User(String loginId, String plainPassword, String nickname, String email) {
         validateLoginId(loginId);

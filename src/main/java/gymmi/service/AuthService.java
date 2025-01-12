@@ -1,5 +1,6 @@
 package gymmi.service;
 
+import gymmi.entity.FCMToken;
 import gymmi.entity.Logined;
 import gymmi.entity.ProfileImage;
 import gymmi.entity.User;
@@ -7,6 +8,7 @@ import gymmi.exceptionhandler.exception.AlreadyExistException;
 import gymmi.exceptionhandler.exception.AuthenticationFailException;
 import gymmi.exceptionhandler.exception.NotMatchedException;
 import gymmi.exceptionhandler.message.ErrorCode;
+import gymmi.repository.FCMTokenRepository;
 import gymmi.repository.LoginedRepository;
 import gymmi.repository.ProfileImageRepository;
 import gymmi.repository.UserRepository;
@@ -29,6 +31,7 @@ public class AuthService {
     private final LoginedRepository loginedRepository;
     private final ProfileImageRepository profileImageRepository;
     private final ImageFileUploader imageFileUploader;
+    private final FCMTokenRepository fcmTokenRepository;
 
     @Transactional
     public void registerUser(RegistrationRequest request) {
@@ -46,6 +49,7 @@ public class AuthService {
                 .build();
         User savedUser = userRepository.save(newUser);
         loginedRepository.save(new Logined(savedUser));
+        fcmTokenRepository.save(new FCMToken(savedUser));
     }
 
     @Transactional
@@ -55,6 +59,11 @@ public class AuthService {
 
         if (!user.canAuthenticate(request.getLoginId(), request.getPassword())) {
             throw new AuthenticationFailException(ErrorCode.FAILED_LOGIN);
+        }
+
+        // 기존 회원을 위한
+        if (fcmTokenRepository.findByUserId(user.getId()).isEmpty()) {
+            fcmTokenRepository.save(new FCMToken(user));
         }
 
         TokenResponse tokenResponse = generateAndSaveTokensAbout(user);
