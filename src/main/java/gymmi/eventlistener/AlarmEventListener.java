@@ -1,6 +1,8 @@
 package gymmi.eventlistener;
 
 import gymmi.entity.User;
+import gymmi.eventlistener.event.ObjectionOpenEvent;
+import gymmi.eventlistener.event.WorkoutConfirmationCreatedEvent;
 import gymmi.eventlistener.event.WorkspaceStartedEvent;
 import gymmi.global.firebase.FirebaseCloudMessageService;
 import gymmi.workspace.domain.entity.Objection;
@@ -34,10 +36,10 @@ public class AlarmEventListener {
     private final ObjectionRepository objectionRepository;
     private final WorkoutHistoryRepository workoutHistoryRepository;
 
-    @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public void notifyWorkspaceStart(WorkspaceStartedEvent workspaceStartedEvent) {
-        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceStartedEvent.getWorkspaceId());
+    public void notifyWorkspaceStart(WorkspaceStartedEvent event) {
+        System.out.println("워크스페이스 시작됨");
+        Workspace workspace = workspaceRepository.getWorkspaceById(event.getWorkspaceId());
         List<Worker> workers = workerRepository.getAllByWorkspaceId(workspace.getId());
         List<User> users = workers.stream()
                 .map(Worker::getUser)
@@ -49,10 +51,10 @@ public class AlarmEventListener {
     }
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public void notifyObjectionOpen(Long workspaceId, Long objectionId) {
-        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
-        List<Worker> workers = workerRepository.getAllByWorkspaceId(workspaceId);
-        Objection objection = objectionRepository.getByObjectionId(objectionId);
+    public void notifyObjectionOpen(ObjectionOpenEvent event) {
+        Workspace workspace = workspaceRepository.getWorkspaceById(event.getWorkspaceId());
+        List<Worker> workers = workerRepository.getAllByWorkspaceId(workspace.getId());
+        Objection objection = objectionRepository.getByObjectionId(event.getObjectionId());
         WorkoutHistory workoutHistory = workoutHistoryRepository.getByWorkoutConfirmationId(objection.getWorkoutConfirmation().getId());
         List<User> users = workers.stream()
                 .map(Worker::getUser)
@@ -63,10 +65,10 @@ public class AlarmEventListener {
     }
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public void notifyWorkoutConfirmationCreated(Long workspaceId, Long userId) {
-        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
-        List<Worker> workers = workerRepository.getAllByWorkspaceId(workspaceId);
-        Worker worker = workerRepository.getByUserIdAndWorkspaceId(userId, workspace.getId());
+    public void notifyWorkoutConfirmationCreated(WorkoutConfirmationCreatedEvent event) {
+        Workspace workspace = workspaceRepository.getWorkspaceById(event.getWorkspaceId());
+        List<Worker> workers = workerRepository.getAllByWorkspaceId(workspace.getId());
+        Worker worker = workerRepository.getByUserIdAndWorkspaceId(event.getUserId(), workspace.getId());
         List<User> users = workers.stream()
                 .map(Worker::getUser)
                 .toList();
