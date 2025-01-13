@@ -1,6 +1,8 @@
 package gymmi.workspace.service;
 
 import gymmi.entity.User;
+import gymmi.eventlistener.event.ObjectionOpenEvent;
+import gymmi.eventlistener.event.WorkoutConfirmationCreatedEvent;
 import gymmi.eventlistener.event.WorkspaceStartedEvent;
 import gymmi.exceptionhandler.exception.AlreadyExistException;
 import gymmi.exceptionhandler.exception.InvalidStateException;
@@ -135,6 +137,9 @@ public class WorkspaceCommandService {
 
         workspaceProgressManager.completeWhenGoalScoreIsAchieved(achievementScore);
         linkToPhotoBoardIfRequested(loginedUser, workoutRequest);
+
+        applicationEventPublisher.publishEvent(new WorkoutConfirmationCreatedEvent(workspace.getId(), loginedUser.getId()));
+
         return workoutHistory.getSum();
     }
 
@@ -211,6 +216,8 @@ public class WorkspaceCommandService {
                 .workoutConfirmation(workoutHistory.getWorkoutConfirmation())
                 .build();
         objectionRepository.save(objection);
+
+        applicationEventPublisher.publishEvent(new ObjectionOpenEvent(workspace.getId(), objection.getId()));
         //리펙터링
     }
 
