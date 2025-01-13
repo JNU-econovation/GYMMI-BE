@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 public class FcmToken extends TimeEntity {
 
-    private static final LocalDateTime INITIAL_TIME = LocalDateTime.of(1900, 1, 1, 0, 0);
+    private static final LocalDateTime INITIAL_TIME = LocalDateTime.of(1970, 1, 2, 0, 0);
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
