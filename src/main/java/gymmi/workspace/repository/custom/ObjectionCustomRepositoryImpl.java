@@ -36,8 +36,11 @@ public class ObjectionCustomRepositoryImpl implements ObjectionCustomRepository 
     }
 
     private BooleanExpression objectionStatusEq(Long workerId, ObjectionStatus objectionStatus) {
-        if (objectionStatus == ObjectionStatus.OPEN) {
+        if (objectionStatus == ObjectionStatus.IN_PROGRESS) {
             return objection.isInProgress.isTrue();
+        }
+        if (objectionStatus == ObjectionStatus.CLOSED) {
+            return objection.isInProgress.isFalse();
         }
         if (objectionStatus == ObjectionStatus.INCOMPLETION) {
             return objection.id.notIn(
