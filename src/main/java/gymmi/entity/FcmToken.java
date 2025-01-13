@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
-public class FCMToken extends TimeEntity {
+public class FcmToken extends TimeEntity {
 
     private static final LocalDateTime INITIAL_TIME = LocalDateTime.of(1900, 1, 1, 0, 0);
 
@@ -30,7 +30,7 @@ public class FCMToken extends TimeEntity {
     @Column(columnDefinition = "timestamp(3)", nullable = false)
     private LocalDateTime lastUsedTime;
 
-    public FCMToken(User user) {
+    public FcmToken(User user) {
         this.user = user;
         setDefaultTimestamp();
     }

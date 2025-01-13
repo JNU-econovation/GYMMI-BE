@@ -3,7 +3,7 @@ package gymmi.controller;
 import gymmi.entity.User;
 import gymmi.global.Logined;
 import gymmi.request.FCMRefreshRequest;
-import gymmi.service.FCMTokenService;
+import gymmi.service.FcmTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-public class FCMController {
+public class FcmController {
 
-    private final FCMTokenService fcmTokenService;
+    private final FcmTokenService fcmTokenService;
 
     @PatchMapping("/fcm/token")
     public ResponseEntity<Void> refresh(
