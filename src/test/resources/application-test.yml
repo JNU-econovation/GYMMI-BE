@@ -24,5 +24,3 @@ cloud:
     stack:
       auto: false
 
-firebase:
-  key-path: "/Users/lookh/Desktop/gymmi-fcm-firebase-adminsdk.json"
