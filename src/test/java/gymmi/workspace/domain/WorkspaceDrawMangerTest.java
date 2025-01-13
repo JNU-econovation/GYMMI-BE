@@ -95,7 +95,7 @@ class WorkspaceDrawMangerTest {
 
             // then
             assertThat(workspace.isFullyCompleted()).isTrue();
-            assertThat(winners).containsAnyOf(workers.get(4), workers.get(8));
+            assertThat(winners).containsAnyOf(workers.get(4), workers.get(9));
             assertThat(losers).containsAnyOf(workers.get(0), workers.get(5));
         }
 
