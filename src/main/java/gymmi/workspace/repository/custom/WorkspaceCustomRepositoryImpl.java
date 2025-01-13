@@ -1,8 +1,5 @@
 package gymmi.workspace.repository.custom;
 
-import static gymmi.workspace.domain.entity.QWorker.worker;
-import static gymmi.workspace.domain.entity.QWorkspace.workspace;
-
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -10,12 +7,15 @@ import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import gymmi.workspace.domain.WorkspaceStatus;
 import gymmi.workspace.domain.entity.Workspace;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Repository;
+
+import static gymmi.workspace.domain.entity.QWorker.worker;
+import static gymmi.workspace.domain.entity.QWorkspace.workspace;
 
 @RequiredArgsConstructor
 public class WorkspaceCustomRepositoryImpl implements WorkspaceCustomRepository {
@@ -44,6 +44,9 @@ public class WorkspaceCustomRepositoryImpl implements WorkspaceCustomRepository 
     private BooleanExpression workspaceStatusEq(WorkspaceStatus status) {
         if (status == null) {
             return defaultWorkspaceStatus();
+        }
+        if (status == WorkspaceStatus.COMPLETED) {
+            return workspace.status.in(WorkspaceStatus.COMPLETED, WorkspaceStatus.FULLY_COMPLETED);
         }
         return workspace.status.eq(status);
     }
