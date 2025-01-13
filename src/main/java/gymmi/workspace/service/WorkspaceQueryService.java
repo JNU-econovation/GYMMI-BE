@@ -153,8 +153,9 @@ public class WorkspaceQueryService {
         List<Worker> workers = workerRepository.getAllByWorkspaceId(workspaceId);
         validateIfWorkerIsInWorkspace(logiendUser.getId(), workspaceId);
         int achievementScore = workspaceRepository.getAchievementScore(workspaceId);
+        boolean isObjectionInProgress = objectionRepository.existsByInProgress(workspace.getId());
 
-        return new InsideWorkspaceResponse(workspace, workers, achievementScore, logiendUser);
+        return new InsideWorkspaceResponse(workspace, workers, achievementScore,isObjectionInProgress, logiendUser);
     }
 
     public List<FavoriteMissionResponse> getFavoriteMissions(User loginedUser, Long workspaceId) {

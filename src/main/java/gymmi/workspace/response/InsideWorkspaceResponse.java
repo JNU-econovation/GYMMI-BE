@@ -3,10 +3,11 @@ package gymmi.workspace.response;
 import gymmi.entity.User;
 import gymmi.workspace.domain.entity.Worker;
 import gymmi.workspace.domain.entity.Workspace;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 public class InsideWorkspaceResponse {
@@ -14,6 +15,7 @@ public class InsideWorkspaceResponse {
     private final String name;
     private final Integer headCount;
     private final String status;
+    private final Boolean isObjectionInProgress;
     private final Integer goalScore;
     private final String description;
     private final Integer achievementScore;
@@ -25,6 +27,7 @@ public class InsideWorkspaceResponse {
             Workspace workspace,
             List<Worker> workers,
             int achievementScore,
+            boolean isObjectionInProgress,
             User loginedUser
     ) {
         this.name = workspace.getName();
@@ -33,6 +36,7 @@ public class InsideWorkspaceResponse {
         this.goalScore = workspace.getGoalScore();
         this.description = workspace.getDescription();
         this.achievementScore = achievementScore;
+        this.isObjectionInProgress = isObjectionInProgress;
         this.isCreator = workspace.isCreatedBy(loginedUser);
         this.workers = getWorkerResponse(workspace, workers, loginedUser);
     }

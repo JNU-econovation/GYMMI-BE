@@ -9,6 +9,7 @@ public class WorkspaceIntroductionResponse {
     private final String password;
     private final String description;
     private final String tag;
+    private final String task;
     private final Boolean isCreator;
     private final Boolean isPreparing;
 
@@ -17,6 +18,7 @@ public class WorkspaceIntroductionResponse {
         this.description = workspace.getDescription();
         this.isPreparing = workspace.isPreparing();
         this.tag = workspace.getTag();
+        this.task = workspace.getTask();
         this.isCreator = isCreator;
     }
 }
