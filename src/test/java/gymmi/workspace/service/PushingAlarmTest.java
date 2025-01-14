@@ -30,6 +30,8 @@ import static org.mockito.Mockito.times;
 @Import({Persister.class, FirebaseTestConfig.class})
 public class PushingAlarmTest {
 
+    //todo: need to clean up database after test
+
     int WAIT_TIME_MS = 1500;
 
     @Autowired

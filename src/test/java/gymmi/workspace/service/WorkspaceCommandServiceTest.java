@@ -122,7 +122,7 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
         // then
         assertThat(workspaceRepository.findById(workspace.getId())).isEmpty();
         assertThat(workerRepository.findById(worker.getId())).isEmpty();
-        assertThat(missionRepository.findAll()).isEmpty();
+        assertThat(missionRepository.getAllByWorkspaceId(workspace.getId())).isEmpty();
         assertThat(favoriteMissionRepository.findAll()).isEmpty();
         assertThat(workerRepository.findById(worker.getId())).isEmpty();
     }

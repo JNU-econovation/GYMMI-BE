@@ -33,7 +33,8 @@ public class Workspace extends TimeEntity {
 
     private static final Pattern REGEX_WORKSPACE_NAME = REGEX_영어_한글_숫자_만;
     private static final Pattern REGEX_WORKSPACE_TAG = REGEX_영어_한글_쉼표_만;
-    private final static SecureRandom random = new SecureRandom();
+
+    private static final SecureRandom random = new SecureRandom();
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
