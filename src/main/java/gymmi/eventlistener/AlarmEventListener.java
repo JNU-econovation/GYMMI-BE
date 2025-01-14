@@ -43,7 +43,7 @@ public class AlarmEventListener {
         List<Worker> workers = workerRepository.getAllByWorkspaceId(workspace.getId());
         List<User> users = workers.stream()
                 .map(Worker::getUser)
-                .toList();
+                .collect(Collectors.toList());
         users.remove(workspace.getCreator());
         for (User user : users) {
             firebaseCloudMessageService.sendMessage(user.getAlarmToken(), workspace.getName(), "워크스페이스 시작됨.");
@@ -71,8 +71,8 @@ public class AlarmEventListener {
         Worker worker = workerRepository.getByUserIdAndWorkspaceId(event.getUserId(), workspace.getId());
         List<User> users = workers.stream()
                 .map(Worker::getUser)
-                .toList();
-        users.remove(worker);
+                .collect(Collectors.toList());
+        users.remove(worker.getUser());
         for (User user : users) {
             firebaseCloudMessageService.sendMessage(user.getAlarmToken(), workspace.getName(), "운동인증 추가됨.");
         }
