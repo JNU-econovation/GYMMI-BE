@@ -1,44 +1,11 @@
 package gymmi.integration;
 
-import static gymmi.Fixtures.AUTHORIZATION_TYPE_BEARER;
-import static gymmi.Fixtures.JSON_KEY_ERROR_CODE;
-import static gymmi.Fixtures.JSON_KEY_ID;
-import static gymmi.Fixtures.JSON_KEY_PASSWORD;
-import static gymmi.Fixtures.MISSION__SATISFIED_MISSION_NAME;
-import static gymmi.Fixtures.MISSION__SATISFIED_MISSION_SCORE;
-import static gymmi.Fixtures.TASK__DEFAULT_TASK;
-import static gymmi.Fixtures.WORKSPACE__DISSATISFIED_PASSWORD;
-import static gymmi.Fixtures.WORKSPACE__SATISFIED_GOAL_SCORE;
-import static gymmi.Fixtures.WORKSPACE__SATISFIED_HEAD_COUNT;
-import static gymmi.Fixtures.WORKSPACE__SATISFIED_NAME;
-import static gymmi.integration.Steps.미션_수행_요청;
-import static gymmi.integration.Steps.워크스페이스_나가기_요청;
-import static gymmi.integration.Steps.워크스페이스_미션_보기_요청;
-import static gymmi.integration.Steps.워크스페이스_생성__DEFAULT_WORKSPACE_REQUEST;
-import static gymmi.integration.Steps.워크스페이스_생성_요청;
-import static gymmi.integration.Steps.워크스페이스_설명_수정_요청;
-import static gymmi.integration.Steps.워크스페이스_소개_보기_요청;
-import static gymmi.integration.Steps.워크스페이스_시작_요청;
-import static gymmi.integration.Steps.워크스페이스_입장_요청;
-import static gymmi.integration.Steps.워크스페이스_참여_요청;
-import static gymmi.integration.Steps.회원_가입__DEFAULT_USER_REQUEST;
-import static gymmi.integration.Steps.회원_가입__USER_1_REQUEST;
-import static gymmi.integration.Steps.회원_가입__USER_2_REQUEST;
-import static gymmi.integration.Steps.회원가입_및_로그인_요청;
-
-import gymmi.exceptionhandler.legacy.NotFoundResourcesException;
-import gymmi.workspace.request.CreatingWorkspaceRequest;
-import gymmi.workspace.request.EditingIntroductionOfWorkspaceRequest;
-import gymmi.workspace.request.JoiningWorkspaceRequest;
-import gymmi.workspace.request.MatchingWorkspacePasswordRequest;
-import gymmi.workspace.request.MissionRequest;
-import gymmi.workspace.request.RegistrationRequest;
-import gymmi.workspace.request.WorkingMissionInWorkspaceRequest;
+import gymmi.exceptionhandler.exception.NotFoundException;
+import gymmi.workspace.request.*;
 import gymmi.workspace.response.MissionResponse;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
-import java.util.List;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -46,6 +13,11 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
+
+import java.util.List;
+
+import static gymmi.Fixtures.*;
+import static gymmi.integration.Steps.*;
 
 @Disabled
 public class WorkspaceEndToEndTest extends EndToEndTest {
@@ -670,7 +642,7 @@ public class WorkspaceEndToEndTest extends EndToEndTest {
 
             // then
             response.then()
-                    .body(JSON_KEY_ERROR_CODE, Matchers.equalTo(NotFoundResourcesException.ERROR_CODE));
+                    .body(JSON_KEY_ERROR_CODE, Matchers.equalTo(NotFoundException.EXCEPTION_CODE));
         }
 
         @Test
@@ -859,7 +831,7 @@ public class WorkspaceEndToEndTest extends EndToEndTest {
             // when
             Response response =
                     워크스페이스_설명_수정_요청(defaultUserToken, workspaceId,
-                            new EditingIntroductionOfWorkspaceRequest("수정", "태그","테스크"));
+                            new EditingIntroductionOfWorkspaceRequest("수정", "태그", "테스크"));
 
             // then
             response.then()
@@ -881,7 +853,7 @@ public class WorkspaceEndToEndTest extends EndToEndTest {
 
             // when
             Response response =
-                    워크스페이스_설명_수정_요청(user1Token, workspaceId, new EditingIntroductionOfWorkspaceRequest("수정", "태그","테스크"));
+                    워크스페이스_설명_수정_요청(user1Token, workspaceId, new EditingIntroductionOfWorkspaceRequest("수정", "태그", "테스크"));
 
             // then
             response.then()

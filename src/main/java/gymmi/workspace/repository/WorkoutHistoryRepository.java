@@ -1,6 +1,7 @@
 package gymmi.workspace.repository;
 
-import gymmi.exceptionhandler.legacy.NotFoundResourcesException;
+import gymmi.exceptionhandler.exception.NotFoundException;
+import gymmi.exceptionhandler.message.ErrorCode;
 import gymmi.workspace.domain.entity.WorkoutHistory;
 import gymmi.workspace.repository.custom.WorkoutHistoryCustomRepository;
 import gymmi.workspace.response.WorkoutConfirmationOrObjectionProjection;
@@ -20,7 +21,7 @@ public interface WorkoutHistoryRepository extends JpaRepository<WorkoutHistory, 
 
     default WorkoutHistory getByWorkoutHistoryId(Long workoutHistoryId) {
         WorkoutHistory workoutHistory = findById(workoutHistoryId)
-                .orElseThrow(() -> new NotFoundResourcesException("해당 운동 기록이 존재하지 않아요."));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_WORKOUT_CONFIRMATION));
         return workoutHistory;
     }
 
@@ -30,7 +31,7 @@ public interface WorkoutHistoryRepository extends JpaRepository<WorkoutHistory, 
 
     default WorkoutHistory getByWorkoutConfirmationId(Long workoutConfirmationId) {
         WorkoutHistory workoutHistory = findByWorkoutConfirmationId(workoutConfirmationId)
-                .orElseThrow(() -> new NotFoundResourcesException("해당 운동 기록이 존재하지 않아요."));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_WORKOUT_CONFIRMATION));
         return workoutHistory;
     }
 

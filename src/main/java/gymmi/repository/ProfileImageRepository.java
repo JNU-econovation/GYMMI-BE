@@ -1,10 +1,12 @@
 package gymmi.repository;
 
 import gymmi.entity.ProfileImage;
-import gymmi.exceptionhandler.legacy.NotFoundResourcesException;
-import java.util.Optional;
+import gymmi.exceptionhandler.exception.NotFoundException;
+import gymmi.exceptionhandler.message.ErrorCode;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+
+import java.util.Optional;
 
 public interface ProfileImageRepository extends JpaRepository<ProfileImage, Long> {
 
@@ -13,7 +15,7 @@ public interface ProfileImageRepository extends JpaRepository<ProfileImage, Long
 
     default ProfileImage getByUserId(Long userId) {
         return findByUserId(userId)
-                .orElseThrow(() -> new NotFoundResourcesException("프로필 이미지가 존재하지 않습니다."));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_PHOTO_FEED_IMAGE));
     }
 
 }

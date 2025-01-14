@@ -1,12 +1,14 @@
 package gymmi.workspace.repository;
 
-import gymmi.exceptionhandler.legacy.NotFoundResourcesException;
+import gymmi.exceptionhandler.exception.NotFoundException;
+import gymmi.exceptionhandler.message.ErrorCode;
 import gymmi.workspace.domain.entity.Mission;
-import java.util.List;
-import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+
+import java.util.List;
+import java.util.Optional;
 
 public interface MissionRepository extends JpaRepository<Mission, Long> {
 
@@ -22,7 +24,7 @@ public interface MissionRepository extends JpaRepository<Mission, Long> {
 
     default Mission getByMissionId(Long missionId) {
         Mission mission = findByMissionId(missionId)
-                .orElseThrow(() -> new NotFoundResourcesException("해당 미션이 존재하지 않아요."));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_MISSION));
         return mission;
     }
 }
