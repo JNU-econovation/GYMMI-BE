@@ -5,6 +5,7 @@ import gymmi.eventlistener.event.ObjectionOpenEvent;
 import gymmi.eventlistener.event.WorkoutConfirmationCreatedEvent;
 import gymmi.eventlistener.event.WorkspaceStartedEvent;
 import gymmi.global.firebase.FirebaseCloudMessageService;
+import gymmi.global.firebase.SendingRequest;
 import gymmi.workspace.domain.entity.Objection;
 import gymmi.workspace.domain.entity.Worker;
 import gymmi.workspace.domain.entity.WorkoutHistory;
@@ -21,13 +22,17 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-@Transactional(propagation = Propagation.REQUIRES_NEW)
 @Async
 public class AlarmEventListener {
+
+    public static final String GYMMI = "GYMMI";
 
     private final FirebaseCloudMessageService firebaseCloudMessageService;
 
@@ -36,9 +41,9 @@ public class AlarmEventListener {
     private final ObjectionRepository objectionRepository;
     private final WorkoutHistoryRepository workoutHistoryRepository;
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void notifyWorkspaceStart(WorkspaceStartedEvent event) {
-        System.out.println("워크스페이스 시작됨");
         Workspace workspace = workspaceRepository.getWorkspaceById(event.getWorkspaceId());
         List<Worker> workers = workerRepository.getAllByWorkspaceId(workspace.getId());
         List<User> users = workers.stream()
@@ -46,10 +51,18 @@ public class AlarmEventListener {
                 .collect(Collectors.toList());
         users.remove(workspace.getCreator());
         for (User user : users) {
-            firebaseCloudMessageService.sendMessage(user.getAlarmToken(), workspace.getName(), "워크스페이스 시작됨.");
+            SendingRequest request = SendingRequest.builder()
+                    .userToken(user.getAlarmToken())
+                    .title(GYMMI)
+                    .redirectUrl("/workspace/" + workspace.getId())
+                    .createdAt(LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
+                    .body("워크스페이스가 시작 되었어요!")
+                    .build();
+            firebaseCloudMessageService.sendMessage(request);
         }
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void notifyObjectionOpen(ObjectionOpenEvent event) {
         Workspace workspace = workspaceRepository.getWorkspaceById(event.getWorkspaceId());
@@ -60,10 +73,18 @@ public class AlarmEventListener {
                 .map(Worker::getUser)
                 .toList();
         for (User user : users) {
-            firebaseCloudMessageService.sendMessage(user.getAlarmToken(), workspace.getName(), "이의신청 추가됨.");
+            SendingRequest request = SendingRequest.builder()
+                    .userToken(user.getAlarmToken())
+                    .title(GYMMI)
+                    .redirectUrl("/workspace/" + workspace.getId() + "/workspaceConfirmation/workspaceConfirmationDetail")
+                    .createdAt(LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
+                    .body("누군가가 운동인증에 이의신청을 했어요!")
+                    .build();
+            firebaseCloudMessageService.sendMessage(request);
         }
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void notifyWorkoutConfirmationCreated(WorkoutConfirmationCreatedEvent event) {
         Workspace workspace = workspaceRepository.getWorkspaceById(event.getWorkspaceId());
@@ -74,7 +95,14 @@ public class AlarmEventListener {
                 .collect(Collectors.toList());
         users.remove(worker.getUser());
         for (User user : users) {
-            firebaseCloudMessageService.sendMessage(user.getAlarmToken(), workspace.getName(), "운동인증 추가됨.");
+            SendingRequest request = SendingRequest.builder()
+                    .userToken(user.getAlarmToken())
+                    .title(GYMMI)
+                    .redirectUrl("/workspace/" + workspace.getId() + "/workspaceConfirmation")
+                    .createdAt(LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
+                    .body("새로운 운동인증이 등록되었어요!")
+                    .build();
+            firebaseCloudMessageService.sendMessage(request);
         }
     }
 }

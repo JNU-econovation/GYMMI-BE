@@ -13,23 +13,25 @@ public class FirebaseCloudMessageService {
 
     private final FirebaseMessaging firebaseMessaging;
 
-    public void sendMessage(String token, String title, String body) {
-        if (token == null) {
+    public void sendMessage(SendingRequest request) {
+        if (request.getUserToken() == null) {
             return;
         }
         Notification notification = Notification.builder()
-                .setTitle(title)
-                .setBody(body)
+                .setTitle(request.getTitle())
+                .setBody(request.getBody())
                 .build();
 
         Message message = Message.builder()
                 .setNotification(notification)
-                .setToken(token)
+                .setToken(request.getUserToken())
+                .putData("redirectUrl", request.getRedirectUrl())
+                .putData("createdAt", request.getCreatedAt())
                 .build();
         try {
             firebaseMessaging.send(message);
         } catch (FirebaseMessagingException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 }
