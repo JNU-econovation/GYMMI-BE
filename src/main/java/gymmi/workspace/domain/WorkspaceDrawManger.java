@@ -23,7 +23,7 @@ public class WorkspaceDrawManger {
         }
         this.workers = new ArrayList<>(workers);
         this.workspace = workspace;
-        workers.sort(Comparator.comparing(Worker::getContributedScore).reversed());
+        this.workers.sort(Comparator.comparing(Worker::getContributedScore).reversed());
     }
 
     public WorkspaceResult draw() {
