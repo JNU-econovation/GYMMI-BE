@@ -226,7 +226,7 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
     }
 
     @Test
-    void 태클에_투표를_한다() {
+    void 이의신청_투표를_한다() {
         // given
         User creator = persister.persistUser();
         User user = persister.persistUser();

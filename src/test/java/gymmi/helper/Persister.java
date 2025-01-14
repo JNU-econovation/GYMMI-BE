@@ -131,7 +131,7 @@ public class Persister {
         return worker;
     }
 
-    //todo
+    //todo 지연로딩
     public WorkoutHistory persistWorkoutHistoryAndApply(Worker worker, Map<Mission, Integer> workouts) {
         List<WorkoutRecord> workoutRecords = workouts.entrySet().stream()
                 .map(workout -> new WorkoutRecord(workout.getKey(), workout.getValue()))
@@ -149,6 +149,7 @@ public class Persister {
         return workoutHistory;
     }
 
+    //todo workout confirmation id 값 오류?
     public WorkoutHistory persistWorkoutHistoryAndApply(Worker worker, Map<Mission, Integer> workouts, WorkoutConfirmation workoutConfirmation) {
         List<WorkoutRecord> workoutRecords = workouts.entrySet().stream()
                 .map(workout -> new WorkoutRecord(workout.getKey(), workout.getValue()))
