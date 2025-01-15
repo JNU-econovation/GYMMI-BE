@@ -1,19 +1,18 @@
 package gymmi.workspace.domain;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
 import gymmi.exceptionhandler.message.ErrorCode;
 import gymmi.workspace.domain.entity.*;
-import gymmi.workspace.domain.entity.WorkoutConfirmation;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
 import org.instancio.Instancio;
 import org.instancio.Select;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class WorkspaceProgressManagerTest {
 
@@ -25,8 +24,24 @@ class WorkspaceProgressManagerTest {
         List<Mission> missions = getMissions(workspace, 3);
 
         // when, then
-        assertThatThrownBy(() -> new WorkspaceProgressManager(workspace, missions))
+        assertThatThrownBy(() -> new WorkspaceProgressManager(workspace, missions, 0))
                 .hasMessage(ErrorCode.INACTIVE_WORKSPACE.getMessage());
+    }
+
+    @Test
+    void 페이즈_변화_여부를_확인한다() {
+        // given
+        Workspace workspace = getWorkspace(WorkspaceStatus.IN_PROGRESS, Workspace.MIN_HEAD_COUNT, 100);
+        List<Mission> missions = getMissions(workspace, 3);
+        WorkspaceProgressManager workspaceProgressManager = new WorkspaceProgressManager(workspace, missions, 10);
+        assertThat(workspaceProgressManager.getWorkspacePhase()).isEqualTo(WorkspacePhase.P_0);
+
+        // when
+        boolean result = workspaceProgressManager.hasPhaseChanged(25);
+
+        // then
+        assertThat(result).isEqualTo(true);
+        assertThat(workspaceProgressManager.getWorkspacePhase()).isEqualTo(WorkspacePhase.P_25);
     }
 
 
@@ -38,7 +53,7 @@ class WorkspaceProgressManagerTest {
             // given
             Workspace workspace = getWorkspace(WorkspaceStatus.IN_PROGRESS, Workspace.MIN_HEAD_COUNT);
             List<Mission> missions = getMissions(workspace, 3);
-            WorkspaceProgressManager workspaceProgressManager = new WorkspaceProgressManager(workspace, missions);
+            WorkspaceProgressManager workspaceProgressManager = new WorkspaceProgressManager(workspace, missions, 0);
 
             Worker worker = Instancio.of(Worker.class)
                     .filter(Select.field(Worker::getWorkspace), (Workspace ws) -> !ws.equals(workspace))
@@ -57,7 +72,7 @@ class WorkspaceProgressManagerTest {
         void 워크스페이스에_동록된_미션이_아닌_경우_예외가_발생한다() {
             Workspace workspace = getWorkspace(WorkspaceStatus.IN_PROGRESS, Workspace.MIN_HEAD_COUNT);
             List<Mission> missions = getMissions(workspace, 3);
-            WorkspaceProgressManager workspaceProgressManager = new WorkspaceProgressManager(workspace, missions);
+            WorkspaceProgressManager workspaceProgressManager = new WorkspaceProgressManager(workspace, missions, 0);
 
             Worker worker = getWorker(workspace);
             Mission mission = Instancio.of(Mission.class)
@@ -76,7 +91,7 @@ class WorkspaceProgressManagerTest {
             // given
             Workspace workspace = getWorkspace(WorkspaceStatus.IN_PROGRESS, Workspace.MIN_HEAD_COUNT);
             List<Mission> missions = getMissions(workspace, 3);
-            WorkspaceProgressManager workspaceProgressManager = new WorkspaceProgressManager(workspace, missions);
+            WorkspaceProgressManager workspaceProgressManager = new WorkspaceProgressManager(workspace, missions, 0);
 
             Worker worker = getWorker(workspace);
             Mission mission = missions.get(0);
@@ -105,7 +120,7 @@ class WorkspaceProgressManagerTest {
             // given
             Workspace workspace = getWorkspace(WorkspaceStatus.IN_PROGRESS, Workspace.MIN_HEAD_COUNT);
             List<Mission> missions = getMissions(workspace, 1);
-            WorkspaceProgressManager workspaceProgressManager = new WorkspaceProgressManager(workspace, missions);
+            WorkspaceProgressManager workspaceProgressManager = new WorkspaceProgressManager(workspace, missions, 0);
 
             // when
             workspaceProgressManager.completeWhenGoalScoreIsAchieved(workspace.getGoalScore() + 1);
@@ -145,6 +160,15 @@ class WorkspaceProgressManagerTest {
         Workspace workspace = Instancio.of(Workspace.class)
                 .set(Select.field(Workspace::getStatus), workspaceStatus)
                 .set(Select.field(Workspace::getHeadCount), headCount)
+                .create();
+        return workspace;
+    }
+
+    private Workspace getWorkspace(WorkspaceStatus workspaceStatus, int headCount, int goalScore) {
+        Workspace workspace = Instancio.of(Workspace.class)
+                .set(Select.field(Workspace::getStatus), workspaceStatus)
+                .set(Select.field(Workspace::getHeadCount), headCount)
+                .set(Select.field(Workspace::getGoalScore), goalScore)
                 .create();
         return workspace;
     }

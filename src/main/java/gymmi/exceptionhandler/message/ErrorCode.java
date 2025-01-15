@@ -99,6 +99,7 @@ public enum ErrorCode {
 
     // etc
     RETRY_AFTER_LOGOUT("로그아웃 후 다시 시도해 주세요", 500),
+    LOGIC_ERROR("벡엔드 문의 바람", 500),
     ;
 
     private final String message;
