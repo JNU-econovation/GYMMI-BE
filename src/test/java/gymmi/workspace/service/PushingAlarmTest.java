@@ -6,7 +6,10 @@ import gymmi.global.firebase.FirebaseCloudMessageService;
 import gymmi.helper.Persister;
 import gymmi.service.S3Service;
 import gymmi.workspace.domain.WorkspaceStatus;
-import gymmi.workspace.domain.entity.*;
+import gymmi.workspace.domain.entity.Mission;
+import gymmi.workspace.domain.entity.Worker;
+import gymmi.workspace.domain.entity.WorkoutHistory;
+import gymmi.workspace.domain.entity.Workspace;
 import gymmi.workspace.repository.WorkspaceRepository;
 import gymmi.workspace.request.ObjectionRequest;
 import gymmi.workspace.request.WorkingMissionInWorkspaceRequest;
@@ -116,6 +119,36 @@ public class PushingAlarmTest {
         // then
         Thread.sleep(1000);
         then(firebaseCloudMessageService).should(times(3)).sendMessage(any());
+    }
+
+    @Test
+    void 워크스페이스_페이즈가_변할시_모든_참여자들에게_알림이_푸쉬된다() throws InterruptedException {
+        // given
+        User user = persister.persistUser();
+        User user1 = persister.persistUser();
+        User user2 = persister.persistUser();
+        Workspace workspace = persister.persistWorkspace(user, WorkspaceStatus.IN_PROGRESS, 100, 3);
+        Worker worker = persister.persistWorker(user, workspace);
+        Worker worker1 = persister.persistWorker(user1, workspace);
+        Worker worker2 = persister.persistWorker(user2, workspace);
+        Mission mission = persister.persistMission(workspace, 10);
+        persister.persistWorkoutHistoryAndApply(worker, Map.of(mission, 2));
+
+        List<WorkingMissionInWorkspaceRequest> requests = List.of(
+                new WorkingMissionInWorkspaceRequest(mission.getId(), 1)
+        );
+        WorkoutRequest request = Instancio.of(WorkoutRequest.class)
+                .set(field(WorkoutRequest::getMissions), requests)
+                .set(field(WorkoutRequest::getWillLink), false)
+                .create();
+        given(s3Service.copy(any(), any(), any())).willReturn(UUID.randomUUID().toString());
+
+        // when
+        workspaceCommandService.workMissionsInWorkspace(user, workspace.getId(), request);
+
+        // then
+        Thread.sleep(1000);
+        then(firebaseCloudMessageService).should(times(2 + 3)).sendMessage(any());
     }
 
 }

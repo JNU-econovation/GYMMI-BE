@@ -3,6 +3,7 @@ package gymmi.workspace.service;
 import gymmi.entity.User;
 import gymmi.eventlistener.event.ObjectionOpenEvent;
 import gymmi.eventlistener.event.WorkoutConfirmationCreatedEvent;
+import gymmi.eventlistener.event.WorkspacePhaseChangedEvent;
 import gymmi.eventlistener.event.WorkspaceStartedEvent;
 import gymmi.exceptionhandler.exception.AlreadyExistException;
 import gymmi.exceptionhandler.exception.InvalidStateException;
@@ -122,8 +123,8 @@ public class WorkspaceCommandService {
         List<Mission> missions = missionRepository.getAllByWorkspaceId(workspace.getId());
         Map<Mission, Integer> workouts = getWorkouts(workoutRequest.getMissions());
         validateDailyWorkoutHistoryCount(worker.getId());
-
-        WorkspaceProgressManager workspaceProgressManager = new WorkspaceProgressManager(workspace, missions);
+        int achievementScore = workspaceRepository.getAchievementScore(workspaceId);
+        WorkspaceProgressManager workspaceProgressManager = new WorkspaceProgressManager(workspace, missions, achievementScore);
         WorkoutHistory workoutHistory = workspaceProgressManager.doWorkout(
                 worker,
                 workouts,
@@ -133,12 +134,14 @@ public class WorkspaceCommandService {
 
         s3Service.checkObjectExist(WorkoutConfirmation.IMAGE_USE, workoutRequest.getImageUrl());
         workoutHistoryRepository.save(workoutHistory);
-        int achievementScore = workspaceRepository.getAchievementScore(workspaceId);
-
+        achievementScore = workspaceRepository.getAchievementScore(workspaceId);
         workspaceProgressManager.completeWhenGoalScoreIsAchieved(achievementScore);
         linkToPhotoBoardIfRequested(loginedUser, workoutRequest);
 
         applicationEventPublisher.publishEvent(new WorkoutConfirmationCreatedEvent(workspace.getId(), loginedUser.getId()));
+        if (workspaceProgressManager.hasPhaseChanged(achievementScore)) {
+            applicationEventPublisher.publishEvent(new WorkspacePhaseChangedEvent(workspace.getId(), workspaceProgressManager.getWorkspacePhase()));
+        }
 
         return workoutHistory.getSum();
     }

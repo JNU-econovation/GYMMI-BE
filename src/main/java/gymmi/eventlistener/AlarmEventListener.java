@@ -3,6 +3,7 @@ package gymmi.eventlistener;
 import gymmi.entity.User;
 import gymmi.eventlistener.event.ObjectionOpenEvent;
 import gymmi.eventlistener.event.WorkoutConfirmationCreatedEvent;
+import gymmi.eventlistener.event.WorkspacePhaseChangedEvent;
 import gymmi.eventlistener.event.WorkspaceStartedEvent;
 import gymmi.global.firebase.FirebaseCloudMessageService;
 import gymmi.global.firebase.SendingRequest;
@@ -101,6 +102,26 @@ public class AlarmEventListener {
                     .redirectUrl("/workspace/" + workspace.getId() + "/workspaceConfirmation")
                     .createdAt(LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
                     .body("새로운 운동인증이 등록되었어요!")
+                    .build();
+            firebaseCloudMessageService.sendMessage(request);
+        }
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void notifyWorkspacePhaseChanged(WorkspacePhaseChangedEvent event) {
+        Workspace workspace = workspaceRepository.getWorkspaceById(event.getWorkspaceId());
+        List<Worker> workers = workerRepository.getAllByWorkspaceId(workspace.getId());
+        List<User> users = workers.stream()
+                .map(Worker::getUser)
+                .toList();
+        for (User user : users) {
+            SendingRequest request = SendingRequest.builder()
+                    .userToken(user.getAlarmToken())
+                    .title(GYMMI)
+                    .redirectUrl("/")
+                    .createdAt(LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
+                    .body("워크스페이스 달성률이 " + event.getWorkspacePhase().getValue() + "%에 도달했어요!")
                     .build();
             firebaseCloudMessageService.sendMessage(request);
         }
