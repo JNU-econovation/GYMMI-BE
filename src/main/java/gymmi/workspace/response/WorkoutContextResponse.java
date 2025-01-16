@@ -1,7 +1,7 @@
 package gymmi.workspace.response;
 
-import gymmi.workspace.domain.entity.WorkoutHistory;
 import gymmi.workspace.domain.WorkoutMetric;
+import gymmi.workspace.domain.entity.WorkoutHistory;
 import lombok.Getter;
 
 import java.util.List;
@@ -9,6 +9,7 @@ import java.util.List;
 @Getter
 public class WorkoutContextResponse {
 
+    private String nickname;
     private Integer totalContributedScore;
     private Integer bestDailyScore;
     private Integer totalWorkoutCount;
@@ -16,6 +17,7 @@ public class WorkoutContextResponse {
     private List<WorkoutHistoryResponse> workoutHistories;
 
     public WorkoutContextResponse(WorkoutMetric workoutMetric, int gabScoreFromFirst, List<WorkoutHistory> workoutHistories) {
+        this.nickname = workoutHistories.get(0).getWorker().getNickname();
         this.totalContributedScore = workoutMetric.getSum();
         this.bestDailyScore = workoutMetric.getBestWorkoutScore();
         this.totalWorkoutCount = workoutMetric.getWorkoutCount();
