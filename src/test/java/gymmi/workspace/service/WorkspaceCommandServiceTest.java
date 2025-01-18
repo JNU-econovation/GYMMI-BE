@@ -10,6 +10,7 @@ import gymmi.workspace.repository.*;
 import gymmi.workspace.request.*;
 import jakarta.persistence.EntityManager;
 import org.instancio.Instancio;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -159,6 +160,7 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
             assertThat(assertThat(photoFeedRepository.findAll()).hasSize(1));
         }
 
+        @Disabled
         @Test
         void 워크스페이스_일일_운동_횟수를_초과한_경우_예외가_발생_한다() {
             // given

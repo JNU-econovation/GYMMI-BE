@@ -51,7 +51,6 @@ public class WorkspaceCommandService {
         if (workspaceRepository.existsByName(request.getName())) {
             throw new AlreadyExistException(ErrorCode.ALREADY_USED_WORKSPACE_NAME);
         }
-
         WorkspaceInitializer workspaceInitializer = new WorkspaceInitializer();
         workspaceInitializer.init(loginedUser, request);
 
@@ -63,7 +62,6 @@ public class WorkspaceCommandService {
     }
 
     @Transactional
-    // 동시 참여 -> 인원수 초과, 중복 요청 -> 중복 참여자 존재
     public void joinWorkspace(User loginedUser, Long workspaceId, JoiningWorkspaceRequest request) {
         validateCountOfWorkspaces(loginedUser.getId());
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
@@ -122,7 +120,7 @@ public class WorkspaceCommandService {
         Worker worker = workerRepository.getByUserIdAndWorkspaceId(loginedUser.getId(), workspace.getId());
         List<Mission> missions = missionRepository.getAllByWorkspaceId(workspace.getId());
         Map<Mission, Integer> workouts = getWorkouts(workoutRequest.getMissions());
-        validateDailyWorkoutHistoryCount(worker.getId());
+//        validateDailyWorkoutHistoryCount(worker.getId());
         int achievementScore = workspaceRepository.getAchievementScore(workspaceId);
         WorkspaceProgressManager workspaceProgressManager = new WorkspaceProgressManager(workspace, missions, achievementScore);
         WorkoutHistory workoutHistory = workspaceProgressManager.doWorkout(

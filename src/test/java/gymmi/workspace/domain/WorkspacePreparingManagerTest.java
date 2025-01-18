@@ -49,7 +49,7 @@ class WorkspacePreparingManagerTest {
             // when, then
             assertThatThrownBy(() -> workspacePreparingManager.allow(user, wrongPassword))
                     .hasMessage(ErrorCode.NOT_MATCHED_PASSWORD.getMessage());
-        }
+        }   
 
         @Test
         void 워크스페이스_인원이_가득_찬_경우_예외가_발생한다() {
