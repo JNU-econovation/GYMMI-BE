@@ -108,6 +108,7 @@ public class WorkspaceQueryService {
 
         WorkoutMetric workoutMetric = new WorkoutMetric(workoutHistories);
         return new WorkoutContextResponse(
+                targetWorker.getNickname(),
                 workoutMetric,
                 workoutMetric.getScoreGapFrom(firstPlaceScore),
                 workoutHistories
@@ -155,7 +156,7 @@ public class WorkspaceQueryService {
         int achievementScore = workspaceRepository.getAchievementScore(workspaceId);
         boolean isObjectionInProgress = objectionRepository.existsByInProgress(workspace.getId());
 
-        return new InsideWorkspaceResponse(workspace, workers, achievementScore,isObjectionInProgress, logiendUser);
+        return new InsideWorkspaceResponse(workspace, workers, achievementScore, isObjectionInProgress, logiendUser);
     }
 
     public List<FavoriteMissionResponse> getFavoriteMissions(User loginedUser, Long workspaceId) {

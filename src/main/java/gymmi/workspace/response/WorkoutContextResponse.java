@@ -16,8 +16,8 @@ public class WorkoutContextResponse {
     private Integer gabScoreFromFirst;
     private List<WorkoutHistoryResponse> workoutHistories;
 
-    public WorkoutContextResponse(WorkoutMetric workoutMetric, int gabScoreFromFirst, List<WorkoutHistory> workoutHistories) {
-        this.nickname = workoutHistories.get(0).getWorker().getNickname();
+    public WorkoutContextResponse(String nickname, WorkoutMetric workoutMetric, int gabScoreFromFirst, List<WorkoutHistory> workoutHistories) {
+        this.nickname = nickname;
         this.totalContributedScore = workoutMetric.getSum();
         this.bestDailyScore = workoutMetric.getBestWorkoutScore();
         this.totalWorkoutCount = workoutMetric.getWorkoutCount();
