@@ -30,6 +30,16 @@ public class ObjectionManager {
         return new Vote(worker, objection, isApproved);
     }
 
+    public void apply(Vote vote) {
+        objection.add(vote);
+    }
+
+    public void applyAll(List<Vote> votes) {
+        for (Vote vote : votes) {
+            apply(vote);
+        }
+    }
+
     public boolean closeIfOnMajorityOrDone(int workerCount) {
         int majority = getMajority(workerCount);
         if (objection.getApprovalCount() >= majority) {

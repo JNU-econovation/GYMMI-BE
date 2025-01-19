@@ -15,7 +15,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -254,7 +253,6 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
     }
 
     @Test
-    @Transactional
     void 투표가_안되었지만_시간이_지난_이의신청은_찬성표를_통해_자동으로_종료시킨다() {
         // given
         User creator = persister.persistUser();
@@ -278,9 +276,12 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
         workspaceCommandService.terminateExpiredObjection(creator, workspace.getId());
 
         // then
-        assertThat(objection.isInProgress()).isFalse();
-        assertThat(objection.getVoteCount()).isEqualTo(4);
-        assertThat(objection.getApprovalCount()).isEqualTo(3);
+        entityManager.flush();
+        entityManager.clear();
+        Objection refreshObjection = objectionRepository.getByObjectionId(objection.getId());
+        assertThat(refreshObjection.isInProgress()).isFalse();
+        assertThat(refreshObjection.getVoteCount()).isEqualTo(4);
+        assertThat(refreshObjection.getApprovalCount()).isEqualTo(3);
 
     }
 
