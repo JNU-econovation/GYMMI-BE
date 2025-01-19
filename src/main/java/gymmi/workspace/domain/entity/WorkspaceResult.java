@@ -1,10 +1,6 @@
 package gymmi.workspace.domain.entity;
 
-import gymmi.exceptionhandler.exception.InvalidRangeException;
-import gymmi.exceptionhandler.exception.NotHavePermissionException;
-import gymmi.exceptionhandler.message.ErrorCode;
-import gymmi.workspace.domain.entity.Worker;
-import gymmi.workspace.domain.entity.Workspace;
+import gymmi.workspace.domain.WorkspaceStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -34,5 +30,9 @@ public class WorkspaceResult {
         this.workspace = workspace;
         this.winner = winner;
         this.loser = loser;
+    }
+
+    public void apply() {
+        workspace.changeStatusTo(WorkspaceStatus.FULLY_COMPLETED);
     }
 }

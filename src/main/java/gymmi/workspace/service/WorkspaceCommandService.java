@@ -230,7 +230,9 @@ public class WorkspaceCommandService {
 
         ObjectionManager objectionManager = new ObjectionManager(objection);
         Vote vote = objectionManager.createVote(worker, request.getWillApprove());
+
         voteRepository.save(vote);
+        objectionManager.apply(vote);
 
         List<Worker> workers = workerRepository.getAllByWorkspaceId(workspaceId);
 
@@ -256,6 +258,7 @@ public class WorkspaceCommandService {
             ObjectionManager objectionManager = new ObjectionManager(expiredObjection);
             List<Vote> votes = objectionManager.createAutoVote(workers);
             voteRepository.saveAll(votes);
+            objectionManager.applyAll(votes);
             if (objectionManager.closeIfOnMajorityOrDone(workers.size())) {
                 WorkoutHistory workoutHistory = workoutHistoryRepository.getByWorkoutConfirmationId(expiredObjection.getWorkoutConfirmation().getId());
                 rejectWorkoutHistory(objectionManager, workoutHistory);
@@ -278,6 +281,7 @@ public class WorkspaceCommandService {
 
         WorkspaceDrawManger workspaceDrawManger = new WorkspaceDrawManger(workspace, workers);
         WorkspaceResult workspaceResult = workspaceDrawManger.draw();
+        workspaceResult.apply();
 
         workspaceResultRepository.save(workspaceResult);
         return getWorkspaceResultResponse(workspace, workers, workspaceResult);

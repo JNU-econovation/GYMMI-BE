@@ -76,7 +76,7 @@ class ObjectionManagerTest {
             "5,2,2,false, false",
             "4,2,2,true, false",
     })
-    void 투표에_따라_투표가_종료된다(int workerCount, int agreeCount, int disagreeCount, boolean isClosed, boolean isApproved) {
+    void 투표에_따라_이의신청이_종료된다(int workerCount, int agreeCount, int disagreeCount, boolean isClosed, boolean isApproved) {
         // given
         Objection objection = getObjection(true);
         List<Vote> agreeVotes = getVotes(agreeCount, objection, true);
@@ -84,15 +84,15 @@ class ObjectionManagerTest {
         agreeVotes.addAll(disagreeVotes);
         addVoteToObjection(objection, agreeVotes);
 
-        ObjectionManager tackleManager = new ObjectionManager(objection);
+        ObjectionManager objectionManager = new ObjectionManager(objection);
 
         // when
-        boolean result = tackleManager.closeIfOnMajorityOrDone(workerCount);
+        boolean result = objectionManager.closeIfOnMajorityOrDone(workerCount);
 
         // then
-        assertThat(!tackleManager.getObjection().isInProgress()).isEqualTo(isClosed);
+        assertThat(!objectionManager.getObjection().isInProgress()).isEqualTo(isClosed);
         assertThat(result).isEqualTo(isClosed);
-        assertThat(tackleManager.isApproved()).isEqualTo(isApproved);
+        assertThat(objectionManager.isApproved()).isEqualTo(isApproved);
     }
 
     private List<Vote> getVotes(int size, Objection objection, boolean isApproved) {

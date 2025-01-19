@@ -32,7 +32,6 @@ public class WorkspaceDrawManger {
         Worker winner = pickOneInTie(first);
         Worker loser = pickOneInTie(last);
         WorkspaceResult workspaceResult = new WorkspaceResult(workspace, winner, loser);
-        workspace.changeStatusTo(WorkspaceStatus.FULLY_COMPLETED);
         return workspaceResult;
     }
 

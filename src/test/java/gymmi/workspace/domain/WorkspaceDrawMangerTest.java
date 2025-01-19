@@ -36,7 +36,7 @@ class WorkspaceDrawMangerTest {
     @Nested
     class 뽑기 {
         @Test
-        void 일등과_꼴등을_뽑은후_워크스페이스는_완전히_종료된다() {
+        void 일등과_꼴등을_뽑은후_결과를_적용한다면_워크스페이스는_완전히_종료된다() {
             // given
             Workspace workspace = Instancio.of(Workspace.class)
                     .set(Select.field(Workspace::getStatus), WorkspaceStatus.COMPLETED)
@@ -50,9 +50,11 @@ class WorkspaceDrawMangerTest {
                 workers.add(worker);
             }
             WorkspaceDrawManger workspaceDrawManger = new WorkspaceDrawManger(workspace, workers);
+            WorkspaceResult result = workspaceDrawManger.draw();
+            assertThat(workspace.isFullyCompleted()).isFalse();
 
             // when
-            WorkspaceResult result = workspaceDrawManger.draw();
+            result.apply();
 
             // then
             assertThat(workspace.isFullyCompleted()).isTrue();
@@ -94,7 +96,6 @@ class WorkspaceDrawMangerTest {
             System.out.println("losers = " + losers);
 
             // then
-            assertThat(workspace.isFullyCompleted()).isTrue();
             assertThat(winners).containsAnyOf(workers.get(4), workers.get(9));
             assertThat(losers).containsAnyOf(workers.get(0), workers.get(5));
         }
