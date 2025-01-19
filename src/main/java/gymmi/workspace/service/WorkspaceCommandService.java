@@ -283,6 +283,7 @@ public class WorkspaceCommandService {
 
         WorkspaceDrawManger workspaceDrawManger = new WorkspaceDrawManger(workspace, workers);
         WorkspaceResult workspaceResult = workspaceDrawManger.draw();
+        workspaceResult.apply();
 
         workspaceResultRepository.save(workspaceResult);
         return getWorkspaceResultResponse(workspace, workers, workspaceResult);
