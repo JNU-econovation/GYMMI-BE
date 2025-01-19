@@ -227,7 +227,7 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
     }
 
     @Test
-    void 이의신청_투표를_한다() {
+    void 이의신청_투표를_통해_이의신청이_찬성되어_점수가_몰수된다() {
         // given
         User creator = persister.persistUser();
         User user = persister.persistUser();
@@ -252,6 +252,7 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
         assertThat(voteRepository.findAll().size()).isEqualTo(3);
         assertThat(objection.isInProgress()).isEqualTo(false);
         assertThat(workoutHistory.isApproved()).isFalse();
+        assertThat(userWorker.getContributedScore()).isEqualTo(0);
     }
 
     @Test

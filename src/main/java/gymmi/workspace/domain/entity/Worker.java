@@ -42,6 +42,10 @@ public class Worker extends TimeEntity {
         contributedScore += workingScore;
     }
 
+    public void minusWorkingScore(Integer workingScore) {
+        contributedScore -= workingScore;
+    }
+
     public boolean isJoinedIn(Workspace workspace) {
         return this.workspace.equals(workspace);
     }

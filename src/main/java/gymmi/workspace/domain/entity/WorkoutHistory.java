@@ -61,6 +61,7 @@ public class WorkoutHistory extends TimeEntity {
 
     public void cancel() {
         isApproved = false;
+        worker.minusWorkingScore(totalScore);
     }
 
     public int getSum() {
