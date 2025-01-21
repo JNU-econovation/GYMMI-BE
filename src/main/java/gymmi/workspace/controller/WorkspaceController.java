@@ -270,12 +270,12 @@ public class WorkspaceController {
     }
 
     @GetMapping("/workspaces/{workspaceId}/result")
-    public ResponseEntity<List<ObjectionAlarmResponse>> readWorkspaceResult(
+    public ResponseEntity<WorkspaceResultResponse> readWorkspaceResult(
             @Logined User user,
             @PathVariable Long workspaceId
     ) {
-        workspaceCommandService.getWorkspaceResult(user, workspaceId);
-        return ResponseEntity.ok().build();
+        WorkspaceResultResponse response = workspaceCommandService.getWorkspaceResult(user, workspaceId);
+        return ResponseEntity.ok().body(response);
     }
 
 }
