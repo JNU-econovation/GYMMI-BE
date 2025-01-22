@@ -134,7 +134,7 @@ public class WorkspaceQueryService {
         Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
         List<Worker> workers = workerRepository.getAllByWorkspaceId(workspace.getId());
         Worker worker = workerRepository.findByUserIdAndWorkspaceId(loginedUser.getId(), workspace.getId())
-                .orElseThrow(null);
+                .orElseGet(null);
 
         WorkspaceGateChecker workspaceGateChecker = new WorkspaceGateChecker(workspace, workers);
         boolean isFull = !workspaceGateChecker.canJoin();
