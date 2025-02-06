@@ -5,6 +5,7 @@ import gymmi.entity.User;
 import gymmi.exceptionhandler.exception.InvalidNumberException;
 import gymmi.exceptionhandler.exception.InvalidPatternException;
 import gymmi.exceptionhandler.exception.InvalidRangeException;
+import gymmi.exceptionhandler.exception.InvalidStateException;
 import gymmi.exceptionhandler.message.ErrorCode;
 import gymmi.workspace.domain.WorkspaceStatus;
 import jakarta.persistence.*;
@@ -32,7 +33,8 @@ public class Workspace extends TimeEntity {
 
     private static final Pattern REGEX_WORKSPACE_NAME = REGEX_영어_한글_숫자_만;
     private static final Pattern REGEX_WORKSPACE_TAG = REGEX_영어_한글_쉼표_만;
-    private final static SecureRandom random = new SecureRandom();
+
+    private static final SecureRandom random = new SecureRandom();
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -66,16 +68,20 @@ public class Workspace extends TimeEntity {
     @ColumnDefault("''")
     private String tag;
 
+    @Column(nullable = false)
+    private String task;
+
     @Builder
     public Workspace(
             User creator, String name, String description,
-            Integer goalScore, Integer headCount, String tag
+            Integer goalScore, Integer headCount, String tag, String task
     ) {
         this.creator = creator;
         this.name = validateName(name);
         this.goalScore = validateGoalScore(goalScore);
         this.headCount = validateHeadCount(headCount);
         this.tag = validateTag(tag);
+        this.task = task;
         this.description = validateDescription(description);
         this.password = generatePassword();
         this.status = WorkspaceStatus.PREPARING;
@@ -181,5 +187,13 @@ public class Workspace extends TimeEntity {
         this.tag = validateTag(tag);
     }
 
-
+    public void editTask(String task) {
+        if (this.task.equals(task)) {
+            return;
+        }
+        if (!isPreparing()) {
+            throw new InvalidStateException(ErrorCode.ALREADY_ACTIVATED_WORKSPACE);
+        }
+        this.task = task;
+    }
 }

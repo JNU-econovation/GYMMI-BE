@@ -14,7 +14,9 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.util.ReflectionTestUtils;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -36,8 +38,6 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
     WorkerRepository workerRepository;
     @Autowired
     MissionRepository missionRepository;
-    @Autowired
-    TaskRepository taskRepository;
     @Autowired
     WorkoutHistoryRepository workoutHistoryRepository;
     @Autowired
@@ -121,8 +121,7 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
         // then
         assertThat(workspaceRepository.findById(workspace.getId())).isEmpty();
         assertThat(workerRepository.findById(worker.getId())).isEmpty();
-        assertThat(taskRepository.findAll()).isEmpty();
-        assertThat(missionRepository.findAll()).isEmpty();
+        assertThat(missionRepository.getAllByWorkspaceId(workspace.getId())).isEmpty();
         assertThat(favoriteMissionRepository.findAll()).isEmpty();
         assertThat(workerRepository.findById(worker.getId())).isEmpty();
     }
@@ -226,7 +225,7 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
     }
 
     @Test
-    void 태클에_투표를_한다() {
+    void 이의신청_투표를_통해_이의신청이_찬성되어_점수가_몰수된다() {
         // given
         User creator = persister.persistUser();
         User user = persister.persistUser();
@@ -251,6 +250,58 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
         assertThat(voteRepository.findAll().size()).isEqualTo(3);
         assertThat(objection.isInProgress()).isEqualTo(false);
         assertThat(workoutHistory.isApproved()).isFalse();
+        assertThat(userWorker.getContributedScore()).isEqualTo(0);
+    }
+
+    @Test
+    void 투표가_안되었지만_시간이_지난_이의신청은_찬성표를_통해_자동으로_종료시킨다() {
+        // given
+        User creator = persister.persistUser();
+        User user = persister.persistUser();
+        User user1 = persister.persistUser();
+        User user2 = persister.persistUser();
+        Workspace workspace = persister.persistWorkspace(creator, WorkspaceStatus.IN_PROGRESS, 100, 4);
+        Worker creatorWorker = persister.persistWorker(creator, workspace);
+        Worker userWorker = persister.persistWorker(user, workspace);
+        Worker user1Worker = persister.persistWorker(user1, workspace);
+        Worker user2Worker = persister.persistWorker(user2, workspace);
+        WorkoutConfirmation workoutConfirmation = persister.persistWorkoutConfirmation();
+        Mission mission = persister.persistMission(workspace, 10);
+        persister.persistWorkoutHistoryAndApply(creatorWorker, Map.of(mission, 1), workoutConfirmation);
+
+        Objection objection = persister.persistObjection(userWorker, true, workoutConfirmation);
+        persister.persistVote(userWorker, objection, false);
+        ReflectionTestUtils.setField(objection, "createdAt", LocalDateTime.now().minusHours(25));
+
+        // when
+        workspaceCommandService.terminateExpiredObjection(creator, workspace.getId());
+
+        // then
+        entityManager.flush();
+        entityManager.clear();
+        Objection refreshObjection = objectionRepository.getByObjectionId(objection.getId());
+        assertThat(refreshObjection.isInProgress()).isFalse();
+        assertThat(refreshObjection.getVoteCount()).isEqualTo(4);
+        assertThat(refreshObjection.getApprovalCount()).isEqualTo(3);
+
+    }
+
+    @Test
+    void 최종_결과_확인시_진행중인_이의_신청이_존재하는_경우_예외가_발생한다() {
+        // given
+        User creator = persister.persistUser();
+        Workspace workspace = persister.persistWorkspace(creator, WorkspaceStatus.COMPLETED, 100, 4);
+        Worker creatorWorker = persister.persistWorker(creator, workspace);
+        Mission mission = persister.persistMission(workspace, 10);
+
+        WorkoutConfirmation workoutConfirmation = persister.persistWorkoutConfirmation();
+        persister.persistWorkoutHistoryAndApply(creatorWorker, Map.of(mission, 1), workoutConfirmation);
+
+        Objection objection = persister.persistObjection(creatorWorker, true, workoutConfirmation);
+
+        // when, then
+        assertThatThrownBy(() -> workspaceCommandService.getWorkspaceResult(creator, workspace.getId()))
+                .hasMessage(ErrorCode.EXIST_OBJECTION_IN_PROGRESS.getMessage());
     }
 
     private List<Workspace> persistWorkspacesNotCompletedWithWorker(User user, int size) {
@@ -265,7 +316,7 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
                 .create();
         workspaceRepository.saveAll(workspaces);
         for (Workspace workspace : workspaces) {
-            Worker worker = new Worker(user, workspace, new Task(Instancio.gen().string().get()));
+            Worker worker = new Worker(user, workspace);
             entityManager.persist(worker);
         }
         return workspaces;

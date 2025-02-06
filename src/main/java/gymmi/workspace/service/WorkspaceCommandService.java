@@ -1,6 +1,10 @@
 package gymmi.workspace.service;
 
 import gymmi.entity.User;
+import gymmi.eventlistener.event.ObjectionOpenEvent;
+import gymmi.eventlistener.event.WorkoutConfirmationCreatedEvent;
+import gymmi.eventlistener.event.WorkspacePhaseChangedEvent;
+import gymmi.eventlistener.event.WorkspaceStartedEvent;
 import gymmi.exceptionhandler.exception.AlreadyExistException;
 import gymmi.exceptionhandler.exception.InvalidStateException;
 import gymmi.exceptionhandler.exception.NotHavePermissionException;
@@ -13,16 +17,14 @@ import gymmi.workspace.domain.*;
 import gymmi.workspace.domain.entity.*;
 import gymmi.workspace.repository.*;
 import gymmi.workspace.request.*;
-import gymmi.workspace.response.OpeningTasksBoxResponse;
+import gymmi.workspace.response.WorkspaceResultResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -36,9 +38,11 @@ public class WorkspaceCommandService {
     private final FavoriteMissionRepository favoriteMissionRepository;
     private final ObjectionRepository objectionRepository;
     private final VoteRepository voteRepository;
+    private final WorkspaceResultRepository workspaceResultRepository;
 
     private final S3Service s3Service;
     private final PhotoFeedService photoFeedService;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Transactional
     // 중복 요청
@@ -66,7 +70,7 @@ public class WorkspaceCommandService {
         List<Worker> workers = workerRepository.getAllByWorkspaceId(workspace.getId());
 
         WorkspacePreparingManager workspacePreparingManager = new WorkspacePreparingManager(workspace, workers);
-        Worker worker = workspacePreparingManager.allow(loginedUser, request.getPassword(), request.getTask());
+        Worker worker = workspacePreparingManager.allow(loginedUser, request.getPassword());
 
         workerRepository.save(worker);
     }
@@ -87,6 +91,8 @@ public class WorkspaceCommandService {
 
         WorkspacePreparingManager workspacePreparingManager = new WorkspacePreparingManager(workspace, workers);
         workspacePreparingManager.startBy(worker);
+
+        applicationEventPublisher.publishEvent(new WorkspaceStartedEvent(workspace.getId()));
     }
 
     @Transactional
@@ -117,8 +123,8 @@ public class WorkspaceCommandService {
         List<Mission> missions = missionRepository.getAllByWorkspaceId(workspace.getId());
         Map<Mission, Integer> workouts = getWorkouts(workoutRequest.getMissions());
         validateDailyWorkoutHistoryCount(worker.getId());
-
-        WorkspaceProgressManager workspaceProgressManager = new WorkspaceProgressManager(workspace, missions);
+        int achievementScore = workspaceRepository.getAchievementScore(workspaceId);
+        WorkspaceProgressManager workspaceProgressManager = new WorkspaceProgressManager(workspace, missions, achievementScore);
         WorkoutHistory workoutHistory = workspaceProgressManager.doWorkout(
                 worker,
                 workouts,
@@ -128,10 +134,15 @@ public class WorkspaceCommandService {
 
         s3Service.checkObjectExist(WorkoutConfirmation.IMAGE_USE, workoutRequest.getImageUrl());
         workoutHistoryRepository.save(workoutHistory);
-        int achievementScore = workspaceRepository.getAchievementScore(workspaceId);
-
+        achievementScore = workspaceRepository.getAchievementScore(workspaceId);
         workspaceProgressManager.completeWhenGoalScoreIsAchieved(achievementScore);
         linkToPhotoBoardIfRequested(loginedUser, workoutRequest);
+
+        applicationEventPublisher.publishEvent(new WorkoutConfirmationCreatedEvent(workspace.getId(), loginedUser.getId()));
+        if (workspaceProgressManager.hasPhaseChanged(achievementScore)) {
+            applicationEventPublisher.publishEvent(new WorkspacePhaseChangedEvent(workspace.getId(), workspaceProgressManager.getWorkspacePhase()));
+        }
+
         return workoutHistory.getSum();
     }
 
@@ -158,19 +169,6 @@ public class WorkspaceCommandService {
         return workouts;
     }
 
-
-    @Transactional
-    public OpeningTasksBoxResponse openTaskBoxInWorkspace(User loginedUser, Long workspaceId) {
-        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
-        Worker worker = workerRepository.getByUserIdAndWorkspaceId(loginedUser.getId(), workspace.getId());
-        List<Worker> workers = workerRepository.getAllByWorkspaceId(workspace.getId());
-
-        WorkspaceDrawManager workspaceDrawManager = new WorkspaceDrawManager(workspace, workers);
-        workspaceDrawManager.drawIfNotPicked();
-        List<Task> tasks = workspaceDrawManager.getTasks(worker);
-        return new OpeningTasksBoxResponse(tasks);
-    }
-
     @Transactional
     public void editIntroduction(
             User loginedUser,
@@ -181,7 +179,7 @@ public class WorkspaceCommandService {
         Worker worker = workerRepository.getByUserIdAndWorkspaceId(loginedUser.getId(), workspace.getId());
 
         WorkspaceEditManager workspaceEditManager = new WorkspaceEditManager(workspace, worker);
-        workspaceEditManager.edit(request.getDescription(), request.getTag());
+        workspaceEditManager.edit(request.getDescription(), request.getTag(), request.getTask());
     }
 
     public void toggleRegistrationOfFavoriteMission(User loginedUser, Long workspaceId, Long missionId) {
@@ -221,6 +219,8 @@ public class WorkspaceCommandService {
                 .workoutConfirmation(workoutHistory.getWorkoutConfirmation())
                 .build();
         objectionRepository.save(objection);
+
+        applicationEventPublisher.publishEvent(new ObjectionOpenEvent(workspace.getId(), objection.getId()));
         //리펙터링
     }
 
@@ -232,7 +232,9 @@ public class WorkspaceCommandService {
 
         ObjectionManager objectionManager = new ObjectionManager(objection);
         Vote vote = objectionManager.createVote(worker, request.getWillApprove());
+
         voteRepository.save(vote);
+        objectionManager.apply(vote);
 
         List<Worker> workers = workerRepository.getAllByWorkspaceId(workspaceId);
 
@@ -246,8 +248,58 @@ public class WorkspaceCommandService {
         if (objectionManager.isApproved()) {
             workoutHistory.cancel();
         }
-
     }
 
+    public void terminateExpiredObjection(User loginedUser, Long workspaceId) {
+        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
+        validateIfWorkerIsInWorkspace(loginedUser.getId(), workspace.getId());
+        List<Objection> expiredObjections = objectionRepository.getExpiredObjections(workspace.getId());
+        List<Worker> workers = workerRepository.getAllByWorkspaceId(workspace.getId());
 
+        for (Objection expiredObjection : expiredObjections) {
+            ObjectionManager objectionManager = new ObjectionManager(expiredObjection);
+            List<Vote> votes = objectionManager.createAutoVote(workers);
+            voteRepository.saveAll(votes);
+            objectionManager.applyAll(votes);
+            if (objectionManager.closeIfOnMajorityOrDone(workers.size())) {
+                WorkoutHistory workoutHistory = workoutHistoryRepository.getByWorkoutConfirmationId(expiredObjection.getWorkoutConfirmation().getId());
+                rejectWorkoutHistory(objectionManager, workoutHistory);
+            }
+        }
+    }
+
+    public WorkspaceResultResponse getWorkspaceResult(User loginedUser, Long workspaceId) {
+        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
+        validateIfWorkerIsInWorkspace(loginedUser.getId(), workspace.getId());
+        List<Worker> workers = workerRepository.getAllByWorkspaceId(workspace.getId());
+        if (objectionRepository.existsByInProgress(workspace.getId())) {
+            throw new InvalidStateException(ErrorCode.EXIST_OBJECTION_IN_PROGRESS);
+        }
+
+        if (workspace.isFullyCompleted()) {
+            WorkspaceResult workspaceResult = workspaceResultRepository.getByWorkspaceId(workspace.getId());
+            return getWorkspaceResultResponse(workspace, workers, workspaceResult);
+        }
+
+        WorkspaceDrawManger workspaceDrawManger = new WorkspaceDrawManger(workspace, workers);
+        WorkspaceResult workspaceResult = workspaceDrawManger.draw();
+        workspaceResult.apply();
+
+        workspaceResultRepository.save(workspaceResult);
+        return getWorkspaceResultResponse(workspace, workers, workspaceResult);
+    }
+
+    private WorkspaceResultResponse getWorkspaceResultResponse(Workspace workspace, List<Worker> workers, WorkspaceResult workspaceResult) {
+        List<Worker> result = sortResult(workspaceResult.getWinner(), workspaceResult.getLoser(), workers);
+        return new WorkspaceResultResponse(workspace.getTask(), result);
+    }
+
+    private List<Worker> sortResult(Worker winner, Worker loser, List<Worker> workers) {
+        LinkedList<Worker> result = new LinkedList<>(workers);
+        result.remove(winner);
+        result.remove(loser);
+        result.addFirst(winner);
+        result.addLast(loser);
+        return result;
+    }
 }

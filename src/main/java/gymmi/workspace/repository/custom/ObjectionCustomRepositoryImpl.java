@@ -8,6 +8,7 @@ import gymmi.workspace.domain.entity.Objection;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static gymmi.workspace.domain.entity.QObjection.objection;
@@ -25,7 +26,7 @@ public class ObjectionCustomRepositoryImpl implements ObjectionCustomRepository 
                 .from(objection)
                 .join(objection.subject, worker)
                 .where(
-                        worker.workspace.id.eq(workspaceId),
+                        inWorkspace(workspaceId),
                         objectionStatusEq(workerId, objectionStatus)
                 )
                 .orderBy(objection.createdAt.desc())
@@ -35,8 +36,11 @@ public class ObjectionCustomRepositoryImpl implements ObjectionCustomRepository 
     }
 
     private BooleanExpression objectionStatusEq(Long workerId, ObjectionStatus objectionStatus) {
-        if (objectionStatus == ObjectionStatus.OPEN) {
+        if (objectionStatus == ObjectionStatus.IN_PROGRESS) {
             return objection.isInProgress.isTrue();
+        }
+        if (objectionStatus == ObjectionStatus.CLOSED) {
+            return objection.isInProgress.isFalse();
         }
         if (objectionStatus == ObjectionStatus.INCOMPLETION) {
             return objection.id.notIn(
@@ -47,4 +51,37 @@ public class ObjectionCustomRepositoryImpl implements ObjectionCustomRepository 
         }
         return null;
     }
+
+    public List<Objection> getExpiredObjections(Long workspaceId) {
+        return jpaQueryFactory.select(objection)
+                .from(objection)
+                .join(objection.subject, worker)
+                .where(
+                        inWorkspace(workspaceId),
+                        expiredObjection()
+                )
+                .fetch();
+    }
+
+    @Override
+    public boolean existsByInProgress(Long workspaceId) {
+        Objection result = jpaQueryFactory.select(objection)
+                .from(objection)
+                .join(objection.subject, worker)
+                .where(
+                        inWorkspace(workspaceId),
+                        objection.isInProgress.isTrue()
+                )
+                .fetchFirst();
+        return result != null;
+    }
+
+    private BooleanExpression expiredObjection() {
+        return objection.isInProgress.isTrue().and(objection.createdAt.before(LocalDateTime.now().minusHours(Objection.PERIOD_HOUR)));
+    }
+
+    private BooleanExpression inWorkspace(Long workspaceId) {
+        return worker.workspace.id.eq(workspaceId);
+    }
+
 }

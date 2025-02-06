@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import gymmi.Fixtures;
 import gymmi.entity.User;
-import gymmi.workspace.repository.TaskRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -12,9 +11,6 @@ class UserRepositoryTest extends RepositoryTest {
 
     @Autowired
     UserRepository userRepository;
-
-    @Autowired
-    TaskRepository taskRepository;
 
     @Test
     void 해당_닉네임을_가진_사용자_존재_여부를_확인한다() {

@@ -1,29 +1,16 @@
 package gymmi.entity;
 
-import static gymmi.utils.Regexpressions.REGEX_숫자;
-import static gymmi.utils.Regexpressions.REGEX_영어;
-import static gymmi.utils.Regexpressions.REGEX_영어_숫자_만;
-import static gymmi.utils.Regexpressions.REGEX_영어_한글_초성_숫자_만;
-import static gymmi.utils.Regexpressions.SPECIAL_CHARACTER;
-
-import gymmi.exceptionhandler.legacy.InvalidPatternException;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
-import java.util.regex.Pattern;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import gymmi.exceptionhandler.exception.InvalidPatternException;
+import gymmi.exceptionhandler.message.ErrorCode;
+import jakarta.persistence.*;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.util.StringUtils;
+
+import java.util.regex.Pattern;
+
+import static gymmi.utils.Regexpressions.*;
 
 @Entity
 @Table(name = "uuser")
@@ -62,6 +49,9 @@ public class User extends TimeEntity {
     @OneToOne(mappedBy = "owner", fetch = FetchType.LAZY)
     private ProfileImage profileImage; // 지연 로딩 안됨.
 
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+    private FcmToken fcmToken;
+
     @Builder
     public User(String loginId, String plainPassword, String nickname, String email) {
         validateLoginId(loginId);
@@ -83,16 +73,17 @@ public class User extends TimeEntity {
 
     private void validatePassword(String plainPassword) {
         if (!REGEX_PASSWORD.matcher(plainPassword).matches()) {
-            throw new InvalidPatternException("비밀번호는 영문+숫자+특수문자 조합으로 구성해주세요.");
+            throw new InvalidPatternException(ErrorCode.INVALID_PASSWORD_1);
+
         }
         if (!REGEX_영어.matcher(plainPassword).find()) {
-            throw new InvalidPatternException("비밀번호에 영문을 포함해주세요");
+            throw new InvalidPatternException(ErrorCode.INVALID_PASSWORD_2);
         }
         if (!REGEX_숫자.matcher(plainPassword).find()) {
-            throw new InvalidPatternException("비밀번호에 숫자를 포함해주세요.");
+            throw new InvalidPatternException(ErrorCode.INVALID_PASSWORD_3);
         }
         if (!REGEX_SPECIAL_CHARACTER.matcher(plainPassword).find()) {
-            throw new InvalidPatternException("비밀번호에 특수문자를 포함해주세요.");
+            throw new InvalidPatternException(ErrorCode.INVALID_PASSWORD_4);
         }
     }
 
@@ -103,19 +94,19 @@ public class User extends TimeEntity {
 
     public static void validateLoginId(String loginId) {
         if (!REGEX_LOGIN_ID.matcher(loginId).matches()) {
-            throw new InvalidPatternException("아이디는 영문+숫자 조합으로 구성해주세요.");
+            throw new InvalidPatternException(ErrorCode.INVALID_LOGIN_ID_1);
         }
         if (!REGEX_영어.matcher(loginId).find()) {
-            throw new InvalidPatternException("아이디에 영문을 포함해주세요");
+            throw new InvalidPatternException(ErrorCode.INVALID_LOGIN_ID_2);
         }
         if (!REGEX_숫자.matcher(loginId).find()) {
-            throw new InvalidPatternException("아이디에 숫자를 포함해주세요.");
+            throw new InvalidPatternException(ErrorCode.INVALID_LOGIN_ID_3);
         }
     }
 
     public static String validateNickname(String nickname) {
         if (!REGEX_NICKNAME.matcher(nickname).matches()) {
-            throw new InvalidPatternException("닉네임은 한글(초성), 영문, 숫자만 가능합니다.");
+            throw new InvalidPatternException(ErrorCode.INVALID_NICKNAME);
         }
         return nickname;
     }
@@ -164,6 +155,13 @@ public class User extends TimeEntity {
 
     public String getEmail() {
         return email;
+    }
+
+    public String getAlarmToken() {
+        if (fcmToken == null) {
+            return null;
+        }
+        return fcmToken.getToken();
     }
 
     @Override

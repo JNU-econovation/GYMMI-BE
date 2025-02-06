@@ -1,11 +1,13 @@
 package gymmi.repository;
 
 import gymmi.entity.User;
-import gymmi.exceptionhandler.legacy.NotFoundResourcesException;
+import gymmi.exceptionhandler.exception.NotFoundException;
+import gymmi.exceptionhandler.message.ErrorCode;
 import gymmi.repository.custom.UserCustomRepository;
-import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+
+import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long>, UserCustomRepository {
 
@@ -20,6 +22,6 @@ public interface UserRepository extends JpaRepository<User, Long>, UserCustomRep
 
     default User getByUserId(Long userId) {
         return findByUserId(userId)
-                .orElseThrow(() -> new NotFoundResourcesException("존재하지 않는 사용자입니다."));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_USER));
     }
 }

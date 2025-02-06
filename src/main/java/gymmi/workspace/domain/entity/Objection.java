@@ -17,7 +17,7 @@ import static gymmi.exceptionhandler.message.ErrorCode.NO_WORKOUT_HISTORY_EXIST_
 @Getter
 public class Objection extends TimeEntity {
 
-    private static final int PERIOD_HOUR = 24;
+    public static final int PERIOD_HOUR = 24;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -88,6 +88,11 @@ public class Objection extends TimeEntity {
     public LocalDateTime getDeadline() {
         return getCreatedAt().plusHours(PERIOD_HOUR);
     }
+
+    public boolean isExpired() {
+        return LocalDateTime.now().isAfter(getDeadline());
+    }
+
 }
 
 

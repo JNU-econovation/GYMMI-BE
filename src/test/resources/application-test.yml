@@ -24,3 +24,19 @@ cloud:
     stack:
       auto: false
 
+#logging:
+#  level:
+#    org:
+#      springframework:
+#          transaction:
+#            interceptor: trace
+#          jdbc:
+#            datasource:
+#              org.springframework.jdbc.datasource.DataSourceTransactionManager: debug
+#
+#          orm:
+#            jpa:
+#              JpaTransactionManager: debug
+#      hibernate:
+#        resource:
+#          transaction: debug

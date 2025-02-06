@@ -13,6 +13,7 @@ public enum ErrorCode {
     NOT_CONSISTENT_WORKERS_COUNT("워크스페이스 인원이 잘못 되었습니다.", 500),
     NOT_CONSISTENT_MISSIONS_COUNT("미션 수가 잘못 되었습니다.", 500),
     ALREADY_ACTIVATED_WORKSPACE("이미 진행중이거나 종료된 워크스페이스 입니다.", 400),
+    NOT_COMPLETED_WORKSPACE("종료되지 않은 워크스페이스 입니다.", 400),
     EXIST_WORKERS_EXCLUDE_CREATOR("방장 이외에 참여자가 존재합니다.", 400),
     BELOW_MINIMUM_WORKER("최소 인원인 2명을 채워주세요.", 400),
     EXCEED_MAX_JOINED_WORKSPACE("워크스페이스는 5개까지 참여 가능합니다.(완료된 워크스페이스 제외)", 400),
@@ -37,16 +38,33 @@ public enum ErrorCode {
     NO_OBJECTION_EXIST_IN_WORKSPACE("해당 워크스페이스와 관련 정보가 아니에요", 403),
     ALREADY_OBJECTED("이미 이의 신청되었어요.", 400),
     NOT_FOUND_OBJECTION("해당 이의 신청이 존재하지 않습니다.", 404),
+    NOT_FOUND_MISSION("해당 미션이 존재하지 않습니다.", 404),
+    NOT_FOUND_WORKOUT_CONFIRMATION("해당 운동 기록이 존재하지 않아요.", 404),
+    NOT_FOUND_WORKSPACE("해당 워크스페이스가 존재하지 않아요.", 404),
+    NOT_FOUND_WORKSPACE_RESULT("해당 워크스페이스 결과가 존재하지 않아요.", 404),
     ALREADY_VOTED("이미 투표하였습니다.", 400),
     ALREADY_CLOSED_OBJECTION("이미 종료되었습니다", 400),
 
     // 운동 기록
     EXCEED_MAX_DAILY_WORKOUT_HISTORY_COUNT("일일 가능한 운동을 초과했어요! (3회까지 가능)", 400),
 
+    // 이의 신청
+    EXIST_OBJECTION_IN_PROGRESS("진행중인 이의신청이 존재합니다.", 400),
+
 
     // user
     ALREADY_USED_LOGIN_ID("이미 사용중인 아이디 입니다.", 400),
     ALREADY_USED_NICKNAME("이미 사용중인 닉네임 입니다.", 400),
+    INVALID_LOGIN_ID_1("아이디는 영문+숫자 조합으로 구성해주세요.", 400),
+    INVALID_LOGIN_ID_2("아이디에 영문을 포함해주세요", 400),
+    INVALID_LOGIN_ID_3("아이디에 숫자를 포함해주세요.", 400),
+    INVALID_PASSWORD_1("비밀번호는 영문+숫자+특수문자 조합으로 구성해주세요.", 400),
+    INVALID_PASSWORD_2("비밀번호에 영문을 포함해주세요", 400),
+    INVALID_PASSWORD_3("비밀번호에 숫자를 포함해주세요.", 400),
+    INVALID_PASSWORD_4("비밀번호에 특수문자를 포함해주세요.", 400),
+    INVALID_NICKNAME("닉네임은 한글(초성), 영문, 숫자만 가능합니다.", 400),
+    NOT_FOUND_USER("유저 정보를 찾을 수 없습니다.", 400),
+    NOT_FOUND_PROFILE_IMAGE("프로필 이미지 찾을 수 없습니다.", 400),
 
     // login
     MISSING_AUTHORIZATION_HEADER("인증 헤더의 값이 비어있습니다.", 401),
@@ -78,6 +96,10 @@ public enum ErrorCode {
     NOT_FOUND_PHOTO_FEED("존재하지 않는 사진피드 입니다.", 400),
     NOT_FOUND_PHOTO_FEED_IMAGE("존재하지 않는 사진 입니다.", 400),
     NOT_PHOTO_FEED_WRITER("사진피드 작성자가 아니에요", 400),
+
+    // etc
+    RETRY_AFTER_LOGOUT("로그아웃 후 다시 시도해 주세요", 500),
+    LOGIC_ERROR("벡엔드 문의 바람", 500),
     ;
 
     private final String message;

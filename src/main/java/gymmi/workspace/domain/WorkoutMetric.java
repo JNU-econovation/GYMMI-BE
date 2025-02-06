@@ -15,18 +15,20 @@ public class WorkoutMetric {
 
     public int getWorkoutCount() {
         return (int) workoutHistories.stream()
-                .filter(w -> w.isApproved())
+                .filter(WorkoutHistory::isApproved)
                 .count();
     }
 
     public int getBestWorkoutScore() {
         return workoutHistories.stream()
-                .mapToInt(w -> w.getTotalScore())
+                .filter(WorkoutHistory::isApproved)
+                .mapToInt(WorkoutHistory::getTotalScore)
                 .max().orElse(0);
     }
 
     public int getSum() {
         return workoutHistories.stream()
+                .filter(WorkoutHistory::isApproved)
                 .map(WorkoutHistory::getTotalScore)
                 .reduce(0, Integer::sum);
     }

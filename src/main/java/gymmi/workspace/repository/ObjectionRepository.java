@@ -20,5 +20,4 @@ public interface ObjectionRepository extends JpaRepository<Objection, Long>, Obj
         return objection;
     }
 
-
 }

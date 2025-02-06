@@ -14,7 +14,8 @@ public class StringToObejctionStatusConverter implements Converter<String, Objec
 
     public StringToObejctionStatusConverter() {
         queryParamValueMapping.put(ObjectionStatus.INCOMPLETION.name().toLowerCase(), ObjectionStatus.INCOMPLETION);
-        queryParamValueMapping.put(ObjectionStatus.OPEN.name().toLowerCase(), ObjectionStatus.OPEN);
+        queryParamValueMapping.put("inProgress", ObjectionStatus.IN_PROGRESS);
+        queryParamValueMapping.put(ObjectionStatus.CLOSED.name().toLowerCase(), ObjectionStatus.CLOSED);
     }
 
     @Override

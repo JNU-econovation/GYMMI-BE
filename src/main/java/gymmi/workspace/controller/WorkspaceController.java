@@ -150,16 +150,6 @@ public class WorkspaceController {
         return ResponseEntity.ok().body(response);
     }
 
-
-    @GetMapping("/workspaces/{workspaceId}/tasks")
-    public ResponseEntity<OpeningTasksBoxResponse> openTasksBoxInWorkspace(
-            @Logined User user,
-            @PathVariable Long workspaceId
-    ) {
-        OpeningTasksBoxResponse response = workspaceCommandService.openTaskBoxInWorkspace(user, workspaceId);
-        return ResponseEntity.ok().body(response);
-    }
-
     @PutMapping("/workspaces/{workspaceId}/edit")
     public ResponseEntity<Void> editDescriptionOfWorkspace(
             @Logined User user,
@@ -268,6 +258,24 @@ public class WorkspaceController {
     ) {
         List<ObjectionAlarmResponse> responses = workspaceQueryService.getObjections(user, workspaceId, pageNumber, objectionStatus);
         return ResponseEntity.ok().body(responses);
+    }
+
+    @PostMapping("/workspaces/{workspaceId}/objections")
+    public ResponseEntity<List<ObjectionAlarmResponse>> terminateObjections(
+            @Logined User user,
+            @PathVariable Long workspaceId
+    ) {
+        workspaceCommandService.terminateExpiredObjection(user, workspaceId);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/workspaces/{workspaceId}/result")
+    public ResponseEntity<WorkspaceResultResponse> readWorkspaceResult(
+            @Logined User user,
+            @PathVariable Long workspaceId
+    ) {
+        WorkspaceResultResponse response = workspaceCommandService.getWorkspaceResult(user, workspaceId);
+        return ResponseEntity.ok().body(response);
     }
 
 }
