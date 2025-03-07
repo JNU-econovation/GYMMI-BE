@@ -1,0 +1,42 @@
+spring:
+  config:
+    activate:
+      on-profile: test
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+
+  flyway:
+    enabled: false
+
+  datasource:
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+    url: jdbc:tc:mysql:8.4.0:///
+
+
+cloud:
+  aws:
+    s3:
+      bucket: abc
+      accesskey: abc
+      secretKey: abc
+    stack:
+      auto: false
+
+#logging:
+#  level:
+#    org:
+#      springframework:
+#          transaction:
+#            interceptor: trace
+#          jdbc:
+#            datasource:
+#              org.springframework.jdbc.datasource.DataSourceTransactionManager: debug
+#
+#          orm:
+#            jpa:
+#              JpaTransactionManager: debug
+#      hibernate:
+#        resource:
+#          transaction: debug
