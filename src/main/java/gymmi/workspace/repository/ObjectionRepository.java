@@ -1,7 +1,7 @@
 package gymmi.workspace.repository;
 
 import gymmi.exceptionhandler.exception.NotFoundException;
-import gymmi.exceptionhandler.message.ErrorCode;
+import gymmi.exceptionhandler.message.ErrorMessage;
 import gymmi.workspace.domain.entity.Objection;
 import gymmi.workspace.repository.custom.ObjectionCustomRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,7 +16,7 @@ public interface ObjectionRepository extends JpaRepository<Objection, Long>, Obj
 
     default Objection getByObjectionId(Long objectionId) {
         Objection objection = findById(objectionId)
-                .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_OBJECTION));
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND_OBJECTION));
         return objection;
     }
 

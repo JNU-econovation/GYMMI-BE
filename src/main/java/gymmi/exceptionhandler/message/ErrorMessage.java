@@ -4,7 +4,7 @@ import gymmi.global.DuplicationCheckType;
 import gymmi.workspace.domain.ObjectionStatus;
 import gymmi.workspace.domain.WorkspaceStatus;
 
-public enum ErrorCode {
+public enum ErrorMessage {
 
     // workspace
     ALREADY_JOINED_WORKSPACE("이미 참여한 워크스페이스 입니다.", 400),
@@ -105,7 +105,7 @@ public enum ErrorCode {
     private final String message;
     private final int statusCode;
 
-    ErrorCode(String message, int statusCode) {
+    ErrorMessage(String message, int statusCode) {
         this.message = message;
         this.statusCode = statusCode;
     }

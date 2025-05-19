@@ -8,7 +8,7 @@ import gymmi.eventlistener.event.WorkspaceStartedEvent;
 import gymmi.exceptionhandler.exception.AlreadyExistException;
 import gymmi.exceptionhandler.exception.InvalidStateException;
 import gymmi.exceptionhandler.exception.NotHavePermissionException;
-import gymmi.exceptionhandler.message.ErrorCode;
+import gymmi.exceptionhandler.message.ErrorMessage;
 import gymmi.photoboard.domain.entity.PhotoFeedImage;
 import gymmi.photoboard.request.CreatePhotoFeedRequest;
 import gymmi.photoboard.service.PhotoFeedService;
@@ -49,7 +49,7 @@ public class WorkspaceCommandService {
     public Long createWorkspace(User loginedUser, CreatingWorkspaceRequest request) {
         validateCountOfWorkspaces(loginedUser.getId());
         if (workspaceRepository.existsByName(request.getName())) {
-            throw new AlreadyExistException(ErrorCode.ALREADY_USED_WORKSPACE_NAME);
+            throw new AlreadyExistException(ErrorMessage.ALREADY_USED_WORKSPACE_NAME);
         }
 
         WorkspaceInitializer workspaceInitializer = new WorkspaceInitializer();
@@ -79,7 +79,7 @@ public class WorkspaceCommandService {
         long countOfJoinedWorkspaces =
                 workspaceRepository.getCountsOfJoinedWorkspacesExcludeCompleted(userId);
         if (countOfJoinedWorkspaces >= 5) {
-            throw new InvalidStateException(ErrorCode.EXCEED_MAX_JOINED_WORKSPACE);
+            throw new InvalidStateException(ErrorMessage.EXCEED_MAX_JOINED_WORKSPACE);
         }
     }
 
@@ -156,7 +156,7 @@ public class WorkspaceCommandService {
     private void validateDailyWorkoutHistoryCount(Long workerId) {
         List<WorkoutHistory> workoutHistories = workoutHistoryRepository.getAllByDate(workerId, LocalDate.now());
         if (workoutHistories.size() >= 3) {
-            throw new InvalidStateException(ErrorCode.EXCEED_MAX_DAILY_WORKOUT_HISTORY_COUNT);
+            throw new InvalidStateException(ErrorMessage.EXCEED_MAX_DAILY_WORKOUT_HISTORY_COUNT);
         }
     }
 
@@ -199,7 +199,7 @@ public class WorkspaceCommandService {
 
     private Worker validateIfWorkerIsInWorkspace(Long userId, Long workspaceId) {
         return workerRepository.findByUserIdAndWorkspaceId(userId, workspaceId)
-                .orElseThrow(() -> new NotHavePermissionException(ErrorCode.NOT_JOINED_WORKSPACE));
+                .orElseThrow(() -> new NotHavePermissionException(ErrorMessage.NOT_JOINED_WORKSPACE));
     }
 
     public void objectToWorkoutConfirmation(User loginedUser, Long workspaceId, Long workoutConfirmationId, ObjectionRequest request) {
@@ -208,10 +208,10 @@ public class WorkspaceCommandService {
         WorkoutHistory workoutHistory = workoutHistoryRepository.getByWorkoutConfirmationId(workoutConfirmationId);
         workoutHistory.canBeReadIn(workspace);
         if (objectionRepository.findByWorkoutConfirmationId(workoutConfirmationId).isPresent()) {
-            throw new AlreadyExistException(ErrorCode.ALREADY_OBJECTED);
+            throw new AlreadyExistException(ErrorMessage.ALREADY_OBJECTED);
         }
         if (!workspace.isInProgress()) {
-            throw new InvalidStateException(ErrorCode.INACTIVE_WORKSPACE);
+            throw new InvalidStateException(ErrorMessage.INACTIVE_WORKSPACE);
         }
         Objection objection = Objection.builder()
                 .subject(worker)
@@ -273,7 +273,7 @@ public class WorkspaceCommandService {
         validateIfWorkerIsInWorkspace(loginedUser.getId(), workspace.getId());
         List<Worker> workers = workerRepository.getAllByWorkspaceId(workspace.getId());
         if (objectionRepository.existsByInProgress(workspace.getId())) {
-            throw new InvalidStateException(ErrorCode.EXIST_OBJECTION_IN_PROGRESS);
+            throw new InvalidStateException(ErrorMessage.EXIST_OBJECTION_IN_PROGRESS);
         }
 
         if (workspace.isFullyCompleted()) {

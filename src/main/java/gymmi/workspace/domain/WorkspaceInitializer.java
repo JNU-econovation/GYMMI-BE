@@ -2,7 +2,7 @@ package gymmi.workspace.domain;
 
 import gymmi.entity.User;
 import gymmi.exceptionhandler.exception.InvalidRangeException;
-import gymmi.exceptionhandler.message.ErrorCode;
+import gymmi.exceptionhandler.message.ErrorMessage;
 import gymmi.workspace.domain.entity.Mission;
 import gymmi.workspace.domain.entity.Worker;
 import gymmi.workspace.domain.entity.Workspace;
@@ -41,7 +41,7 @@ public class WorkspaceInitializer {
 
     private List<Mission> createMissions(List<MissionRequest> missionBoard) {
         if (missionBoard.isEmpty() || missionBoard.size() > MAX_MISSIONS_SIZE) {
-            throw new InvalidRangeException(ErrorCode.INVALID_WORKSPACE_MISSION_SIZE);
+            throw new InvalidRangeException(ErrorMessage.INVALID_WORKSPACE_MISSION_SIZE);
         }
         List<Mission> missions = new ArrayList<>();
         for (MissionRequest missionRequest : missionBoard) {

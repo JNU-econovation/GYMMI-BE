@@ -1,14 +1,10 @@
 package gymmi.photoboard.domain.entity;
 
 import gymmi.entity.User;
-import gymmi.exceptionhandler.message.ErrorCode;
+import gymmi.exceptionhandler.message.ErrorMessage;
 import org.instancio.Instancio;
 import org.instancio.Select;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-
-import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -25,7 +21,7 @@ class PhotoFeedTest {
 
         // when, then
         assertThatThrownBy(() -> photoFeed.checkWriter(user))
-                .hasMessage(ErrorCode.NOT_PHOTO_FEED_WRITER.getMessage());
+                .hasMessage(ErrorMessage.NOT_PHOTO_FEED_WRITER.getMessage());
     }
 
 }

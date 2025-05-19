@@ -6,7 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import gymmi.exceptionhandler.exception.FileIOFailException;
 import gymmi.exceptionhandler.exception.InvalidFileException;
 import gymmi.exceptionhandler.exception.NotFoundException;
-import gymmi.exceptionhandler.message.ErrorCode;
+import gymmi.exceptionhandler.message.ErrorMessage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -74,7 +74,7 @@ class LocalImageFileUploaderTest {
         // when, then
         assertThatThrownBy(() -> uploader.upload(multipartFile, UUID.randomUUID().toString()))
                 .isInstanceOf(InvalidFileException.class)
-                .hasMessage(ErrorCode.UNSUPPORTED_FILE.getMessage());
+                .hasMessage(ErrorMessage.UNSUPPORTED_FILE.getMessage());
     }
 
     @Test
@@ -92,7 +92,7 @@ class LocalImageFileUploaderTest {
         // when, then
         assertThatThrownBy(() -> uploader.upload(multipartFile, UUID.randomUUID().toString()))
                 .isInstanceOf(InvalidFileException.class)
-                .hasMessage(ErrorCode.EMPTY_FILE.getMessage());
+                .hasMessage(ErrorMessage.EMPTY_FILE.getMessage());
     }
 
     @Test
@@ -110,7 +110,7 @@ class LocalImageFileUploaderTest {
         // when, then
         assertThatThrownBy(() -> uploader.upload(multipartFile, UUID.randomUUID().toString()))
                 .isInstanceOf(InvalidFileException.class)
-                .hasMessage(ErrorCode.MISSING_FILE_EXTENSION.getMessage());
+                .hasMessage(ErrorMessage.MISSING_FILE_EXTENSION.getMessage());
     }
 
 

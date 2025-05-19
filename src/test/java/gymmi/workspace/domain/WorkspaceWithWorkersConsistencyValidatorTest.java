@@ -4,7 +4,7 @@ import static gymmi.workspace.domain.WorkspaceWithWorkersConsistencyValidator.va
 import static gymmi.workspace.domain.WorkspaceWithWorkersConsistencyValidator.validateWorkersConsistency;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import gymmi.exceptionhandler.message.ErrorCode;
+import gymmi.exceptionhandler.message.ErrorMessage;
 import gymmi.workspace.domain.entity.Worker;
 import gymmi.workspace.domain.entity.Workspace;
 import java.util.Collections;
@@ -28,7 +28,7 @@ class WorkspaceWithWorkersConsistencyValidatorTest {
 
         // when, then
         assertThatThrownBy(() -> validateMeetMinHeadCount(workers))
-                .hasMessage(ErrorCode.NOT_CONSISTENT_WORKERS_COUNT.getMessage());
+                .hasMessage(ErrorMessage.NOT_CONSISTENT_WORKERS_COUNT.getMessage());
     }
 
     @Test
@@ -46,7 +46,7 @@ class WorkspaceWithWorkersConsistencyValidatorTest {
 
         // when, then
         assertThatThrownBy(() -> validateWorkersConsistency(workspace, workers))
-                .hasMessage(ErrorCode.EXIST_NOT_JOINED_WORKER.getMessage());
+                .hasMessage(ErrorMessage.EXIST_NOT_JOINED_WORKER.getMessage());
     }
 
     @Test
@@ -57,7 +57,7 @@ class WorkspaceWithWorkersConsistencyValidatorTest {
 
         // when, then
         assertThatThrownBy(() -> validateWorkersConsistency(workspace, workers))
-                .hasMessage(ErrorCode.NOT_CONSISTENT_WORKERS_COUNT.getMessage());
+                .hasMessage(ErrorMessage.NOT_CONSISTENT_WORKERS_COUNT.getMessage());
     }
 
 }

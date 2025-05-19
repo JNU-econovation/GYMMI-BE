@@ -4,7 +4,7 @@ import static gymmi.workspace.domain.WorkspaceWithMissionsConsistencyValidator.v
 import static gymmi.workspace.domain.WorkspaceWithMissionsConsistencyValidator.validateRegistration;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import gymmi.exceptionhandler.message.ErrorCode;
+import gymmi.exceptionhandler.message.ErrorMessage;
 import gymmi.workspace.domain.entity.Mission;
 import gymmi.workspace.domain.entity.Workspace;
 import java.util.List;
@@ -25,7 +25,7 @@ class WorkspaceWithMissionsConsistencyValidatorTest {
 
         // when, then
         assertThatThrownBy(() -> validateRegistration(workspace, List.of(mission)))
-                .hasMessage(ErrorCode.EXIST_NOT_REGISTERED_MISSION.getMessage());
+                .hasMessage(ErrorMessage.EXIST_NOT_REGISTERED_MISSION.getMessage());
     }
 
     @Test
@@ -37,7 +37,7 @@ class WorkspaceWithMissionsConsistencyValidatorTest {
 
         // when, then
         assertThatThrownBy(() -> validateConsistencyMissionsCount(missions))
-                .hasMessage(ErrorCode.NOT_CONSISTENT_MISSIONS_COUNT.getMessage());
+                .hasMessage(ErrorMessage.NOT_CONSISTENT_MISSIONS_COUNT.getMessage());
 
     }
 

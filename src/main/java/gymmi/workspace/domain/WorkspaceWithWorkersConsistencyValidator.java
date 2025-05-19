@@ -1,7 +1,7 @@
 package gymmi.workspace.domain;
 
-import static gymmi.exceptionhandler.message.ErrorCode.EXIST_NOT_JOINED_WORKER;
-import static gymmi.exceptionhandler.message.ErrorCode.NOT_CONSISTENT_WORKERS_COUNT;
+import static gymmi.exceptionhandler.message.ErrorMessage.EXIST_NOT_JOINED_WORKER;
+import static gymmi.exceptionhandler.message.ErrorMessage.NOT_CONSISTENT_WORKERS_COUNT;
 
 import gymmi.exceptionhandler.exception.InvalidStateException;
 import gymmi.workspace.domain.entity.Worker;

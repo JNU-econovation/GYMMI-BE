@@ -1,7 +1,7 @@
 package gymmi.global;
 
 import gymmi.exceptionhandler.exception.NotMatchedException;
-import gymmi.exceptionhandler.message.ErrorCode;
+import gymmi.exceptionhandler.message.ErrorMessage;
 import gymmi.workspace.domain.ObjectionStatus;
 import org.springframework.core.convert.converter.Converter;
 
@@ -23,6 +23,6 @@ public class StringToObejctionStatusConverter implements Converter<String, Objec
         if (queryParamValueMapping.containsKey(source)) {
             return queryParamValueMapping.get(source);
         }
-        throw new NotMatchedException(ErrorCode.INVALID_OBJECTION_STATUS_VALUE);
+        throw new NotMatchedException(ErrorMessage.INVALID_OBJECTION_STATUS_VALUE);
     }
 }

@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import gymmi.entity.User;
-import gymmi.exceptionhandler.message.ErrorCode;
+import gymmi.exceptionhandler.message.ErrorMessage;
 import gymmi.workspace.domain.entity.*;
 import gymmi.workspace.domain.entity.WorkoutConfirmation;
 
@@ -49,7 +49,7 @@ class WorkoutHistoryTest {
 
         // when, then
         assertThatThrownBy(() -> workoutHistory.canBeReadIn(workspace1))
-                .hasMessage(ErrorCode.NO_WORKOUT_HISTORY_EXIST_IN_WORKSPACE.getMessage());
+                .hasMessage(ErrorMessage.NO_WORKOUT_HISTORY_EXIST_IN_WORKSPACE.getMessage());
     }
 
 }

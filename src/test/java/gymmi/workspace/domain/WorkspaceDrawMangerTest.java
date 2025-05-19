@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static gymmi.exceptionhandler.message.ErrorCode.NOT_COMPLETED_WORKSPACE;
+import static gymmi.exceptionhandler.message.ErrorMessage.NOT_COMPLETED_WORKSPACE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 

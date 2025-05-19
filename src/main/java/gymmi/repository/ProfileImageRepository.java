@@ -2,7 +2,7 @@ package gymmi.repository;
 
 import gymmi.entity.ProfileImage;
 import gymmi.exceptionhandler.exception.NotFoundException;
-import gymmi.exceptionhandler.message.ErrorCode;
+import gymmi.exceptionhandler.message.ErrorMessage;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -15,7 +15,7 @@ public interface ProfileImageRepository extends JpaRepository<ProfileImage, Long
 
     default ProfileImage getByUserId(Long userId) {
         return findByUserId(userId)
-                .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_PHOTO_FEED_IMAGE));
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND_PHOTO_FEED_IMAGE));
     }
 
 }

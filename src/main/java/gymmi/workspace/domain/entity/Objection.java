@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static gymmi.exceptionhandler.message.ErrorCode.NO_WORKOUT_HISTORY_EXIST_IN_WORKSPACE;
+import static gymmi.exceptionhandler.message.ErrorMessage.NO_WORKOUT_HISTORY_EXIST_IN_WORKSPACE;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

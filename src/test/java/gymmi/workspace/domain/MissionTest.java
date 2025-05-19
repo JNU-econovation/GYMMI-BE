@@ -3,7 +3,7 @@ package gymmi.workspace.domain;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Instancio.gen;
 
-import gymmi.exceptionhandler.message.ErrorCode;
+import gymmi.exceptionhandler.message.ErrorMessage;
 import gymmi.workspace.domain.entity.Mission;
 import gymmi.workspace.domain.entity.Workspace;
 import java.util.List;
@@ -23,7 +23,7 @@ class MissionTest {
 
         // when, then
         assertThatThrownBy(() -> new Mission(workspace, gen().string().get(), score))
-                .hasMessage(ErrorCode.INVALID_WORKSPACE_MISSION_SCORE.getMessage());
+                .hasMessage(ErrorMessage.INVALID_WORKSPACE_MISSION_SCORE.getMessage());
     }
 
     @Test
@@ -34,7 +34,7 @@ class MissionTest {
 
         // when, then
         assertThatThrownBy(() -> new Mission(workspace, missionName, Mission.MIN_SCORE))
-                .hasMessage(ErrorCode.INVALID_WORKSPACE_MISSION_NAME_LENGTH.getMessage());
+                .hasMessage(ErrorMessage.INVALID_WORKSPACE_MISSION_NAME_LENGTH.getMessage());
     }
 
     @Test
@@ -50,7 +50,7 @@ class MissionTest {
 
         // when, then
         assertThatThrownBy(() -> mission.canBeReadIn(workspaces.get(1)))
-                .hasMessage(ErrorCode.NOT_REGISTERED_WORKSPACE_MISSION.getMessage());
+                .hasMessage(ErrorMessage.NOT_REGISTERED_WORKSPACE_MISSION.getMessage());
     }
 
 }

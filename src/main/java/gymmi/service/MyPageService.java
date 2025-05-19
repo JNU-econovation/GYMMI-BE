@@ -3,7 +3,7 @@ package gymmi.service;
 import gymmi.entity.ProfileImage;
 import gymmi.entity.User;
 import gymmi.exceptionhandler.exception.AlreadyExistException;
-import gymmi.exceptionhandler.message.ErrorCode;
+import gymmi.exceptionhandler.message.ErrorMessage;
 import gymmi.repository.ProfileImageRepository;
 import gymmi.repository.UserRepository;
 import gymmi.request.EditingMyPageRequest;
@@ -52,7 +52,7 @@ public class MyPageService {
     @Transactional
     public void editMyPage(User loginedUser, EditingMyPageRequest request) {
         if (userRepository.findByNickname(request.getNickname()).isPresent()) {
-            throw new AlreadyExistException(ErrorCode.ALREADY_USED_NICKNAME);
+            throw new AlreadyExistException(ErrorMessage.ALREADY_USED_NICKNAME);
         }
         loginedUser.changeNickname(request.getNickname());
     }

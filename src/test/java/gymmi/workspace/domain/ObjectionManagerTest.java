@@ -1,6 +1,6 @@
 package gymmi.workspace.domain;
 
-import gymmi.exceptionhandler.message.ErrorCode;
+import gymmi.exceptionhandler.message.ErrorMessage;
 import gymmi.workspace.domain.entity.Objection;
 import gymmi.workspace.domain.entity.Vote;
 import gymmi.workspace.domain.entity.Worker;
@@ -36,7 +36,7 @@ class ObjectionManagerTest {
 
             // when, then
             assertThatThrownBy(() -> tackleManager.createVote(worker, true))
-                    .hasMessage(ErrorCode.ALREADY_VOTED.getMessage());
+                    .hasMessage(ErrorMessage.ALREADY_VOTED.getMessage());
         }
 
         @Test
@@ -51,7 +51,7 @@ class ObjectionManagerTest {
 
             // when, then
             assertThatThrownBy(() -> tackleManager.createVote(worker, true))
-                    .hasMessage(ErrorCode.ALREADY_CLOSED_OBJECTION.getMessage());
+                    .hasMessage(ErrorMessage.ALREADY_CLOSED_OBJECTION.getMessage());
         }
 
     }

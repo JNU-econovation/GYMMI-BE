@@ -3,7 +3,7 @@ package gymmi.workspace.domain;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import gymmi.entity.User;
-import gymmi.exceptionhandler.message.ErrorCode;
+import gymmi.exceptionhandler.message.ErrorMessage;
 import gymmi.workspace.domain.entity.Worker;
 import gymmi.workspace.domain.entity.Workspace;
 import org.instancio.Instancio;
@@ -24,7 +24,7 @@ class WorkspaceEditManagerTest {
 
         //when, then
         assertThatThrownBy(() -> new WorkspaceEditManager(workspace, worker))
-                .hasMessage(ErrorCode.NOT_WORKSPACE_CREATOR.getMessage());
+                .hasMessage(ErrorMessage.NOT_WORKSPACE_CREATOR.getMessage());
     }
 
 }

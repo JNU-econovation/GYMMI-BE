@@ -3,7 +3,7 @@ package gymmi.photoboard.domain.entity;
 import gymmi.entity.TimeEntity;
 import gymmi.entity.User;
 import gymmi.exceptionhandler.exception.NotHavePermissionException;
-import gymmi.exceptionhandler.message.ErrorCode;
+import gymmi.exceptionhandler.message.ErrorMessage;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -54,7 +54,7 @@ public class PhotoFeed extends TimeEntity {
 
     public void checkWriter(User user) {
         if (!this.user.equals(user)) {
-            throw new NotHavePermissionException(ErrorCode.NOT_PHOTO_FEED_WRITER);
+            throw new NotHavePermissionException(ErrorMessage.NOT_PHOTO_FEED_WRITER);
         }
     }
 

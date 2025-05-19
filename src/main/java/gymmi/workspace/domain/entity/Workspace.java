@@ -6,7 +6,7 @@ import gymmi.exceptionhandler.exception.InvalidNumberException;
 import gymmi.exceptionhandler.exception.InvalidPatternException;
 import gymmi.exceptionhandler.exception.InvalidRangeException;
 import gymmi.exceptionhandler.exception.InvalidStateException;
-import gymmi.exceptionhandler.message.ErrorCode;
+import gymmi.exceptionhandler.message.ErrorMessage;
 import gymmi.workspace.domain.WorkspaceStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -89,28 +89,28 @@ public class Workspace extends TimeEntity {
 
     private Integer validateHeadCount(Integer headCount) {
         if (headCount < MIN_HEAD_COUNT || headCount > MAX_HEAD_COUNT) {
-            throw new InvalidRangeException(ErrorCode.INVALID_WORKSPACE_HEAD_COUNT);
+            throw new InvalidRangeException(ErrorMessage.INVALID_WORKSPACE_HEAD_COUNT);
         }
         return headCount;
     }
 
     public static String validateName(String name) {
         if (name.length() > 9) {
-            throw new InvalidRangeException(ErrorCode.INVALID_WORKSPACE_NAME_LENGTH);
+            throw new InvalidRangeException(ErrorMessage.INVALID_WORKSPACE_NAME_LENGTH);
         }
         if (!REGEX_WORKSPACE_NAME.matcher(name).matches()) {
-            throw new InvalidPatternException(ErrorCode.INVALID_WORKSPACE_NAME_FORMAT);
+            throw new InvalidPatternException(ErrorMessage.INVALID_WORKSPACE_NAME_FORMAT);
         }
         return name;
     }
 
     private Integer validateGoalScore(Integer goalScore) {
         if (goalScore < MIN_GOAL_SCORE || goalScore > MAX_GOAL_SCORE) {
-            throw new InvalidRangeException(ErrorCode.INVALID_WORKSPACE_GOAL_SCORE);
+            throw new InvalidRangeException(ErrorMessage.INVALID_WORKSPACE_GOAL_SCORE);
         }
 
         if (!(goalScore % 10 == 0)) {
-            throw new InvalidNumberException(ErrorCode.INVALID_MISSION_SCORE_UNIT);
+            throw new InvalidNumberException(ErrorMessage.INVALID_MISSION_SCORE_UNIT);
         }
         return goalScore;
     }
@@ -120,10 +120,10 @@ public class Workspace extends TimeEntity {
             return "";
         }
         if (tag.length() > 10) {
-            throw new InvalidRangeException(ErrorCode.INVALID_TAG_NAME_LENGTH);
+            throw new InvalidRangeException(ErrorMessage.INVALID_TAG_NAME_LENGTH);
         }
         if (!REGEX_WORKSPACE_TAG.matcher(tag).matches()) {
-            throw new InvalidPatternException(ErrorCode.INVALID_TAG_NAME_FORMAT);
+            throw new InvalidPatternException(ErrorMessage.INVALID_TAG_NAME_FORMAT);
         }
         return tag;
     }
@@ -192,7 +192,7 @@ public class Workspace extends TimeEntity {
             return;
         }
         if (!isPreparing()) {
-            throw new InvalidStateException(ErrorCode.ALREADY_ACTIVATED_WORKSPACE);
+            throw new InvalidStateException(ErrorMessage.ALREADY_ACTIVATED_WORKSPACE);
         }
         this.task = task;
     }

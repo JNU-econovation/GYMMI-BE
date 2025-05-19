@@ -2,7 +2,7 @@ package gymmi.workspace.domain.entity;
 
 import gymmi.exceptionhandler.exception.InvalidRangeException;
 import gymmi.exceptionhandler.exception.NotHavePermissionException;
-import gymmi.exceptionhandler.message.ErrorCode;
+import gymmi.exceptionhandler.message.ErrorMessage;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -45,14 +45,14 @@ public class Mission {
 
     private Integer validateScore(Integer score) {
         if (score < MIN_SCORE || score > MAX_SCORE) {
-            throw new InvalidRangeException(ErrorCode.INVALID_WORKSPACE_MISSION_SCORE);
+            throw new InvalidRangeException(ErrorMessage.INVALID_WORKSPACE_MISSION_SCORE);
         }
         return score;
     }
 
     private String validateName(String name) {
         if (name.length() > MAX_NAME_LENGTH) {
-            throw new InvalidRangeException(ErrorCode.INVALID_WORKSPACE_MISSION_NAME_LENGTH);
+            throw new InvalidRangeException(ErrorMessage.INVALID_WORKSPACE_MISSION_NAME_LENGTH);
         }
         return name;
     }
@@ -63,7 +63,7 @@ public class Mission {
 
     public void canBeReadIn(Workspace workspace) {
         if (!isRegisteredIn(workspace)) {
-            throw new NotHavePermissionException(ErrorCode.NOT_REGISTERED_WORKSPACE_MISSION);
+            throw new NotHavePermissionException(ErrorMessage.NOT_REGISTERED_WORKSPACE_MISSION);
         }
     }
 

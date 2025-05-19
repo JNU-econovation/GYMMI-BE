@@ -1,25 +1,25 @@
 package gymmi.exceptionhandler.exception;
 
-import gymmi.exceptionhandler.message.ErrorCode;
+import gymmi.exceptionhandler.message.ErrorMessage;
 import gymmi.exceptionhandler.message.ExceptionType;
 
 public class FileException extends GymmiException {
 
     public static final ExceptionType EXCEPTION_CODE = ExceptionType.FILE_RELATED;
 
-    public FileException(ErrorCode errorCode) {
+    public FileException(ErrorMessage errorCode) {
         super(errorCode, EXCEPTION_CODE);
     }
 
-    public FileException(ErrorCode errorCode, Throwable throwable) {
+    public FileException(ErrorMessage errorCode, Throwable throwable) {
         super(errorCode, EXCEPTION_CODE, throwable);
     }
 
-    protected FileException(ErrorCode errorCode, ExceptionType exceptionType) {
+    protected FileException(ErrorMessage errorCode, ExceptionType exceptionType) {
         super(errorCode, exceptionType);
     }
 
-    protected FileException(ErrorCode errorCode, ExceptionType exceptionType, Throwable throwable) {
+    protected FileException(ErrorMessage errorCode, ExceptionType exceptionType, Throwable throwable) {
         super(errorCode, exceptionType, throwable);
     }
 

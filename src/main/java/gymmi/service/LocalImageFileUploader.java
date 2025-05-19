@@ -1,10 +1,10 @@
 package gymmi.service;
 
-import static gymmi.exceptionhandler.message.ErrorCode.EMPTY_FILE;
-import static gymmi.exceptionhandler.message.ErrorCode.FAILED_FILE_UPLOAD;
-import static gymmi.exceptionhandler.message.ErrorCode.MISSING_FILE_EXTENSION;
-import static gymmi.exceptionhandler.message.ErrorCode.NOT_FOUND_FILE;
-import static gymmi.exceptionhandler.message.ErrorCode.UNSUPPORTED_FILE;
+import static gymmi.exceptionhandler.message.ErrorMessage.EMPTY_FILE;
+import static gymmi.exceptionhandler.message.ErrorMessage.FAILED_FILE_UPLOAD;
+import static gymmi.exceptionhandler.message.ErrorMessage.MISSING_FILE_EXTENSION;
+import static gymmi.exceptionhandler.message.ErrorMessage.NOT_FOUND_FILE;
+import static gymmi.exceptionhandler.message.ErrorMessage.UNSUPPORTED_FILE;
 
 import gymmi.exceptionhandler.exception.FileIOFailException;
 import gymmi.exceptionhandler.exception.InvalidFileException;

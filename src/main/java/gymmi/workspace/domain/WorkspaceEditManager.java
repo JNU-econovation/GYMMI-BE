@@ -1,7 +1,7 @@
 package gymmi.workspace.domain;
 
 import gymmi.exceptionhandler.exception.NotHavePermissionException;
-import gymmi.exceptionhandler.message.ErrorCode;
+import gymmi.exceptionhandler.message.ErrorMessage;
 import gymmi.workspace.domain.entity.Worker;
 import gymmi.workspace.domain.entity.Workspace;
 
@@ -18,7 +18,7 @@ public class WorkspaceEditManager {
 
     private Worker validate(Worker worker) {
         if (!workspace.isCreatedBy(worker)) {
-            throw new NotHavePermissionException(ErrorCode.NOT_WORKSPACE_CREATOR);
+            throw new NotHavePermissionException(ErrorMessage.NOT_WORKSPACE_CREATOR);
         }
         return worker;
     }

@@ -1,7 +1,7 @@
 package gymmi.workspace.repository;
 
 import gymmi.exceptionhandler.exception.NotFoundException;
-import gymmi.exceptionhandler.message.ErrorCode;
+import gymmi.exceptionhandler.message.ErrorMessage;
 import gymmi.workspace.domain.entity.Worker;
 import java.util.List;
 import java.util.Optional;
@@ -15,7 +15,7 @@ public interface WorkerRepository extends JpaRepository<Worker, Long> {
 
     default Worker getByUserIdAndWorkspaceId(Long userId, Long workspaceId) {
         return findByUserIdAndWorkspaceId(userId, workspaceId)
-                .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_WORKER));
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND_WORKER));
     }
 
     @Query("select w from Worker w " +
