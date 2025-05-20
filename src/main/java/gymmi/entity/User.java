@@ -176,4 +176,8 @@ public class User extends TimeEntity {
                 ", profileImage=" + profileImage +
                 '}';
     }
+
+    public void s(){
+        return;
+    }
 }

@@ -2,6 +2,7 @@ package gymmi.workspace.domain.entity;
 
 import gymmi.exceptionhandler.exception.InvalidRangeException;
 import gymmi.exceptionhandler.exception.NotHavePermissionException;
+import gymmi.exceptionhandler.message.WorkoutErrorMessage;
 import gymmi.exceptionhandler.message.WorkspaceErrorMessage;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -56,7 +57,7 @@ public class Mission {
 
     public void canBeReadIn(Workspace workspace) {
         if (!isRegisteredIn(workspace)) {
-            throw new NotHavePermissionException(WorkspaceErrorMessage.NOT_REGISTERED_WORKSPACE_MISSION);
+            throw new NotHavePermissionException(WorkoutErrorMessage.NOT_REGISTERED_WORKSPACE_MISSION);
         }
     }
 

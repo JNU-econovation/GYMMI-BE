@@ -2,6 +2,7 @@ package gymmi.workspace.domain;
 
 import gymmi.entity.User;
 import gymmi.exceptionhandler.message.WorkspaceErrorMessage;
+import gymmi.exceptionhandler.message.WorkspaceJoinErrorMessage;
 import gymmi.workspace.domain.entity.Worker;
 import gymmi.workspace.domain.entity.Workspace;
 import org.instancio.Instancio;
@@ -49,7 +50,7 @@ class WorkspacePreparingManagerTest {
 
             // when, then
             assertThatThrownBy(() -> workspacePreparingManager.allow(user, wrongPassword))
-                    .hasMessage(WorkspaceErrorMessage.NOT_MATCHED_PASSWORD.getMessage());
+                    .hasMessage(WorkspaceJoinErrorMessage.NOT_MATCHED_PASSWORD.getMessage());
         }
 
         @Test
@@ -63,7 +64,7 @@ class WorkspacePreparingManagerTest {
 
             // when, then
             assertThatThrownBy(() -> workspacePreparingManager.allow(user, workspace.getPassword()))
-                    .hasMessage(WorkspaceErrorMessage.FULL_WORKSPACE.getMessage());
+                    .hasMessage(WorkspaceJoinErrorMessage.FULL_WORKSPACE.getMessage());
         }
 
         @Test
@@ -78,7 +79,7 @@ class WorkspacePreparingManagerTest {
 
             // when, then
             assertThatThrownBy(() -> workspacePreparingManager.allow(user, workspace.getPassword()))
-                    .hasMessage(WorkspaceErrorMessage.ALREADY_ACTIVATED_WORKSPACE.getMessage());
+                    .hasMessage(WorkspaceJoinErrorMessage.ALREADY_ACTIVATED_WORKSPACE.getMessage());
         }
 
         @Test
@@ -92,7 +93,7 @@ class WorkspacePreparingManagerTest {
 
             // when, then
             assertThatThrownBy(() -> workspacePreparingManager.allow(user, workspace.getPassword()))
-                    .hasMessage(WorkspaceErrorMessage.ALREADY_JOINED_WORKSPACE.getMessage());
+                    .hasMessage(WorkspaceJoinErrorMessage.ALREADY_JOINED_WORKSPACE.getMessage());
         }
     }
 
@@ -125,7 +126,7 @@ class WorkspacePreparingManagerTest {
 
             // when, then
             assertThatThrownBy(() -> workspacePreparingManager.release(workers.get(0)))
-                    .hasMessage(WorkspaceErrorMessage.ALREADY_ACTIVATED_WORKSPACE.getMessage());
+                    .hasMessage(WorkspaceJoinErrorMessage.ALREADY_ACTIVATED_WORKSPACE.getMessage());
         }
 
         @Test
@@ -193,7 +194,7 @@ class WorkspacePreparingManagerTest {
 
             // when, then
             assertThatThrownBy(() -> workspacePreparingManager.startBy(creator))
-                    .hasMessage(WorkspaceErrorMessage.ALREADY_ACTIVATED_WORKSPACE.getMessage());
+                    .hasMessage(WorkspaceJoinErrorMessage.ALREADY_ACTIVATED_WORKSPACE.getMessage());
         }
 
         @Test

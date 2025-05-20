@@ -1,6 +1,7 @@
 package gymmi.workspace.domain;
 
 import gymmi.entity.User;
+import gymmi.exceptionhandler.message.WorkspaceEditErrorMessage;
 import gymmi.exceptionhandler.message.WorkspaceErrorMessage;
 import gymmi.workspace.domain.entity.Worker;
 import gymmi.workspace.domain.entity.Workspace;
@@ -24,7 +25,7 @@ class WorkspaceEditManagerTest {
 
         //when, then
         assertThatThrownBy(() -> new WorkspaceEditManager(workspace, worker))
-                .hasMessage(WorkspaceErrorMessage.NOT_WORKSPACE_CREATOR.getMessage());
+                .hasMessage(WorkspaceEditErrorMessage.NOT_WORKSPACE_CREATOR.getMessage());
     }
 
 }

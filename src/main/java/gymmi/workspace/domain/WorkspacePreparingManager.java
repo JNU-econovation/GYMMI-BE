@@ -7,6 +7,8 @@ import gymmi.exceptionhandler.exception.InvalidStateException;
 import gymmi.exceptionhandler.exception.NotHavePermissionException;
 import gymmi.exceptionhandler.exception.NotMatchedException;
 import gymmi.exceptionhandler.message.WorkspaceErrorMessage;
+import gymmi.exceptionhandler.message.WorkspaceJoinErrorMessage;
+import gymmi.exceptionhandler.message.WorkspaceStartErrorMessage;
 import gymmi.workspace.domain.entity.Worker;
 import gymmi.workspace.domain.entity.Workspace;
 import lombok.Getter;
@@ -15,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static gymmi.exceptionhandler.message.WorkspaceErrorMessage.*;
+import static gymmi.exceptionhandler.message.WorkspaceJoinErrorMessage.ALREADY_ACTIVATED_WORKSPACE;
 
 @Getter
 public class WorkspacePreparingManager {
@@ -30,17 +33,17 @@ public class WorkspacePreparingManager {
 
     public Worker allow(User user, String password) {
         if (!workspace.matchesPassword(password)) {
-            throw new NotMatchedException(WorkspaceErrorMessage.NOT_MATCHED_PASSWORD.getMessage());
+            throw new NotMatchedException(WorkspaceJoinErrorMessage.NOT_MATCHED_PASSWORD.getMessage());
         }
         if (workers.size() >= workspace.getHeadCount()) {
-            throw new InvalidStateException(WorkspaceErrorMessage.FULL_WORKSPACE.getMessage());
+            throw new InvalidStateException(WorkspaceJoinErrorMessage.FULL_WORKSPACE.getMessage());
         }
         if (!workspace.isPreparing()) {
             throw new InvalidStateException(ALREADY_ACTIVATED_WORKSPACE.getMessage());
         }
         if (workers.stream()
                 .anyMatch(worker -> worker.getUser().equals(user))) {
-            throw new AlreadyExistException(WorkspaceErrorMessage.ALREADY_JOINED_WORKSPACE.getMessage());
+            throw new AlreadyExistException(WorkspaceJoinErrorMessage.ALREADY_JOINED_WORKSPACE.getMessage());
         }
 
         Worker worker = new Worker(user, workspace);
@@ -66,13 +69,13 @@ public class WorkspacePreparingManager {
 
     public void startBy(Worker creator) {
         if (!workspace.isCreatedBy(creator)) {
-            throw new NotHavePermissionException(NOT_WORKSPACE_CREATOR.getMessage());
+            throw new NotHavePermissionException(WorkspaceStartErrorMessage.NOT_WORKSPACE_CREATOR.getMessage());
         }
         if (!workspace.isPreparing()) {
-            throw new InvalidStateException(ALREADY_ACTIVATED_WORKSPACE.getMessage());
+            throw new InvalidStateException(WorkspaceStartErrorMessage.ALREADY_ACTIVATED_WORKSPACE.getMessage());
         }
         if (workers.size() < Workspace.MIN_HEAD_COUNT) {
-            throw new InvalidStateException(BELOW_MINIMUM_WORKER.getMessage());
+            throw new InvalidStateException(WorkspaceStartErrorMessage.BELOW_MINIMUM_WORKER.getMessage());
         }
         workspace.changeStatusTo(WorkspaceStatus.IN_PROGRESS);
     }

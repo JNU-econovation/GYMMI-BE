@@ -1,5 +1,6 @@
 package gymmi.workspace.domain;
 
+import gymmi.exceptionhandler.message.WorkoutErrorMessage;
 import gymmi.exceptionhandler.message.WorkspaceErrorMessage;
 import gymmi.workspace.domain.entity.Mission;
 import gymmi.workspace.domain.entity.Workspace;
@@ -51,7 +52,7 @@ class MissionTest {
 
         // when, then
         assertThatThrownBy(() -> mission.canBeReadIn(workspaces.get(1)))
-                .hasMessage(WorkspaceErrorMessage.NOT_REGISTERED_WORKSPACE_MISSION.getMessage());
+                .hasMessage(WorkoutErrorMessage.NOT_REGISTERED_WORKSPACE_MISSION.getMessage());
     }
 
 }

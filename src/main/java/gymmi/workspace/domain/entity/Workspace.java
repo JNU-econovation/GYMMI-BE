@@ -6,6 +6,8 @@ import gymmi.exceptionhandler.exception.InvalidNumberException;
 import gymmi.exceptionhandler.exception.InvalidPatternException;
 import gymmi.exceptionhandler.exception.InvalidRangeException;
 import gymmi.exceptionhandler.exception.InvalidStateException;
+import gymmi.exceptionhandler.message.WorkspaceCreationErrorMessage;
+import gymmi.exceptionhandler.message.WorkspaceEditErrorMessage;
 import gymmi.exceptionhandler.message.WorkspaceErrorMessage;
 import gymmi.workspace.domain.WorkspaceStatus;
 import jakarta.persistence.*;
@@ -89,28 +91,28 @@ public class Workspace extends TimeEntity {
 
     private Integer validateHeadCount(Integer headCount) {
         if (headCount < MIN_HEAD_COUNT || headCount > MAX_HEAD_COUNT) {
-            throw new InvalidRangeException(WorkspaceErrorMessage.INVALID_WORKSPACE_HEAD_COUNT);
+            throw new InvalidRangeException(WorkspaceCreationErrorMessage.INVALID_WORKSPACE_HEAD_COUNT);
         }
         return headCount;
     }
 
     public static String validateName(String name) {
         if (name.length() > 9) {
-            throw new InvalidRangeException(WorkspaceErrorMessage.INVALID_WORKSPACE_NAME_LENGTH);
+            throw new InvalidRangeException(WorkspaceCreationErrorMessage.INVALID_WORKSPACE_NAME_LENGTH);
         }
         if (!REGEX_WORKSPACE_NAME.matcher(name).matches()) {
-            throw new InvalidPatternException(WorkspaceErrorMessage.INVALID_WORKSPACE_NAME_FORMAT);
+            throw new InvalidPatternException(WorkspaceCreationErrorMessage.INVALID_WORKSPACE_NAME_FORMAT);
         }
         return name;
     }
 
     private Integer validateGoalScore(Integer goalScore) {
         if (goalScore < MIN_GOAL_SCORE || goalScore > MAX_GOAL_SCORE) {
-            throw new InvalidRangeException(WorkspaceErrorMessage.INVALID_WORKSPACE_GOAL_SCORE);
+            throw new InvalidRangeException(WorkspaceCreationErrorMessage.INVALID_WORKSPACE_GOAL_SCORE);
         }
 
         if (!(goalScore % 10 == 0)) {
-            throw new InvalidNumberException(WorkspaceErrorMessage.INVALID_MISSION_SCORE_UNIT);
+            throw new InvalidNumberException(WorkspaceCreationErrorMessage.INVALID_MISSION_SCORE_UNIT);
         }
         return goalScore;
     }
@@ -120,10 +122,10 @@ public class Workspace extends TimeEntity {
             return "";
         }
         if (tag.length() > 10) {
-            throw new InvalidRangeException(WorkspaceErrorMessage.INVALID_TAG_NAME_LENGTH);
+            throw new InvalidRangeException(WorkspaceCreationErrorMessage.INVALID_TAG_NAME_LENGTH);
         }
         if (!REGEX_WORKSPACE_TAG.matcher(tag).matches()) {
-            throw new InvalidPatternException(WorkspaceErrorMessage.INVALID_TAG_NAME_FORMAT);
+            throw new InvalidPatternException(WorkspaceCreationErrorMessage.INVALID_TAG_NAME_FORMAT);
         }
         return tag;
     }
@@ -192,7 +194,7 @@ public class Workspace extends TimeEntity {
             return;
         }
         if (!isPreparing()) {
-            throw new InvalidStateException(WorkspaceErrorMessage.ALREADY_ACTIVATED_WORKSPACE.getMessage());
+            throw new InvalidStateException(WorkspaceEditErrorMessage.ALREADY_ACTIVATED_WORKSPACE.getMessage());
         }
         this.task = task;
     }

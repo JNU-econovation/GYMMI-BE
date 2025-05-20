@@ -2,6 +2,7 @@ package gymmi.workspace.domain;
 
 import gymmi.exceptionhandler.exception.AlreadyExistException;
 import gymmi.exceptionhandler.exception.InvalidStateException;
+import gymmi.exceptionhandler.message.VoteErrorMessage;
 import gymmi.exceptionhandler.message.WorkspaceErrorMessage;
 import gymmi.workspace.domain.entity.Objection;
 import gymmi.workspace.domain.entity.Vote;
@@ -22,10 +23,10 @@ public class ObjectionManager {
 
     public Vote createVote(Worker worker, boolean isApproved) {
         if (!objection.isInProgress()) {
-            throw new InvalidStateException(WorkspaceErrorMessage.ALREADY_CLOSED_OBJECTION.getMessage());
+            throw new InvalidStateException(VoteErrorMessage.ALREADY_CLOSED_OBJECTION.getMessage());
         }
         if (objection.hasVoteBy(worker)) {
-            throw new AlreadyExistException(WorkspaceErrorMessage.ALREADY_VOTED.getMessage());
+            throw new AlreadyExistException(VoteErrorMessage.ALREADY_VOTED);
         }
         return new Vote(worker, objection, isApproved);
     }

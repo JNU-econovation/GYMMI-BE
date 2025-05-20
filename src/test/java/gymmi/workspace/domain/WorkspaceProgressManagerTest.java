@@ -1,5 +1,6 @@
 package gymmi.workspace.domain;
 
+import gymmi.exceptionhandler.message.WorkoutErrorMessage;
 import gymmi.exceptionhandler.message.WorkspaceErrorMessage;
 import gymmi.workspace.domain.entity.*;
 import org.instancio.Instancio;
@@ -25,7 +26,7 @@ class WorkspaceProgressManagerTest {
 
         // when, then
         assertThatThrownBy(() -> new WorkspaceProgressManager(workspace, missions, 0))
-                .hasMessage(WorkspaceErrorMessage.INACTIVE_WORKSPACE.getMessage());
+                .hasMessage(WorkoutErrorMessage.INACTIVE_WORKSPACE.getMessage());
     }
 
     @Test
@@ -83,7 +84,7 @@ class WorkspaceProgressManagerTest {
 
             // when, then
             assertThatThrownBy(() -> workspaceProgressManager.doWorkout(worker, workouts, workoutProof))
-                    .hasMessage(WorkspaceErrorMessage.NOT_REGISTERED_WORKSPACE_MISSION.getMessage());
+                    .hasMessage(WorkoutErrorMessage.NOT_REGISTERED_WORKSPACE_MISSION.getMessage());
         }
 
         @Test

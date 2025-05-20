@@ -14,7 +14,7 @@ public class UserCustomRepositoryImpl implements UserCustomRepository {
 
     @Override
     public boolean existsBy(String nickname) {
-        User user = jpaQueryFactory.select(QUser.user)
+        User user = jpaQueryFactory.select(Quser.user)
                 .from(QUser.user)
                 .where(QUser.user.nickname.eq(nickname))
                 .fetchFirst();

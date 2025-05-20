@@ -1,7 +1,9 @@
 package gymmi.workspace.service;
 
 import gymmi.entity.User;
+import gymmi.exceptionhandler.message.WorkoutErrorMessage;
 import gymmi.exceptionhandler.message.WorkspaceErrorMessage;
+import gymmi.exceptionhandler.message.WorkspaceStartErrorMessage;
 import gymmi.photoboard.repository.PhotoFeedRepository;
 import gymmi.service.S3Service;
 import gymmi.workspace.domain.WorkspaceStatus;
@@ -180,7 +182,7 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
 
             // when, then
             assertThatThrownBy(() -> workspaceCommandService.workMissionsInWorkspace(user, workspace.getId(), request))
-                    .hasMessage(WorkspaceErrorMessage.EXCEED_MAX_DAILY_WORKOUT_HISTORY_COUNT.getMessage());
+                    .hasMessage(WorkoutErrorMessage.EXCEED_MAX_DAILY_WORKOUT_HISTORY_COUNT.getMessage());
         }
 
     }

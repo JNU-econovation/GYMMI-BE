@@ -1,6 +1,7 @@
 package gymmi.workspace.repository;
 
 import gymmi.exceptionhandler.exception.NotFoundException;
+import gymmi.exceptionhandler.message.RepositoryErrorMessage;
 import gymmi.exceptionhandler.message.WorkspaceErrorMessage;
 import gymmi.workspace.domain.entity.WorkoutHistory;
 import gymmi.workspace.repository.custom.WorkoutHistoryCustomRepository;
@@ -21,7 +22,7 @@ public interface WorkoutHistoryRepository extends JpaRepository<WorkoutHistory, 
 
     default WorkoutHistory getByWorkoutHistoryId(Long workoutHistoryId) {
         WorkoutHistory workoutHistory = findById(workoutHistoryId)
-                .orElseThrow(() -> new NotFoundException(WorkspaceErrorMessage.NOT_FOUND_WORKOUT_CONFIRMATION.getMessage()));
+                .orElseThrow(() -> new NotFoundException(RepositoryErrorMessage.NOT_FOUND_WORKOUT_CONFIRMATION.getMessage()));
         return workoutHistory;
     }
 
@@ -31,7 +32,7 @@ public interface WorkoutHistoryRepository extends JpaRepository<WorkoutHistory, 
 
     default WorkoutHistory getByWorkoutConfirmationId(Long workoutConfirmationId) {
         WorkoutHistory workoutHistory = findByWorkoutConfirmationId(workoutConfirmationId)
-                .orElseThrow(() -> new NotFoundException(WorkspaceErrorMessage.NOT_FOUND_WORKOUT_CONFIRMATION));
+                .orElseThrow(() -> new NotFoundException(RepositoryErrorMessage.NOT_FOUND_WORKOUT_CONFIRMATION));
         return workoutHistory;
     }
 

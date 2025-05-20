@@ -8,7 +8,7 @@ import gymmi.eventlistener.event.WorkspaceStartedEvent;
 import gymmi.exceptionhandler.exception.AlreadyExistException;
 import gymmi.exceptionhandler.exception.InvalidStateException;
 import gymmi.exceptionhandler.exception.NotHavePermissionException;
-import gymmi.exceptionhandler.message.WorkspaceErrorMessage;
+import gymmi.exceptionhandler.message.*;
 import gymmi.photoboard.domain.entity.PhotoFeedImage;
 import gymmi.photoboard.request.CreatePhotoFeedRequest;
 import gymmi.photoboard.service.PhotoFeedService;
@@ -49,7 +49,7 @@ public class WorkspaceCommandService {
     public Long createWorkspace(User loginedUser, CreatingWorkspaceRequest request) {
         validateCountOfWorkspaces(loginedUser.getId());
         if (workspaceRepository.existsByName(request.getName())) {
-            throw new AlreadyExistException(WorkspaceErrorMessage.ALREADY_USED_WORKSPACE_NAME.getMessage());
+            throw new AlreadyExistException(WorkspaceCreationErrorMessage.ALREADY_USED_WORKSPACE_NAME.getMessage());
         }
 
         WorkspaceInitializer workspaceInitializer = new WorkspaceInitializer();
@@ -79,7 +79,7 @@ public class WorkspaceCommandService {
         long countOfJoinedWorkspaces =
                 workspaceRepository.getCountsOfJoinedWorkspacesExcludeCompleted(userId);
         if (countOfJoinedWorkspaces >= 5) {
-            throw new InvalidStateException(WorkspaceErrorMessage.EXCEED_MAX_JOINED_WORKSPACE.getMessage());
+            throw new InvalidStateException(WorkspaceJoinErrorMessage.EXCEED_MAX_JOINED_WORKSPACE.getMessage());
         }
     }
 
@@ -156,7 +156,7 @@ public class WorkspaceCommandService {
     private void validateDailyWorkoutHistoryCount(Long workerId) {
         List<WorkoutHistory> workoutHistories = workoutHistoryRepository.getAllByDate(workerId, LocalDate.now());
         if (workoutHistories.size() >= 3) {
-            throw new InvalidStateException(WorkspaceErrorMessage.EXCEED_MAX_DAILY_WORKOUT_HISTORY_COUNT.getMessage());
+            throw new InvalidStateException(WorkoutErrorMessage.EXCEED_MAX_DAILY_WORKOUT_HISTORY_COUNT.getMessage());
         }
     }
 
@@ -208,10 +208,10 @@ public class WorkspaceCommandService {
         WorkoutHistory workoutHistory = workoutHistoryRepository.getByWorkoutConfirmationId(workoutConfirmationId);
         workoutHistory.canBeReadIn(workspace);
         if (objectionRepository.findByWorkoutConfirmationId(workoutConfirmationId).isPresent()) {
-            throw new AlreadyExistException(WorkspaceErrorMessage.ALREADY_OBJECTED.getMessage());
+            throw new AlreadyExistException(ObjectionErrorMessage.ALREADY_OBJECTED.getMessage());
         }
         if (!workspace.isInProgress()) {
-            throw new InvalidStateException(WorkspaceErrorMessage.INACTIVE_WORKSPACE.getMessage());
+            throw new InvalidStateException(ObjectionErrorMessage.INACTIVE_WORKSPACE.getMessage());
         }
         Objection objection = Objection.builder()
                 .subject(worker)
