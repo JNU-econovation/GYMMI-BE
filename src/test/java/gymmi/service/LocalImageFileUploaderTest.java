@@ -1,22 +1,23 @@
 package gymmi.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
 import gymmi.exceptionhandler.exception.FileIOFailException;
 import gymmi.exceptionhandler.exception.InvalidFileException;
 import gymmi.exceptionhandler.exception.NotFoundException;
-import gymmi.exceptionhandler.message.ErrorMessage;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.UUID;
+import gymmi.exceptionhandler.message.FileErrorMessage;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.UUID;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class LocalImageFileUploaderTest {
 
@@ -74,7 +75,7 @@ class LocalImageFileUploaderTest {
         // when, then
         assertThatThrownBy(() -> uploader.upload(multipartFile, UUID.randomUUID().toString()))
                 .isInstanceOf(InvalidFileException.class)
-                .hasMessage(ErrorMessage.UNSUPPORTED_FILE.getMessage());
+                .hasMessage(FileErrorMessage.UNSUPPORTED_FILE.getMessage());
     }
 
     @Test
@@ -92,7 +93,7 @@ class LocalImageFileUploaderTest {
         // when, then
         assertThatThrownBy(() -> uploader.upload(multipartFile, UUID.randomUUID().toString()))
                 .isInstanceOf(InvalidFileException.class)
-                .hasMessage(ErrorMessage.EMPTY_FILE.getMessage());
+                .hasMessage(FileErrorMessage.EMPTY_FILE.getMessage());
     }
 
     @Test
@@ -110,7 +111,7 @@ class LocalImageFileUploaderTest {
         // when, then
         assertThatThrownBy(() -> uploader.upload(multipartFile, UUID.randomUUID().toString()))
                 .isInstanceOf(InvalidFileException.class)
-                .hasMessage(ErrorMessage.MISSING_FILE_EXTENSION.getMessage());
+                .hasMessage(FileErrorMessage.MISSING_FILE_EXTENSION.getMessage());
     }
 
 

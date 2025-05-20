@@ -1,5 +1,6 @@
 package gymmi.workspace.domain;
 
+import gymmi.exceptionhandler.message.WorkspaceErrorMessage;
 import gymmi.workspace.domain.entity.Worker;
 import gymmi.workspace.domain.entity.Workspace;
 import gymmi.workspace.domain.entity.WorkspaceResult;
@@ -11,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static gymmi.exceptionhandler.message.ErrorMessage.NOT_COMPLETED_WORKSPACE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -30,7 +30,7 @@ class WorkspaceDrawMangerTest {
 
         // when, then
         assertThatThrownBy(() -> new WorkspaceDrawManger(workspace, workers))
-                .hasMessage(NOT_COMPLETED_WORKSPACE.getMessage());
+                .hasMessage(WorkspaceErrorMessage.NOT_COMPLETED_WORKSPACE.getMessage());
     }
 
     @Nested

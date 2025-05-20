@@ -1,17 +1,18 @@
 package gymmi.workspace.domain;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.instancio.Instancio.gen;
-
-import gymmi.exceptionhandler.message.ErrorMessage;
+import gymmi.exceptionhandler.message.WorkspaceErrorMessage;
 import gymmi.workspace.domain.entity.Mission;
 import gymmi.workspace.domain.entity.Workspace;
-import java.util.List;
 import org.instancio.Instancio;
 import org.instancio.Select;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.instancio.Instancio.gen;
 
 class MissionTest {
 
@@ -23,7 +24,7 @@ class MissionTest {
 
         // when, then
         assertThatThrownBy(() -> new Mission(workspace, gen().string().get(), score))
-                .hasMessage(ErrorMessage.INVALID_WORKSPACE_MISSION_SCORE.getMessage());
+                .hasMessage(WorkspaceErrorMessage.INVALID_WORKSPACE_MISSION_SCORE.getMessage());
     }
 
     @Test
@@ -34,7 +35,7 @@ class MissionTest {
 
         // when, then
         assertThatThrownBy(() -> new Mission(workspace, missionName, Mission.MIN_SCORE))
-                .hasMessage(ErrorMessage.INVALID_WORKSPACE_MISSION_NAME_LENGTH.getMessage());
+                .hasMessage(WorkspaceErrorMessage.INVALID_WORKSPACE_MISSION_NAME_LENGTH.getMessage());
     }
 
     @Test
@@ -50,7 +51,7 @@ class MissionTest {
 
         // when, then
         assertThatThrownBy(() -> mission.canBeReadIn(workspaces.get(1)))
-                .hasMessage(ErrorMessage.NOT_REGISTERED_WORKSPACE_MISSION.getMessage());
+                .hasMessage(WorkspaceErrorMessage.NOT_REGISTERED_WORKSPACE_MISSION.getMessage());
     }
 
 }

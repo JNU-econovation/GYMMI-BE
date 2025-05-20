@@ -1,14 +1,5 @@
 package gymmi.integration;
 
-import static gymmi.Fixtures.AUTHORIZATION_TYPE_BEARER;
-import static gymmi.Fixtures.JSON_KEY_ACCESS_TOKEN;
-import static gymmi.Fixtures.JSON_KEY_MESSAGE;
-import static gymmi.Fixtures.JSON_KEY_REFRESH_TOKEN;
-import static gymmi.integration.Steps.로그아웃_요청;
-import static gymmi.integration.Steps.로그인_요청;
-import static gymmi.integration.Steps.재발급_요청;
-import static gymmi.integration.Steps.회원_가입_요청;
-
 import gymmi.Fixtures;
 import gymmi.request.LoginRequest;
 import gymmi.request.ReissueRequest;
@@ -23,6 +14,9 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+
+import static gymmi.Fixtures.*;
+import static gymmi.integration.Steps.*;
 
 @Disabled
 public class AuthTest extends EndToEndTest {
@@ -242,7 +236,7 @@ public class AuthTest extends EndToEndTest {
     class 엑세스_토큰으로_api_요청 {
 
         @Test
-        void  Authorization_헤더에_엑세스_토큰이_비어있는_경우_실패_한다_401() {
+        void Authorization_헤더에_엑세스_토큰이_비어있는_경우_실패_한다_401() {
             // given
             RegistrationRequest step = RegistrationRequest.builder()
                     .loginId(Fixtures.USER__SATISFIED_LOGIN_ID)

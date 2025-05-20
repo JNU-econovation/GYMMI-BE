@@ -1,17 +1,18 @@
 package gymmi.service;
 
 import gymmi.exceptionhandler.exception.AuthenticationFailException;
-import gymmi.exceptionhandler.message.ErrorMessage;
+import gymmi.exceptionhandler.message.LoginErrorMessage;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import java.nio.charset.StandardCharsets;
-import java.util.Date;
-import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
+import java.util.Date;
 
 @Service
 public final class TokenProcessor {
@@ -73,15 +74,15 @@ public final class TokenProcessor {
                     .parseSignedClaims(token)
                     .getPayload();
             if (!payload.getSubject().equals(subject)) {
-                throw new AuthenticationFailException(ErrorMessage.NOT_MATCHED_JWT_SUBJECT);
+                throw new AuthenticationFailException(LoginErrorMessage.NOT_MATCHED_JWT_SUBJECT);
             }
             String userId = payload
                     .get(CLAIM_KEY_USER_ID, String.class);
             return Long.valueOf(userId);
         } catch (ExpiredJwtException e) {
-            throw new AuthenticationFailException(ErrorMessage.EXPIRED_JWT, e);
+            throw new AuthenticationFailException(LoginErrorMessage.EXPIRED_JWT.getMessage(), e);
         } catch (JwtException e) {
-            throw new AuthenticationFailException(ErrorMessage.JWT_RELATED_ERROR, e);
+            throw new AuthenticationFailException(LoginErrorMessage.JWT_RELATED_ERROR.getMessage(), e);
         }
     }
 

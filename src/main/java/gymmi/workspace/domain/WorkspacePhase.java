@@ -1,7 +1,7 @@
 package gymmi.workspace.domain;
 
 import gymmi.exceptionhandler.exception.InvalidStateException;
-import gymmi.exceptionhandler.message.ErrorMessage;
+import gymmi.exceptionhandler.message.CommonErrorMessage;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -25,7 +25,7 @@ public enum WorkspacePhase {
         return Arrays.stream(values())
                 .filter(workspacePhase -> workspacePhase.isLowerOrEqualThan(phasePercent))
                 .max(Comparator.comparingInt(WorkspacePhase::getValue))
-                .orElseThrow(() -> new InvalidStateException(ErrorMessage.LOGIC_ERROR));
+                .orElseThrow(() -> new InvalidStateException(CommonErrorMessage.LOGIC_ERROR));
     }
 
     private boolean isLowerOrEqualThan(int value) {

@@ -3,18 +3,19 @@ package gymmi.service;
 import gymmi.entity.ProfileImage;
 import gymmi.entity.User;
 import gymmi.exceptionhandler.exception.AlreadyExistException;
-import gymmi.exceptionhandler.message.ErrorMessage;
+import gymmi.exceptionhandler.message.UserErrorMessage;
 import gymmi.repository.ProfileImageRepository;
 import gymmi.repository.UserRepository;
 import gymmi.request.EditingMyPageRequest;
 import gymmi.response.MyPageResponse;
 import gymmi.response.ProfileImageResponse;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -52,7 +53,7 @@ public class MyPageService {
     @Transactional
     public void editMyPage(User loginedUser, EditingMyPageRequest request) {
         if (userRepository.findByNickname(request.getNickname()).isPresent()) {
-            throw new AlreadyExistException(ErrorMessage.ALREADY_USED_NICKNAME);
+            throw new AlreadyExistException(UserErrorMessage.ALREADY_USED_NICKNAME.getMessage());
         }
         loginedUser.changeNickname(request.getNickname());
     }

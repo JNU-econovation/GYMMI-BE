@@ -3,7 +3,7 @@ package gymmi.service;
 import gymmi.entity.FcmToken;
 import gymmi.entity.User;
 import gymmi.exceptionhandler.exception.NotFoundException;
-import gymmi.exceptionhandler.message.ErrorMessage;
+import gymmi.exceptionhandler.message.CommonErrorMessage;
 import gymmi.repository.FcmTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,14 +18,14 @@ public class FcmTokenService {
     @Transactional
     public void refresh(User loginedUser, String token) {
         FcmToken fcmToken = fcmTokenRepository.findByUserId(loginedUser.getId())
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.RETRY_AFTER_LOGOUT));
+                .orElseThrow(() -> new NotFoundException(CommonErrorMessage.RETRY_AFTER_LOGOUT));
         fcmToken.set(token);
     }
 
     @Transactional
     public void delete(User loginedUser) {
         FcmToken fcmToken = fcmTokenRepository.findByUserId(loginedUser.getId())
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.RETRY_AFTER_LOGOUT));
+                .orElseThrow(() -> new NotFoundException(CommonErrorMessage.RETRY_AFTER_LOGOUT));
         fcmToken.delete();
     }
 }

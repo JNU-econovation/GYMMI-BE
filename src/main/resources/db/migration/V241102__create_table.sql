@@ -14,12 +14,12 @@ create table workout_history
 
 create table workout_record
 (
-    count            integer      not null,
-    id               bigint       not null auto_increment primary key,
-    mission_id       bigint       not null,
-    workout_history_id       bigint       not null,
-    created_at       timestamp(3) not null,
-    last_modified_at timestamp(3) not null,
+    count              integer      not null,
+    id                 bigint       not null auto_increment primary key,
+    mission_id         bigint       not null,
+    workout_history_id bigint       not null,
+    created_at         timestamp(3) not null,
+    last_modified_at   timestamp(3) not null,
     foreign key (mission_id) references mission (id),
     foreign key (workout_history_id) references workout_history (id)
 ) engine=InnoDB;

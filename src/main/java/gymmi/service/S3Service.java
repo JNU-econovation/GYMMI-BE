@@ -1,7 +1,7 @@
 package gymmi.service;
 
 import gymmi.exceptionhandler.exception.InvalidStateException;
-import gymmi.exceptionhandler.message.ErrorMessage;
+import gymmi.exceptionhandler.message.CommonErrorMessage;
 import gymmi.response.PresignedUrlResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,7 +26,7 @@ public class S3Service {
 
     public void checkObjectExist(ImageUse imageUse, String filename) {
         if (!s3Client.doesObjectExist(imageUse.getDirectory(), filename)) {
-            throw new InvalidStateException(ErrorMessage.NOT_FOUND_IMAGE_OBJECT);
+            throw new InvalidStateException(CommonErrorMessage.NOT_FOUND_IMAGE_OBJECT);
         }
     }
 

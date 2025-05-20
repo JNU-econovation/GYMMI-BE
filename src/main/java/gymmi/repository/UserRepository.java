@@ -2,7 +2,7 @@ package gymmi.repository;
 
 import gymmi.entity.User;
 import gymmi.exceptionhandler.exception.NotFoundException;
-import gymmi.exceptionhandler.message.ErrorMessage;
+import gymmi.exceptionhandler.message.UserErrorMessage;
 import gymmi.repository.custom.UserCustomRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -22,6 +22,6 @@ public interface UserRepository extends JpaRepository<User, Long>, UserCustomRep
 
     default User getByUserId(Long userId) {
         return findByUserId(userId)
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND_USER));
+                .orElseThrow(() -> new NotFoundException(UserErrorMessage.NOT_FOUND_USER.getMessage()));
     }
 }

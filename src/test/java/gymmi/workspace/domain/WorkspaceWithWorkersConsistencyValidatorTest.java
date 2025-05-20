@@ -1,17 +1,18 @@
 package gymmi.workspace.domain;
 
-import static gymmi.workspace.domain.WorkspaceWithWorkersConsistencyValidator.validateMeetMinHeadCount;
-import static gymmi.workspace.domain.WorkspaceWithWorkersConsistencyValidator.validateWorkersConsistency;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
-import gymmi.exceptionhandler.message.ErrorMessage;
+import gymmi.exceptionhandler.message.WorkspaceErrorMessage;
 import gymmi.workspace.domain.entity.Worker;
 import gymmi.workspace.domain.entity.Workspace;
-import java.util.Collections;
-import java.util.List;
 import org.instancio.Instancio;
 import org.instancio.Select;
 import org.junit.jupiter.api.Test;
+
+import java.util.Collections;
+import java.util.List;
+
+import static gymmi.workspace.domain.WorkspaceWithWorkersConsistencyValidator.validateMeetMinHeadCount;
+import static gymmi.workspace.domain.WorkspaceWithWorkersConsistencyValidator.validateWorkersConsistency;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class WorkspaceWithWorkersConsistencyValidatorTest {
 
@@ -28,7 +29,7 @@ class WorkspaceWithWorkersConsistencyValidatorTest {
 
         // when, then
         assertThatThrownBy(() -> validateMeetMinHeadCount(workers))
-                .hasMessage(ErrorMessage.NOT_CONSISTENT_WORKERS_COUNT.getMessage());
+                .hasMessage(WorkspaceErrorMessage.NOT_CONSISTENT_WORKERS_COUNT.getMessage());
     }
 
     @Test
@@ -46,7 +47,7 @@ class WorkspaceWithWorkersConsistencyValidatorTest {
 
         // when, then
         assertThatThrownBy(() -> validateWorkersConsistency(workspace, workers))
-                .hasMessage(ErrorMessage.EXIST_NOT_JOINED_WORKER.getMessage());
+                .hasMessage(WorkspaceErrorMessage.EXIST_NOT_JOINED_WORKER.getMessage());
     }
 
     @Test
@@ -57,7 +58,7 @@ class WorkspaceWithWorkersConsistencyValidatorTest {
 
         // when, then
         assertThatThrownBy(() -> validateWorkersConsistency(workspace, workers))
-                .hasMessage(ErrorMessage.NOT_CONSISTENT_WORKERS_COUNT.getMessage());
+                .hasMessage(WorkspaceErrorMessage.NOT_CONSISTENT_WORKERS_COUNT.getMessage());
     }
 
 }

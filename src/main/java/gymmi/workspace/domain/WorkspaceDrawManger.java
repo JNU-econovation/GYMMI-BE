@@ -1,7 +1,7 @@
 package gymmi.workspace.domain;
 
 import gymmi.exceptionhandler.exception.InvalidStateException;
-import gymmi.exceptionhandler.message.ErrorMessage;
+import gymmi.exceptionhandler.message.WorkspaceErrorMessage;
 import gymmi.workspace.domain.entity.Worker;
 import gymmi.workspace.domain.entity.Workspace;
 import gymmi.workspace.domain.entity.WorkspaceResult;
@@ -19,7 +19,7 @@ public class WorkspaceDrawManger {
 
     public WorkspaceDrawManger(Workspace workspace, List<Worker> workers) {
         if (!workspace.isCompleted()) {
-            throw new InvalidStateException(ErrorMessage.NOT_COMPLETED_WORKSPACE);
+            throw new InvalidStateException(WorkspaceErrorMessage.NOT_COMPLETED_WORKSPACE.getMessage());
         }
         this.workers = new ArrayList<>(workers);
         this.workspace = workspace;

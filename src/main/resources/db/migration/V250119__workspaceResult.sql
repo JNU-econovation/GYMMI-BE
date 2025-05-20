@@ -1,1 +1,2 @@
-rename table workspace_task to workspace_result
+rename
+table workspace_task to workspace_result

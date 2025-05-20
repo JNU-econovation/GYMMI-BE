@@ -4,12 +4,12 @@ public enum ExceptionType {
     //@formatter:off
     ALREADY_EXISTS("(어떠한 것이든) 이미 존재하는 경우"),
 
-    NOT_FOUND("(어떠한 것 이든) 찾고자하는 것이 존재 하지 않는 경우"),
+//    NOT_FOUND("(어떠한 것 이든) 찾고자하는 것이 존재 하지 않는 경우"),
 
     NOT_MATCHED("(어떠한 것이든) 일치 하지 않는 경우"),
         AUTHENTICATION_FAIL("인증에 실패한 경우"),
 
-    UNSUPPORTED("(어떠한 것이든) 지원하지 않는 경우"),
+//    UNSUPPORTED("(어떠한 것이든) 지원하지 않는 경우"),
 
     FILE_RELATED("파일과 관련된 경우"),
         INVALID_FILE("잘못된 파일인 경우"),

@@ -1,24 +1,20 @@
 package gymmi.workspace.domain;
 
-import static gymmi.exceptionhandler.message.ErrorMessage.ALREADY_ACTIVATED_WORKSPACE;
-import static gymmi.exceptionhandler.message.ErrorMessage.BELOW_MINIMUM_WORKER;
-import static gymmi.exceptionhandler.message.ErrorMessage.EXIST_WORKERS_EXCLUDE_CREATOR;
-import static gymmi.exceptionhandler.message.ErrorMessage.FULL_WORKSPACE;
-import static gymmi.exceptionhandler.message.ErrorMessage.NOT_JOINED_WORKSPACE;
-import static gymmi.exceptionhandler.message.ErrorMessage.NOT_MATCHED_PASSWORD;
-import static gymmi.exceptionhandler.message.ErrorMessage.NOT_WORKSPACE_CREATOR;
 
 import gymmi.entity.User;
 import gymmi.exceptionhandler.exception.AlreadyExistException;
 import gymmi.exceptionhandler.exception.InvalidStateException;
 import gymmi.exceptionhandler.exception.NotHavePermissionException;
 import gymmi.exceptionhandler.exception.NotMatchedException;
-import gymmi.exceptionhandler.message.ErrorMessage;
+import gymmi.exceptionhandler.message.WorkspaceErrorMessage;
 import gymmi.workspace.domain.entity.Worker;
 import gymmi.workspace.domain.entity.Workspace;
+import lombok.Getter;
+
 import java.util.ArrayList;
 import java.util.List;
-import lombok.Getter;
+
+import static gymmi.exceptionhandler.message.WorkspaceErrorMessage.*;
 
 @Getter
 public class WorkspacePreparingManager {
@@ -34,17 +30,17 @@ public class WorkspacePreparingManager {
 
     public Worker allow(User user, String password) {
         if (!workspace.matchesPassword(password)) {
-            throw new NotMatchedException(NOT_MATCHED_PASSWORD);
+            throw new NotMatchedException(WorkspaceErrorMessage.NOT_MATCHED_PASSWORD.getMessage());
         }
         if (workers.size() >= workspace.getHeadCount()) {
-            throw new InvalidStateException(FULL_WORKSPACE);
+            throw new InvalidStateException(WorkspaceErrorMessage.FULL_WORKSPACE.getMessage());
         }
         if (!workspace.isPreparing()) {
-            throw new InvalidStateException(ALREADY_ACTIVATED_WORKSPACE);
+            throw new InvalidStateException(ALREADY_ACTIVATED_WORKSPACE.getMessage());
         }
         if (workers.stream()
                 .anyMatch(worker -> worker.getUser().equals(user))) {
-            throw new AlreadyExistException(ErrorMessage.ALREADY_JOINED_WORKSPACE);
+            throw new AlreadyExistException(WorkspaceErrorMessage.ALREADY_JOINED_WORKSPACE.getMessage());
         }
 
         Worker worker = new Worker(user, workspace);
@@ -54,14 +50,14 @@ public class WorkspacePreparingManager {
 
     public WorkerLeavedEvent release(Worker worker) {
         if (!worker.isJoinedIn(workspace)) {
-            throw new InvalidStateException(NOT_JOINED_WORKSPACE);
+            throw new InvalidStateException(NOT_JOINED_WORKSPACE.getMessage());
         }
         if (!workspace.isPreparing()) {
-            throw new InvalidStateException(ALREADY_ACTIVATED_WORKSPACE);
+            throw new InvalidStateException(ALREADY_ACTIVATED_WORKSPACE.getMessage());
         }
         if (workspace.isCreatedBy(worker.getUser())) {
             if (workers.size() != 1) {
-                throw new InvalidStateException(EXIST_WORKERS_EXCLUDE_CREATOR);
+                throw new InvalidStateException(EXIST_WORKERS_EXCLUDE_CREATOR.getMessage());
             }
         }
         workers.remove(worker);
@@ -70,13 +66,13 @@ public class WorkspacePreparingManager {
 
     public void startBy(Worker creator) {
         if (!workspace.isCreatedBy(creator)) {
-            throw new NotHavePermissionException(NOT_WORKSPACE_CREATOR);
+            throw new NotHavePermissionException(NOT_WORKSPACE_CREATOR.getMessage());
         }
         if (!workspace.isPreparing()) {
-            throw new InvalidStateException(ALREADY_ACTIVATED_WORKSPACE);
+            throw new InvalidStateException(ALREADY_ACTIVATED_WORKSPACE.getMessage());
         }
         if (workers.size() < Workspace.MIN_HEAD_COUNT) {
-            throw new InvalidStateException(BELOW_MINIMUM_WORKER);
+            throw new InvalidStateException(BELOW_MINIMUM_WORKER.getMessage());
         }
         workspace.changeStatusTo(WorkspaceStatus.IN_PROGRESS);
     }

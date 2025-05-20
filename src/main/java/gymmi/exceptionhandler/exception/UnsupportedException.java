@@ -1,12 +1,26 @@
 package gymmi.exceptionhandler.exception;
 
 import gymmi.exceptionhandler.message.ErrorMessage;
-import gymmi.exceptionhandler.message.ExceptionType;
 
 public class UnsupportedException extends GymmiException {
-    public static final ExceptionType EXCEPTION_CODE = ExceptionType.UNSUPPORTED;
+    public static final String COMMENT = "지원하지 않는 경우";
 
-    public UnsupportedException(ErrorMessage errorCode) {
-        super(errorCode, EXCEPTION_CODE);
+    public UnsupportedException() {
+    }
+
+    public UnsupportedException(ErrorMessage errorMessage) {
+        super(errorMessage);
+    }
+
+    public UnsupportedException(String message) {
+        super(message);
+    }
+
+    public UnsupportedException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public UnsupportedException(Throwable cause) {
+        super(cause);
     }
 }

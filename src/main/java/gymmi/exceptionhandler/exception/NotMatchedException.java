@@ -1,25 +1,27 @@
 package gymmi.exceptionhandler.exception;
 
 import gymmi.exceptionhandler.message.ErrorMessage;
-import gymmi.exceptionhandler.message.ExceptionType;
 
 public class NotMatchedException extends GymmiException {
 
-    public static final ExceptionType EXCEPTION_CODE = ExceptionType.NOT_MATCHED;
+    public static final String COMMENT = "일치하지 않는 경우";
 
-    public NotMatchedException(ErrorMessage errorCode) {
-        super(errorCode, EXCEPTION_CODE);
+    public NotMatchedException() {
     }
 
-    protected NotMatchedException(ErrorMessage errorCode, ExceptionType exceptionType) {
-        super(errorCode, exceptionType);
+    public NotMatchedException(ErrorMessage errorMessage) {
+        super(errorMessage);
     }
 
-    public NotMatchedException(ErrorMessage errorCode, Throwable throwable) {
-        super(errorCode, EXCEPTION_CODE, throwable);
+    public NotMatchedException(String message) {
+        super(message);
     }
 
-    protected NotMatchedException(ErrorMessage errorCode, ExceptionType exceptionType, Throwable throwable) {
-        super(errorCode, exceptionType, throwable);
+    public NotMatchedException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public NotMatchedException(Throwable cause) {
+        super(cause);
     }
 }

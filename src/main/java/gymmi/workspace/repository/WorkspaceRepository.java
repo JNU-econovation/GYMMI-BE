@@ -1,7 +1,7 @@
 package gymmi.workspace.repository;
 
 import gymmi.exceptionhandler.exception.NotFoundException;
-import gymmi.exceptionhandler.message.ErrorMessage;
+import gymmi.exceptionhandler.message.WorkspaceErrorMessage;
 import gymmi.workspace.domain.entity.Workspace;
 import gymmi.workspace.repository.custom.WorkspaceCustomRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,7 +13,7 @@ public interface WorkspaceRepository extends JpaRepository<Workspace, Long>, Wor
 
     default Workspace getWorkspaceById(Long id) {
         Workspace workspace = findById(id)
-                .orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND_WORKSPACE));
+                .orElseThrow(() -> new NotFoundException(WorkspaceErrorMessage.NOT_FOUND_WORKSPACE.getMessage()));
         return workspace;
     }
 

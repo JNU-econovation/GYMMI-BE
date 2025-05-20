@@ -1,32 +1,20 @@
 package gymmi.integration;
 
-import static gymmi.Fixtures.AUTHORIZATION_TYPE_BEARER;
-import static gymmi.Fixtures.JSON_KEY_ACCESS_TOKEN;
-import static gymmi.Fixtures.MISSION__SATISFIED_MISSION_NAME;
-import static gymmi.Fixtures.MISSION__SATISFIED_MISSION_SCORE;
-import static gymmi.Fixtures.TASK__DEFAULT_TASK;
-import static gymmi.Fixtures.USER__SATISFIED_PASSWORD;
-import static gymmi.Fixtures.WORKSPACE__SATISFIED_GOAL_SCORE;
-import static gymmi.Fixtures.WORKSPACE__SATISFIED_HEAD_COUNT;
-import static gymmi.Fixtures.WORKSPACE__SATISFIED_NAME;
-import static io.restassured.RestAssured.config;
-import static io.restassured.config.MultiPartConfig.multiPartConfig;
-
 import gymmi.Fixtures;
 import gymmi.request.LoginRequest;
 import gymmi.request.ReissueRequest;
-import gymmi.workspace.request.CreatingWorkspaceRequest;
-import gymmi.workspace.request.EditingIntroductionOfWorkspaceRequest;
-import gymmi.workspace.request.JoiningWorkspaceRequest;
-import gymmi.workspace.request.MissionRequest;
-import gymmi.workspace.request.RegistrationRequest;
-import gymmi.workspace.request.WorkingMissionInWorkspaceRequest;
+import gymmi.workspace.request.*;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+import org.springframework.http.HttpHeaders;
+
 import java.io.File;
 import java.util.List;
-import org.springframework.http.HttpHeaders;
+
+import static gymmi.Fixtures.*;
+import static io.restassured.RestAssured.config;
+import static io.restassured.config.MultiPartConfig.multiPartConfig;
 
 public final class Steps {
 

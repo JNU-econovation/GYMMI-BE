@@ -1,26 +1,27 @@
 package gymmi.exceptionhandler.exception;
 
 import gymmi.exceptionhandler.message.ErrorMessage;
-import gymmi.exceptionhandler.message.ExceptionType;
 
 public class FileException extends GymmiException {
 
-    public static final ExceptionType EXCEPTION_CODE = ExceptionType.FILE_RELATED;
+    public static final String COMMENT = "파일과 관련된 경우";
 
-    public FileException(ErrorMessage errorCode) {
-        super(errorCode, EXCEPTION_CODE);
+    public FileException() {
     }
 
-    public FileException(ErrorMessage errorCode, Throwable throwable) {
-        super(errorCode, EXCEPTION_CODE, throwable);
+    public FileException(ErrorMessage errorMessage) {
+        super(errorMessage);
     }
 
-    protected FileException(ErrorMessage errorCode, ExceptionType exceptionType) {
-        super(errorCode, exceptionType);
+    public FileException(String message) {
+        super(message);
     }
 
-    protected FileException(ErrorMessage errorCode, ExceptionType exceptionType, Throwable throwable) {
-        super(errorCode, exceptionType, throwable);
+    public FileException(String message, Throwable cause) {
+        super(message, cause);
     }
 
+    public FileException(Throwable cause) {
+        super(cause);
+    }
 }

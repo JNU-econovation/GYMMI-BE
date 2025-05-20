@@ -1,10 +1,11 @@
 package gymmi.global;
 
 import gymmi.exceptionhandler.exception.NotMatchedException;
-import gymmi.exceptionhandler.message.ErrorMessage;
+import gymmi.exceptionhandler.message.CommonErrorMessage;
+import org.springframework.core.convert.converter.Converter;
+
 import java.util.HashMap;
 import java.util.Map;
-import org.springframework.core.convert.converter.Converter;
 
 public class StringToDuplicationCheckTypeConverter implements Converter<String, DuplicationCheckType> {
 
@@ -21,6 +22,6 @@ public class StringToDuplicationCheckTypeConverter implements Converter<String, 
         if (queryParamValueMapping.containsKey(source)) {
             return queryParamValueMapping.get(source);
         }
-        throw new NotMatchedException(ErrorMessage.INVALID_WORKSPACE_STATUS_VALUE);
+        throw new NotMatchedException(CommonErrorMessage.INVALID_WORKSPACE_STATUS_VALUE);
     }
 }

@@ -1,25 +1,27 @@
 package gymmi.exceptionhandler.exception;
 
 import gymmi.exceptionhandler.message.ErrorMessage;
-import gymmi.exceptionhandler.message.ExceptionType;
 
 public class AuthenticationFailException extends NotMatchedException {
 
-    public static final ExceptionType EXCEPTION_CODE = ExceptionType.AUTHENTICATION_FAIL;
+    public static final String COMMENT = "인증에 실패한 경우";
 
-    public AuthenticationFailException(ErrorMessage errorCode) {
-        super(errorCode, EXCEPTION_CODE);
+    public AuthenticationFailException() {
     }
 
-    protected AuthenticationFailException(ErrorMessage errorCode, ExceptionType exceptionType) {
-        super(errorCode, exceptionType);
+    public AuthenticationFailException(ErrorMessage errorMessage) {
+        super(errorMessage);
     }
 
-    public AuthenticationFailException(ErrorMessage errorCode, Throwable throwable) {
-        super(errorCode, EXCEPTION_CODE, throwable);
+    public AuthenticationFailException(String message) {
+        super(message);
     }
 
-    protected AuthenticationFailException(ErrorMessage errorCode, ExceptionType exceptionType, Throwable throwable) {
-        super(errorCode, exceptionType, throwable);
+    public AuthenticationFailException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public AuthenticationFailException(Throwable cause) {
+        super(cause);
     }
 }

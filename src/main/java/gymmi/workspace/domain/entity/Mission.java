@@ -2,15 +2,8 @@ package gymmi.workspace.domain.entity;
 
 import gymmi.exceptionhandler.exception.InvalidRangeException;
 import gymmi.exceptionhandler.exception.NotHavePermissionException;
-import gymmi.exceptionhandler.message.ErrorMessage;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import gymmi.exceptionhandler.message.WorkspaceErrorMessage;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -45,14 +38,14 @@ public class Mission {
 
     private Integer validateScore(Integer score) {
         if (score < MIN_SCORE || score > MAX_SCORE) {
-            throw new InvalidRangeException(ErrorMessage.INVALID_WORKSPACE_MISSION_SCORE);
+            throw new InvalidRangeException(WorkspaceErrorMessage.INVALID_WORKSPACE_MISSION_SCORE);
         }
         return score;
     }
 
     private String validateName(String name) {
         if (name.length() > MAX_NAME_LENGTH) {
-            throw new InvalidRangeException(ErrorMessage.INVALID_WORKSPACE_MISSION_NAME_LENGTH);
+            throw new InvalidRangeException(WorkspaceErrorMessage.INVALID_WORKSPACE_MISSION_NAME_LENGTH);
         }
         return name;
     }
@@ -63,7 +56,7 @@ public class Mission {
 
     public void canBeReadIn(Workspace workspace) {
         if (!isRegisteredIn(workspace)) {
-            throw new NotHavePermissionException(ErrorMessage.NOT_REGISTERED_WORKSPACE_MISSION);
+            throw new NotHavePermissionException(WorkspaceErrorMessage.NOT_REGISTERED_WORKSPACE_MISSION);
         }
     }
 

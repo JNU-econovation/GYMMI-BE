@@ -1,16 +1,17 @@
 package gymmi.repository;
 
-import static org.instancio.Select.field;
-
 import gymmi.entity.User;
 import gymmi.workspace.domain.entity.Workspace;
 import gymmi.workspace.repository.WorkspaceRepository;
 import jakarta.persistence.EntityManager;
-import java.util.List;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
+
+import static org.instancio.Select.field;
 
 class WorkspaceRepositoryTest extends RepositoryTest {
 

@@ -1,10 +1,11 @@
 package gymmi.workspace.repository.custom;
 
-import gymmi.workspace.domain.entity.Workspace;
 import gymmi.workspace.domain.WorkspaceStatus;
+import gymmi.workspace.domain.entity.Workspace;
+import org.springframework.data.domain.Pageable;
+
 import java.util.List;
 import java.util.Map;
-import org.springframework.data.domain.Pageable;
 
 public interface WorkspaceCustomRepository {
 

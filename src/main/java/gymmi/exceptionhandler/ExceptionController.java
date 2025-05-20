@@ -14,9 +14,9 @@ public class ExceptionController {
 
     @ExceptionHandler
     public ResponseEntity<ErrorResponse> handleAllCustom(GymmiException e, HttpServletRequest request) {
-        ErrorResponse response = new ErrorResponse(e.getExceptionCode().name(), e.getMessage());
+        ErrorResponse response = new ErrorResponse("custom", e.getMessage());
         log(e, request.getRequestURI());
-        return ResponseEntity.status(e.getStatusCode()).body(response);
+        return ResponseEntity.status(100).body(response);
     }
 
     @ExceptionHandler

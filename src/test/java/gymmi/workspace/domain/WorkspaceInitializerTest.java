@@ -1,18 +1,19 @@
 package gymmi.workspace.domain;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
 import gymmi.entity.User;
-import gymmi.exceptionhandler.message.ErrorMessage;
+import gymmi.exceptionhandler.message.WorkspaceErrorMessage;
 import gymmi.workspace.domain.entity.Mission;
 import gymmi.workspace.domain.entity.Workspace;
 import gymmi.workspace.request.CreatingWorkspaceRequest;
 import gymmi.workspace.request.MissionRequest;
-import java.util.List;
 import org.instancio.Instancio;
 import org.instancio.Select;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class WorkspaceInitializerTest {
     @Test
@@ -38,7 +39,7 @@ class WorkspaceInitializerTest {
 
         // when, then
         assertThatThrownBy(() -> workspaceInitializer.init(user, request))
-                .hasMessage(ErrorMessage.INVALID_WORKSPACE_MISSION_SIZE.getMessage());
+                .hasMessage(WorkspaceErrorMessage.INVALID_WORKSPACE_MISSION_SIZE.getMessage());
     }
 
     @Test

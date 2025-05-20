@@ -2,7 +2,7 @@ package gymmi.global;
 
 import gymmi.entity.User;
 import gymmi.exceptionhandler.exception.AuthenticationFailException;
-import gymmi.exceptionhandler.message.ErrorMessage;
+import gymmi.exceptionhandler.message.LoginErrorMessage;
 import gymmi.repository.UserRepository;
 import gymmi.service.TokenProcessor;
 import jakarta.servlet.http.HttpServletRequest;
@@ -48,10 +48,10 @@ public class LoginedUserResolver implements HandlerMethodArgumentResolver {
 
     private void validate(String authorizationHeader) {
         if (!StringUtils.hasText(authorizationHeader)) {
-            throw new AuthenticationFailException(ErrorMessage.MISSING_AUTHORIZATION_HEADER);
+            throw new AuthenticationFailException(LoginErrorMessage.MISSING_AUTHORIZATION_HEADER);
         }
         if (!authorizationHeader.startsWith(AUTHORIZATION_TYPE_BEARER)) {
-            throw new AuthenticationFailException(ErrorMessage.UNSUPPORTED_AUTHORIZATION_TYPE);
+            throw new AuthenticationFailException(LoginErrorMessage.UNSUPPORTED_AUTHORIZATION_TYPE);
         }
     }
 }

@@ -1,6 +1,5 @@
 package gymmi.photoboard.response;
 
-import gymmi.photoboard.domain.entity.PhotoFeed;
 import lombok.Getter;
 
 import java.time.LocalDateTime;

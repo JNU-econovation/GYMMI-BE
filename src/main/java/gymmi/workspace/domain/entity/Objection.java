@@ -2,14 +2,13 @@ package gymmi.workspace.domain.entity;
 
 import gymmi.entity.TimeEntity;
 import gymmi.exceptionhandler.exception.NotHavePermissionException;
+import gymmi.exceptionhandler.message.WorkspaceErrorMessage;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
-import static gymmi.exceptionhandler.message.ErrorMessage.NO_WORKOUT_HISTORY_EXIST_IN_WORKSPACE;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -77,7 +76,7 @@ public class Objection extends TimeEntity {
 
     public void canBeReadIn(Workspace workspace) {
         if (!subject.isJoinedIn(workspace)) {
-            throw new NotHavePermissionException(NO_WORKOUT_HISTORY_EXIST_IN_WORKSPACE);
+            throw new NotHavePermissionException(WorkspaceErrorMessage.NO_WORKOUT_HISTORY_EXIST_IN_WORKSPACE);
         }
     }
 

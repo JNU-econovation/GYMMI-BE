@@ -1,7 +1,7 @@
 package gymmi.service;
 
 import gymmi.exceptionhandler.exception.UnsupportedException;
-import gymmi.exceptionhandler.message.ErrorMessage;
+import gymmi.exceptionhandler.message.CommonErrorMessage;
 import gymmi.global.DuplicationCheckType;
 import gymmi.response.DuplicationResponse;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ public class DuplicationCheckService {
         DuplicationCheck duplicationCheck = duplicationCheckStrategies.stream()
                 .filter(s -> s.supports(type))
                 .findAny()
-                .orElseThrow(() -> new UnsupportedException(ErrorMessage.UNSUPPORTED_TYPE));
+                .orElseThrow(() -> new UnsupportedException(CommonErrorMessage.UNSUPPORTED_TYPE.getMessage()));
         boolean isDuplicate = duplicationCheck.isDuplicate(value);
         return new DuplicationResponse(isDuplicate);
     }

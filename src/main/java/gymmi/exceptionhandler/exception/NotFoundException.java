@@ -1,12 +1,28 @@
 package gymmi.exceptionhandler.exception;
 
 import gymmi.exceptionhandler.message.ErrorMessage;
-import gymmi.exceptionhandler.message.ExceptionType;
 
 public class NotFoundException extends GymmiException {
-    public static final ExceptionType EXCEPTION_CODE = ExceptionType.NOT_FOUND;
 
-    public NotFoundException(ErrorMessage errorCode) {
-        super(errorCode, EXCEPTION_CODE);
+    private static final String COMMENT = "찾고자하는 것이 존재 하지 않는 경우";
+
+    public NotFoundException(ErrorMessage errorMessage) {
+        super(errorMessage);
     }
+
+    public NotFoundException() {
+    }
+
+    public NotFoundException(String message) {
+        super(message);
+    }
+
+    public NotFoundException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public NotFoundException(Throwable cause) {
+        super(cause);
+    }
+
 }

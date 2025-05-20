@@ -1,7 +1,7 @@
 package gymmi.workspace.service;
 
 import gymmi.entity.User;
-import gymmi.exceptionhandler.message.ErrorMessage;
+import gymmi.exceptionhandler.message.WorkspaceErrorMessage;
 import gymmi.photoboard.repository.PhotoFeedRepository;
 import gymmi.service.S3Service;
 import gymmi.workspace.domain.WorkspaceStatus;
@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static gymmi.exceptionhandler.message.ErrorMessage.EXCEED_MAX_JOINED_WORKSPACE;
+import static gymmi.exceptionhandler.message.WorkspaceErrorMessage.EXCEED_MAX_JOINED_WORKSPACE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.field;
@@ -100,7 +100,7 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
 
             // when, then
             assertThatThrownBy(() -> workspaceCommandService.createWorkspace(user, request))
-                    .hasMessage(ErrorMessage.ALREADY_USED_WORKSPACE_NAME.getMessage());
+                    .hasMessage(WorkspaceErrorMessage.ALREADY_USED_WORKSPACE_NAME.getMessage());
         }
 
     }
@@ -180,7 +180,7 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
 
             // when, then
             assertThatThrownBy(() -> workspaceCommandService.workMissionsInWorkspace(user, workspace.getId(), request))
-                    .hasMessage(ErrorMessage.EXCEED_MAX_DAILY_WORKOUT_HISTORY_COUNT.getMessage());
+                    .hasMessage(WorkspaceErrorMessage.EXCEED_MAX_DAILY_WORKOUT_HISTORY_COUNT.getMessage());
         }
 
     }
@@ -301,7 +301,7 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
 
         // when, then
         assertThatThrownBy(() -> workspaceCommandService.getWorkspaceResult(creator, workspace.getId()))
-                .hasMessage(ErrorMessage.EXIST_OBJECTION_IN_PROGRESS.getMessage());
+                .hasMessage(WorkspaceErrorMessage.EXIST_OBJECTION_IN_PROGRESS.getMessage());
     }
 
     private List<Workspace> persistWorkspacesNotCompletedWithWorker(User user, int size) {

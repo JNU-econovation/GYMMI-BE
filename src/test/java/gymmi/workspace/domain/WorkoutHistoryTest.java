@@ -1,17 +1,16 @@
 package gymmi.workspace.domain;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
 import gymmi.entity.User;
-import gymmi.exceptionhandler.message.ErrorMessage;
+import gymmi.exceptionhandler.message.WorkspaceErrorMessage;
 import gymmi.workspace.domain.entity.*;
-import gymmi.workspace.domain.entity.WorkoutConfirmation;
-
-import java.util.List;
 import org.instancio.Instancio;
 import org.instancio.Select;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class WorkoutHistoryTest {
 
@@ -49,7 +48,7 @@ class WorkoutHistoryTest {
 
         // when, then
         assertThatThrownBy(() -> workoutHistory.canBeReadIn(workspace1))
-                .hasMessage(ErrorMessage.NO_WORKOUT_HISTORY_EXIST_IN_WORKSPACE.getMessage());
+                .hasMessage(WorkspaceErrorMessage.NO_WORKOUT_HISTORY_EXIST_IN_WORKSPACE.getMessage());
     }
 
 }

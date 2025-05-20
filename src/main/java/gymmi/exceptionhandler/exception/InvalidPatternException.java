@@ -1,12 +1,26 @@
 package gymmi.exceptionhandler.exception;
 
 import gymmi.exceptionhandler.message.ErrorMessage;
-import gymmi.exceptionhandler.message.ExceptionType;
 
-public class InvalidPatternException extends GymmiException {
-    public static final ExceptionType EXCEPTION_CODE = ExceptionType.INVALID_PATTERN;
+public class InvalidPatternException extends InvalidStateException {
+    public static final String COMMENT = "조건에 맞지 않는 문자열인 경우";
 
-    public InvalidPatternException(ErrorMessage errorCode) {
-        super(errorCode, EXCEPTION_CODE);
+    public InvalidPatternException() {
+    }
+
+    public InvalidPatternException(ErrorMessage errorMessage) {
+        super(errorMessage);
+    }
+
+    public InvalidPatternException(String message) {
+        super(message);
+    }
+
+    public InvalidPatternException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public InvalidPatternException(Throwable cause) {
+        super(cause);
     }
 }

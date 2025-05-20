@@ -1,30 +1,29 @@
 package gymmi.exceptionhandler.exception;
 
 import gymmi.exceptionhandler.message.ErrorMessage;
-import gymmi.exceptionhandler.message.ExceptionType;
 
 public class GymmiException extends RuntimeException {
 
-    private final ErrorMessage errorCode;
-    private final ExceptionType exceptionType;
+    public static final String COMMENT = "지미 최상위 예외 클래스";
 
-    protected GymmiException(ErrorMessage errorCode, ExceptionType exceptionType) {
-        super(errorCode.getMessage());
-        this.errorCode = errorCode;
-        this.exceptionType = exceptionType;
+
+    public GymmiException() {
     }
 
-    protected GymmiException(ErrorMessage errorCode, ExceptionType exceptionType, Throwable throwable) {
-        super(errorCode.getMessage(), throwable);
-        this.errorCode = errorCode;
-        this.exceptionType = exceptionType;
+    public GymmiException(ErrorMessage errorMessage) {
+        super(errorMessage.getMessage());
     }
 
-    public int getStatusCode() {
-        return errorCode.getStatusCode();
+    public GymmiException(String message) {
+        super(message);
     }
 
-    public ExceptionType getExceptionCode() {
-        return exceptionType;
+    public GymmiException(String message, Throwable cause) {
+        super(message, cause);
     }
+
+    public GymmiException(Throwable cause) {
+        super(cause);
+    }
+
 }

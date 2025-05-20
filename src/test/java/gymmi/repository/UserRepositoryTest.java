@@ -1,11 +1,11 @@
 package gymmi.repository;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import gymmi.Fixtures;
 import gymmi.entity.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class UserRepositoryTest extends RepositoryTest {
 

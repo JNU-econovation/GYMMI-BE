@@ -1,9 +1,10 @@
 package gymmi.workspace.request;
 
 import jakarta.validation.constraints.NotNull;
-import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Getter
 @NoArgsConstructor

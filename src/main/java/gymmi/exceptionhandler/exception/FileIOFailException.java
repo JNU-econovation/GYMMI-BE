@@ -1,16 +1,26 @@
 package gymmi.exceptionhandler.exception;
 
 import gymmi.exceptionhandler.message.ErrorMessage;
-import gymmi.exceptionhandler.message.ExceptionType;
 
 public class FileIOFailException extends FileException {
-    public static final ExceptionType EXCEPTION_CODE = ExceptionType.FILE_IO_FAIL;
+    public static final String COMMENT = "파일 입출력과 관련된 경우";
 
-    public FileIOFailException(ErrorMessage errorCode) {
-        super(errorCode, EXCEPTION_CODE);
+    public FileIOFailException() {
     }
 
-    public FileIOFailException(ErrorMessage errorCode, Throwable throwable) {
-        super(errorCode, EXCEPTION_CODE, throwable);
+    public FileIOFailException(ErrorMessage errorMessage) {
+        super(errorMessage);
+    }
+
+    public FileIOFailException(String message) {
+        super(message);
+    }
+
+    public FileIOFailException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public FileIOFailException(Throwable cause) {
+        super(cause);
     }
 }

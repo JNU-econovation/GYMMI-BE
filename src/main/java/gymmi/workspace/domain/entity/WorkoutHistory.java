@@ -2,6 +2,7 @@ package gymmi.workspace.domain.entity;
 
 import gymmi.entity.TimeEntity;
 import gymmi.exceptionhandler.exception.NotHavePermissionException;
+import gymmi.exceptionhandler.message.WorkspaceErrorMessage;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -11,7 +12,6 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
-import static gymmi.exceptionhandler.message.ErrorMessage.NO_WORKOUT_HISTORY_EXIST_IN_WORKSPACE;
 
 @Entity
 @Getter
@@ -78,7 +78,7 @@ public class WorkoutHistory extends TimeEntity {
 
     public void canBeReadIn(Workspace workspace) {
         if (!worker.isJoinedIn(workspace)) {
-            throw new NotHavePermissionException(NO_WORKOUT_HISTORY_EXIST_IN_WORKSPACE);
+            throw new NotHavePermissionException(WorkspaceErrorMessage.NO_WORKOUT_HISTORY_EXIST_IN_WORKSPACE);
         }
     }
 

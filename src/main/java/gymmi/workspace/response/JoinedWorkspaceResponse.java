@@ -1,8 +1,9 @@
 package gymmi.workspace.response;
 
 import gymmi.workspace.domain.entity.Workspace;
-import java.time.LocalDateTime;
 import lombok.Getter;
+
+import java.time.LocalDateTime;
 
 @Getter
 public class JoinedWorkspaceResponse {

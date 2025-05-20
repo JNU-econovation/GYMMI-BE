@@ -1,14 +1,12 @@
 package gymmi.workspace.domain;
 
 import gymmi.exceptionhandler.exception.InvalidStateException;
-import gymmi.exceptionhandler.message.ErrorMessage;
+import gymmi.exceptionhandler.message.WorkspaceErrorMessage;
 import gymmi.workspace.domain.entity.*;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
-import static gymmi.exceptionhandler.message.ErrorMessage.NOT_JOINED_WORKSPACE;
 
 public class WorkspaceProgressManager {
 
@@ -26,14 +24,14 @@ public class WorkspaceProgressManager {
 
     private Workspace validateStatus(Workspace workspace) {
         if (!workspace.isInProgress()) {
-            throw new InvalidStateException(ErrorMessage.INACTIVE_WORKSPACE);
+            throw new InvalidStateException(WorkspaceErrorMessage.INACTIVE_WORKSPACE);
         }
         return workspace;
     }
 
     public WorkoutHistory doWorkout(Worker worker, Map<Mission, Integer> workouts, WorkoutConfirmation workoutProof) {
         if (!worker.isJoinedIn(workspace)) {
-            throw new InvalidStateException(NOT_JOINED_WORKSPACE);
+            throw new InvalidStateException(WorkspaceErrorMessage.NOT_JOINED_WORKSPACE);
         }
         List<WorkoutRecord> workoutRecords = workouts.entrySet().stream()
                 .map(workout -> doMission(workout.getKey(), workout.getValue()))
@@ -44,7 +42,7 @@ public class WorkspaceProgressManager {
 
     private WorkoutRecord doMission(Mission mission, int count) {
         if (!missions.contains(mission)) {
-            throw new InvalidStateException(ErrorMessage.NOT_REGISTERED_WORKSPACE_MISSION);
+            throw new InvalidStateException(WorkspaceErrorMessage.NOT_REGISTERED_WORKSPACE_MISSION);
         }
         return new WorkoutRecord(mission, count);
     }

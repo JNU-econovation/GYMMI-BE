@@ -1,12 +1,26 @@
 package gymmi.exceptionhandler.exception;
 
 import gymmi.exceptionhandler.message.ErrorMessage;
-import gymmi.exceptionhandler.message.ExceptionType;
 
-public class InvalidFileException extends GymmiException {
-    public static final ExceptionType EXCEPTION_CODE = ExceptionType.INVALID_FILE;
+public class InvalidFileException extends FileException {
+    public static final String COMMENT = "조건에 맞지 않는 파일인 경우";
 
-    public InvalidFileException(ErrorMessage errorCode) {
-        super(errorCode, EXCEPTION_CODE);
+    public InvalidFileException() {
+    }
+
+    public InvalidFileException(ErrorMessage errorMessage) {
+        super(errorMessage);
+    }
+
+    public InvalidFileException(String message) {
+        super(message);
+    }
+
+    public InvalidFileException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public InvalidFileException(Throwable cause) {
+        super(cause);
     }
 }

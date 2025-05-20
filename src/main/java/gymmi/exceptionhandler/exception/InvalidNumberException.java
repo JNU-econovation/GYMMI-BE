@@ -1,12 +1,26 @@
 package gymmi.exceptionhandler.exception;
 
 import gymmi.exceptionhandler.message.ErrorMessage;
-import gymmi.exceptionhandler.message.ExceptionType;
 
-public class InvalidNumberException extends GymmiException {
-    public static final ExceptionType EXCEPTION_CODE = ExceptionType.INVALID_NUMBER;
+public class InvalidNumberException extends InvalidStateException {
+    public static final String COMMENT = "조건에 맞지 않는 숫자인 경우";
 
-    public InvalidNumberException(ErrorMessage errorCode) {
-        super(errorCode, EXCEPTION_CODE);
+    public InvalidNumberException() {
+    }
+
+    public InvalidNumberException(ErrorMessage errorMessage) {
+        super(errorMessage);
+    }
+
+    public InvalidNumberException(String message) {
+        super(message);
+    }
+
+    public InvalidNumberException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public InvalidNumberException(Throwable cause) {
+        super(cause);
     }
 }
