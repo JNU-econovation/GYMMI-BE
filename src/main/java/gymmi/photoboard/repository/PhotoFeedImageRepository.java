@@ -1,7 +1,7 @@
 package gymmi.photoboard.repository;
 
 import gymmi.exceptionhandler.exception.NotFoundException;
-import gymmi.exceptionhandler.message.PhotoFeedErrorMessage;
+import gymmi.exceptionhandler.message.NotFoundErrorMessage;
 import gymmi.photoboard.domain.entity.PhotoFeedImage;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -16,7 +16,7 @@ public interface PhotoFeedImageRepository extends JpaRepository<PhotoFeedImage, 
 
     default PhotoFeedImage getByPhotoFeedId(Long photoFeedId) {
         return findByPhotoFeedId(photoFeedId)
-                .orElseThrow(() -> new NotFoundException(PhotoFeedErrorMessage.NOT_FOUND_PHOTO_FEED_IMAGE.getMessage()));
+                .orElseThrow(() -> new NotFoundException(NotFoundErrorMessage.NOT_FOUND_PHOTO_FEED_IMAGE));
     }
 
 }

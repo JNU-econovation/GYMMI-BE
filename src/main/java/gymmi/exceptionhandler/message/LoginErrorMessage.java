@@ -9,7 +9,7 @@ public enum LoginErrorMessage implements ErrorMessage {
     NOT_MATCHED_PASSWORD("비밀번호가 일치하지 않습니다.", 400),
     NOT_MATCHED_JWT_SUBJECT("토큰 제목을 확인해 주세요.", 401),
     EXPIRED_JWT("토큰이 만료되었습니다.", 401),
-    JWT_RELATED_ERROR("토큰 관련 에러 발생.", 500);
+    ;
 
     private final String message;
     private final int statusCode;

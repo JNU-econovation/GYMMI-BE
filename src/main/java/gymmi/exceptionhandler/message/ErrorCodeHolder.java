@@ -1,4 +1,4 @@
-package gymmi.exceptionhandler.exception;
+package gymmi.exceptionhandler.message;
 
 import gymmi.exceptionhandler.errrorcode.ErrorCode;
 

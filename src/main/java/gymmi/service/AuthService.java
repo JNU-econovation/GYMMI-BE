@@ -8,7 +8,7 @@ import gymmi.exceptionhandler.exception.AlreadyExistException;
 import gymmi.exceptionhandler.exception.AuthenticationFailException;
 import gymmi.exceptionhandler.exception.NotMatchedException;
 import gymmi.exceptionhandler.message.LoginErrorMessage;
-import gymmi.exceptionhandler.message.UserErrorMessage;
+import gymmi.exceptionhandler.message.RegisterErrorMessage;
 import gymmi.repository.FcmTokenRepository;
 import gymmi.repository.LoginedRepository;
 import gymmi.repository.ProfileImageRepository;
@@ -37,10 +37,10 @@ public class AuthService {
     @Transactional
     public void registerUser(RegistrationRequest request) {
         if (userRepository.findByLoginId(request.getLoginId()).isPresent()) {
-            throw new AlreadyExistException(UserErrorMessage.ALREADY_USED_LOGIN_ID.getMessage());
+            throw new AlreadyExistException(RegisterErrorMessage.ALREADY_USED_LOGIN_ID);
         }
         if (userRepository.findByNickname(request.getNickname()).isPresent()) {
-            throw new AlreadyExistException(UserErrorMessage.ALREADY_USED_NICKNAME.getMessage());
+            throw new AlreadyExistException(RegisterErrorMessage.ALREADY_USED_NICKNAME);
         }
         User newUser = User.builder()
                 .loginId(request.getLoginId())
@@ -56,10 +56,10 @@ public class AuthService {
     @Transactional
     public LoginResponse login(LoginRequest request) {
         User user = userRepository.findByLoginId(request.getLoginId())
-                .orElseThrow(() -> new AuthenticationFailException(LoginErrorMessage.FAILED_LOGIN.getMessage()));
+                .orElseThrow(() -> new AuthenticationFailException(LoginErrorMessage.FAILED_LOGIN));
 
         if (!user.canAuthenticate(request.getLoginId(), request.getPassword())) {
-            throw new AuthenticationFailException(LoginErrorMessage.FAILED_LOGIN.getMessage());
+            throw new AuthenticationFailException(LoginErrorMessage.FAILED_LOGIN);
         }
 
         // 기존 회원을 위한
@@ -85,7 +85,7 @@ public class AuthService {
 
         if (!logined.isActivatedRefreshToken(request.getRefreshToken())) {
             logined.destroyRefreshToken();
-            throw new AuthenticationFailException(LoginErrorMessage.UNUSUAL_AUTHORIZATION_ACCESS.getMessage());
+            throw new AuthenticationFailException(LoginErrorMessage.UNUSUAL_AUTHORIZATION_ACCESS);
         }
 
         return generateAndSaveTokensAbout(user);
@@ -108,7 +108,7 @@ public class AuthService {
     @Transactional
     public void resign(User loginedUser, ResignRequest request) {
         if (!loginedUser.canAuthenticate(request.getPassword())) {
-            throw new NotMatchedException(LoginErrorMessage.NOT_MATCHED_PASSWORD.getMessage());
+            throw new NotMatchedException(LoginErrorMessage.NOT_MATCHED_PASSWORD);
         }
         loginedUser.resign();
         ProfileImage profileImage = profileImageRepository.getByUserId(loginedUser.getId());

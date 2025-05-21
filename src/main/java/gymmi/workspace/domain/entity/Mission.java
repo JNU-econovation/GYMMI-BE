@@ -3,6 +3,7 @@ package gymmi.workspace.domain.entity;
 import gymmi.exceptionhandler.exception.InvalidRangeException;
 import gymmi.exceptionhandler.exception.NotHavePermissionException;
 import gymmi.exceptionhandler.message.WorkoutErrorMessage;
+import gymmi.exceptionhandler.message.WorkspaceCreationErrorMessage;
 import gymmi.exceptionhandler.message.WorkspaceErrorMessage;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -39,14 +40,14 @@ public class Mission {
 
     private Integer validateScore(Integer score) {
         if (score < MIN_SCORE || score > MAX_SCORE) {
-            throw new InvalidRangeException(WorkspaceErrorMessage.INVALID_WORKSPACE_MISSION_SCORE);
+            throw new InvalidRangeException(WorkspaceCreationErrorMessage.INVALID_WORKSPACE_MISSION_SCORE);
         }
         return score;
     }
 
     private String validateName(String name) {
         if (name.length() > MAX_NAME_LENGTH) {
-            throw new InvalidRangeException(WorkspaceErrorMessage.INVALID_WORKSPACE_MISSION_NAME_LENGTH);
+            throw new InvalidRangeException(WorkspaceCreationErrorMessage.INVALID_WORKSPACE_MISSION_NAME_LENGTH);
         }
         return name;
     }

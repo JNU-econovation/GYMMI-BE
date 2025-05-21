@@ -1,8 +1,7 @@
 package gymmi.workspace.repository;
 
 import gymmi.exceptionhandler.exception.NotFoundException;
-import gymmi.exceptionhandler.message.RepositoryErrorMessage;
-import gymmi.exceptionhandler.message.WorkspaceErrorMessage;
+import gymmi.exceptionhandler.message.NotFoundErrorMessage;
 import gymmi.workspace.domain.entity.Mission;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -25,7 +24,7 @@ public interface MissionRepository extends JpaRepository<Mission, Long> {
 
     default Mission getByMissionId(Long missionId) {
         Mission mission = findByMissionId(missionId)
-                .orElseThrow(() -> new NotFoundException(RepositoryErrorMessage.NOT_FOUND_MISSION));
+                .orElseThrow(() -> new NotFoundException(NotFoundErrorMessage.NOT_FOUND_MISSION));
         return mission;
     }
 }

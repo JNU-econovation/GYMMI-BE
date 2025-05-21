@@ -194,7 +194,7 @@ public class Workspace extends TimeEntity {
             return;
         }
         if (!isPreparing()) {
-            throw new InvalidStateException(WorkspaceEditErrorMessage.ALREADY_ACTIVATED_WORKSPACE.getMessage());
+            throw new InvalidStateException(WorkspaceEditErrorMessage.ALREADY_ACTIVATED_WORKSPACE);
         }
         this.task = task;
     }

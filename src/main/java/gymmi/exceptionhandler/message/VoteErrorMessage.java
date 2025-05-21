@@ -1,9 +1,5 @@
 package gymmi.exceptionhandler.message;
 
-import gymmi.global.DuplicationCheckType;
-import gymmi.workspace.domain.ObjectionStatus;
-import gymmi.workspace.domain.WorkspaceStatus;
-
 public enum VoteErrorMessage implements ErrorMessage {
 
     ALREADY_VOTED("이미 투표하였습니다.", 400),

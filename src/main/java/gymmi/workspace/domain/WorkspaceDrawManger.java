@@ -19,7 +19,7 @@ public class WorkspaceDrawManger {
 
     public WorkspaceDrawManger(Workspace workspace, List<Worker> workers) {
         if (!workspace.isCompleted()) {
-            throw new InvalidStateException(WorkspaceErrorMessage.NOT_COMPLETED_WORKSPACE.getMessage());
+            throw new InvalidStateException(WorkspaceErrorMessage.NOT_COMPLETED_WORKSPACE);
         }
         this.workers = new ArrayList<>(workers);
         this.workspace = workspace;

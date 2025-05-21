@@ -1,7 +1,7 @@
 package gymmi.photoboard.domain.entity;
 
 import gymmi.entity.User;
-import gymmi.exceptionhandler.message.PhotoFeedErrorMessage;
+import gymmi.exceptionhandler.message.PhotoFeedDeletionErrorMessage;
 import org.instancio.Instancio;
 import org.instancio.Select;
 import org.junit.jupiter.api.Test;
@@ -20,7 +20,7 @@ class PhotoFeedTest {
 
         // when, then
         assertThatThrownBy(() -> photoFeed.checkWriter(user))
-                .hasMessage(PhotoFeedErrorMessage.NOT_PHOTO_FEED_WRITER.getMessage());
+                .hasMessage(PhotoFeedDeletionErrorMessage.NOT_PHOTO_FEED_WRITER.getMessage());
     }
 
 }

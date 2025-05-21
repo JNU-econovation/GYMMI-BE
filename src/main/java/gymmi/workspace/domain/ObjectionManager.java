@@ -23,7 +23,7 @@ public class ObjectionManager {
 
     public Vote createVote(Worker worker, boolean isApproved) {
         if (!objection.isInProgress()) {
-            throw new InvalidStateException(VoteErrorMessage.ALREADY_CLOSED_OBJECTION.getMessage());
+            throw new InvalidStateException(VoteErrorMessage.ALREADY_CLOSED_OBJECTION);
         }
         if (objection.hasVoteBy(worker)) {
             throw new AlreadyExistException(VoteErrorMessage.ALREADY_VOTED);

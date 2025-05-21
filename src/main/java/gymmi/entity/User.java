@@ -1,7 +1,7 @@
 package gymmi.entity;
 
 import gymmi.exceptionhandler.exception.InvalidPatternException;
-import gymmi.exceptionhandler.message.UserErrorMessage;
+import gymmi.exceptionhandler.message.RegisterErrorMessage;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -73,17 +73,17 @@ public class User extends TimeEntity {
 
     private void validatePassword(String plainPassword) {
         if (!REGEX_PASSWORD.matcher(plainPassword).matches()) {
-            throw new InvalidPatternException(UserErrorMessage.INVALID_PASSWORD_1.getMessage());
+            throw new InvalidPatternException(RegisterErrorMessage.INVALID_PASSWORD_1);
 
         }
         if (!REGEX_영어.matcher(plainPassword).find()) {
-            throw new InvalidPatternException(UserErrorMessage.INVALID_PASSWORD_2.getMessage());
+            throw new InvalidPatternException(RegisterErrorMessage.INVALID_PASSWORD_2);
         }
         if (!REGEX_숫자.matcher(plainPassword).find()) {
-            throw new InvalidPatternException(UserErrorMessage.INVALID_PASSWORD_3.getMessage());
+            throw new InvalidPatternException(RegisterErrorMessage.INVALID_PASSWORD_3);
         }
         if (!REGEX_SPECIAL_CHARACTER.matcher(plainPassword).find()) {
-            throw new InvalidPatternException(UserErrorMessage.INVALID_PASSWORD_4.getMessage());
+            throw new InvalidPatternException(RegisterErrorMessage.INVALID_PASSWORD_4);
         }
     }
 
@@ -94,19 +94,19 @@ public class User extends TimeEntity {
 
     public static void validateLoginId(String loginId) {
         if (!REGEX_LOGIN_ID.matcher(loginId).matches()) {
-            throw new InvalidPatternException(UserErrorMessage.INVALID_LOGIN_ID_1.getMessage());
+            throw new InvalidPatternException(RegisterErrorMessage.INVALID_LOGIN_ID_1);
         }
         if (!REGEX_영어.matcher(loginId).find()) {
-            throw new InvalidPatternException(UserErrorMessage.INVALID_LOGIN_ID_2.getMessage());
+            throw new InvalidPatternException(RegisterErrorMessage.INVALID_LOGIN_ID_2);
         }
         if (!REGEX_숫자.matcher(loginId).find()) {
-            throw new InvalidPatternException(UserErrorMessage.INVALID_LOGIN_ID_3.getMessage());
+            throw new InvalidPatternException(RegisterErrorMessage.INVALID_LOGIN_ID_3);
         }
     }
 
     public static String validateNickname(String nickname) {
         if (!REGEX_NICKNAME.matcher(nickname).matches()) {
-            throw new InvalidPatternException(UserErrorMessage.INVALID_NICKNAME.getMessage());
+            throw new InvalidPatternException(RegisterErrorMessage.INVALID_NICKNAME);
         }
         return nickname;
     }

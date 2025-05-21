@@ -7,8 +7,8 @@ import lombok.Getter;
 
 import java.util.List;
 
-import static gymmi.exceptionhandler.message.WorkspaceErrorMessage.EXIST_NOT_JOINED_WORKER;
-import static gymmi.exceptionhandler.message.WorkspaceErrorMessage.NOT_CONSISTENT_WORKERS_COUNT;
+import static gymmi.exceptionhandler.message.WorkspaceConsistencyErrorMessage.EXIST_NOT_JOINED_WORKER;
+import static gymmi.exceptionhandler.message.WorkspaceConsistencyErrorMessage.NOT_CONSISTENT_WORKERS_COUNT;
 
 @Getter
 public class WorkspaceWithWorkersConsistencyValidator {
@@ -17,17 +17,17 @@ public class WorkspaceWithWorkersConsistencyValidator {
 
     public static void validateMeetMinHeadCount(List<Worker> workers) {
         if (workers.size() < Workspace.MIN_HEAD_COUNT) {
-            throw new InvalidStateException(NOT_CONSISTENT_WORKERS_COUNT.getMessage());
+            throw new InvalidStateException(NOT_CONSISTENT_WORKERS_COUNT);
         }
     }
 
     public static void validateWorkersConsistency(Workspace workspace, List<Worker> workers) {
         if (!workers.stream()
                 .allMatch(worker -> worker.isJoinedIn(workspace))) {
-            throw new InvalidStateException(EXIST_NOT_JOINED_WORKER.getMessage());
+            throw new InvalidStateException(EXIST_NOT_JOINED_WORKER);
         }
         if (workers.isEmpty() || workers.size() > workspace.getHeadCount()) {
-            throw new InvalidStateException(NOT_CONSISTENT_WORKERS_COUNT.getMessage());
+            throw new InvalidStateException(NOT_CONSISTENT_WORKERS_COUNT);
         }
     }
 

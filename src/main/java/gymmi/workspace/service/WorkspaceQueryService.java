@@ -2,6 +2,8 @@ package gymmi.workspace.service;
 
 import gymmi.entity.User;
 import gymmi.exceptionhandler.exception.NotHavePermissionException;
+import gymmi.exceptionhandler.message.InvalidAccessErrorMessage;
+import gymmi.exceptionhandler.message.WorkspaceCreationErrorMessage;
 import gymmi.exceptionhandler.message.WorkspaceErrorMessage;
 import gymmi.service.ImageUse;
 import gymmi.service.S3Service;
@@ -50,7 +52,7 @@ public class WorkspaceQueryService {
 
     private Worker validateIfWorkerIsInWorkspace(Long userId, Long workspaceId) {
         return workerRepository.findByUserIdAndWorkspaceId(userId, workspaceId)
-                .orElseThrow(() -> new NotHavePermissionException(WorkspaceErrorMessage.NOT_JOINED_WORKSPACE));
+                .orElseThrow(() -> new NotHavePermissionException(InvalidAccessErrorMessage.NOT_JOINED_WORKSPACE));
     }
 
     public List<JoinedWorkspaceResponse> getJoinedAllWorkspaces(User loginedUser, int pageNumber) {

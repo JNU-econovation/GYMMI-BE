@@ -1,6 +1,8 @@
 package gymmi.workspace.domain;
 
+import gymmi.exceptionhandler.message.InvalidAccessErrorMessage;
 import gymmi.exceptionhandler.message.WorkoutErrorMessage;
+import gymmi.exceptionhandler.message.WorkspaceCreationErrorMessage;
 import gymmi.exceptionhandler.message.WorkspaceErrorMessage;
 import gymmi.workspace.domain.entity.*;
 import org.instancio.Instancio;
@@ -65,7 +67,7 @@ class WorkspaceProgressManagerTest {
             // when, then
             assertThatThrownBy(
                     () -> workspaceProgressManager.doWorkout(worker, workouts, workoutProof)
-            ).hasMessage(WorkspaceErrorMessage.NOT_JOINED_WORKSPACE.getMessage());
+            ).hasMessage(InvalidAccessErrorMessage.NOT_JOINED_WORKSPACE.getMessage());
 
         }
 

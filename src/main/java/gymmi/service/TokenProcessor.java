@@ -2,6 +2,7 @@ package gymmi.service;
 
 import gymmi.exceptionhandler.exception.AuthenticationFailException;
 import gymmi.exceptionhandler.message.LoginErrorMessage;
+import gymmi.exceptionhandler.message.ServerErrorMessage;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
@@ -80,9 +81,9 @@ public final class TokenProcessor {
                     .get(CLAIM_KEY_USER_ID, String.class);
             return Long.valueOf(userId);
         } catch (ExpiredJwtException e) {
-            throw new AuthenticationFailException(LoginErrorMessage.EXPIRED_JWT.getMessage(), e);
+            throw new AuthenticationFailException(LoginErrorMessage.EXPIRED_JWT, e);
         } catch (JwtException e) {
-            throw new AuthenticationFailException(LoginErrorMessage.JWT_RELATED_ERROR.getMessage(), e);
+            throw new AuthenticationFailException(ServerErrorMessage.JWT_RELATED_ERROR, e);
         }
     }
 

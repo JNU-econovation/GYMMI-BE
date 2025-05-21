@@ -2,7 +2,6 @@ package gymmi.exceptionhandler.message;
 
 public enum WorkspaceCreationErrorMessage implements ErrorMessage {
 
-    // 워크스페이스 생성
     ALREADY_USED_WORKSPACE_NAME("이미 사용중인 워크스페이스 이름 입니다.", 400),
     INVALID_MISSION_SCORE_UNIT("미션 점수는 10점 단위로 입력해주세요.", 400),
     INVALID_WORKSPACE_NAME_LENGTH("워크스페이스 이름은 9자까지 가능합니다.", 400),

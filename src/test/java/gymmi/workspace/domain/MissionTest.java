@@ -1,6 +1,7 @@
 package gymmi.workspace.domain;
 
 import gymmi.exceptionhandler.message.WorkoutErrorMessage;
+import gymmi.exceptionhandler.message.WorkspaceCreationErrorMessage;
 import gymmi.exceptionhandler.message.WorkspaceErrorMessage;
 import gymmi.workspace.domain.entity.Mission;
 import gymmi.workspace.domain.entity.Workspace;
@@ -25,7 +26,7 @@ class MissionTest {
 
         // when, then
         assertThatThrownBy(() -> new Mission(workspace, gen().string().get(), score))
-                .hasMessage(WorkspaceErrorMessage.INVALID_WORKSPACE_MISSION_SCORE.getMessage());
+                .hasMessage(WorkspaceCreationErrorMessage.INVALID_WORKSPACE_MISSION_SCORE.getMessage());
     }
 
     @Test
@@ -36,7 +37,7 @@ class MissionTest {
 
         // when, then
         assertThatThrownBy(() -> new Mission(workspace, missionName, Mission.MIN_SCORE))
-                .hasMessage(WorkspaceErrorMessage.INVALID_WORKSPACE_MISSION_NAME_LENGTH.getMessage());
+                .hasMessage(WorkspaceCreationErrorMessage.INVALID_WORKSPACE_MISSION_NAME_LENGTH.getMessage());
     }
 
     @Test

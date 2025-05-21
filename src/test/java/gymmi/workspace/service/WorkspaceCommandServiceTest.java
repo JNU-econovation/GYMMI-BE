@@ -2,6 +2,7 @@ package gymmi.workspace.service;
 
 import gymmi.entity.User;
 import gymmi.exceptionhandler.message.WorkoutErrorMessage;
+import gymmi.exceptionhandler.message.WorkspaceCreationErrorMessage;
 import gymmi.exceptionhandler.message.WorkspaceErrorMessage;
 import gymmi.exceptionhandler.message.WorkspaceStartErrorMessage;
 import gymmi.photoboard.repository.PhotoFeedRepository;
@@ -23,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static gymmi.exceptionhandler.message.WorkspaceErrorMessage.EXCEED_MAX_JOINED_WORKSPACE;
+import static gymmi.exceptionhandler.message.WorkspaceJoinErrorMessage.EXCEED_MAX_JOINED_WORKSPACE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.field;
@@ -102,7 +103,7 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
 
             // when, then
             assertThatThrownBy(() -> workspaceCommandService.createWorkspace(user, request))
-                    .hasMessage(WorkspaceErrorMessage.ALREADY_USED_WORKSPACE_NAME.getMessage());
+                    .hasMessage(WorkspaceCreationErrorMessage.ALREADY_USED_WORKSPACE_NAME.getMessage());
         }
 
     }

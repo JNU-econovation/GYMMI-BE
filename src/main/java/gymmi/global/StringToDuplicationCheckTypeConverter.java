@@ -1,7 +1,7 @@
 package gymmi.global;
 
 import gymmi.exceptionhandler.exception.NotMatchedException;
-import gymmi.exceptionhandler.message.CommonErrorMessage;
+import gymmi.exceptionhandler.message.InvalidQueryParmErrorMessage;
 import org.springframework.core.convert.converter.Converter;
 
 import java.util.HashMap;
@@ -22,6 +22,6 @@ public class StringToDuplicationCheckTypeConverter implements Converter<String, 
         if (queryParamValueMapping.containsKey(source)) {
             return queryParamValueMapping.get(source);
         }
-        throw new NotMatchedException(CommonErrorMessage.INVALID_WORKSPACE_STATUS_VALUE);
+        throw new NotMatchedException(InvalidQueryParmErrorMessage.INVALID_WORKSPACE_STATUS_VALUE);
     }
 }

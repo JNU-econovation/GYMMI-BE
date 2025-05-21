@@ -1,5 +1,6 @@
 package gymmi.workspace.domain;
 
+import gymmi.exceptionhandler.message.WorkspaceConsistencyErrorMessage;
 import gymmi.exceptionhandler.message.WorkspaceErrorMessage;
 import gymmi.workspace.domain.entity.Mission;
 import gymmi.workspace.domain.entity.Workspace;
@@ -26,7 +27,7 @@ class WorkspaceWithMissionsConsistencyValidatorTest {
 
         // when, then
         assertThatThrownBy(() -> validateRegistration(workspace, List.of(mission)))
-                .hasMessage(WorkspaceErrorMessage.EXIST_NOT_REGISTERED_MISSION.getMessage());
+                .hasMessage(WorkspaceConsistencyErrorMessage.EXIST_NOT_REGISTERED_MISSION.getMessage());
     }
 
     @Test
@@ -38,7 +39,7 @@ class WorkspaceWithMissionsConsistencyValidatorTest {
 
         // when, then
         assertThatThrownBy(() -> validateConsistencyMissionsCount(missions))
-                .hasMessage(WorkspaceErrorMessage.NOT_CONSISTENT_MISSIONS_COUNT.getMessage());
+                .hasMessage(WorkspaceConsistencyErrorMessage.NOT_CONSISTENT_MISSIONS_COUNT.getMessage());
 
     }
 

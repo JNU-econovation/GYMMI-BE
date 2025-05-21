@@ -12,6 +12,8 @@ import java.io.File;
 import java.io.IOException;
 
 import static gymmi.exceptionhandler.message.FileErrorMessage.*;
+import static gymmi.exceptionhandler.message.NotFoundErrorMessage.NOT_FOUND_FILE;
+import static gymmi.exceptionhandler.message.ServerErrorMessage.FAILED_FILE_UPLOAD;
 
 @Component
 public class LocalImageFileUploader implements ImageFileUploader {
@@ -32,7 +34,7 @@ public class LocalImageFileUploader implements ImageFileUploader {
             file.setReadOnly();
             return fileName;
         } catch (IOException e) {
-            throw new FileIOFailException(FAILED_FILE_UPLOAD.getMessage(), e);
+            throw new FileIOFailException(FAILED_FILE_UPLOAD, e);
         }
     }
 

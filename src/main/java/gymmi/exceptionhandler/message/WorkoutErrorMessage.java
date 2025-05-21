@@ -8,7 +8,6 @@ public enum WorkoutErrorMessage implements ErrorMessage {
     NOT_JOINED_WORKSPACE("해당 워크스페이스의 참여자가 아니에요.", 403),
 
     ;
-
     private final String message;
     private final int statusCode;
 

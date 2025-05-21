@@ -1,6 +1,8 @@
 package gymmi.workspace.domain;
 
 import gymmi.entity.User;
+import gymmi.exceptionhandler.message.InvalidAccessErrorMessage;
+import gymmi.exceptionhandler.message.WorkspaceCreationErrorMessage;
 import gymmi.exceptionhandler.message.WorkspaceErrorMessage;
 import gymmi.workspace.domain.entity.*;
 import org.instancio.Instancio;
@@ -48,7 +50,7 @@ class WorkoutHistoryTest {
 
         // when, then
         assertThatThrownBy(() -> workoutHistory.canBeReadIn(workspace1))
-                .hasMessage(WorkspaceErrorMessage.NO_WORKOUT_HISTORY_EXIST_IN_WORKSPACE.getMessage());
+                .hasMessage(InvalidAccessErrorMessage.NO_WORKOUT_HISTORY_EXIST_IN_WORKSPACE.getMessage());
     }
 
 }

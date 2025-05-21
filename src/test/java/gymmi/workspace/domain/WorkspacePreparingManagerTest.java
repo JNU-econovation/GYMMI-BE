@@ -1,8 +1,7 @@
 package gymmi.workspace.domain;
 
 import gymmi.entity.User;
-import gymmi.exceptionhandler.message.WorkspaceErrorMessage;
-import gymmi.exceptionhandler.message.WorkspaceJoinErrorMessage;
+import gymmi.exceptionhandler.message.*;
 import gymmi.workspace.domain.entity.Worker;
 import gymmi.workspace.domain.entity.Workspace;
 import org.instancio.Instancio;
@@ -113,7 +112,7 @@ class WorkspacePreparingManagerTest {
 
             // when, then
             assertThatThrownBy(() -> workspacePreparingManager.release(worker))
-                    .hasMessage(WorkspaceErrorMessage.NOT_JOINED_WORKSPACE.getMessage());
+                    .hasMessage(InvalidAccessErrorMessage.NOT_JOINED_WORKSPACE.getMessage());
         }
 
         @Test
@@ -179,7 +178,7 @@ class WorkspacePreparingManagerTest {
 
             // when, then
             assertThatThrownBy(() -> workspacePreparingManager.startBy(notCreator))
-                    .hasMessage(WorkspaceErrorMessage.NOT_WORKSPACE_CREATOR.getMessage());
+                    .hasMessage(WorkspaceStartErrorMessage.NOT_WORKSPACE_CREATOR.getMessage());
         }
 
         @Test
@@ -207,7 +206,7 @@ class WorkspacePreparingManagerTest {
 
             // when, then
             assertThatThrownBy(() -> workspacePreparingManager.startBy(creator))
-                    .hasMessage(WorkspaceErrorMessage.BELOW_MINIMUM_WORKER.getMessage());
+                    .hasMessage(WorkspaceStartErrorMessage.BELOW_MINIMUM_WORKER.getMessage());
         }
 
         @Test

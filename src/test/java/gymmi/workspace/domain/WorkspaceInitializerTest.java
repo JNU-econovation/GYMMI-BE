@@ -1,6 +1,7 @@
 package gymmi.workspace.domain;
 
 import gymmi.entity.User;
+import gymmi.exceptionhandler.message.WorkspaceCreationErrorMessage;
 import gymmi.exceptionhandler.message.WorkspaceErrorMessage;
 import gymmi.workspace.domain.entity.Mission;
 import gymmi.workspace.domain.entity.Workspace;
@@ -39,7 +40,7 @@ class WorkspaceInitializerTest {
 
         // when, then
         assertThatThrownBy(() -> workspaceInitializer.init(user, request))
-                .hasMessage(WorkspaceErrorMessage.INVALID_WORKSPACE_MISSION_SIZE.getMessage());
+                .hasMessage(WorkspaceCreationErrorMessage.INVALID_WORKSPACE_MISSION_SIZE.getMessage());
     }
 
     @Test

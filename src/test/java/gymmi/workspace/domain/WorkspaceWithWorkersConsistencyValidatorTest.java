@@ -1,5 +1,6 @@
 package gymmi.workspace.domain;
 
+import gymmi.exceptionhandler.message.WorkspaceConsistencyErrorMessage;
 import gymmi.exceptionhandler.message.WorkspaceErrorMessage;
 import gymmi.workspace.domain.entity.Worker;
 import gymmi.workspace.domain.entity.Workspace;
@@ -29,7 +30,7 @@ class WorkspaceWithWorkersConsistencyValidatorTest {
 
         // when, then
         assertThatThrownBy(() -> validateMeetMinHeadCount(workers))
-                .hasMessage(WorkspaceErrorMessage.NOT_CONSISTENT_WORKERS_COUNT.getMessage());
+                .hasMessage(WorkspaceConsistencyErrorMessage.NOT_CONSISTENT_WORKERS_COUNT.getMessage());
     }
 
     @Test
@@ -47,7 +48,7 @@ class WorkspaceWithWorkersConsistencyValidatorTest {
 
         // when, then
         assertThatThrownBy(() -> validateWorkersConsistency(workspace, workers))
-                .hasMessage(WorkspaceErrorMessage.EXIST_NOT_JOINED_WORKER.getMessage());
+                .hasMessage(WorkspaceConsistencyErrorMessage.EXIST_NOT_JOINED_WORKER.getMessage());
     }
 
     @Test
@@ -58,7 +59,7 @@ class WorkspaceWithWorkersConsistencyValidatorTest {
 
         // when, then
         assertThatThrownBy(() -> validateWorkersConsistency(workspace, workers))
-                .hasMessage(WorkspaceErrorMessage.NOT_CONSISTENT_WORKERS_COUNT.getMessage());
+                .hasMessage(WorkspaceConsistencyErrorMessage.NOT_CONSISTENT_WORKERS_COUNT.getMessage());
     }
 
 }
