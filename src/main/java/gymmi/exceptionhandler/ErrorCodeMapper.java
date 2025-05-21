@@ -95,4 +95,21 @@ public class ErrorCodeMapper {
         return errorCodeFromErrorMessage.get(errorMessage);
     }
 
+    public static void printMapper() {
+        for (ErrorCode errorCode : ErrorCode.values()) {
+            Set<ErrorMessage> value = mapper.get(errorCode);
+            System.out.println("==[에러코드]==");
+            System.out.println("에러코드: " + errorCode.name());
+            System.out.println("설명: " + errorCode.getValue());
+            System.out.println("상태코드: " + errorCode.getStatusCode());
+            System.out.println("관련된 예외 메시지");
+            if (value != null) {
+                for (ErrorMessage errorMessage : value) {
+                    System.out.print("\t");
+                    System.out.println(errorMessage.getMessage());
+                }
+            }
+        }
+    }
+
 }
