@@ -91,7 +91,7 @@ public class ErrorCodeMapper {
         );
     }
 
-    public static ErrorCode getErrorCode(ErrorMessage errorMessage) {
+    public static ErrorCode getErrorCodeFrom(ErrorMessage errorMessage) {
         return errorCodeFromErrorMessage.get(errorMessage);
     }
 

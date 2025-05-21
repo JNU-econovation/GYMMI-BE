@@ -36,13 +36,19 @@ public enum ErrorCode {
     NOT_FOUND("존재하지 않는 리소스", 404),
 
     //
-    INVALID_FILE("유효하지 않는 파일", 400),
+    INVALID_FILE("조건에 맞지 않는 파일", 400),
 
     //
-    INVALID_QUERY_PARM("유효하지 않는 파라미터 키 또는 값", 400),
+    INVALID_QUERY_PARM("조건에 맞지 않는 파라미터 키 또는 값", 400),
 
     //
-    SERVER_ERROR("확인되지 않은 에러. 백엔드에 문의해주세요", 500);
+    INVALID_INPUT("조건에 맞지 않는 입력", 400),
+
+    //
+    SERVER_ERROR("확인되지 않은 에러. 백엔드에 문의해주세요", 500),
+
+    NOT_HANDLED_ERROR("핸들링 되지 않은 에러. 백엔드에 문의해주세요", 500)
+    ;
 
     private final String value;
     private final int statusCode;

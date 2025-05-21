@@ -23,6 +23,6 @@ public class GymmiException extends RuntimeException implements ErrorContext {
 
     @Override
     public ErrorCode getErrorCode() {
-        return ErrorCodeMapper.getErrorCode(errorMessage);
+        return ErrorCodeMapper.getErrorCodeFrom(errorMessage);
     }
 }

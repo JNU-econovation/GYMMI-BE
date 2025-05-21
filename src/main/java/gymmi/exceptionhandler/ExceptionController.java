@@ -1,7 +1,6 @@
 package gymmi.exceptionhandler;
 
 import gymmi.exceptionhandler.exception.GymmiException;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -13,32 +12,35 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class ExceptionController {
 
     @ExceptionHandler
-    public ResponseEntity<ErrorResponse1> handleAllCustom(GymmiException e, HttpServletRequest request) {
-        ErrorResponse1 errorResponse1 = new ErrorResponse1(e);
-        log(e, request.getRequestURI());
-        return ResponseEntity.status(e.getErrorCode().getStatusCode()).body(errorResponse1);
+    public ResponseEntity<ErrorResponse> handleAllCustom(GymmiException e) {
+        ErrorCode errorCode = e.getErrorCode();
+        ErrorResponse errorResponse = new ErrorResponse(e);
+        log(e, errorCode);
+        return ResponseEntity.status(errorCode.getStatusCode()).body(errorResponse);
+    }
+
+    private void log(Exception e, ErrorCode errorCode) {
+        if (errorCode.getStatusCode() >= 500) {
+            log.error(errorCode.name(), e);
+            return;
+        }
+        log.info(errorCode.name(), e);
     }
 
     @ExceptionHandler
-    public ResponseEntity<ErrorResponse> handleAll(Exception e, HttpServletRequest request) {
-        ErrorResponse response = new ErrorResponse("백엔드에게 문의하세요", e.getMessage());
-        log(e, request.getRequestURI());
-        return ResponseEntity.internalServerError().body(response);
+    public ResponseEntity<ErrorResponse> handleAll(Exception e) {
+        ErrorCode errorCode = ErrorCode.NOT_HANDLED_ERROR;
+        ErrorResponse errorResponse = new ErrorResponse(errorCode, e.getMessage());
+        log.error(errorCode.name(), e);
+        return ResponseEntity.status(errorCode.getStatusCode()).body(errorResponse);
     }
 
     @ExceptionHandler
-    public ResponseEntity<ErrorResponse> handle400Exception(ConstraintViolationException e, HttpServletRequest request) {
-        ErrorResponse response = new ErrorResponse("INVALID_INPUT_VALUE", e.getMessage());
-        log(e, request.getRequestURI());
-        return ResponseEntity.badRequest().body(response);
-    }
-
-    private void log(Exception e, String requestURI) {
-        log.warn(System.lineSeparator() +
-                        "[에러 발생 로그]" + System.lineSeparator() +
-                        "request-url : {}" + System.lineSeparator() +
-                        "error: {}",
-                requestURI, e.getMessage(), e);
+    public ResponseEntity<ErrorResponse> handle400Exception(ConstraintViolationException e) {
+        ErrorCode errorCode = ErrorCode.INVALID_INPUT;
+        ErrorResponse errorResponse = new ErrorResponse(errorCode, e.getMessage());
+        log.info(errorCode.name(), e);
+        return ResponseEntity.status(errorCode.getStatusCode()).body(errorResponse);
     }
 
 }
