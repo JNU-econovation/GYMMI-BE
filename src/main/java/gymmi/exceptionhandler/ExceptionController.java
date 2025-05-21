@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class ExceptionController {
 
     @ExceptionHandler
-    public ResponseEntity<ErrorResponse> handleAllCustom(GymmiException e, HttpServletRequest request) {
-        ErrorResponse response = new ErrorResponse("custom", e.getMessage());
+    public ResponseEntity<ErrorResponse1> handleAllCustom(GymmiException e, HttpServletRequest request) {
+        ErrorResponse1 errorResponse1 = new ErrorResponse1(e);
         log(e, request.getRequestURI());
-        return ResponseEntity.status(100).body(response);
+        return ResponseEntity.status(e.getErrorCode().getStatusCode()).body(errorResponse1);
     }
 
     @ExceptionHandler

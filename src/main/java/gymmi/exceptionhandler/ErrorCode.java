@@ -51,4 +51,12 @@ public enum ErrorCode {
         this.value = value;
         this.statusCode = statusCode;
     }
+
+    public String getValue() {
+        return value;
+    }
+
+    public int getStatusCode() {
+        return statusCode;
+    }
 }

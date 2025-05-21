@@ -11,8 +11,8 @@ import java.util.stream.Stream;
 
 public class ErrorCodeMapper {
 
-    private static final Map<ErrorMessage, ErrorCode> errorCodeFromErrorMessage = new HashMap<>();
     private static final Map<ErrorCode, Set<ErrorMessage>> mapper = new HashMap<>();
+    private static final Map<ErrorMessage, ErrorCode> errorCodeFromErrorMessage = new HashMap<>();
 
     static {
         mapper.put(ErrorCode.AUTH_FAIL,
