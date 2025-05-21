@@ -1,7 +1,7 @@
 package gymmi.exceptionhandler.exception;
 
 import gymmi.exceptionhandler.ErrorCode;
-import gymmi.exceptionhandler.Mapper;
+import gymmi.exceptionhandler.ErrorCodeMapper;
 import gymmi.exceptionhandler.ErrorContext;
 import gymmi.exceptionhandler.message.ErrorMessage;
 
@@ -23,6 +23,6 @@ public class GymmiException extends RuntimeException implements ErrorContext {
 
     @Override
     public ErrorCode getErrorCode() {
-        return Mapper.getErrorCode(errorMessage);
+        return ErrorCodeMapper.getErrorCode(errorMessage);
     }
 }

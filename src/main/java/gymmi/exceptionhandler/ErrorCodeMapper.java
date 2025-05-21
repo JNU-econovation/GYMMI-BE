@@ -1,4 +1,4 @@
-package gymmi.exceptionhandler.errrorcode;
+package gymmi.exceptionhandler;
 
 import gymmi.exceptionhandler.message.*;
 
@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
-public class Mapper {
+public class ErrorCodeMapper {
 
     private static final Map<ErrorMessage, ErrorCode> errorCodeFromErrorMessage = new HashMap<>();
     private static final Map<ErrorCode, Set<ErrorMessage>> mapper = new HashMap<>();
@@ -67,9 +67,19 @@ public class Mapper {
         mapper.put(ErrorCode.WORKSPACE_EXIT_FAIL, Set.of(
                 WorkspaceErrorMessage.EXIST_WORKERS_EXCLUDE_CREATOR
         ));
+
+        initReverseMapper();
     }
 
-    private Mapper() {
+    private static void initReverseMapper() {
+        for (Map.Entry<ErrorCode, Set<ErrorMessage>> errorCodeSetEntry : mapper.entrySet()) {
+            for (ErrorMessage errorMessage : errorCodeSetEntry.getValue()) {
+                errorCodeFromErrorMessage.put(errorMessage, errorCodeSetEntry.getKey());
+            }
+        }
+    }
+
+    private ErrorCodeMapper() {
     }
 
     private static void putServerError() {
