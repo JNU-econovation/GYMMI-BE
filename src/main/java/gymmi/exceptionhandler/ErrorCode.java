@@ -1,4 +1,4 @@
-package gymmi.exceptionhandler.errrorcode;
+package gymmi.exceptionhandler;
 
 public enum ErrorCode {
 

@@ -1,8 +1,8 @@
 package gymmi.exceptionhandler.exception;
 
-import gymmi.exceptionhandler.errrorcode.ErrorCode;
-import gymmi.exceptionhandler.errrorcode.Mapper;
-import gymmi.exceptionhandler.message.ErrorContext;
+import gymmi.exceptionhandler.ErrorCode;
+import gymmi.exceptionhandler.Mapper;
+import gymmi.exceptionhandler.ErrorContext;
 import gymmi.exceptionhandler.message.ErrorMessage;
 
 public class GymmiException extends RuntimeException implements ErrorContext {
