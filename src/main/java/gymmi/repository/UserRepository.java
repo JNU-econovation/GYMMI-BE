@@ -20,7 +20,7 @@ public interface UserRepository extends JpaRepository<User, Long>, UserCustomRep
     @Query("select u from User u where u.nickname = :nickname")
     Optional<User> findByNickname(String nickname);
 
-    default User getByUserId(Long userId) {
+    default User findByIdOrThrow(Long userId) {
         return findByUserId(userId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_USER));
     }

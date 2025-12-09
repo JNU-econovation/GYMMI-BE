@@ -45,7 +45,7 @@ public class AlarmEventListener {
     @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void notifyWorkspaceStart(WorkspaceStartedEvent event) {
-        Workspace workspace = workspaceRepository.getWorkspaceById(event.getWorkspaceId());
+        Workspace workspace = workspaceRepository.findByIdOrThrow(event.getWorkspaceId());
         List<Worker> workers = workerRepository.getAllByWorkspaceId(workspace.getId());
         List<User> users = workers.stream()
                 .map(Worker::getUser)
@@ -66,7 +66,7 @@ public class AlarmEventListener {
     @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void notifyObjectionOpen(ObjectionOpenEvent event) {
-        Workspace workspace = workspaceRepository.getWorkspaceById(event.getWorkspaceId());
+        Workspace workspace = workspaceRepository.findByIdOrThrow(event.getWorkspaceId());
         List<Worker> workers = workerRepository.getAllByWorkspaceId(workspace.getId());
         Objection objection = objectionRepository.getByObjectionId(event.getObjectionId());
         WorkoutHistory workoutHistory = workoutHistoryRepository.getByWorkoutConfirmationId(objection.getWorkoutConfirmation().getId());
@@ -88,7 +88,7 @@ public class AlarmEventListener {
     @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void notifyWorkoutConfirmationCreated(WorkoutConfirmationCreatedEvent event) {
-        Workspace workspace = workspaceRepository.getWorkspaceById(event.getWorkspaceId());
+        Workspace workspace = workspaceRepository.findByIdOrThrow(event.getWorkspaceId());
         List<Worker> workers = workerRepository.getAllByWorkspaceId(workspace.getId());
         Worker worker = workerRepository.getByUserIdAndWorkspaceId(event.getUserId(), workspace.getId());
         List<User> users = workers.stream()
@@ -110,7 +110,7 @@ public class AlarmEventListener {
     @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void notifyWorkspacePhaseChanged(WorkspacePhaseChangedEvent event) {
-        Workspace workspace = workspaceRepository.getWorkspaceById(event.getWorkspaceId());
+        Workspace workspace = workspaceRepository.findByIdOrThrow(event.getWorkspaceId());
         List<Worker> workers = workerRepository.getAllByWorkspaceId(workspace.getId());
         List<User> users = workers.stream()
                 .map(Worker::getUser)

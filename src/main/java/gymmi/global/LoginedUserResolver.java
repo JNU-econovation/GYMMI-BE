@@ -42,7 +42,7 @@ public class LoginedUserResolver implements HandlerMethodArgumentResolver {
         validate(authorizationHeader);
         String accessToken = authorizationHeader.substring(AUTHORIZATION_TYPE_BEARER.length());
         Long userId = tokenProcessor.parseAccessToken(accessToken);
-        User user = userRepository.getByUserId(userId);
+        User user = userRepository.findByIdOrThrow(userId);
         return user;
     }
 

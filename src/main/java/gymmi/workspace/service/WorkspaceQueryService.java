@@ -42,7 +42,7 @@ public class WorkspaceQueryService {
     private final S3Service s3Service;
 
     public WorkspaceIntroductionResponse getWorkspaceIntroduction(User loginedUser, Long workspaceId) {
-        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
+        Workspace workspace = workspaceRepository.findByIdOrThrow(workspaceId);
         validateIfWorkerIsInWorkspace(loginedUser.getId(), workspaceId);
 
         return new WorkspaceIntroductionResponse(workspace, workspace.isCreatedBy(loginedUser));
@@ -74,7 +74,7 @@ public class WorkspaceQueryService {
     }
 
     public MatchingWorkspacePasswordResponse matchesWorkspacePassword(Long workspaceId, String workspacePassword) {
-        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
+        Workspace workspace = workspaceRepository.findByIdOrThrow(workspaceId);
 
         boolean matchingResult = workspace.matchesPassword(workspacePassword);
         return new MatchingWorkspacePasswordResponse(matchingResult);
@@ -100,7 +100,7 @@ public class WorkspaceQueryService {
             Long workspaceId,
             Long userId
     ) {
-        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
+        Workspace workspace = workspaceRepository.findByIdOrThrow(workspaceId);
         validateIfWorkerIsInWorkspace(loginedUser.getId(), workspace.getId());
         Worker targetWorker = validateIfWorkerIsInWorkspace(userId, workspace.getId());
         List<WorkoutHistory> workoutHistories = workoutHistoryRepository.getAllByWorkerId(targetWorker.getId());
@@ -120,7 +120,7 @@ public class WorkspaceQueryService {
             Long workspaceId,
             Long workoutHistoryId
     ) {
-        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
+        Workspace workspace = workspaceRepository.findByIdOrThrow(workspaceId);
         validateIfWorkerIsInWorkspace(loginedUser.getId(), workspace.getId());
         WorkoutHistory workoutHistory = workoutHistoryRepository.getByWorkoutHistoryId(workoutHistoryId);
         workoutHistory.canBeReadIn(workspace);
@@ -131,7 +131,7 @@ public class WorkspaceQueryService {
     }
 
     public CheckingEntranceOfWorkspaceResponse checkEnteringWorkspace(User loginedUser, Long workspaceId) {
-        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
+        Workspace workspace = workspaceRepository.findByIdOrThrow(workspaceId);
         List<Worker> workers = workerRepository.getAllByWorkspaceId(workspace.getId());
         Worker worker = workerRepository.findByUserIdAndWorkspaceId(loginedUser.getId(), workspace.getId())
                 .orElseGet(null);
@@ -150,7 +150,7 @@ public class WorkspaceQueryService {
     }
 
     public InsideWorkspaceResponse enterWorkspace(User logiendUser, Long workspaceId) {
-        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
+        Workspace workspace = workspaceRepository.findByIdOrThrow(workspaceId);
         List<Worker> workers = workerRepository.getAllByWorkspaceId(workspaceId);
         validateIfWorkerIsInWorkspace(logiendUser.getId(), workspaceId);
         int achievementScore = workspaceRepository.getAchievementScore(workspaceId);
@@ -160,7 +160,7 @@ public class WorkspaceQueryService {
     }
 
     public List<FavoriteMissionResponse> getFavoriteMissions(User loginedUser, Long workspaceId) {
-        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
+        Workspace workspace = workspaceRepository.findByIdOrThrow(workspaceId);
         Worker worker = validateIfWorkerIsInWorkspace(loginedUser.getId(), workspace.getId());
         List<FavoriteMission> favoriteMissions = favoriteMissionRepository.getAllByWorkerId(worker.getId());
         return favoriteMissions.stream()
@@ -170,7 +170,7 @@ public class WorkspaceQueryService {
     }
 
     public WorkoutConfirmationResponse getWorkoutConfirmations(User loginedUser, Long workspaceId, int page) {
-        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
+        Workspace workspace = workspaceRepository.findByIdOrThrow(workspaceId);
         Worker worker = validateIfWorkerIsInWorkspace(loginedUser.getId(), workspace.getId());
         List<WorkoutConfirmationOrObjectionProjection> dtos = workoutHistoryRepository.getWorkoutConfirmationAndObjectionDto(workspace.getId(), page);
         dtos.sort(Comparator.comparing(WorkoutConfirmationOrObjectionProjection::getCreatedAt));
@@ -199,7 +199,7 @@ public class WorkspaceQueryService {
     }
 
     public WorkoutConfirmationDetailResponse getWorkoutConfirmation(User loginedUser, Long workspaceId, Long workoutConfirmationId) {
-        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
+        Workspace workspace = workspaceRepository.findByIdOrThrow(workspaceId);
         validateIfWorkerIsInWorkspace(loginedUser.getId(), workspace.getId());
         WorkoutHistory workoutHistory = workoutHistoryRepository.getByWorkoutConfirmationId(workoutConfirmationId);
 
@@ -214,7 +214,7 @@ public class WorkspaceQueryService {
     }
 
     public ObjectionResponse getObjection(User loginedUser, Long workspaceId, Long objectionId) {
-        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
+        Workspace workspace = workspaceRepository.findByIdOrThrow(workspaceId);
         Worker worker = validateIfWorkerIsInWorkspace(loginedUser.getId(), workspace.getId());
         Objection objection = objectionRepository.getByObjectionId(objectionId);
         objection.canBeReadIn(workspace);
@@ -235,7 +235,7 @@ public class WorkspaceQueryService {
     }
 
     public List<ObjectionAlarmResponse> getObjections(User loginedUser, Long workspaceId, int pageNumber, ObjectionStatus objectionStatus) {
-        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
+        Workspace workspace = workspaceRepository.findByIdOrThrow(workspaceId);
         Worker worker = validateIfWorkerIsInWorkspace(loginedUser.getId(), workspace.getId());
         PageRequest pageRequest = PageRequest.of(pageNumber, 10);
         List<Objection> objections = objectionRepository.getAllBy(workspaceId, worker.getId(), objectionStatus, pageRequest);

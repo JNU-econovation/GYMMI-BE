@@ -66,7 +66,7 @@ public class WorkspaceCommandService {
     // 동시 참여 -> 인원수 초과, 중복 요청 -> 중복 참여자 존재
     public void joinWorkspace(User loginedUser, Long workspaceId, JoiningWorkspaceRequest request) {
         validateCountOfWorkspaces(loginedUser.getId());
-        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
+        Workspace workspace = workspaceRepository.findByIdOrThrow(workspaceId);
         List<Worker> workers = workerRepository.getAllByWorkspaceId(workspace.getId());
 
         WorkspacePreparingManager workspacePreparingManager = new WorkspacePreparingManager(workspace, workers);
@@ -85,7 +85,7 @@ public class WorkspaceCommandService {
 
     @Transactional
     public void startWorkspace(User loginedUser, Long workspaceId) {
-        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
+        Workspace workspace = workspaceRepository.findByIdOrThrow(workspaceId);
         Worker worker = workerRepository.getByUserIdAndWorkspaceId(loginedUser.getId(), workspace.getId());
         List<Worker> workers = workerRepository.getAllByWorkspaceId(workspace.getId());
 
@@ -97,7 +97,7 @@ public class WorkspaceCommandService {
 
     @Transactional
     public void leaveWorkspace(User loginedUser, Long workspaceId) {
-        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
+        Workspace workspace = workspaceRepository.findByIdOrThrow(workspaceId);
         Worker worker = workerRepository.getByUserIdAndWorkspaceId(loginedUser.getId(), workspace.getId());
         List<Worker> workers = workerRepository.getAllByWorkspaceId(workspace.getId());
 
@@ -118,7 +118,7 @@ public class WorkspaceCommandService {
             Long workspaceId,
             WorkoutRequest workoutRequest
     ) {
-        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
+        Workspace workspace = workspaceRepository.findByIdOrThrow(workspaceId);
         Worker worker = workerRepository.getByUserIdAndWorkspaceId(loginedUser.getId(), workspace.getId());
         List<Mission> missions = missionRepository.getAllByWorkspaceId(workspace.getId());
         Map<Mission, Integer> workouts = getWorkouts(workoutRequest.getMissions());
@@ -175,7 +175,7 @@ public class WorkspaceCommandService {
             Long workspaceId,
             EditingIntroductionOfWorkspaceRequest request
     ) {
-        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
+        Workspace workspace = workspaceRepository.findByIdOrThrow(workspaceId);
         Worker worker = workerRepository.getByUserIdAndWorkspaceId(loginedUser.getId(), workspace.getId());
 
         WorkspaceEditManager workspaceEditManager = new WorkspaceEditManager(workspace, worker);
@@ -183,7 +183,7 @@ public class WorkspaceCommandService {
     }
 
     public void toggleRegistrationOfFavoriteMission(User loginedUser, Long workspaceId, Long missionId) {
-        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
+        Workspace workspace = workspaceRepository.findByIdOrThrow(workspaceId);
         Worker worker = validateIfWorkerIsInWorkspace(loginedUser.getId(), workspace.getId());
         Mission mission = missionRepository.getByMissionId(missionId);
 
@@ -203,7 +203,7 @@ public class WorkspaceCommandService {
     }
 
     public void objectToWorkoutConfirmation(User loginedUser, Long workspaceId, Long workoutConfirmationId, ObjectionRequest request) {
-        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
+        Workspace workspace = workspaceRepository.findByIdOrThrow(workspaceId);
         Worker worker = validateIfWorkerIsInWorkspace(loginedUser.getId(), workspaceId);
         WorkoutHistory workoutHistory = workoutHistoryRepository.getByWorkoutConfirmationId(workoutConfirmationId);
         workoutHistory.canBeReadIn(workspace);
@@ -225,7 +225,7 @@ public class WorkspaceCommandService {
     }
 
     public void voteToObjection(User loginedUser, Long workspaceId, Long objectionId, VoteRequest request) {
-        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
+        Workspace workspace = workspaceRepository.findByIdOrThrow(workspaceId);
         Worker worker = validateIfWorkerIsInWorkspace(loginedUser.getId(), workspaceId);
         Objection objection = objectionRepository.getByObjectionId(objectionId);
         objection.canBeReadIn(workspace);
@@ -251,7 +251,7 @@ public class WorkspaceCommandService {
     }
 
     public void terminateExpiredObjection(User loginedUser, Long workspaceId) {
-        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
+        Workspace workspace = workspaceRepository.findByIdOrThrow(workspaceId);
         validateIfWorkerIsInWorkspace(loginedUser.getId(), workspace.getId());
         List<Objection> expiredObjections = objectionRepository.getExpiredObjections(workspace.getId());
         List<Worker> workers = workerRepository.getAllByWorkspaceId(workspace.getId());
@@ -269,7 +269,7 @@ public class WorkspaceCommandService {
     }
 
     public WorkspaceResultResponse getWorkspaceResult(User loginedUser, Long workspaceId) {
-        Workspace workspace = workspaceRepository.getWorkspaceById(workspaceId);
+        Workspace workspace = workspaceRepository.findByIdOrThrow(workspaceId);
         validateIfWorkerIsInWorkspace(loginedUser.getId(), workspace.getId());
         List<Worker> workers = workerRepository.getAllByWorkspaceId(workspace.getId());
         if (objectionRepository.existsByInProgress(workspace.getId())) {

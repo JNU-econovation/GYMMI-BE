@@ -11,7 +11,7 @@ public interface WorkspaceRepository extends JpaRepository<Workspace, Long>, Wor
 
     boolean existsByName(String name);
 
-    default Workspace getWorkspaceById(Long id) {
+    default Workspace findByIdOrThrow(Long id) {
         Workspace workspace = findById(id)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_WORKSPACE));
         return workspace;

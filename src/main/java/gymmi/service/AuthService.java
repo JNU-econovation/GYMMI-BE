@@ -79,7 +79,7 @@ public class AuthService {
     @Transactional
     public TokenResponse reissue(ReissueRequest request) {
         Long userId = tokenProcessor.parseRefreshToken(request.getRefreshToken());
-        User user = userRepository.getByUserId(userId);
+        User user = userRepository.findByIdOrThrow(userId);
         Logined logined = loginedRepository.getByUserId(userId);
 
         if (!logined.isActivatedRefreshToken(request.getRefreshToken())) {
