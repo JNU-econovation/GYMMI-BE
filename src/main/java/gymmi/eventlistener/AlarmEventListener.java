@@ -90,7 +90,7 @@ public class AlarmEventListener {
     public void notifyWorkoutConfirmationCreated(WorkoutConfirmationCreatedEvent event) {
         Workspace workspace = workspaceRepository.findByIdOrThrow(event.getWorkspaceId());
         List<Worker> workers = workerRepository.getAllByWorkspaceId(workspace.getId());
-        Worker worker = workerRepository.getByUserIdAndWorkspaceId(event.getUserId(), workspace.getId());
+        Worker worker = workerRepository.findWorkerOrThrow(event.getUserId(), workspace.getId());
         List<User> users = workers.stream()
                 .map(Worker::getUser)
                 .collect(Collectors.toList());

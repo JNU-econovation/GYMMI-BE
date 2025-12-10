@@ -13,7 +13,7 @@ public interface WorkerRepository extends JpaRepository<Worker, Long> {
     @Query("select w from Worker w where w.user.id = :userId and w.workspace.id = :workspaceId")
     Optional<Worker> findByUserIdAndWorkspaceId(Long userId, Long workspaceId);
 
-    default Worker getByUserIdAndWorkspaceId(Long userId, Long workspaceId) {
+    default Worker findWorkerOrThrow(Long userId, Long workspaceId) {
         return findByUserIdAndWorkspaceId(userId, workspaceId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_WORKER));
     }

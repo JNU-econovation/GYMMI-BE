@@ -66,7 +66,7 @@ public class WorkspacePreparingService {
     @Transactional
     public void startWorkspace(User loginedUser, Long workspaceId) {
         Workspace workspace = workspaceRepository.findByIdOrThrow(workspaceId);
-        Worker worker = workerRepository.getByUserIdAndWorkspaceId(loginedUser.getId(), workspace.getId());
+        Worker worker = workerRepository.findWorkerOrThrow(loginedUser.getId(), workspace.getId());
         List<Worker> workers = workerRepository.getAllByWorkspaceId(workspace.getId());
 
         WorkspaceStarter workspaceStarter = new WorkspaceStarter(workspace, workers);
@@ -79,7 +79,7 @@ public class WorkspacePreparingService {
     @Transactional
     public void leaveWorkspace(User loginedUser, Long workspaceId) {
         Workspace workspace = workspaceRepository.findByIdOrThrow(workspaceId);
-        Worker worker = workerRepository.getByUserIdAndWorkspaceId(loginedUser.getId(), workspace.getId());
+        Worker worker = workerRepository.findWorkerOrThrow(loginedUser.getId(), workspace.getId());
         List<Worker> workers = workerRepository.getAllByWorkspaceId(workspace.getId());
 
         WorkspacePreparingManager workspacePreparingManager = new WorkspacePreparingManager(workspace, workers);

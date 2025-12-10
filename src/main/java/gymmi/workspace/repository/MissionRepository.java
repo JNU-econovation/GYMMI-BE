@@ -22,7 +22,7 @@ public interface MissionRepository extends JpaRepository<Mission, Long> {
     @Query("select m from Mission m where m.id = :missionId")
     Optional<Mission> findByMissionId(Long missionId);
 
-    default Mission getByMissionId(Long missionId) {
+    default Mission findByIdOrThrow(Long missionId) {
         Mission mission = findByMissionId(missionId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_MISSION));
         return mission;

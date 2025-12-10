@@ -4,7 +4,6 @@ import gymmi.entity.User;
 import gymmi.eventlistener.event.ObjectionOpenEvent;
 import gymmi.eventlistener.event.WorkoutConfirmationCreatedEvent;
 import gymmi.eventlistener.event.WorkspacePhaseChangedEvent;
-import gymmi.eventlistener.event.WorkspaceStartedEvent;
 import gymmi.exceptionhandler.exception.AlreadyExistException;
 import gymmi.exceptionhandler.exception.InvalidStateException;
 import gymmi.exceptionhandler.exception.NotHavePermissionException;
@@ -52,7 +51,7 @@ public class WorkspaceCommandService {
             WorkoutRequest workoutRequest
     ) {
         Workspace workspace = workspaceRepository.findByIdOrThrow(workspaceId);
-        Worker worker = workerRepository.getByUserIdAndWorkspaceId(loginedUser.getId(), workspace.getId());
+        Worker worker = workerRepository.findWorkerOrThrow(loginedUser.getId(), workspace.getId());
         List<Mission> missions = missionRepository.getAllByWorkspaceId(workspace.getId());
         Map<Mission, Integer> workouts = getWorkouts(workoutRequest.getMissions());
         validateDailyWorkoutHistoryCount(worker.getId());
@@ -96,7 +95,7 @@ public class WorkspaceCommandService {
     private Map<Mission, Integer> getWorkouts(List<WorkingMissionInWorkspaceRequest> requests) {
         Map<Mission, Integer> workouts = new HashMap<>();
         for (WorkingMissionInWorkspaceRequest request : requests) {
-            Mission mission = missionRepository.getByMissionId(request.getId());
+            Mission mission = missionRepository.findByIdOrThrow(request.getId());
             workouts.put(mission, request.getCount());
         }
         return workouts;
@@ -109,7 +108,7 @@ public class WorkspaceCommandService {
             EditingIntroductionOfWorkspaceRequest request
     ) {
         Workspace workspace = workspaceRepository.findByIdOrThrow(workspaceId);
-        Worker worker = workerRepository.getByUserIdAndWorkspaceId(loginedUser.getId(), workspace.getId());
+        Worker worker = workerRepository.findWorkerOrThrow(loginedUser.getId(), workspace.getId());
 
         WorkspaceEditManager workspaceEditManager = new WorkspaceEditManager(workspace, worker);
         workspaceEditManager.edit(request.getDescription(), request.getTag(), request.getTask());
@@ -118,7 +117,7 @@ public class WorkspaceCommandService {
     public void toggleRegistrationOfFavoriteMission(User loginedUser, Long workspaceId, Long missionId) {
         Workspace workspace = workspaceRepository.findByIdOrThrow(workspaceId);
         Worker worker = validateIfWorkerIsInWorkspace(loginedUser.getId(), workspace.getId());
-        Mission mission = missionRepository.getByMissionId(missionId);
+        Mission mission = missionRepository.findByIdOrThrow(missionId);
 
         mission.canBeReadIn(workspace);
 
