@@ -32,6 +32,11 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
 
     @Autowired
     WorkspaceCommandService workspaceCommandService;
+
+    @Autowired
+    WorkspacePreparingService workspacePreparingService;
+
+
     @Autowired
     WorkspaceRepository workspaceRepository;
     @Autowired
@@ -76,7 +81,7 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
                     .build();
 
             // when, then
-            assertThatThrownBy(() -> workspaceCommandService.setUpWorkspace(user, request))
+            assertThatThrownBy(() -> workspacePreparingService.setUpWorkspace(user, request))
                     .hasMessage(EXCEED_MAX_JOINED_WORKSPACE.getMessage());
         }
 
@@ -99,7 +104,7 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
                     .build();
 
             // when, then
-            assertThatThrownBy(() -> workspaceCommandService.setUpWorkspace(user, request))
+            assertThatThrownBy(() -> workspacePreparingService.setUpWorkspace(user, request))
                     .hasMessage(ErrorCode.ALREADY_USED_WORKSPACE_NAME.getMessage());
         }
 
@@ -116,7 +121,7 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
         persister.persistFavoriteMission(worker, missions.get(0));
 
         // when
-        workspaceCommandService.leaveWorkspace(user, workspace.getId());
+        workspacePreparingService.leaveWorkspace(user, workspace.getId());
 
         // then
         assertThat(workspaceRepository.findById(workspace.getId())).isEmpty();

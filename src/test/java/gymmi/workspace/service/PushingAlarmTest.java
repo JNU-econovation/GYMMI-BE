@@ -41,6 +41,9 @@ public class PushingAlarmTest {
     WorkspaceCommandService workspaceCommandService;
 
     @Autowired
+    WorkspacePreparingService workspacePreparingService;
+
+    @Autowired
     WorkspaceRepository workspaceRepository;
 
     @MockBean
@@ -62,7 +65,7 @@ public class PushingAlarmTest {
         Worker worker1 = persister.persistWorker(user1, workspace);
 
         // when
-        workspaceCommandService.startWorkspace(user, workspace.getId());
+        workspacePreparingService.startWorkspace(user, workspace.getId());
 
         // then
         Thread.sleep(WAIT_TIME_MS);

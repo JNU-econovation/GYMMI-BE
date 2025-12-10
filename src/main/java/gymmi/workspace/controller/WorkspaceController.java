@@ -23,25 +23,6 @@ public class WorkspaceController {
     private final WorkspaceCommandService workspaceCommandService;
     private final WorkspaceQueryService workspaceQueryService;
 
-    @PostMapping("/workspaces")
-    public ResponseEntity<IdResponse> createWorkspace(
-            @Logined User user,
-            @Validated @RequestBody CreatingWorkspaceRequest request
-    ) {
-        Long workspaceId = workspaceCommandService.setUpWorkspace(user, request);
-        return ResponseEntity.ok().body(new IdResponse(workspaceId));
-    }
-
-    @PostMapping("/workspaces/{workspaceId}/join")
-    public ResponseEntity<Void> joinWorkspace(
-            @Logined User user,
-            @Validated @RequestBody JoiningWorkspaceRequest request,
-            @PathVariable Long workspaceId
-    ) {
-        workspaceCommandService.joinWorkspace(user, workspaceId, request.getPassword());
-        return ResponseEntity.ok().build();
-    }
-
     @GetMapping("/workspaces/{workspaceId}/introduction")
     public ResponseEntity<WorkspaceIntroductionResponse> seeWorkspaceIntroduction(
             @Logined User user,
@@ -82,23 +63,7 @@ public class WorkspaceController {
         return ResponseEntity.ok().body(responses);
     }
 
-    @PatchMapping("/workspaces/{workspaceId}/start")
-    public ResponseEntity<Void> startWorkspace(
-            @Logined User user,
-            @PathVariable Long workspaceId
-    ) {
-        workspaceCommandService.startWorkspace(user, workspaceId);
-        return ResponseEntity.ok().build();
-    }
 
-    @PostMapping("/workspaces/{workspaceId}/leave")
-    public ResponseEntity<Void> leaveWorkspace(
-            @Logined User user,
-            @PathVariable Long workspaceId
-    ) {
-        workspaceCommandService.leaveWorkspace(user, workspaceId);
-        return ResponseEntity.ok().build();
-    }
 
     @GetMapping("/workspaces/{workspaceId}")
     public ResponseEntity<InsideWorkspaceResponse> enterWorkspace(
