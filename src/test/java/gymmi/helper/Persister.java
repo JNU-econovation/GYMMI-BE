@@ -103,8 +103,8 @@ public class Persister {
     public Workspace persistWorkspace(User creator) {
         Workspace workspace = Instancio.of(Workspace.class)
                 .generate(field(Workspace::getStatus), gen -> gen.enumOf(WorkspaceStatus.class))
-                .set(field(Workspace::getGoalScore), Workspace.MIN_GOAL_SCORE)
-                .set(field(Workspace::getHeadCount), Workspace.MIN_HEAD_COUNT)
+                .set(field(Workspace::getGoalScore), WorkspaceCreationValidator.MIN_GOAL_SCORE)
+                .set(field(Workspace::getHeadCount), WorkspaceCreationValidator.MIN_HEAD_COUNT)
                 .set(field(Workspace::getCreator), creator)
                 .ignore(field(Workspace::getId))
                 .create();
@@ -116,8 +116,8 @@ public class Persister {
     public Workspace persistWorkspace(User creator, WorkspaceStatus workspaceStatus) {
         Workspace workspace = Instancio.of(Workspace.class)
                 .set(field(Workspace::getStatus), workspaceStatus)
-                .set(field(Workspace::getGoalScore), Workspace.MIN_GOAL_SCORE)
-                .set(field(Workspace::getHeadCount), Workspace.MIN_HEAD_COUNT)
+                .set(field(Workspace::getGoalScore), WorkspaceCreationValidator.MIN_GOAL_SCORE)
+                .set(field(Workspace::getHeadCount), WorkspaceCreationValidator.MIN_HEAD_COUNT)
                 .set(field(Workspace::getCreator), creator)
                 .ignore(field(Workspace::getId))
                 .create();

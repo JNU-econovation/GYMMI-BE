@@ -7,6 +7,8 @@ import gymmi.exceptionhandler.exception.InvalidStateException;
 import gymmi.workspace.domain.entity.Worker;
 import gymmi.workspace.domain.entity.Workspace;
 import java.util.List;
+
+import gymmi.workspace.domain.entity.WorkspaceCreationValidator;
 import lombok.Getter;
 
 @Getter
@@ -15,7 +17,7 @@ public class WorkspaceWithWorkersConsistencyValidator {
     }
 
     public static void validateMeetMinHeadCount(List<Worker> workers) {
-        if (workers.size() < Workspace.MIN_HEAD_COUNT) {
+        if (workers.size() < WorkspaceCreationValidator.MIN_HEAD_COUNT) {
             throw new InvalidStateException(NOT_CONSISTENT_WORKERS_COUNT);
         }
     }

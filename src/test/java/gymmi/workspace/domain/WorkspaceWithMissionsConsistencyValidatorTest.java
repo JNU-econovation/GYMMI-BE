@@ -33,7 +33,7 @@ class WorkspaceWithMissionsConsistencyValidatorTest {
         // given
         Workspace workspace = Instancio.of(Workspace.class)
                 .create();
-        List<Mission> missions = getMissions(workspace, WorkspaceInitializer.MAX_MISSIONS_SIZE + 1);
+        List<Mission> missions = getMissions(workspace, 15 + 1);
 
         // when, then
         assertThatThrownBy(() -> validateConsistencyMissionsCount(missions))

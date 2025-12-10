@@ -2,6 +2,7 @@ package gymmi.service;
 
 import gymmi.global.DuplicationCheckType;
 import gymmi.workspace.domain.entity.Workspace;
+import gymmi.workspace.domain.entity.WorkspaceCreationValidator;
 import gymmi.workspace.repository.WorkspaceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -19,7 +20,7 @@ public class WorkspaceNameDuplicationCheck implements DuplicationCheck {
 
     @Override
     public boolean isDuplicate(String value) {
-        Workspace.validateName(value);
+        WorkspaceCreationValidator.validateName(value);
         return workspaceRepository.existsByName(value);
     }
 }

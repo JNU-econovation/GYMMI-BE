@@ -43,45 +43,42 @@ public class WorkspaceCommandService {
     private final S3Service s3Service;
     private final PhotoFeedService photoFeedService;
     private final ApplicationEventPublisher applicationEventPublisher;
+    private final WorkspaceCreationValidator workspaceCreationValidator;
+    private final WorkspaceJoinValidator workspaceJoinValidator;
+
 
     @Transactional
     // 중복 요청
-    public Long createWorkspace(User loginedUser, CreatingWorkspaceRequest request) {
-        validateCountOfWorkspaces(loginedUser.getId());
-        if (workspaceRepository.existsByName(request.getName())) {
-            throw new AlreadyExistException(ErrorCode.ALREADY_USED_WORKSPACE_NAME);
-        }
+    public Long setUpWorkspace(User loginedUser, CreatingWorkspaceRequest request) {
+        workspaceCreationValidator.validateDuplicateName(request.getName());
+        Workspace workspace = WorkspaceRequestMapper.createFrom(loginedUser, request);
+        workspaceRepository.save(workspace);
 
-        WorkspaceInitializer workspaceInitializer = new WorkspaceInitializer();
-        workspaceInitializer.init(loginedUser, request);
+        Missions missions = WorkspaceRequestMapper.createFrom(workspace, request.getMissionBoard());
+        missionRepository.saveAll(missions.getMissions());
 
-        Workspace workspace = workspaceRepository.save(workspaceInitializer.getWorkspace());
-        missionRepository.saveAll(workspaceInitializer.getMissions());
-        workerRepository.save(workspaceInitializer.getWorker());
+        workspaceJoinValidator.validateWorkspaceCountLimit(loginedUser.getId());
+        Worker worker = new Worker(loginedUser, workspace);
+        workerRepository.save(worker);
 
         return workspace.getId();
     }
 
+
     @Transactional
     // 동시 참여 -> 인원수 초과, 중복 요청 -> 중복 참여자 존재
-    public void joinWorkspace(User loginedUser, Long workspaceId, JoiningWorkspaceRequest request) {
-        validateCountOfWorkspaces(loginedUser.getId());
+    public void joinWorkspace(User loginedUser, Long workspaceId, String workspacePassword) {
+        workspaceJoinValidator.validateWorkspaceCountLimit(loginedUser.getId());
+
         Workspace workspace = workspaceRepository.findByIdOrThrow(workspaceId);
         List<Worker> workers = workerRepository.getAllByWorkspaceId(workspace.getId());
 
         WorkspacePreparingManager workspacePreparingManager = new WorkspacePreparingManager(workspace, workers);
-        Worker worker = workspacePreparingManager.allow(loginedUser, request.getPassword());
+        Worker worker = workspacePreparingManager.allow(loginedUser, workspacePassword);
 
         workerRepository.save(worker);
     }
 
-    private void validateCountOfWorkspaces(Long userId) {
-        long countOfJoinedWorkspaces =
-                workspaceRepository.getCountsOfJoinedWorkspacesExcludeCompleted(userId);
-        if (countOfJoinedWorkspaces >= 5) {
-            throw new InvalidStateException(ErrorCode.EXCEED_MAX_JOINED_WORKSPACE);
-        }
-    }
 
     @Transactional
     public void startWorkspace(User loginedUser, Long workspaceId) {
@@ -89,9 +86,10 @@ public class WorkspaceCommandService {
         Worker worker = workerRepository.getByUserIdAndWorkspaceId(loginedUser.getId(), workspace.getId());
         List<Worker> workers = workerRepository.getAllByWorkspaceId(workspace.getId());
 
-        WorkspacePreparingManager workspacePreparingManager = new WorkspacePreparingManager(workspace, workers);
-        workspacePreparingManager.startBy(worker);
+        WorkspaceStarter workspaceStarter = new WorkspaceStarter(workspace, workers);
+        Workspace startedWorkspace = workspaceStarter.startBy(worker);
 
+        workspaceRepository.save(startedWorkspace);
         applicationEventPublisher.publishEvent(new WorkspaceStartedEvent(workspace.getId()));
     }
 
@@ -102,14 +100,23 @@ public class WorkspaceCommandService {
         List<Worker> workers = workerRepository.getAllByWorkspaceId(workspace.getId());
 
         WorkspacePreparingManager workspacePreparingManager = new WorkspacePreparingManager(workspace, workers);
-        WorkerLeavedEvent workerLeavedEvent = workspacePreparingManager.release(worker);
+        LeftWorker leftWorker = workspacePreparingManager.release(worker);
 
-        favoriteMissionRepository.deleteAllByWorkerId(workerLeavedEvent.getWorker().getId());
-        workerRepository.delete(workerLeavedEvent.getWorker());
-        if (workerLeavedEvent.isLastOne()) {
-            missionRepository.deleteAllByWorkspaceId(workspace.getId());
-            workspaceRepository.deleteById(workspaceId);
+        cleanUpWorker(leftWorker);
+
+        if (leftWorker.isLastLeaver()) {
+            cleanUpWorkspace(workspaceId);
         }
+    }
+
+    private void cleanUpWorkspace(Long workspaceId) {
+        missionRepository.deleteAllByWorkspaceId(workspaceId);
+        workspaceRepository.deleteById(workspaceId);
+    }
+
+    private void cleanUpWorker(LeftWorker leftWorker) {
+        favoriteMissionRepository.deleteAllByWorkerId(leftWorker.getWorker().getId());
+        workerRepository.delete(leftWorker.getWorker());
     }
 
     @Transactional // 동시성 문제, 이벤트 사용하면 좋을듯

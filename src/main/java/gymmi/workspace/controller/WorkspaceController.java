@@ -28,7 +28,7 @@ public class WorkspaceController {
             @Logined User user,
             @Validated @RequestBody CreatingWorkspaceRequest request
     ) {
-        Long workspaceId = workspaceCommandService.createWorkspace(user, request);
+        Long workspaceId = workspaceCommandService.setUpWorkspace(user, request);
         return ResponseEntity.ok().body(new IdResponse(workspaceId));
     }
 
@@ -38,7 +38,7 @@ public class WorkspaceController {
             @Validated @RequestBody JoiningWorkspaceRequest request,
             @PathVariable Long workspaceId
     ) {
-        workspaceCommandService.joinWorkspace(user, workspaceId, request);
+        workspaceCommandService.joinWorkspace(user, workspaceId, request.getPassword());
         return ResponseEntity.ok().build();
     }
 

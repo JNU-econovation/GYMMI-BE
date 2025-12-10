@@ -20,7 +20,7 @@ class WorkspaceProgressManagerTest {
     void 워크스페이스가_진행중이_아닌_경우_예외가_발생한다() {
         // given
         WorkspaceStatus workspaceStatusExcluding = getWorkspaceStatusExcluding(WorkspaceStatus.IN_PROGRESS);
-        Workspace workspace = getWorkspace(workspaceStatusExcluding, Workspace.MIN_HEAD_COUNT);
+        Workspace workspace = getWorkspace(workspaceStatusExcluding, WorkspaceCreationValidator.MIN_HEAD_COUNT);
         List<Mission> missions = getMissions(workspace, 3);
 
         // when, then
@@ -31,7 +31,7 @@ class WorkspaceProgressManagerTest {
     @Test
     void 페이즈_변화_여부를_확인한다() {
         // given
-        Workspace workspace = getWorkspace(WorkspaceStatus.IN_PROGRESS, Workspace.MIN_HEAD_COUNT, 100);
+        Workspace workspace = getWorkspace(WorkspaceStatus.IN_PROGRESS, WorkspaceCreationValidator.MIN_HEAD_COUNT, 100);
         List<Mission> missions = getMissions(workspace, 3);
         WorkspaceProgressManager workspaceProgressManager = new WorkspaceProgressManager(workspace, missions, 10);
         assertThat(workspaceProgressManager.getWorkspacePhase()).isEqualTo(WorkspacePhase.P_0);
@@ -51,7 +51,7 @@ class WorkspaceProgressManagerTest {
         @Test
         void 워크스페이스_참여자가_아닌_경우_예외가_발생한다() {
             // given
-            Workspace workspace = getWorkspace(WorkspaceStatus.IN_PROGRESS, Workspace.MIN_HEAD_COUNT);
+            Workspace workspace = getWorkspace(WorkspaceStatus.IN_PROGRESS, WorkspaceCreationValidator.MIN_HEAD_COUNT);
             List<Mission> missions = getMissions(workspace, 3);
             WorkspaceProgressManager workspaceProgressManager = new WorkspaceProgressManager(workspace, missions, 0);
 
@@ -70,7 +70,7 @@ class WorkspaceProgressManagerTest {
 
         @Test
         void 워크스페이스에_동록된_미션이_아닌_경우_예외가_발생한다() {
-            Workspace workspace = getWorkspace(WorkspaceStatus.IN_PROGRESS, Workspace.MIN_HEAD_COUNT);
+            Workspace workspace = getWorkspace(WorkspaceStatus.IN_PROGRESS, WorkspaceCreationValidator.MIN_HEAD_COUNT);
             List<Mission> missions = getMissions(workspace, 3);
             WorkspaceProgressManager workspaceProgressManager = new WorkspaceProgressManager(workspace, missions, 0);
 
@@ -89,7 +89,7 @@ class WorkspaceProgressManagerTest {
         @Test
         void 운동을_한다() {
             // given
-            Workspace workspace = getWorkspace(WorkspaceStatus.IN_PROGRESS, Workspace.MIN_HEAD_COUNT);
+            Workspace workspace = getWorkspace(WorkspaceStatus.IN_PROGRESS, WorkspaceCreationValidator.MIN_HEAD_COUNT);
             List<Mission> missions = getMissions(workspace, 3);
             WorkspaceProgressManager workspaceProgressManager = new WorkspaceProgressManager(workspace, missions, 0);
 
@@ -118,7 +118,7 @@ class WorkspaceProgressManagerTest {
         @Test
         void 워크스페이스의_목표점수에_도달하는_경우_워크스페이스는_완료된다() {
             // given
-            Workspace workspace = getWorkspace(WorkspaceStatus.IN_PROGRESS, Workspace.MIN_HEAD_COUNT);
+            Workspace workspace = getWorkspace(WorkspaceStatus.IN_PROGRESS, WorkspaceCreationValidator.MIN_HEAD_COUNT);
             List<Mission> missions = getMissions(workspace, 1);
             WorkspaceProgressManager workspaceProgressManager = new WorkspaceProgressManager(workspace, missions, 0);
 

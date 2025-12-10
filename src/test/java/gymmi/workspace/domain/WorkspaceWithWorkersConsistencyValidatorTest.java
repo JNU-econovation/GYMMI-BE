@@ -9,6 +9,8 @@ import gymmi.workspace.domain.entity.Worker;
 import gymmi.workspace.domain.entity.Workspace;
 import java.util.Collections;
 import java.util.List;
+
+import gymmi.workspace.domain.entity.WorkspaceCreationValidator;
 import org.instancio.Instancio;
 import org.instancio.Select;
 import org.junit.jupiter.api.Test;
@@ -22,7 +24,7 @@ class WorkspaceWithWorkersConsistencyValidatorTest {
                 .set(Select.field(Workspace::getHeadCount), 3)
                 .create();
         List<Worker> workers = Instancio.ofList(Worker.class)
-                .size(Workspace.MIN_HEAD_COUNT - 1)
+                .size(WorkspaceCreationValidator.MIN_HEAD_COUNT - 1)
                 .set(Select.field(Worker::getWorkspace), workspace)
                 .create();
 

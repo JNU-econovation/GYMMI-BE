@@ -58,6 +58,14 @@ public class Worker extends TimeEntity {
         return this.contributedScore.equals(worker.getContributedScore());
     }
 
+    public boolean matches(User user) {
+        return this.user.equals(user);
+    }
+
+    public boolean isCreator(Workspace workspace) {
+        return this.matches(workspace.getCreator());
+    }
+
     @Override
     public String toString() {
         return "Worker{" +

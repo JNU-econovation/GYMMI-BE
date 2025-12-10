@@ -2,37 +2,19 @@ package gymmi.workspace.domain.entity;
 
 import gymmi.entity.TimeEntity;
 import gymmi.entity.User;
-import gymmi.exceptionhandler.exception.InvalidNumberException;
-import gymmi.exceptionhandler.exception.InvalidPatternException;
-import gymmi.exceptionhandler.exception.InvalidRangeException;
 import gymmi.exceptionhandler.exception.InvalidStateException;
 import gymmi.exceptionhandler.message.ErrorCode;
 import gymmi.workspace.domain.WorkspaceStatus;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
-import org.springframework.util.StringUtils;
 
 import java.security.SecureRandom;
-import java.util.regex.Pattern;
-
-import static gymmi.utils.Regexpressions.REGEX_영어_한글_숫자_만;
-import static gymmi.utils.Regexpressions.REGEX_영어_한글_쉼표_만;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Getter
 public class Workspace extends TimeEntity {
-
-    public static final int MIN_GOAL_SCORE = 100;
-    public static final int MAX_GOAL_SCORE = 1000;
-
-    public static final int MIN_HEAD_COUNT = 2;
-    public static final int MAX_HEAD_COUNT = 9;
-
-    private static final Pattern REGEX_WORKSPACE_NAME = REGEX_영어_한글_숫자_만;
-    private static final Pattern REGEX_WORKSPACE_TAG = REGEX_영어_한글_쉼표_만;
 
     private static final SecureRandom random = new SecureRandom();
 
@@ -51,7 +33,6 @@ public class Workspace extends TimeEntity {
     private String password;
 
     @Column(nullable = false)
-    @ColumnDefault("''")
     private String description;
 
     @Column(nullable = false)
@@ -65,7 +46,6 @@ public class Workspace extends TimeEntity {
     private Integer headCount;
 
     @Column(nullable = false)
-    @ColumnDefault("''")
     private String tag;
 
     @Column(nullable = false)
@@ -77,63 +57,29 @@ public class Workspace extends TimeEntity {
             Integer goalScore, Integer headCount, String tag, String task
     ) {
         this.creator = creator;
-        this.name = validateName(name);
-        this.goalScore = validateGoalScore(goalScore);
-        this.headCount = validateHeadCount(headCount);
-        this.tag = validateTag(tag);
+        this.name = name;
+        this.goalScore = goalScore;
+        this.headCount = headCount;
+        this.tag = setDefaultIfNull(tag);
         this.task = task;
-        this.description = validateDescription(description);
+        this.description = setDefaultIfNull(description);
         this.password = generatePassword();
         this.status = WorkspaceStatus.PREPARING;
+        validateAll();
     }
 
-    private Integer validateHeadCount(Integer headCount) {
-        if (headCount < MIN_HEAD_COUNT || headCount > MAX_HEAD_COUNT) {
-            throw new InvalidRangeException(ErrorCode.INVALID_WORKSPACE_HEAD_COUNT);
-        }
-        return headCount;
+    private String setDefaultIfNull(String value) {
+        return value == null ? "" : value;
     }
 
-    public static String validateName(String name) {
-        if (name.length() > 9) {
-            throw new InvalidRangeException(ErrorCode.INVALID_WORKSPACE_NAME_LENGTH);
-        }
-        if (!REGEX_WORKSPACE_NAME.matcher(name).matches()) {
-            throw new InvalidPatternException(ErrorCode.INVALID_WORKSPACE_NAME_FORMAT);
-        }
-        return name;
+    private void validateAll() {
+        WorkspaceCreationValidator.validateName(this.name);
+        WorkspaceCreationValidator.validateDescription(this.description);
+        WorkspaceCreationValidator.validateHeadCount(this.headCount);
+        WorkspaceCreationValidator.validateTag(this.tag);
+        WorkspaceCreationValidator.validateGoalScore(this.goalScore);
     }
 
-    private Integer validateGoalScore(Integer goalScore) {
-        if (goalScore < MIN_GOAL_SCORE || goalScore > MAX_GOAL_SCORE) {
-            throw new InvalidRangeException(ErrorCode.INVALID_WORKSPACE_GOAL_SCORE);
-        }
-
-        if (!(goalScore % 10 == 0)) {
-            throw new InvalidNumberException(ErrorCode.INVALID_MISSION_SCORE_UNIT);
-        }
-        return goalScore;
-    }
-
-    private String validateTag(String tag) {
-        if (!StringUtils.hasText(tag)) {
-            return "";
-        }
-        if (tag.length() > 10) {
-            throw new InvalidRangeException(ErrorCode.INVALID_TAG_NAME_LENGTH);
-        }
-        if (!REGEX_WORKSPACE_TAG.matcher(tag).matches()) {
-            throw new InvalidPatternException(ErrorCode.INVALID_TAG_NAME_FORMAT);
-        }
-        return tag;
-    }
-
-    private String validateDescription(String description) {
-        if (!StringUtils.hasText(description)) {
-            return "";
-        }
-        return description;
-    }
 
     private String generatePassword() {
         StringBuilder password = new StringBuilder();
@@ -167,10 +113,6 @@ public class Workspace extends TimeEntity {
         return this.creator.equals(user);
     }
 
-    public boolean isCreatedBy(Worker worker) {
-        return this.creator.equals(worker.getUser());
-    }
-
     public boolean isMoreThan(int achievementScore) {
         return this.goalScore > achievementScore;
     }
@@ -180,11 +122,11 @@ public class Workspace extends TimeEntity {
     }
 
     public void editDescription(String description) {
-        this.description = validateDescription(description);
+        this.description = WorkspaceCreationValidator.validateDescription(description);
     }
 
     public void editTag(String tag) {
-        this.tag = validateTag(tag);
+        this.tag = WorkspaceCreationValidator.validateTag(tag);
     }
 
     public void editTask(String task) {

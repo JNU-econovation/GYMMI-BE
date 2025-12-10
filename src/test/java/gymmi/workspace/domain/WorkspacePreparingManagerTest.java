@@ -9,6 +9,8 @@ import gymmi.workspace.domain.entity.Worker;
 import gymmi.workspace.domain.entity.Workspace;
 import java.util.Arrays;
 import java.util.List;
+
+import gymmi.workspace.domain.entity.WorkspaceCreationValidator;
 import org.instancio.Instancio;
 import org.instancio.Select;
 import org.junit.jupiter.api.Nested;
@@ -22,7 +24,7 @@ class WorkspacePreparingManagerTest {
         @Test
         void 사용자에게_워크스페이스_참가를_허락한다() {
             // given
-            Workspace workspace = getWorkspace("1234", WorkspaceStatus.PREPARING, Workspace.MIN_HEAD_COUNT);
+            Workspace workspace = getWorkspace("1234", WorkspaceStatus.PREPARING, WorkspaceCreationValidator.MIN_HEAD_COUNT);
             List<Worker> workers = getWorkers(workspace, 1);
             WorkspacePreparingManager workspacePreparingManager = new WorkspacePreparingManager(workspace, workers);
 
@@ -39,7 +41,7 @@ class WorkspacePreparingManagerTest {
         @Test
         void 워크스페이스_비밀번호가_일치하지_않는_경우_예외가_발생한다() {
             // given
-            Workspace workspace = getWorkspace("1234", WorkspaceStatus.PREPARING, Workspace.MIN_HEAD_COUNT);
+            Workspace workspace = getWorkspace("1234", WorkspaceStatus.PREPARING, WorkspaceCreationValidator.MIN_HEAD_COUNT);
             List<Worker> workers = getWorkers(workspace, 1);
             WorkspacePreparingManager workspacePreparingManager = new WorkspacePreparingManager(workspace, workers);
 
@@ -54,8 +56,8 @@ class WorkspacePreparingManagerTest {
         @Test
         void 워크스페이스_인원이_가득_찬_경우_예외가_발생한다() {
             // given
-            Workspace workspace = getWorkspace("1234", WorkspaceStatus.PREPARING, Workspace.MIN_HEAD_COUNT);
-            List<Worker> workers = getWorkers(workspace, Workspace.MIN_HEAD_COUNT);
+            Workspace workspace = getWorkspace("1234", WorkspaceStatus.PREPARING, WorkspaceCreationValidator.MIN_HEAD_COUNT);
+            List<Worker> workers = getWorkers(workspace, WorkspaceCreationValidator.MIN_HEAD_COUNT);
             WorkspacePreparingManager workspacePreparingManager = new WorkspacePreparingManager(workspace, workers);
 
             User user = Instancio.of(User.class).create();
@@ -66,24 +68,9 @@ class WorkspacePreparingManagerTest {
         }
 
         @Test
-        void 워크스페이스가_준비중이_아닌_경우_예외가_발생한다() {
-            // given
-            WorkspaceStatus workspaceStatus = getWorkspaceStatusExcluding(WorkspaceStatus.PREPARING);
-            Workspace workspace = getWorkspace("1234", workspaceStatus, Workspace.MIN_HEAD_COUNT);
-            List<Worker> workers = getWorkers(workspace, 1);
-            WorkspacePreparingManager workspacePreparingManager = new WorkspacePreparingManager(workspace, workers);
-
-            User user = Instancio.of(User.class).create();
-
-            // when, then
-            assertThatThrownBy(() -> workspacePreparingManager.allow(user, workspace.getPassword()))
-                    .hasMessage(ErrorCode.ALREADY_ACTIVATED_WORKSPACE.getMessage());
-        }
-
-        @Test
         void 워크스페이스에_이미_참여_한_경우_예외가_발생_한다() {
             // given
-            Workspace workspace = getWorkspace("1234", WorkspaceStatus.PREPARING, Workspace.MIN_HEAD_COUNT);
+            Workspace workspace = getWorkspace("1234", WorkspaceStatus.PREPARING, WorkspaceCreationValidator.MIN_HEAD_COUNT);
             List<Worker> workers = getWorkers(workspace, 1);
             WorkspacePreparingManager workspacePreparingManager = new WorkspacePreparingManager(workspace, workers);
 
@@ -100,7 +87,7 @@ class WorkspacePreparingManagerTest {
 
         @Test
         void 워크스페이스_참여자가_아닌_경우_예외가_발생한다() {
-            Workspace workspace = getWorkspace("1234", WorkspaceStatus.PREPARING, Workspace.MIN_HEAD_COUNT);
+            Workspace workspace = getWorkspace("1234", WorkspaceStatus.PREPARING, WorkspaceCreationValidator.MIN_HEAD_COUNT);
             Workspace workspace1 = Instancio.of(Workspace.class)
                     .filter(Select.field(Workspace::getId), (Long id) -> id != workspace.getId())
                     .create();
@@ -115,22 +102,9 @@ class WorkspacePreparingManagerTest {
         }
 
         @Test
-        void 이미_워크스페이스가_이미_활성화된_경우_예외가_발생한다() {
-            // given
-            WorkspaceStatus workspaceStatus = getWorkspaceStatusExcluding(WorkspaceStatus.PREPARING);
-            Workspace workspace = getWorkspace("1234", workspaceStatus, Workspace.MIN_HEAD_COUNT);
-            List<Worker> workers = getWorkers(workspace, Workspace.MIN_HEAD_COUNT);
-            WorkspacePreparingManager workspacePreparingManager = new WorkspacePreparingManager(workspace, workers);
-
-            // when, then
-            assertThatThrownBy(() -> workspacePreparingManager.release(workers.get(0)))
-                    .hasMessage(ErrorCode.ALREADY_ACTIVATED_WORKSPACE.getMessage());
-        }
-
-        @Test
         void 방장이_워크스페이스_참여자가_남아있을때_나가는_경우_예외가_발생한다() {
             // given
-            Workspace workspace = getWorkspace("1234", WorkspaceStatus.PREPARING, Workspace.MIN_HEAD_COUNT);
+            Workspace workspace = getWorkspace("1234", WorkspaceStatus.PREPARING, WorkspaceCreationValidator.MIN_HEAD_COUNT);
             List<Worker> workers = getWorkers(workspace, 1);
             Worker creator = getWorker(workspace, workspace.getCreator(), workers.get(0).getId());
             workers.add(creator);
@@ -144,86 +118,18 @@ class WorkspacePreparingManagerTest {
         @Test
         void 워크스페이스_참여자를_내보낸다() {
             // given
-            Workspace workspace = getWorkspace("1234", WorkspaceStatus.PREPARING, Workspace.MIN_HEAD_COUNT);
+            Workspace workspace = getWorkspace("1234", WorkspaceStatus.PREPARING, WorkspaceCreationValidator.MIN_HEAD_COUNT);
             Worker worker = getWorker(workspace, workspace.getCreator());
             List<Worker> workers = List.of(worker);
             WorkspacePreparingManager workspacePreparingManager = new WorkspacePreparingManager(workspace, workers);
 
             // when
-            WorkerLeavedEvent result = workspacePreparingManager.release(worker);
+            LeftWorker result = workspacePreparingManager.release(worker);
 
             // then
             assertThat(workspacePreparingManager.getWorkers()).isEmpty();
             assertThat(result.getWorker()).isEqualTo(worker);
-            assertThat(result.isLastOne()).isTrue();
-        }
-    }
-
-    @Nested
-    class 워크스페이스_시작 {
-
-        @Test
-        void 방장이_아닌_경우_예외가_발생한다() {
-            // given
-            Workspace workspace = getWorkspace("1234", WorkspaceStatus.PREPARING, Workspace.MIN_HEAD_COUNT);
-            List<Worker> workers = getWorkers(workspace, 1);
-
-            User user = Instancio.of(User.class)
-                    .filter(Select.field(User::getId), (Long id) -> id != workspace.getCreator().getId())
-                    .create();
-            Worker notCreator = getWorker(workspace, user, workers.get(0).getId());
-            workers.add(notCreator);
-            WorkspacePreparingManager workspacePreparingManager = new WorkspacePreparingManager(workspace, workers);
-
-            // when, then
-            assertThatThrownBy(() -> workspacePreparingManager.startBy(notCreator))
-                    .hasMessage(ErrorCode.NOT_WORKSPACE_CREATOR.getMessage());
-        }
-
-        @Test
-        void 이미_워크스페이스가_활성화된_경우_예외가_발생한다() {
-            // given
-            WorkspaceStatus activatedWorkspaceStatus = getWorkspaceStatusExcluding(WorkspaceStatus.PREPARING);
-            Workspace workspace = getWorkspace("1234", activatedWorkspaceStatus, Workspace.MIN_HEAD_COUNT);
-            List<Worker> workers = getWorkers(workspace, 1);
-            Worker creator = getWorker(workspace, workspace.getCreator(), workers.get(0).getId());
-            workers.add(creator);
-            WorkspacePreparingManager workspacePreparingManager = new WorkspacePreparingManager(workspace, workers);
-
-            // when, then
-            assertThatThrownBy(() -> workspacePreparingManager.startBy(creator))
-                    .hasMessage(ErrorCode.ALREADY_ACTIVATED_WORKSPACE.getMessage());
-        }
-
-        @Test
-        void 최소_인원을_만족하지_않는_경우_예외가_발생한다() {
-            // given;
-            Workspace workspace = getWorkspace("1234", WorkspaceStatus.PREPARING, Workspace.MIN_HEAD_COUNT);
-            Worker creator = getWorker(workspace, workspace.getCreator());
-            List<Worker> workers = List.of(creator);
-            WorkspacePreparingManager workspacePreparingManager = new WorkspacePreparingManager(workspace, workers);
-
-            // when, then
-            assertThatThrownBy(() -> workspacePreparingManager.startBy(creator))
-                    .hasMessage(ErrorCode.BELOW_MINIMUM_WORKER.getMessage());
-        }
-
-        @Test
-        void 워크스페이스를_시작한다() {
-            // given
-            Workspace workspace = getWorkspace("1234", WorkspaceStatus.PREPARING, 5);
-            List<Worker> workers = getWorkers(workspace, 2);
-            Long id = workers.get(0).getId();
-            Long id1 = workers.get(1).getId();
-            Worker creator = getWorker(workspace, workspace.getCreator(), id, id1);
-            workers.add(creator);
-            WorkspacePreparingManager workspacePreparingManager = new WorkspacePreparingManager(workspace, workers);
-
-            // when
-            workspacePreparingManager.startBy(creator);
-
-            // then
-            assertThat(workspace.getStatus()).isEqualTo(WorkspaceStatus.IN_PROGRESS);
+            assertThat(result.isLastLeaver()).isTrue();
         }
     }
 

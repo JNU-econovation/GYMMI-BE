@@ -65,8 +65,8 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
             persistWorkspacesNotCompletedWithWorker(user, 5);
 
             CreatingWorkspaceRequest request = CreatingWorkspaceRequest.builder()
-                    .goalScore(Workspace.MIN_GOAL_SCORE)
-                    .headCount(Workspace.MIN_HEAD_COUNT)
+                    .goalScore(WorkspaceCreationValidator.MIN_GOAL_SCORE)
+                    .headCount(WorkspaceCreationValidator.MIN_HEAD_COUNT)
                     .name("지미")
                     .task(Instancio.gen().string().get())
                     .missionBoard(
@@ -76,7 +76,7 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
                     .build();
 
             // when, then
-            assertThatThrownBy(() -> workspaceCommandService.createWorkspace(user, request))
+            assertThatThrownBy(() -> workspaceCommandService.setUpWorkspace(user, request))
                     .hasMessage(EXCEED_MAX_JOINED_WORKSPACE.getMessage());
         }
 
@@ -88,8 +88,8 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
             String workspaceName = workspace.getName();
 
             CreatingWorkspaceRequest request = CreatingWorkspaceRequest.builder()
-                    .goalScore(Workspace.MIN_GOAL_SCORE)
-                    .headCount(Workspace.MIN_HEAD_COUNT)
+                    .goalScore(WorkspaceCreationValidator.MIN_GOAL_SCORE)
+                    .headCount(WorkspaceCreationValidator.MIN_HEAD_COUNT)
                     .name(workspaceName)
                     .task(Instancio.gen().string().get())
                     .missionBoard(
@@ -99,7 +99,7 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
                     .build();
 
             // when, then
-            assertThatThrownBy(() -> workspaceCommandService.createWorkspace(user, request))
+            assertThatThrownBy(() -> workspaceCommandService.setUpWorkspace(user, request))
                     .hasMessage(ErrorCode.ALREADY_USED_WORKSPACE_NAME.getMessage());
         }
 
@@ -309,8 +309,8 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
                 .size(size)
                 .generate(field(Workspace::getStatus), gen -> gen.enumOf(WorkspaceStatus.class)
                         .excluding(WorkspaceStatus.COMPLETED, WorkspaceStatus.FULLY_COMPLETED))
-                .set(field(Workspace::getGoalScore), Workspace.MIN_GOAL_SCORE)
-                .set(field(Workspace::getHeadCount), Workspace.MIN_HEAD_COUNT)
+                .set(field(Workspace::getGoalScore), WorkspaceCreationValidator.MIN_GOAL_SCORE)
+                .set(field(Workspace::getHeadCount), WorkspaceCreationValidator.MIN_HEAD_COUNT)
                 .set(field(Workspace::getCreator), user)
                 .ignore(field(Workspace::getId))
                 .create();

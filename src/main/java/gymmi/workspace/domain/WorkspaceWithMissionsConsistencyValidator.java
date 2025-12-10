@@ -20,7 +20,7 @@ public class WorkspaceWithMissionsConsistencyValidator {
     }
 
     public static void validateConsistencyMissionsCount(List<Mission> missions) {
-        if (missions.isEmpty() || missions.size() > WorkspaceInitializer.MAX_MISSIONS_SIZE) {
+        if (missions.isEmpty() || missions.size() > 15) {
             throw new InvalidStateException(ErrorCode.NOT_CONSISTENT_MISSIONS_COUNT);
         }
     }

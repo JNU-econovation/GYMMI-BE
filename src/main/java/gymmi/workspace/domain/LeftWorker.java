@@ -4,12 +4,12 @@ import gymmi.workspace.domain.entity.Worker;
 import lombok.Getter;
 
 @Getter
-public class WorkerLeavedEvent {
+public class LeftWorker {
     private final Worker worker;
-    private final boolean isLastOne;
+    private final boolean isLastLeaver;
 
-    public WorkerLeavedEvent(Worker worker, boolean isLastOne) {
+    public LeftWorker(Worker worker, boolean isLastLeaver) {
         this.worker = worker;
-        this.isLastOne = isLastOne;
+        this.isLastLeaver = isLastLeaver;
     }
 }

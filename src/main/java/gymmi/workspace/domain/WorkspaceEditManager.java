@@ -17,7 +17,7 @@ public class WorkspaceEditManager {
     }
 
     private Worker validate(Worker worker) {
-        if (!workspace.isCreatedBy(worker)) {
+        if (!worker.isCreator(workspace)) {
             throw new NotHavePermissionException(ErrorCode.NOT_WORKSPACE_CREATOR);
         }
         return worker;
