@@ -24,14 +24,14 @@ public class S3Service {
         s3Client.deleteObject(imageUse.getDirectory(), filename);
     }
 
-    public void checkObjectExist(ImageUse imageUse, String filename) {
+    public void validateObjectPresence(ImageUse imageUse, String filename) {
         if (!s3Client.doesObjectExist(imageUse.getDirectory(), filename)) {
             throw new InvalidStateException(ErrorCode.NOT_FOUND_IMAGE_OBJECT);
         }
     }
 
     public String copy(ImageUse sourceImageUse, String sourceFilename, ImageUse destinationImageUse) {
-        checkObjectExist(sourceImageUse, sourceFilename);
+        validateObjectPresence(sourceImageUse, sourceFilename);
         return s3Client.copyObject(sourceImageUse.getDirectory(), sourceFilename, destinationImageUse.getDirectory());
     }
 

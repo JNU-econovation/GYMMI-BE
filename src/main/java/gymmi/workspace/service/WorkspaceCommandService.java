@@ -22,7 +22,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.*;
 
 @Service
@@ -64,7 +63,7 @@ public class WorkspaceCommandService {
         );
         workoutHistory.apply();
 
-        s3Service.checkObjectExist(WorkoutConfirmation.IMAGE_USE, workoutRequest.getImageUrl());
+        s3Service.validateObjectPresence(WorkoutConfirmation.IMAGE_USE, workoutRequest.getImageUrl());
         workoutHistoryRepository.save(workoutHistory);
         achievementScore = workspaceRepository.getAchievementScore(workspaceId);
         workspaceProgressManager.completeWhenGoalScoreIsAchieved(achievementScore);

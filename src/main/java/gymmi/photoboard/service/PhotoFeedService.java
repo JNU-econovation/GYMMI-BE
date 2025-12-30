@@ -36,7 +36,7 @@ public class PhotoFeedService {
     public Long createPhotoFeed(User loginedUser, CreatePhotoFeedRequest request) {
         PhotoFeed photoFeed = new PhotoFeed(loginedUser, request.getComment());
         PhotoFeedImage photoFeedImage = new PhotoFeedImage(photoFeed, request.getFilename());
-        s3Service.checkObjectExist(PhotoFeedImage.IMAGE_USE, photoFeedImage.getFilename());
+        s3Service.validateObjectPresence(PhotoFeedImage.IMAGE_USE, photoFeedImage.getFilename());
         PhotoFeed savedPhotoFeed = photoFeedRepository.save(photoFeed);
         photoFeedImageRepository.save(photoFeedImage);
         return savedPhotoFeed.getId();
