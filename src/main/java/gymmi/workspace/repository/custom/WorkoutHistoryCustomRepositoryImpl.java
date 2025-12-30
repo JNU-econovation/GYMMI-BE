@@ -44,7 +44,8 @@ public class WorkoutHistoryCustomRepositoryImpl implements WorkoutHistoryCustomR
     }
 
     @Override
-    public List<WorkoutHistory> getAllByDate(Long workerId, LocalDate now) {
+    public List<WorkoutHistory> findTodayByWorkerId(Long workerId) {
+        LocalDate now = LocalDate.now();
         LocalDateTime startDay = now.atStartOfDay();
         LocalDateTime endDay = now.plusDays(1).atStartOfDay();
         return jpaQueryFactory.select(workoutHistory)

@@ -86,7 +86,7 @@ public class WorkspaceCommandService {
     }
 
     private void validateDailyWorkoutHistoryCount(Long workerId) {
-        List<WorkoutHistory> workoutHistories = workoutHistoryRepository.getAllByDate(workerId, LocalDate.now());
+        List<WorkoutHistory> workoutHistories = workoutHistoryRepository.findTodayByWorkerId(workerId);
         if (workoutHistories.size() >= 3) {
             throw new InvalidStateException(ErrorCode.EXCEED_MAX_DAILY_WORKOUT_HISTORY_COUNT);
         }
