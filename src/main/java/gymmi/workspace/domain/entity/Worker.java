@@ -38,7 +38,7 @@ public class Worker extends TimeEntity {
         return Math.round((double) contributedScore / workspace.getGoalScore() * 100 * 100) / 100;
     }
 
-    public void addWorkingScore(Integer workingScore) {
+    public void addContributedScore(Integer workingScore) {
         contributedScore += workingScore;
     }
 

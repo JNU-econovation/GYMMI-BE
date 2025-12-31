@@ -20,8 +20,8 @@ public enum WorkspacePhase {
         this.value = value;
     }
 
-    public static WorkspacePhase from(int goalScore, int achievementScore) {
-        int phasePercent = (int) ((achievementScore / (double) goalScore) * 100);
+    public static WorkspacePhase from(int goalScore, int currentScore) {
+        int phasePercent = (int) ((currentScore / (double) goalScore) * 100);
         return Arrays.stream(values())
                 .filter(workspacePhase -> workspacePhase.isLowerOrEqualThan(phasePercent))
                 .max(Comparator.comparingInt(WorkspacePhase::getValue))
