@@ -1,13 +1,6 @@
 package gymmi.workspace.domain.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -34,13 +27,10 @@ public class WorkoutRecord {
     @Column(nullable = false)
     private int count;
 
-    public WorkoutRecord(Mission mission, int count) {
+    public WorkoutRecord(WorkoutHistory workoutHistory, Mission mission, int count) {
+        this.workoutHistory = workoutHistory;
         this.mission = mission;
         this.count = count;
-    }
-
-    void setWorkoutHistory(WorkoutHistory workoutHistory) {
-        this.workoutHistory = workoutHistory;
     }
 
     public int getSum() {

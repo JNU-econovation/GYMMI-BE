@@ -43,6 +43,9 @@ public class Workspace extends TimeEntity {
     private Integer goalScore;
 
     @Column(nullable = false)
+    private Integer currentScore;
+
+    @Column(nullable = false)
     private Integer headCount;
 
     @Column(nullable = false)
@@ -65,6 +68,7 @@ public class Workspace extends TimeEntity {
         this.description = setDefaultIfNull(description);
         this.password = generatePassword();
         this.status = WorkspaceStatus.PREPARING;
+        this.currentScore = 0;
         validateAll();
     }
 
@@ -117,6 +121,11 @@ public class Workspace extends TimeEntity {
         return this.goalScore > achievementScore;
     }
 
+    public boolean hasReachedGoalScore() {
+        return this.goalScore <= this.currentScore;
+    }
+
+
     public void changeStatusTo(WorkspaceStatus status) {
         this.status = status;
     }
@@ -137,5 +146,9 @@ public class Workspace extends TimeEntity {
             throw new InvalidStateException(ErrorCode.ALREADY_ACTIVATED_WORKSPACE);
         }
         this.task = task;
+    }
+
+    public void addCurrentScore(int sum) {
+        currentScore += sum;
     }
 }

@@ -37,49 +37,10 @@ public class WorkoutHistory extends TimeEntity {
     @Column(nullable = false)
     private Integer totalScore;
 
-    @OneToMany(mappedBy = "workoutHistory", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
-    private List<WorkoutRecord> workoutRecords = new ArrayList<>();
-
-    public WorkoutHistory(Worker worker, List<WorkoutRecord> workoutRecords, WorkoutConfirmation workoutConfirmation) {
+    public WorkoutHistory(Worker worker,WorkoutConfirmation workoutConfirmation) {
         this.worker = worker;
-        this.workoutRecords = new ArrayList<>(workoutRecords);
-        setRelations(workoutRecords);
         this.isApproved = true;
-        this.totalScore = calculateSum();
         this.workoutConfirmation = workoutConfirmation;
-    }
-
-    private void setRelations(List<WorkoutRecord> workoutRecords) {
-        workoutRecords.stream()
-                .forEach(workoutRecord -> workoutRecord.setWorkoutHistory(this));
-    }
-
-    public void apply() {
-        // 변경감지 기능 사용하는 메서드(worker)... 더 좋은 대안 없을까??
-        worker.addWorkingScore(totalScore);
-    }
-
-    public void cancel() {
-        isApproved = false;
-        worker.minusWorkingScore(totalScore);
-    }
-
-    public int getSum() {
-        return workoutRecords.stream()
-                .map(WorkoutRecord::getSum)
-                .reduce(0, Integer::sum);
-    }
-
-    private int calculateSum() {
-        return workoutRecords.stream()
-                .map(WorkoutRecord::getSum)
-                .reduce(0, Integer::sum);
-    }
-
-    public void canBeReadIn(Workspace workspace) {
-        if (!worker.isJoinedIn(workspace)) {
-            throw new NotHavePermissionException(NO_WORKOUT_HISTORY_EXIST_IN_WORKSPACE);
-        }
     }
 
 }
