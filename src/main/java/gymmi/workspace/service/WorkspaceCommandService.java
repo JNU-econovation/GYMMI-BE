@@ -1,28 +1,30 @@
 package gymmi.workspace.service;
 
 import gymmi.entity.User;
-import gymmi.eventlistener.event.ObjectionOpenEvent;
-import gymmi.eventlistener.event.WorkoutConfirmationCreatedEvent;
-import gymmi.eventlistener.event.WorkspacePhaseChangedEvent;
+import gymmi.eventlistener.event.*;
 import gymmi.exceptionhandler.exception.AlreadyExistException;
 import gymmi.exceptionhandler.exception.InvalidStateException;
 import gymmi.exceptionhandler.exception.NotHavePermissionException;
 import gymmi.exceptionhandler.message.ErrorCode;
-import gymmi.photoboard.domain.entity.PhotoFeedImage;
-import gymmi.photoboard.request.CreatePhotoFeedRequest;
-import gymmi.photoboard.service.PhotoFeedService;
-import gymmi.service.S3Service;
-import gymmi.workspace.domain.*;
+import gymmi.service.ImageUse;
+import gymmi.workspace.domain.ObjectionManager;
+import gymmi.workspace.domain.WorkspaceDrawManger;
+import gymmi.workspace.domain.WorkspaceEditManager;
 import gymmi.workspace.domain.entity.*;
 import gymmi.workspace.repository.*;
-import gymmi.workspace.request.*;
+import gymmi.workspace.request.EditingIntroductionOfWorkspaceRequest;
+import gymmi.workspace.request.ObjectionRequest;
+import gymmi.workspace.request.VoteRequest;
+import gymmi.workspace.request.WorkoutRequest;
 import gymmi.workspace.response.WorkspaceResultResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -37,13 +39,14 @@ public class WorkspaceCommandService {
     private final ObjectionRepository objectionRepository;
     private final VoteRepository voteRepository;
     private final WorkspaceResultRepository workspaceResultRepository;
+    private final WorkoutValidator workoutValidator;
+    private final WorkoutRequestMapper workoutRequestMapper;
+    private final WorkspacePhaseChangeEventPublisher workspacePhaseChangeEventPublisher;
 
-    private final S3Service s3Service;
-    private final PhotoFeedService photoFeedService;
     private final ApplicationEventPublisher applicationEventPublisher;
+    private final WorkoutRecordRepository workoutRecordRepository;
 
-
-    @Transactional // 동시성 문제, 이벤트 사용하면 좋을듯
+    @Transactional // 동시성 문제
     public Integer workMissionsInWorkspace(
             User loginedUser,
             Long workspaceId,
@@ -51,53 +54,30 @@ public class WorkspaceCommandService {
     ) {
         Workspace workspace = workspaceRepository.findByIdOrThrow(workspaceId);
         Worker worker = workerRepository.findWorkerOrThrow(loginedUser.getId(), workspace.getId());
-        List<Mission> missions = missionRepository.getAllByWorkspaceId(workspace.getId());
-        Map<Mission, Integer> workouts = getWorkouts(workoutRequest.getMissions());
-        validateDailyWorkoutHistoryCount(worker.getId());
-        int achievementScore = workspaceRepository.getAchievementScore(workspaceId);
-        WorkspaceProgressManager workspaceProgressManager = new WorkspaceProgressManager(workspace, missions, achievementScore);
-        WorkoutHistory workoutHistory = workspaceProgressManager.doWorkout(
-                worker,
-                workouts,
-                new WorkoutConfirmation(workoutRequest.getImageUrl(), workoutRequest.getComment())
-        );
-        workoutHistory.apply();
 
-        s3Service.validateObjectPresence(WorkoutConfirmation.IMAGE_USE, workoutRequest.getImageUrl());
+        // 이미지 검사 다른 방식 필요
+        applicationEventPublisher.publishEvent(new ImageValidationEvent(ImageUse.WORKOUT_CONFIRMATION, workoutRequest.getImageUrl()));
+
+        workoutValidator.validateCanWork(workspace, worker);
+
+        WorkoutConfirmation workoutConfirmation = workoutRequestMapper.createWorkoutConfirmation(workoutRequest);
+        WorkoutHistory workoutHistory = new WorkoutHistory(worker, workoutConfirmation);
         workoutHistoryRepository.save(workoutHistory);
-        achievementScore = workspaceRepository.getAchievementScore(workspaceId);
-        workspaceProgressManager.completeWhenGoalScoreIsAchieved(achievementScore);
-        linkToPhotoBoardIfRequested(loginedUser, workoutRequest);
+        List<WorkoutRecord> workoutRecords = workoutRequestMapper.createWorkoutRecords(workspace.getId(), workoutHistory, workoutRequest.getMissions());
+        workoutRecordRepository.saveAll(workoutRecords);
+
+        WorkoutResult workoutResult = new WorkoutResult(workspace, worker, workoutRecords);
+        workoutResult.apply();
 
         applicationEventPublisher.publishEvent(new WorkoutConfirmationCreatedEvent(workspace.getId(), loginedUser.getId()));
-        if (workspaceProgressManager.hasPhaseChanged(achievementScore)) {
-            applicationEventPublisher.publishEvent(new WorkspacePhaseChangedEvent(workspace.getId(), workspaceProgressManager.getWorkspacePhase()));
+        if (workoutResult.isPhaseChanged()) {
+            applicationEventPublisher.publishEvent(new WorkspacePhaseChangedEvent(workspace.getId(), workoutResult.getWorkspacePhase()));
         }
-
-        return workoutHistory.getSum();
-    }
-
-    private void linkToPhotoBoardIfRequested(User loginedUser, WorkoutRequest workoutRequest) {
         if (workoutRequest.getWillLink()) {
-            String filename = s3Service.copy(WorkoutConfirmation.IMAGE_USE, workoutRequest.getImageUrl(), PhotoFeedImage.IMAGE_USE);
-            photoFeedService.createPhotoFeed(loginedUser, new CreatePhotoFeedRequest(filename, workoutRequest.getComment()));
+            applicationEventPublisher.publishEvent(new LinkToPhotoFeedEvent(loginedUser.getId(), workoutRequest.getImageUrl(), workoutRequest.getComment()));
         }
-    }
 
-    private void validateDailyWorkoutHistoryCount(Long workerId) {
-        List<WorkoutHistory> workoutHistories = workoutHistoryRepository.findTodayByWorkerId(workerId);
-        if (workoutHistories.size() >= 3) {
-            throw new InvalidStateException(ErrorCode.EXCEED_MAX_DAILY_WORKOUT_HISTORY_COUNT);
-        }
-    }
-
-    private Map<Mission, Integer> getWorkouts(List<WorkingMissionInWorkspaceRequest> requests) {
-        Map<Mission, Integer> workouts = new HashMap<>();
-        for (WorkingMissionInWorkspaceRequest request : requests) {
-            Mission mission = missionRepository.findByIdOrThrow(request.getId());
-            workouts.put(mission, request.getCount());
-        }
-        return workouts;
+        return workoutResult.getSumScore();
     }
 
     @Transactional
