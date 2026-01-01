@@ -5,10 +5,7 @@ import gymmi.exceptionhandler.exception.NotHavePermissionException;
 import gymmi.exceptionhandler.message.ErrorCode;
 import gymmi.service.ImageUse;
 import gymmi.service.S3Service;
-import gymmi.workspace.domain.ObjectionStatus;
-import gymmi.workspace.domain.WorkoutMetric;
-import gymmi.workspace.domain.WorkspaceGateChecker;
-import gymmi.workspace.domain.WorkspaceStatus;
+import gymmi.workspace.domain.*;
 import gymmi.workspace.domain.entity.*;
 import gymmi.workspace.repository.*;
 import gymmi.workspace.response.*;
@@ -123,7 +120,7 @@ public class WorkspaceQueryService {
         Workspace workspace = workspaceRepository.findByIdOrThrow(workspaceId);
         validateIfWorkerIsInWorkspace(loginedUser.getId(), workspace.getId());
         WorkoutHistory workoutHistory = workoutHistoryRepository.getByWorkoutHistoryId(workoutHistoryId);
-        workoutHistory.canBeReadIn(workspace);
+//        workoutHistory.canBeReadIn(workspace);
         List<WorkoutRecord> workoutRecords = workoutRecordRepository.getAllByWorkoutHistoryId(workoutHistoryId);
         return workoutRecords.stream()
                 .map(WorkoutRecordResponse::new)
@@ -203,7 +200,7 @@ public class WorkspaceQueryService {
         validateIfWorkerIsInWorkspace(loginedUser.getId(), workspace.getId());
         WorkoutHistory workoutHistory = workoutHistoryRepository.getByWorkoutConfirmationId(workoutConfirmationId);
 
-        workoutHistory.canBeReadIn(workspace);
+//        workoutHistory.canBeReadIn(workspace);
         WorkoutConfirmation workoutConfirmation = workoutHistory.getWorkoutConfirmation();
 
         String imagePresignedUrl = s3Service.getPresignedUrl(ImageUse.WORKOUT_CONFIRMATION, workoutConfirmation.getFilename());
@@ -230,7 +227,7 @@ public class WorkspaceQueryService {
 
         WorkoutHistory workoutHistory = workoutHistoryRepository.getByWorkoutConfirmationId(objection.getWorkoutConfirmation().getId());
 
-        workoutHistory.canBeReadIn(workspace);
+//        workoutHistory.canBeReadIn(workspace);
         return ObjectionResponse.closedObjection(objection, objection.hasVoteBy(worker), workoutHistory.isApproved(), headCount);
     }
 

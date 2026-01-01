@@ -42,7 +42,7 @@ public class Worker extends TimeEntity {
         contributedScore += workingScore;
     }
 
-    public void minusWorkingScore(Integer workingScore) {
+    public void cancelContributedScore(Integer workingScore) {
         contributedScore -= workingScore;
     }
 

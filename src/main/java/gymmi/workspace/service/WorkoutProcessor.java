@@ -3,6 +3,7 @@ package gymmi.workspace.service;
 import gymmi.workspace.domain.WorkspacePhase;
 import gymmi.workspace.domain.WorkspaceStatus;
 import gymmi.workspace.domain.entity.Worker;
+import gymmi.workspace.domain.entity.WorkoutHistory;
 import gymmi.workspace.domain.entity.WorkoutRecord;
 import gymmi.workspace.domain.entity.Workspace;
 
@@ -45,6 +46,8 @@ public class WorkoutProcessor {
         int score = getSumScore();
         worker.addContributedScore(score);
         workspace.addCurrentScore(score);
+        WorkoutHistory workoutHistory = workoutRecords.get(0).getWorkoutHistory();
+        workoutHistory.addTotalScore(score);
     }
 
     private void updatePhase() {

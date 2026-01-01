@@ -117,7 +117,7 @@ public class WorkspaceCommandService {
         Workspace workspace = workspaceRepository.findByIdOrThrow(workspaceId);
         Worker worker = validateIfWorkerIsInWorkspace(loginedUser.getId(), workspaceId);
         WorkoutHistory workoutHistory = workoutHistoryRepository.getByWorkoutConfirmationId(workoutConfirmationId);
-        workoutHistory.canBeReadIn(workspace);
+//        workoutHistory.canBeReadIn(workspace);
         if (objectionRepository.findByWorkoutConfirmationId(workoutConfirmationId).isPresent()) {
             throw new AlreadyExistException(ErrorCode.ALREADY_OBJECTED);
         }

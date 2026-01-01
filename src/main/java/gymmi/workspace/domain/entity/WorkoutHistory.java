@@ -1,17 +1,11 @@
 package gymmi.workspace.domain.entity;
 
 import gymmi.entity.TimeEntity;
-import gymmi.exceptionhandler.exception.NotHavePermissionException;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static gymmi.exceptionhandler.message.ErrorCode.NO_WORKOUT_HISTORY_EXIST_IN_WORKSPACE;
 
 @Entity
 @Getter
@@ -37,10 +31,20 @@ public class WorkoutHistory extends TimeEntity {
     @Column(nullable = false)
     private Integer totalScore;
 
-    public WorkoutHistory(Worker worker,WorkoutConfirmation workoutConfirmation) {
+    public WorkoutHistory(Worker worker, WorkoutConfirmation workoutConfirmation) {
         this.worker = worker;
         this.isApproved = true;
         this.workoutConfirmation = workoutConfirmation;
+        this.totalScore = 0;
     }
 
+    public void addTotalScore(int score) {
+        totalScore += score;
+    }
+
+    public void cancel() {
+        this.isApproved = false;
+        worker.cancelContributedScore(totalScore);
+        this.totalScore = 0;
+    }
 }
