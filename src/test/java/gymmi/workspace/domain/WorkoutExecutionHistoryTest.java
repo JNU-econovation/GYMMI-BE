@@ -13,7 +13,7 @@ import org.instancio.Instancio;
 import org.instancio.Select;
 import org.junit.jupiter.api.Test;
 
-class WorkoutHistoryTest {
+class WorkoutExecutionHistoryTest {
 
     @Test
     void 운동점수가_반영된다() {

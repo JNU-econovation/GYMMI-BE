@@ -66,18 +66,18 @@ public class WorkspaceCommandService {
         List<WorkoutRecord> workoutRecords = workoutRequestMapper.createWorkoutRecords(workspace.getId(), workoutHistory, workoutRequest.getMissions());
         workoutRecordRepository.saveAll(workoutRecords);
 
-        WorkoutResult workoutResult = new WorkoutResult(workspace, worker, workoutRecords);
-        workoutResult.apply();
+        WorkoutProcessor workoutProcessor = new WorkoutProcessor(workspace, worker, workoutRecords);
+        workoutProcessor.apply();
 
         applicationEventPublisher.publishEvent(new WorkoutConfirmationCreatedEvent(workspace.getId(), loginedUser.getId()));
-        if (workoutResult.isPhaseChanged()) {
-            applicationEventPublisher.publishEvent(new WorkspacePhaseChangedEvent(workspace.getId(), workoutResult.getWorkspacePhase()));
+        if (workoutProcessor.isPhaseChanged()) {
+            applicationEventPublisher.publishEvent(new WorkspacePhaseChangedEvent(workspace.getId(), workoutProcessor.getWorkspacePhase()));
         }
         if (workoutRequest.getWillLink()) {
             applicationEventPublisher.publishEvent(new LinkToPhotoFeedEvent(loginedUser.getId(), workoutRequest.getImageUrl(), workoutRequest.getComment()));
         }
 
-        return workoutResult.getSumScore();
+        return workoutProcessor.getSumScore();
     }
 
     @Transactional

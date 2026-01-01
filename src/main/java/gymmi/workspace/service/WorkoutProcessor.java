@@ -9,7 +9,7 @@ import gymmi.workspace.domain.entity.Workspace;
 import java.util.Collections;
 import java.util.List;
 
-public class WorkoutResult {
+public class WorkoutProcessor {
     private final Workspace workspace;
     private final Worker worker;
     private final List<WorkoutRecord> workoutRecords;
@@ -18,7 +18,7 @@ public class WorkoutResult {
     private boolean isPhaseChanged;
     private boolean isApplied;
 
-    public WorkoutResult(Workspace workspace, Worker worker, List<WorkoutRecord> workoutRecords) {
+    public WorkoutProcessor(Workspace workspace, Worker worker, List<WorkoutRecord> workoutRecords) {
         this.workspace = workspace;
         this.worker = worker;
         this.workoutRecords = Collections.unmodifiableList(workoutRecords);
