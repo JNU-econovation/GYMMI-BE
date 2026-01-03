@@ -9,6 +9,7 @@ import gymmi.workspace.domain.WorkspaceStatus;
 import gymmi.workspace.domain.entity.*;
 import gymmi.workspace.repository.WorkerRepository;
 import gymmi.workspace.repository.WorkspaceRepository;
+import gymmi.workspace.service.WorkoutProcessor;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import org.instancio.Instancio;
@@ -133,33 +134,34 @@ public class Persister {
 
     //todo 지연로딩
     public WorkoutHistory persistWorkoutHistoryAndApply(Worker worker, Map<Mission, Integer> workouts) {
-        List<WorkoutRecord> workoutRecords = workouts.entrySet().stream()
-                .map(workout -> new WorkoutRecord(workout.getKey(), workout.getValue()))
-                .toList();
         Worker managedWorker = entityManager.find(Worker.class, worker.getId());
         WorkoutConfirmation workoutConfirmation = Instancio.of(WorkoutConfirmation.class)
                 .ignore(Select.field(WorkoutConfirmation::getId))
                 .create();
+        WorkoutHistory workoutHistory = new WorkoutHistory(managedWorker, workoutConfirmation);
+
+        List<WorkoutRecord> workoutRecords = workouts.entrySet().stream()
+                .map(workout -> new WorkoutRecord(workoutHistory, workout.getKey(), workout.getValue()))
+                .toList();
         entityManager.persist(workoutConfirmation);
-        WorkoutHistory workoutHistory = new WorkoutHistory(
-                managedWorker, workoutRecords, workoutConfirmation
-        );
         entityManager.persist(workoutHistory);
-        workoutHistory.apply();
+        WorkoutProcessor workoutProcessor = new WorkoutProcessor(worker.getWorkspace(), worker, workoutRecords);
+//        workoutProcessor.apply();
         return workoutHistory;
     }
 
     //todo workout confirmation id 값 오류?
     public WorkoutHistory persistWorkoutHistoryAndApply(Worker worker, Map<Mission, Integer> workouts, WorkoutConfirmation workoutConfirmation) {
-        List<WorkoutRecord> workoutRecords = workouts.entrySet().stream()
-                .map(workout -> new WorkoutRecord(workout.getKey(), workout.getValue()))
-                .toList();
         Worker managedWorker = entityManager.find(Worker.class, worker.getId());
-        WorkoutHistory workoutHistory = new WorkoutHistory(
-                managedWorker, workoutRecords, workoutConfirmation
-        );
+        WorkoutHistory workoutHistory = new WorkoutHistory(managedWorker, workoutConfirmation);
+
+        List<WorkoutRecord> workoutRecords = workouts.entrySet().stream()
+                .map(workout -> new WorkoutRecord(workoutHistory, workout.getKey(), workout.getValue()))
+                .toList();
+        entityManager.persist(workoutConfirmation);
         entityManager.persist(workoutHistory);
-        workoutHistory.apply();
+        WorkoutProcessor workoutProcessor = new WorkoutProcessor(worker.getWorkspace(), worker, workoutRecords);
+//        workoutProcessor.apply();
         return workoutHistory;
     }
 
