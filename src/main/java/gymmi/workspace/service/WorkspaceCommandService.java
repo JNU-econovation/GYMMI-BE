@@ -58,8 +58,6 @@ public class WorkspaceCommandService {
         // 이미지 검사 다른 방식 필요
         applicationEventPublisher.publishEvent(new ImageValidationEvent(ImageUse.WORKOUT_CONFIRMATION, workoutRequest.getImageUrl()));
 
-        workoutValidator.validateCanWork(workspace, worker);
-
         WorkoutConfirmation workoutConfirmation = workoutRequestMapper.createWorkoutConfirmation(workoutRequest);
         WorkoutHistory workoutHistory = new WorkoutHistory(worker, workoutConfirmation);
         workoutHistoryRepository.save(workoutHistory);
@@ -67,7 +65,7 @@ public class WorkspaceCommandService {
         workoutRecordRepository.saveAll(workoutRecords);
 
         WorkoutProcessor workoutProcessor = new WorkoutProcessor(workspace, worker, workoutRecords);
-        workoutProcessor.apply();
+        workoutProcessor.apply(workoutValidator);
 
         applicationEventPublisher.publishEvent(new WorkoutConfirmationCreatedEvent(workspace.getId(), loginedUser.getId()));
         if (workoutProcessor.isPhaseChanged()) {
