@@ -26,14 +26,14 @@ public class WorkoutHistory extends TimeEntity {
     private WorkoutConfirmation workoutConfirmation;
 
     @Column(nullable = false)
-    private boolean isApproved;
+    private boolean isRejected;
 
     @Column(nullable = false)
     private Integer totalScore;
 
     public WorkoutHistory(Worker worker, WorkoutConfirmation workoutConfirmation) {
         this.worker = worker;
-        this.isApproved = true;
+        this.isRejected = false;
         this.workoutConfirmation = workoutConfirmation;
         this.totalScore = 0;
     }
@@ -43,8 +43,12 @@ public class WorkoutHistory extends TimeEntity {
     }
 
     public void cancel() {
-        this.isApproved = false;
+        this.isRejected = true;
         worker.cancelContributedScore(totalScore);
         this.totalScore = 0;
+    }
+
+    public boolean isIn(Workspace workspace) {
+        return worker.isJoinedIn(workspace);
     }
 }

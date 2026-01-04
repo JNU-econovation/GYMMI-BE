@@ -15,7 +15,7 @@ public class WorkoutHistoryResponse {
 
     public WorkoutHistoryResponse(WorkoutHistory workoutHistory) {
         this.id = workoutHistory.getId();
-        this.isApproved = workoutHistory.isApproved();
+        this.isApproved = workoutHistory.isRejected();
         this.createdAt = workoutHistory.getCreatedAt();
         this.sumOfScore = workoutHistory.getTotalScore();
     }

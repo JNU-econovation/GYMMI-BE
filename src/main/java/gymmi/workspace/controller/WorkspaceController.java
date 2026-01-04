@@ -2,12 +2,12 @@ package gymmi.workspace.controller;
 
 import gymmi.entity.User;
 import gymmi.global.Logined;
-import gymmi.response.IdResponse;
 import gymmi.workspace.domain.ObjectionStatus;
 import gymmi.workspace.domain.WorkspaceStatus;
 import gymmi.workspace.request.*;
 import gymmi.workspace.response.*;
-import gymmi.workspace.service.WorkspaceCommandService;
+import gymmi.workspace.service.WorkspaceProgressService;
+import gymmi.workspace.service.WorkspaceCommonService;
 import gymmi.workspace.service.WorkspaceQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +20,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WorkspaceController {
 
-    private final WorkspaceCommandService workspaceCommandService;
+    private final WorkspaceProgressService workspaceProgressService;
     private final WorkspaceQueryService workspaceQueryService;
+    private final WorkspaceCommonService workspaceCommonService;
 
     @GetMapping("/workspaces/{workspaceId}/introduction")
     public ResponseEntity<WorkspaceIntroductionResponse> seeWorkspaceIntroduction(
@@ -89,7 +90,7 @@ public class WorkspaceController {
             @PathVariable Long workspaceId,
             @Validated @RequestBody WorkoutRequest request
     ) {
-        Integer workingScore = workspaceCommandService.workMissionsInWorkspace(user, workspaceId, request);
+        Integer workingScore = workspaceProgressService.workMissionsInWorkspace(user, workspaceId, request);
         return ResponseEntity.ok().body(new WorkingScoreResponse(workingScore));
     }
 
@@ -121,7 +122,7 @@ public class WorkspaceController {
             @PathVariable Long workspaceId,
             @RequestBody @Validated EditingIntroductionOfWorkspaceRequest request
     ) {
-        workspaceCommandService.editIntroduction(user, workspaceId, request);
+        workspaceCommonService.editIntroduction(user, workspaceId, request);
         return ResponseEntity.ok().build();
     }
 
@@ -149,7 +150,7 @@ public class WorkspaceController {
             @PathVariable Long workspaceId,
             @PathVariable Long missionId
     ) {
-        workspaceCommandService.toggleRegistrationOfFavoriteMission(user, workspaceId, missionId);
+        workspaceCommonService.toggleRegistrationOfFavoriteMission(user, workspaceId, missionId);
         return ResponseEntity.ok().build();
     }
 
@@ -189,7 +190,7 @@ public class WorkspaceController {
             @PathVariable Long workoutConfirmationId,
             @Validated @RequestBody ObjectionRequest request
     ) {
-        workspaceCommandService.objectToWorkoutConfirmation(user, workspaceId, workoutConfirmationId, request);
+        workspaceProgressService.objectToWorkoutHistory(user, workspaceId, workoutConfirmationId, request.getReason());
         return ResponseEntity.ok().build();
     }
 
@@ -200,7 +201,7 @@ public class WorkspaceController {
             @PathVariable Long objectionId,
             @Validated @RequestBody VoteRequest request
     ) {
-        workspaceCommandService.voteToObjection(user, workspaceId, objectionId, request);
+        workspaceProgressService.voteToObjection(user, workspaceId, objectionId, request.getWillApprove());
         return ResponseEntity.ok().build();
     }
 
@@ -230,7 +231,7 @@ public class WorkspaceController {
             @Logined User user,
             @PathVariable Long workspaceId
     ) {
-        workspaceCommandService.terminateExpiredObjection(user, workspaceId);
+//        workspaceCommandService.terminateExpiredObjection(user, workspaceId);
         return ResponseEntity.ok().build();
     }
 
@@ -239,7 +240,7 @@ public class WorkspaceController {
             @Logined User user,
             @PathVariable Long workspaceId
     ) {
-        WorkspaceResultResponse response = workspaceCommandService.getWorkspaceResult(user, workspaceId);
+        WorkspaceResultResponse response = workspaceProgressService.getWorkspaceResult(user, workspaceId);
         return ResponseEntity.ok().body(response);
     }
 

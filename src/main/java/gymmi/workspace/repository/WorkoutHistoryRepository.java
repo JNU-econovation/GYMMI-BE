@@ -25,11 +25,12 @@ public interface WorkoutHistoryRepository extends JpaRepository<WorkoutHistory, 
         return workoutHistory;
     }
 
-    @Query("select w from WorkoutHistory w join fetch w.workoutConfirmation wf join fetch w.worker where wf.id =:workoutProofId")
-    Optional<WorkoutHistory> findByWorkoutConfirmationId(Long workoutProofId);
+    @Query("select w from WorkoutHistory w join fetch w.workoutConfirmation wc join fetch w.worker " +
+            "where wc.id =:workoutConfirmationId")
+    Optional<WorkoutHistory> findByWorkoutConfirmationId(Long workoutConfirmationId);
 
 
-    default WorkoutHistory getByWorkoutConfirmationId(Long workoutConfirmationId) {
+    default WorkoutHistory findByWorkoutConfirmationIdOrThrow(Long workoutConfirmationId) {
         WorkoutHistory workoutHistory = findByWorkoutConfirmationId(workoutConfirmationId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_WORKOUT_CONFIRMATION));
         return workoutHistory;

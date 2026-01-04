@@ -28,10 +28,10 @@ import static org.instancio.Select.field;
 import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.given;
 
-class WorkspaceCommandServiceTest extends IntegrationTest {
+class WorkspaceProgressServiceTest extends IntegrationTest {
 
     @Autowired
-    WorkspaceCommandService workspaceCommandService;
+    WorkspaceProgressService workspaceProgressService;
 
     @Autowired
     WorkspacePreparingService workspacePreparingService;
@@ -154,7 +154,7 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
             given(s3Service.copy(any(), any(), any())).willReturn(UUID.randomUUID().toString());
 
             // when
-            workspaceCommandService.workMissionsInWorkspace(user, workspace.getId(), request);
+            workspaceProgressService.workMissionsInWorkspace(user, workspace.getId(), request);
 
             // then
             assertThat(workoutHistoryRepository.getAllByWorkerId(worker.getId())).hasSize(1);
@@ -184,7 +184,7 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
                     .create();
 
             // when, then
-            assertThatThrownBy(() -> workspaceCommandService.workMissionsInWorkspace(user, workspace.getId(), request))
+            assertThatThrownBy(() -> workspaceProgressService.workMissionsInWorkspace(user, workspace.getId(), request))
                     .hasMessage(ErrorCode.EXCEED_MAX_DAILY_WORKOUT_HISTORY_COUNT.getMessage());
         }
 
@@ -200,10 +200,10 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
         Mission mission = persister.persistMission(workspace, 10);
 
         // when, then
-        workspaceCommandService.toggleRegistrationOfFavoriteMission(user, workspace.getId(), mission.getId());
+        workspaceProgressService.toggleRegistrationOfFavoriteMission(user, workspace.getId(), mission.getId());
         assertThat(favoriteMissionRepository.findByWorkerIdAndMissionId(worker.getId(), mission.getId())).isNotEmpty();
 
-        workspaceCommandService.toggleRegistrationOfFavoriteMission(user, workspace.getId(), mission.getId());
+        workspaceProgressService.toggleRegistrationOfFavoriteMission(user, workspace.getId(), mission.getId());
         assertThat(favoriteMissionRepository.findByWorkerIdAndMissionId(worker.getId(), mission.getId())).isEmpty();
     }
 
@@ -223,10 +223,10 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
         Long workoutConfirmationId = workoutHistory.getWorkoutConfirmation().getId();
 
         // when
-        workspaceCommandService.objectToWorkoutConfirmation(user, workspace.getId(), workoutConfirmationId, request);
+        workspaceProgressService.objectToWorkoutHistory(user, workspace.getId(), workoutConfirmationId, request);
 
         // then
-        assertThat(objectionRepository.findByWorkoutConfirmationId(workoutConfirmationId)).isNotEmpty();
+        assertThat(objectionRepository.findByWorkoutHistoryId(workoutConfirmationId)).isNotEmpty();
     }
 
     @Test
@@ -248,13 +248,13 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
         VoteRequest request = new VoteRequest(true);
 
         // when
-        workspaceCommandService.voteToObjection(user1, workspace.getId(), objection.getId(), request);
+        workspaceProgressService.voteToObjection(user1, workspace.getId(), objection.getId(), request);
 
         // then
-        WorkoutHistory workoutHistory = workoutHistoryRepository.getByWorkoutConfirmationId(workoutConfirmation.getId());
+        WorkoutHistory workoutHistory = workoutHistoryRepository.findByWorkoutConfirmationIdOrThrow(workoutConfirmation.getId());
         assertThat(voteRepository.findAll().size()).isEqualTo(3);
         assertThat(objection.isInProgress()).isEqualTo(false);
-        assertThat(workoutHistory.isApproved()).isFalse();
+        assertThat(workoutHistory.isRejected()).isFalse();
         assertThat(userWorker.getContributedScore()).isEqualTo(0);
     }
 
@@ -279,12 +279,12 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
         ReflectionTestUtils.setField(objection, "createdAt", LocalDateTime.now().minusHours(25));
 
         // when
-        workspaceCommandService.terminateExpiredObjection(creator, workspace.getId());
+        workspaceProgressService.terminateExpiredObjection(creator, workspace.getId());
 
         // then
         entityManager.flush();
         entityManager.clear();
-        Objection refreshObjection = objectionRepository.getByObjectionId(objection.getId());
+        Objection refreshObjection = objectionRepository.findByIdOrThrow(objection.getId());
         assertThat(refreshObjection.isInProgress()).isFalse();
         assertThat(refreshObjection.getVoteCount()).isEqualTo(4);
         assertThat(refreshObjection.getApprovalCount()).isEqualTo(3);
@@ -305,7 +305,7 @@ class WorkspaceCommandServiceTest extends IntegrationTest {
         Objection objection = persister.persistObjection(creatorWorker, true, workoutConfirmation);
 
         // when, then
-        assertThatThrownBy(() -> workspaceCommandService.getWorkspaceResult(creator, workspace.getId()))
+        assertThatThrownBy(() -> workspaceProgressService.getWorkspaceResult(creator, workspace.getId()))
                 .hasMessage(ErrorCode.EXIST_OBJECTION_IN_PROGRESS.getMessage());
     }
 

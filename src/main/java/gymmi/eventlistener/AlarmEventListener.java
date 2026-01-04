@@ -68,8 +68,8 @@ public class AlarmEventListener {
     public void notifyObjectionOpen(ObjectionOpenEvent event) {
         Workspace workspace = workspaceRepository.findByIdOrThrow(event.getWorkspaceId());
         List<Worker> workers = workerRepository.getAllByWorkspaceId(workspace.getId());
-        Objection objection = objectionRepository.getByObjectionId(event.getObjectionId());
-        WorkoutHistory workoutHistory = workoutHistoryRepository.getByWorkoutConfirmationId(objection.getWorkoutConfirmation().getId());
+        Objection objection = objectionRepository.findByIdOrThrow(event.getObjectionId());
+        WorkoutHistory workoutHistory = workoutHistoryRepository.findByWorkoutConfirmationIdOrThrow(objection.getWorkoutHistory().getWorkoutConfirmation().getId());
         List<User> users = workers.stream()
                 .map(Worker::getUser)
                 .toList();

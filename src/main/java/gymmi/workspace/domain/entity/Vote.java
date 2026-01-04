@@ -41,15 +41,18 @@ public class Vote extends TimeEntity {
         this.objection = objection;
         this.isApproved = isApproved;
         this.automatic = automatic;
-        setRelations(objection);
     }
 
     public static Vote autoVote(Worker worker, Objection objection) {
         return new Vote(worker, objection, true, true);
     }
 
-    private void setRelations(Objection objection) {
-        objection.add(this);
+    public boolean isVotedBy(Worker worker) {
+        return this.worker.equals(worker);
+    }
+
+    public boolean isIn(Objection objection) {
+        return this.objection.equals(objection);
     }
 
 }

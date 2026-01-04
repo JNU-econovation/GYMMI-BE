@@ -16,7 +16,7 @@ public class ObjectionAlarmResponse {
 
     public ObjectionAlarmResponse(Objection objection, String targetWorkerNickname, Boolean voteCompletion) {
         this.objectionId = objection.getId();
-        this.workoutConfirmationId = objection.getWorkoutConfirmation().getId();
+        this.workoutConfirmationId = objection.getWorkoutHistory().getWorkoutConfirmation().getId();
         this.targetWorkerNickname = targetWorkerNickname;
         this.voteCompletion = voteCompletion;
         this.createdAt = objection.getCreatedAt();

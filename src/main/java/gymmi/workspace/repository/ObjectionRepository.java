@@ -11,10 +11,10 @@ import java.util.Optional;
 
 public interface ObjectionRepository extends JpaRepository<Objection, Long>, ObjectionCustomRepository {
 
-    @Query("select o from Objection o where o.workoutConfirmation.id =:workoutConfirmationId")
-    Optional<Objection> findByWorkoutConfirmationId(Long workoutConfirmationId);
+    @Query("select o from Objection o where o.workoutHistoryId =:workoutHistoryId")
+    Optional<Objection> findByWorkoutHistoryId(Long workoutHistoryId);
 
-    default Objection getByObjectionId(Long objectionId) {
+    default Objection findByIdOrThrow(Long objectionId) {
         Objection objection = findById(objectionId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_OBJECTION));
         return objection;

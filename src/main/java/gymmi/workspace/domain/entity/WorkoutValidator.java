@@ -8,8 +8,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-import static gymmi.exceptionhandler.message.ErrorCode.NOT_JOINED_WORKSPACE;
-
 @Component
 @RequiredArgsConstructor
 public class WorkoutValidator {
@@ -19,15 +17,9 @@ public class WorkoutValidator {
     private final WorkoutHistoryRepository workoutHistoryRepository;
 
     public void validateCanWork(Workspace workspace, Worker worker) {
-        validateParticipant(workspace, worker);
+        ParticipantValidator.validateParticipant(workspace, worker);
         validateWorkspaceIsInProgress(workspace);
         validateDailyWorkoutHistoryCount(worker.getId());
-    }
-
-    private void validateParticipant(Workspace workspace, Worker worker) {
-        if (!worker.isJoinedIn(workspace)) {
-            throw new InvalidStateException(NOT_JOINED_WORKSPACE);
-        }
     }
 
     private void validateDailyWorkoutHistoryCount(Long workerId) {

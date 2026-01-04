@@ -19,7 +19,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class ObjectionManagerTest {
+class VoteMangerTest {
 
     @Nested
     class 투표_참여 {
@@ -32,7 +32,7 @@ class ObjectionManagerTest {
             addVoteToObjection(objection, vote);
 
             Worker worker = vote.getWorker();
-            ObjectionManager tackleManager = new ObjectionManager(objection);
+            VoteManger tackleManager = new VoteManger(objection);
 
             // when, then
             assertThatThrownBy(() -> tackleManager.createVote(worker, true))
@@ -47,7 +47,7 @@ class ObjectionManagerTest {
             addVoteToObjection(objection, vote);
 
             Worker worker = vote.getWorker();
-            ObjectionManager tackleManager = new ObjectionManager(objection);
+            VoteManger tackleManager = new VoteManger(objection);
 
             // when, then
             assertThatThrownBy(() -> tackleManager.createVote(worker, true))
@@ -84,15 +84,15 @@ class ObjectionManagerTest {
         agreeVotes.addAll(disagreeVotes);
         addVoteToObjection(objection, agreeVotes);
 
-        ObjectionManager objectionManager = new ObjectionManager(objection);
+        VoteManger voteManger = new VoteManger(objection);
 
         // when
-        boolean result = objectionManager.closeIfOnMajorityOrDone(workerCount);
+        boolean result = voteManger.closeIfOnMajorityOrDone(workerCount);
 
         // then
-        assertThat(!objectionManager.getObjection().isInProgress()).isEqualTo(isClosed);
+        assertThat(!voteManger.getObjection().isInProgress()).isEqualTo(isClosed);
         assertThat(result).isEqualTo(isClosed);
-        assertThat(objectionManager.isApproved()).isEqualTo(isApproved);
+        assertThat(voteManger.isApproved()).isEqualTo(isApproved);
     }
 
     private List<Vote> getVotes(int size, Objection objection, boolean isApproved) {

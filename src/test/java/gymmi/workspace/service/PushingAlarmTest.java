@@ -38,7 +38,7 @@ public class PushingAlarmTest {
     int WAIT_TIME_MS = 1500;
 
     @Autowired
-    WorkspaceCommandService workspaceCommandService;
+    WorkspaceProgressService workspaceProgressService;
 
     @Autowired
     WorkspacePreparingService workspacePreparingService;
@@ -93,7 +93,7 @@ public class PushingAlarmTest {
         given(s3Service.copy(any(), any(), any())).willReturn(UUID.randomUUID().toString());
 
         // when
-        workspaceCommandService.workMissionsInWorkspace(user, workspace.getId(), request);
+        workspaceProgressService.workMissionsInWorkspace(user, workspace.getId(), request);
 
         // then
         Thread.sleep(1000);
@@ -117,7 +117,7 @@ public class PushingAlarmTest {
         Long workoutConfirmationId = workoutHistory.getWorkoutConfirmation().getId();
 
         // when
-        workspaceCommandService.objectToWorkoutConfirmation(user, workspace.getId(), workoutConfirmationId, request);
+        workspaceProgressService.objectToWorkoutHistory(user, workspace.getId(), workoutConfirmationId, request);
 
         // then
         Thread.sleep(1000);
@@ -147,7 +147,7 @@ public class PushingAlarmTest {
         given(s3Service.copy(any(), any(), any())).willReturn(UUID.randomUUID().toString());
 
         // when
-        workspaceCommandService.workMissionsInWorkspace(user, workspace.getId(), request);
+        workspaceProgressService.workMissionsInWorkspace(user, workspace.getId(), request);
 
         // then
         Thread.sleep(1000);
