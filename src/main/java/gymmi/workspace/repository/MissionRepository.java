@@ -22,6 +22,18 @@ public interface MissionRepository extends JpaRepository<Mission, Long> {
     @Query("select m from Mission m where m.id = :missionId")
     Optional<Mission> findByMissionId(Long missionId);
 
+    Optional<Mission> findByMissionIdAndWorkspaceId(Long workspaceId, Long missionId);
+
+    default Mission findInWorkspace(Long workspaceId, Long missionId) {
+        Mission mission = findByMissionIdAndWorkspaceId(workspaceId, missionId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_REGISTERED_WORKSPACE_MISSION));
+        return mission;
+    }
+
+    @Query("select m from Mission m where m.workspace.id = :workspaceId and m.id in :missionIds")
+    List<Mission> findAllInWorkspace(Long workspaceId, List<Long> missionIds);
+
+
     default Mission findByIdOrThrow(Long missionId) {
         Mission mission = findByMissionId(missionId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_MISSION));

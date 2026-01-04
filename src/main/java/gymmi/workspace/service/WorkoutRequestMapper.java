@@ -1,10 +1,7 @@
 package gymmi.workspace.service;
 
 import gymmi.workspace.domain.MissionExistenceValidator;
-import gymmi.workspace.domain.entity.Mission;
-import gymmi.workspace.domain.entity.WorkoutConfirmation;
-import gymmi.workspace.domain.entity.WorkoutHistory;
-import gymmi.workspace.domain.entity.WorkoutRecord;
+import gymmi.workspace.domain.entity.*;
 import gymmi.workspace.repository.MissionRepository;
 import gymmi.workspace.request.WorkingMissionInWorkspaceRequest;
 import gymmi.workspace.request.WorkoutRequest;
@@ -20,14 +17,13 @@ import java.util.Map;
 public class WorkoutRequestMapper {
 
     private final MissionRepository missionRepository;
-    private final MissionExistenceValidator missionExistenceValidator;
 
     public WorkoutConfirmation createWorkoutConfirmation(WorkoutRequest workoutRequest) {
         return new WorkoutConfirmation(workoutRequest.getImageUrl(), workoutRequest.getComment());
     }
 
-    public List<WorkoutRecord> createWorkoutRecords(Long workspaceId, WorkoutHistory workoutHistory, List<WorkingMissionInWorkspaceRequest> requests) {
-        validateMissions(workspaceId, requests);
+    public List<WorkoutRecord> createWorkoutRecords(Workspace workspace, WorkoutHistory workoutHistory, List<WorkingMissionInWorkspaceRequest> requests) {
+        validateMissions(workspace, requests);
         Map<Mission, Integer> missionsWithCounts = mapMissionsToCounts(requests);
         return createAllWorkoutRecord(workoutHistory, missionsWithCounts);
     }
@@ -47,11 +43,12 @@ public class WorkoutRequestMapper {
         return workouts;
     }
 
-    private void validateMissions(Long workspaceId, List<WorkingMissionInWorkspaceRequest> requests) {
+    private void validateMissions(Workspace workspace, List<WorkingMissionInWorkspaceRequest> requests) {
         List<Long> missionIds = requests.stream()
                 .map(WorkingMissionInWorkspaceRequest::getId)
                 .toList();
-        missionExistenceValidator.validateMissionExistenceInWorkspace(workspaceId, missionIds);
+        List<Mission> missions = missionRepository.findAllById(missionIds);
+        MissionExistenceValidator.validateMissionExistenceInWorkspace(workspace, missions);
     }
 
 
