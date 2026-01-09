@@ -16,7 +16,7 @@ public abstract  class WorkoutHistoryFixture {
         private final WorkoutConfirmation workoutConfirmation;
 
         private Long id = null;
-        private boolean isApproved = true;
+        private boolean isRejected = false;
         private Integer totalScore = 0;
 
         private WorkoutHistoryBuilder(Worker worker, WorkoutConfirmation confirmation) {
@@ -29,8 +29,8 @@ public abstract  class WorkoutHistoryFixture {
             return this;
         }
 
-        public WorkoutHistoryBuilder isApproved(boolean isApproved) {
-            this.isApproved = isApproved;
+        public WorkoutHistoryBuilder isRejected(boolean isRejected) {
+            this.isRejected = isRejected;
             return this;
         }
 
@@ -46,7 +46,7 @@ public abstract  class WorkoutHistoryFixture {
                 ReflectionTestUtils.setField(workoutHistory, "id", id);
             }
 
-            ReflectionTestUtils.setField(workoutHistory, "isApproved", isApproved);
+            ReflectionTestUtils.setField(workoutHistory, "isRejected", isRejected);
             ReflectionTestUtils.setField(workoutHistory, "totalScore", totalScore);
 
             return workoutHistory;
