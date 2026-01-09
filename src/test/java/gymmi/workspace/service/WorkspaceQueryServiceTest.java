@@ -5,10 +5,12 @@ import gymmi.etc.service.S3Service;
 import gymmi.workspace.objection.controller.response.ObjectionAlarmResponse;
 import gymmi.workspace.objection.controller.response.ObjectionResponse;
 import gymmi.workspace.objection.domain.ObjectionStatus;
+import gymmi.workspace.objection.service.ObjectionService;
 import gymmi.workspace.workout.controller.response.WorkoutConfirmationDetailResponse;
 import gymmi.workspace.workout.controller.response.WorkoutConfirmationOrObjectionResponse;
 import gymmi.workspace.workout.controller.response.WorkoutConfirmationResponse;
 import gymmi.workspace.workout.controller.response.WorkoutContextResponse;
+import gymmi.workspace.workout.service.WorkoutService;
 import gymmi.workspace.workspace.domain.WorkspaceStatus;
 import gymmi.workspace.mission.domain.entity.Mission;
 import gymmi.workspace.objection.domain.entity.Objection;
@@ -37,6 +39,12 @@ class WorkspaceQueryServiceTest extends IntegrationTest {
     WorkspaceQueryService workspaceQueryService;
 
     @Autowired
+    WorkoutService workoutService;
+
+    @Autowired
+    ObjectionService objectionService;
+
+    @Autowired
     WorkoutHistoryRepository workoutHistoryRepository;
 
     @MockBean
@@ -58,7 +66,7 @@ class WorkspaceQueryServiceTest extends IntegrationTest {
         persister.persistWorkoutHistoryAndApply(worker, Map.of(mission, 1, mission1, 1));
 
         // when
-        WorkoutContextResponse response = workspaceQueryService.getWorkoutContext(
+        WorkoutContextResponse response = workoutService.getWorkoutContext(
                 creator,
                 workspace.getId(),
                 user.getId()
@@ -89,7 +97,7 @@ class WorkspaceQueryServiceTest extends IntegrationTest {
         persister.persistVote(userWorker, objection, false);
 
         // when
-        WorkoutConfirmationResponse workoutConfirmationResponse = workspaceQueryService.getWorkoutConfirmations(user, workspace.getId(), 0);
+        WorkoutConfirmationResponse workoutConfirmationResponse = workoutService.getWorkoutConfirmations(user, workspace.getId(), 0);
 
         // then
         List<WorkoutConfirmationOrObjectionResponse> responses = workoutConfirmationResponse.getData();
@@ -126,7 +134,7 @@ class WorkspaceQueryServiceTest extends IntegrationTest {
         WorkoutHistory workoutHistory = persister.persistWorkoutHistoryAndApply(creatorWorker, Map.of(mission, 2, mission1, 2), workoutConfirmation);
 
         // when
-        WorkoutConfirmationDetailResponse response = workspaceQueryService.getWorkoutConfirmation(user, workspace.getId(), workoutConfirmation.getId());
+        WorkoutConfirmationDetailResponse response = workoutService.getWorkoutConfirmation(user, workspace.getId(), workoutConfirmation.getId());
 
         // then
         assertThat(response.getComment()).isEqualTo("a");
@@ -153,7 +161,7 @@ class WorkspaceQueryServiceTest extends IntegrationTest {
             persister.persistVote(creatorWorker, objection, false);
 
             // when
-            ObjectionResponse response = workspaceQueryService.getObjection(user, workspace.getId(), objection.getId());
+            ObjectionResponse response = objectionService.getObjection(user, workspace.getId(), objection.getId());
 
             // then
             assertThat(response.getDeadline()).isEqualTo(objection.getCreatedAt().plusHours(24));
@@ -178,7 +186,7 @@ class WorkspaceQueryServiceTest extends IntegrationTest {
             persister.persistVote(creatorWorker, objection, false);
 
             // when
-            ObjectionResponse response = workspaceQueryService.getObjection(user, workspace.getId(), objection.getId());
+            ObjectionResponse response = objectionService.getObjection(user, workspace.getId(), objection.getId());
 
             // then
             assertThat(response.getDeadline()).isEqualTo(objection.getCreatedAt().plusHours(24));
@@ -206,7 +214,7 @@ class WorkspaceQueryServiceTest extends IntegrationTest {
             ;
 
             // when
-            ObjectionResponse response = workspaceQueryService.getObjection(user, workspace.getId(), objection.getId());
+            ObjectionResponse response = objectionService.getObjection(user, workspace.getId(), objection.getId());
 
             // then
             assertThat(response.getDeadline()).isEqualTo(objection.getCreatedAt().plusHours(24));
@@ -243,7 +251,7 @@ class WorkspaceQueryServiceTest extends IntegrationTest {
                 persister.persistVote(creatorWorker, objections.get(3), true);
 
                 // when
-                List<ObjectionAlarmResponse> responses = workspaceQueryService.getObjections(creator, workspace.getId(), 0, ObjectionStatus.INCOMPLETION);
+                List<ObjectionAlarmResponse> responses = objectionService.getObjections(creator, workspace.getId(), 0, ObjectionStatus.INCOMPLETION);
 
                 // then
                 assertThat(responses).hasSize(7);
@@ -273,7 +281,7 @@ class WorkspaceQueryServiceTest extends IntegrationTest {
                 }
 
                 // when
-                List<ObjectionAlarmResponse> responses = workspaceQueryService.getObjections(creator, workspace.getId(), 0, ObjectionStatus.IN_PROGRESS);
+                List<ObjectionAlarmResponse> responses = objectionService.getObjections(creator, workspace.getId(), 0, ObjectionStatus.IN_PROGRESS);
 
                 // then
                 assertThat(responses).hasSize(3);
@@ -304,7 +312,7 @@ class WorkspaceQueryServiceTest extends IntegrationTest {
                 }
 
                 // when
-                List<ObjectionAlarmResponse> responses = workspaceQueryService.getObjections(creator, workspace.getId(), 0, ObjectionStatus.CLOSED);
+                List<ObjectionAlarmResponse> responses = objectionService.getObjections(creator, workspace.getId(), 0, ObjectionStatus.CLOSED);
 
                 // then
                 assertThat(responses).hasSize(3);

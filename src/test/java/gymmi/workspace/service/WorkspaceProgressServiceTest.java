@@ -9,10 +9,13 @@ import gymmi.workspace.mission.repository.FavoriteMissionRepository;
 import gymmi.workspace.mission.repository.MissionRepository;
 import gymmi.workspace.objection.controller.request.ObjectionRequest;
 import gymmi.workspace.objection.repository.ObjectionRepository;
+import gymmi.workspace.objection.service.ObjectionService;
 import gymmi.workspace.vote.controller.request.VoteRequest;
 import gymmi.workspace.vote.repository.VoteRepository;
+import gymmi.workspace.vote.service.VoteService;
 import gymmi.workspace.workout.controller.request.WorkingMissionInWorkspaceRequest;
 import gymmi.workspace.workout.controller.request.WorkoutRequest;
+import gymmi.workspace.workout.service.WorkoutService;
 import gymmi.workspace.workspace.controller.request.CreatingWorkspaceRequest;
 import gymmi.workspace.workspace.domain.WorkspaceStatus;
 import gymmi.workspace.mission.domain.entity.Mission;
@@ -52,6 +55,16 @@ class WorkspaceProgressServiceTest extends IntegrationTest {
 
     @Autowired
     WorkspacePreparingService workspacePreparingService;
+
+    @Autowired
+    WorkoutService workoutService;
+
+    @Autowired
+    ObjectionService objectionService;
+
+    @Autowired
+    VoteService voteService;
+
 
 
     @Autowired
@@ -171,7 +184,7 @@ class WorkspaceProgressServiceTest extends IntegrationTest {
             given(s3Service.copy(any(), any(), any())).willReturn(UUID.randomUUID().toString());
 
             // when
-            workspaceProgressService.workMissionsInWorkspace(user, workspace.getId(), request);
+            workoutService.workMissionsInWorkspace(user, workspace.getId(), request);
 
             // then
             assertThat(workoutHistoryRepository.getAllByWorkerId(worker.getId())).hasSize(1);
@@ -201,7 +214,7 @@ class WorkspaceProgressServiceTest extends IntegrationTest {
                     .create();
 
             // when, then
-            assertThatThrownBy(() -> workspaceProgressService.workMissionsInWorkspace(user, workspace.getId(), request))
+            assertThatThrownBy(() -> workoutService.workMissionsInWorkspace(user, workspace.getId(), request))
                     .hasMessage(ErrorCode.EXCEED_MAX_DAILY_WORKOUT_HISTORY_COUNT.getMessage());
         }
 
@@ -240,7 +253,7 @@ class WorkspaceProgressServiceTest extends IntegrationTest {
         Long workoutConfirmationId = workoutHistory.getWorkoutConfirmation().getId();
 
         // when
-        workspaceProgressService.objectToWorkoutHistory(user, workspace.getId(), workoutConfirmationId, request.getReason());
+        objectionService.objectToWorkoutHistory(user, workspace.getId(), workoutConfirmationId, request.getReason());
 
         // then
         assertThat(objectionRepository.findByWorkoutHistoryId(workoutConfirmationId)).isNotEmpty();
@@ -265,7 +278,7 @@ class WorkspaceProgressServiceTest extends IntegrationTest {
         VoteRequest request = new VoteRequest(true);
 
         // when
-        workspaceProgressService.voteToObjection(user1, workspace.getId(), objection.getId(), request.getWillApprove());
+        voteService.voteToObjection(user1, workspace.getId(), objection.getId(), request.getWillApprove());
 
         // then
         WorkoutHistory workoutHistory = workoutHistoryRepository.findByWorkoutConfirmationIdOrThrow(workoutConfirmation.getId());

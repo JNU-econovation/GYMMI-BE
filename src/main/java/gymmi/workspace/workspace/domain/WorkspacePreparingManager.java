@@ -12,6 +12,8 @@ import lombok.Getter;
 import java.util.ArrayList;
 import java.util.List;
 
+import static gymmi.global.exceptionhandler.message.ErrorCode.*;
+
 @Getter
 public class WorkspacePreparingManager {
 

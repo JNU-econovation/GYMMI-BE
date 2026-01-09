@@ -7,6 +7,8 @@ import gymmi.workspace.workspace.domain.entity.Workspace;
 
 import java.util.List;
 
+import static gymmi.global.exceptionhandler.message.ErrorCode.*;
+
 public class WorkspaceStarter {
 
     public static final int MINIMUM_STARTING_WORKERS_COUNT = 2;

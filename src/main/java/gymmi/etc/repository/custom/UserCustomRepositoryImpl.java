@@ -1,8 +1,6 @@
 package gymmi.etc.repository.custom;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import gymmi.entity.QUser;
-import gymmi.etc.domain.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -14,10 +12,16 @@ public class UserCustomRepositoryImpl implements UserCustomRepository {
 
     @Override
     public boolean existsBy(String nickname) {
-        User user = jpaQueryFactory.select(QUser.user)
-                .from(QUser.user)
-                .where(QUser.user.nickname.eq(nickname))
-                .fetchFirst();
-        return user != null;
+        return false;
     }
+
+    //
+//    @Override
+//    public boolean existsBy(String nickname) {
+//        User user = jpaQueryFactory.select(QUser.user)
+//                .from(QUser.user)
+//                .where(QUser.user.nickname.eq(nickname))
+//                .fetchFirst();
+//        return user != null;
+//    }
 }

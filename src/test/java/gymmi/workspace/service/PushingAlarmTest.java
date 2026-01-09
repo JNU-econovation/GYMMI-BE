@@ -5,6 +5,8 @@ import gymmi.firebase.FirebaseTestConfig;
 import gymmi.global.firebase.FirebaseCloudMessageService;
 import gymmi.helper.Persister;
 import gymmi.etc.service.S3Service;
+import gymmi.workspace.objection.service.ObjectionService;
+import gymmi.workspace.workout.service.WorkoutService;
 import gymmi.workspace.workspace.domain.WorkspaceStatus;
 import gymmi.workspace.mission.domain.entity.Mission;
 import gymmi.workspace.workspace.domain.entity.Worker;
@@ -47,6 +49,12 @@ public class PushingAlarmTest {
 
     @Autowired
     WorkspaceRepository workspaceRepository;
+
+    @Autowired
+    WorkoutService workoutService;
+
+    @Autowired
+    ObjectionService objectionService;
 
     @MockBean
     FirebaseCloudMessageService firebaseCloudMessageService;
@@ -95,7 +103,7 @@ public class PushingAlarmTest {
         given(s3Service.copy(any(), any(), any())).willReturn(UUID.randomUUID().toString());
 
         // when
-        workspaceProgressService.workMissionsInWorkspace(user, workspace.getId(), request);
+        workoutService.workMissionsInWorkspace(user, workspace.getId(), request);
 
         // then
         Thread.sleep(1000);
@@ -119,7 +127,7 @@ public class PushingAlarmTest {
         Long workoutConfirmationId = workoutHistory.getWorkoutConfirmation().getId();
 
         // when
-        workspaceProgressService.objectToWorkoutHistory(user, workspace.getId(), workoutConfirmationId, request.getReason());
+        objectionService.objectToWorkoutHistory(user, workspace.getId(), workoutConfirmationId, request.getReason());
 
         // then
         Thread.sleep(1000);
@@ -149,7 +157,7 @@ public class PushingAlarmTest {
         given(s3Service.copy(any(), any(), any())).willReturn(UUID.randomUUID().toString());
 
         // when
-        workspaceProgressService.workMissionsInWorkspace(user, workspace.getId(), request);
+        workoutService.workMissionsInWorkspace(user, workspace.getId(), request);
 
         // then
         Thread.sleep(1000);

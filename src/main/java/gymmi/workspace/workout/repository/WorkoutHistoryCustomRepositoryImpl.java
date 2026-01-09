@@ -9,10 +9,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static gymmi.workspace.service.domain.workout.QWorkoutConfirmation.workoutConfirmation;
-import static gymmi.workspace.service.domain.workout.QWorkoutHistory.workoutHistory;
-import static gymmi.workspace.service.domain.workspace.QWorker.worker;
-
 
 @RequiredArgsConstructor
 public class WorkoutHistoryCustomRepositoryImpl implements WorkoutHistoryCustomRepository {
@@ -21,39 +17,54 @@ public class WorkoutHistoryCustomRepositoryImpl implements WorkoutHistoryCustomR
 
     @Override
     public List<WorkoutHistory> getAllByWorkspaceId(Long workspaceId, Pageable pageable) {
-        return jpaQueryFactory.select(workoutHistory)
-                .from(workoutHistory)
-                .join(workoutHistory.workoutConfirmation, workoutConfirmation).fetchJoin()
-                .join(workoutHistory.worker, worker).fetchJoin()
-                .where(worker.workspace.id.eq(workspaceId))
-                .orderBy(workoutHistory.createdAt.desc())
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
+        return List.of();
     }
 
     @Override
-    public List<WorkoutHistory> getAllByDate(LocalDate now) {
-        LocalDateTime startDay = now.atStartOfDay();
-        LocalDateTime endDay = now.plusDays(1).atStartOfDay();
-        return jpaQueryFactory.select(workoutHistory)
-                .from(workoutHistory)
-                .where(workoutHistory.createdAt.goe(startDay).and(
-                        workoutHistory.createdAt.before(endDay)
-                ))
-                .fetch();
+    public List<WorkoutHistory> getAllByDate(LocalDate localDate) {
+        return List.of();
     }
 
     @Override
     public List<WorkoutHistory> findTodayByWorkerId(Long workerId) {
-        LocalDate now = LocalDate.now();
-        LocalDateTime startDay = now.atStartOfDay();
-        LocalDateTime endDay = now.plusDays(1).atStartOfDay();
-        return jpaQueryFactory.select(workoutHistory)
-                .from(workoutHistory)
-                .where(workoutHistory.createdAt.goe(startDay).and(workoutHistory.createdAt.before(endDay)
-                        .and(workoutHistory.worker.id.eq(workerId))
-                ))
-                .fetch();
+        return List.of();
     }
+
+    //    @Override
+//    public List<WorkoutHistory> getAllByWorkspaceId(Long workspaceId, Pageable pageable) {
+//        return jpaQueryFactory.select(workoutHistory)
+//                .from(workoutHistory)
+//                .join(workoutHistory.workoutConfirmation, workoutConfirmation).fetchJoin()
+//                .join(workoutHistory.worker, worker).fetchJoin()
+//                .where(worker.workspace.id.eq(workspaceId))
+//                .orderBy(workoutHistory.createdAt.desc())
+//                .offset(pageable.getOffset())
+//                .limit(pageable.getPageSize())
+//                .fetch();
+//    }
+//
+//    @Override
+//    public List<WorkoutHistory> getAllByDate(LocalDate now) {
+//        LocalDateTime startDay = now.atStartOfDay();
+//        LocalDateTime endDay = now.plusDays(1).atStartOfDay();
+//        return jpaQueryFactory.select(workoutHistory)
+//                .from(workoutHistory)
+//                .where(workoutHistory.createdAt.goe(startDay).and(
+//                        workoutHistory.createdAt.before(endDay)
+//                ))
+//                .fetch();
+//    }
+//
+//    @Override
+//    public List<WorkoutHistory> findTodayByWorkerId(Long workerId) {
+//        LocalDate now = LocalDate.now();
+//        LocalDateTime startDay = now.atStartOfDay();
+//        LocalDateTime endDay = now.plusDays(1).atStartOfDay();
+//        return jpaQueryFactory.select(workoutHistory)
+//                .from(workoutHistory)
+//                .where(workoutHistory.createdAt.goe(startDay).and(workoutHistory.createdAt.before(endDay)
+//                        .and(workoutHistory.worker.id.eq(workerId))
+//                ))
+//                .fetch();
+//    }
 }

@@ -10,6 +10,8 @@ import org.springframework.util.StringUtils;
 
 import java.util.regex.Pattern;
 
+import static gymmi.global.utils.Regexpressions.*;
+
 @Entity
 @Table(name = "uuser")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
