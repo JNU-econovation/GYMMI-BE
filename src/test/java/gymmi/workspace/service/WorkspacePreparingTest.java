@@ -1,7 +1,7 @@
 package gymmi.workspace.service;
 
-import gymmi.entity.User;
-import gymmi.exceptionhandler.message.ErrorCode;
+import gymmi.etc.domain.entity.User;
+import gymmi.global.exceptionhandler.message.ErrorCode;
 import gymmi.workspace.mission.controller.request.MissionRequest;
 import gymmi.workspace.mission.repository.FavoriteMissionRepository;
 import gymmi.workspace.mission.repository.MissionRepository;
@@ -22,7 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-import static gymmi.exceptionhandler.message.ErrorCode.EXCEED_MAX_JOINED_WORKSPACE;
+import static gymmi.global.exceptionhandler.message.ErrorCode.EXCEED_MAX_JOINED_WORKSPACE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.field;

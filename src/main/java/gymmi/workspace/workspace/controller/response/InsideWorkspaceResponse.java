@@ -1,6 +1,6 @@
 package gymmi.workspace.workspace.controller.response;
 
-import gymmi.entity.User;
+import gymmi.etc.domain.entity.User;
 import gymmi.workspace.workspace.domain.entity.Worker;
 import gymmi.workspace.workspace.domain.entity.Workspace;
 import lombok.Builder;

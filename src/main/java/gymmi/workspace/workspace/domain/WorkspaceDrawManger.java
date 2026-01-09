@@ -1,7 +1,7 @@
 package gymmi.workspace.workspace.domain;
 
-import gymmi.exceptionhandler.exception.InvalidStateException;
-import gymmi.exceptionhandler.message.ErrorCode;
+import gymmi.global.exceptionhandler.exception.InvalidStateException;
+import gymmi.global.exceptionhandler.message.ErrorCode;
 import gymmi.workspace.workspace.domain.entity.Worker;
 import gymmi.workspace.workspace.domain.entity.Workspace;
 import gymmi.workspace.workspace.domain.entity.WorkspaceResult;

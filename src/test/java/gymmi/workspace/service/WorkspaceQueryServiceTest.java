@@ -1,7 +1,7 @@
 package gymmi.workspace.service;
 
-import gymmi.entity.User;
-import gymmi.service.S3Service;
+import gymmi.etc.domain.entity.User;
+import gymmi.etc.service.S3Service;
 import gymmi.workspace.objection.controller.response.ObjectionAlarmResponse;
 import gymmi.workspace.objection.controller.response.ObjectionResponse;
 import gymmi.workspace.objection.domain.ObjectionStatus;

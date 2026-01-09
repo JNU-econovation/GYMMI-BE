@@ -1,9 +1,9 @@
 package gymmi.workspace;
 
-import static gymmi.exceptionhandler.message.ErrorCode.EXIST_NOT_JOINED_WORKER;
-import static gymmi.exceptionhandler.message.ErrorCode.NOT_CONSISTENT_WORKERS_COUNT;
+import static gymmi.global.exceptionhandler.message.ErrorCode.EXIST_NOT_JOINED_WORKER;
+import static gymmi.global.exceptionhandler.message.ErrorCode.NOT_CONSISTENT_WORKERS_COUNT;
 
-import gymmi.exceptionhandler.exception.InvalidStateException;
+import gymmi.global.exceptionhandler.exception.InvalidStateException;
 import gymmi.workspace.workspace.domain.entity.Worker;
 import gymmi.workspace.workspace.domain.entity.Workspace;
 import java.util.List;

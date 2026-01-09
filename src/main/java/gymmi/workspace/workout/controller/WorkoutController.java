@@ -1,7 +1,7 @@
 package gymmi.workspace.workout.controller;
 
-import gymmi.entity.User;
-import gymmi.global.Logined;
+import gymmi.etc.domain.entity.User;
+import gymmi.global.resolver.Logined;
 import gymmi.workspace.workout.controller.request.WorkoutRequest;
 import gymmi.workspace.workout.controller.response.*;
 import gymmi.workspace.workout.service.WorkoutService;

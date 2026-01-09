@@ -1,7 +1,7 @@
 package gymmi.workspace.mission.domain;
 
-import gymmi.exceptionhandler.exception.InvalidRangeException;
-import gymmi.exceptionhandler.message.ErrorCode;
+import gymmi.global.exceptionhandler.exception.InvalidRangeException;
+import gymmi.global.exceptionhandler.message.ErrorCode;
 import gymmi.workspace.mission.domain.entity.Mission;
 
 import java.util.ArrayList;

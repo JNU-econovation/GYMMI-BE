@@ -1,9 +1,9 @@
 package gymmi.workspace.workspace.domain.entity;
 
-import gymmi.entity.TimeEntity;
-import gymmi.entity.User;
-import gymmi.exceptionhandler.exception.InvalidStateException;
-import gymmi.exceptionhandler.message.ErrorCode;
+import gymmi.etc.domain.entity.TimeEntity;
+import gymmi.etc.domain.entity.User;
+import gymmi.global.exceptionhandler.exception.InvalidStateException;
+import gymmi.global.exceptionhandler.message.ErrorCode;
 import gymmi.workspace.workspace.domain.WorkspaceCreationValidator;
 import gymmi.workspace.workspace.domain.WorkspaceStatus;
 import jakarta.persistence.*;

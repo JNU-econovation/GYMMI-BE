@@ -1,7 +1,7 @@
 package gymmi.workspace.workspace.service;
 
-import gymmi.entity.User;
-import gymmi.eventlistener.event.WorkspaceStartedEvent;
+import gymmi.etc.domain.entity.User;
+import gymmi.global.eventlistener.event.WorkspaceStartedEvent;
 import gymmi.workspace.workspace.domain.LeftWorker;
 import gymmi.workspace.mission.domain.Missions;
 import gymmi.workspace.workspace.domain.WorkspacePreparingManager;

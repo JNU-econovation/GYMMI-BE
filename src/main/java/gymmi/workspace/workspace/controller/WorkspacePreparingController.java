@@ -1,8 +1,8 @@
 package gymmi.workspace.workspace.controller;
 
-import gymmi.entity.User;
-import gymmi.global.Logined;
-import gymmi.response.IdResponse;
+import gymmi.etc.domain.entity.User;
+import gymmi.global.resolver.Logined;
+import gymmi.etc.controller.response.IdResponse;
 import gymmi.workspace.workspace.controller.request.CreatingWorkspaceRequest;
 import gymmi.workspace.workspace.controller.request.JoiningWorkspaceRequest;
 import gymmi.workspace.workspace.service.WorkspacePreparingService;

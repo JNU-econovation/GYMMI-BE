@@ -3,7 +3,8 @@ package gymmi.repository;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import gymmi.Fixtures;
-import gymmi.entity.User;
+import gymmi.etc.domain.entity.User;
+import gymmi.etc.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 

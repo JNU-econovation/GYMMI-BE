@@ -1,8 +1,8 @@
 package gymmi.workspace.mission.domain.entity;
 
-import gymmi.exceptionhandler.exception.InvalidRangeException;
-import gymmi.exceptionhandler.exception.NotHavePermissionException;
-import gymmi.exceptionhandler.message.ErrorCode;
+import gymmi.global.exceptionhandler.exception.InvalidRangeException;
+import gymmi.global.exceptionhandler.exception.NotHavePermissionException;
+import gymmi.global.exceptionhandler.message.ErrorCode;
 import gymmi.workspace.workspace.domain.entity.Workspace;
 import jakarta.persistence.*;
 import lombok.AccessLevel;

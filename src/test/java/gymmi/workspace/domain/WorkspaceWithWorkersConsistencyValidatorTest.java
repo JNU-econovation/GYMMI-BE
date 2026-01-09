@@ -4,7 +4,7 @@ import static gymmi.workspace.WorkspaceWithWorkersConsistencyValidator.validateM
 import static gymmi.workspace.WorkspaceWithWorkersConsistencyValidator.validateWorkersConsistency;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import gymmi.exceptionhandler.message.ErrorCode;
+import gymmi.global.exceptionhandler.message.ErrorCode;
 import gymmi.workspace.workspace.domain.entity.Worker;
 import gymmi.workspace.workspace.domain.entity.Workspace;
 import java.util.Collections;

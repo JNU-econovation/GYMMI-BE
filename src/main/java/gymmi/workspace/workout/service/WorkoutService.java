@@ -1,14 +1,14 @@
 package gymmi.workspace.workout.service;
 
-import gymmi.entity.User;
-import gymmi.eventlistener.event.ImageValidationEvent;
-import gymmi.eventlistener.event.LinkToPhotoFeedEvent;
-import gymmi.eventlistener.event.WorkoutConfirmationCreatedEvent;
-import gymmi.eventlistener.event.WorkspacePhaseChangedEvent;
-import gymmi.exceptionhandler.exception.NotHavePermissionException;
-import gymmi.exceptionhandler.message.ErrorCode;
-import gymmi.service.ImageUse;
-import gymmi.service.S3Service;
+import gymmi.etc.domain.entity.User;
+import gymmi.global.eventlistener.event.ImageValidationEvent;
+import gymmi.global.eventlistener.event.LinkToPhotoFeedEvent;
+import gymmi.global.eventlistener.event.WorkoutConfirmationCreatedEvent;
+import gymmi.global.eventlistener.event.WorkspacePhaseChangedEvent;
+import gymmi.global.exceptionhandler.exception.NotHavePermissionException;
+import gymmi.global.exceptionhandler.message.ErrorCode;
+import gymmi.etc.domain.ImageUse;
+import gymmi.etc.service.S3Service;
 import gymmi.workspace.objection.domain.entity.Objection;
 import gymmi.workspace.objection.repository.ObjectionRepository;
 import gymmi.workspace.workout.controller.request.WorkoutRequest;

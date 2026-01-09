@@ -1,6 +1,6 @@
 package gymmi.workspace.domain.entity;
 
-import gymmi.entity.User;
+import gymmi.etc.domain.entity.User;
 import gymmi.fixture.*;
 import gymmi.workspace.workspace.domain.WorkspaceStatus;
 import gymmi.workspace.workspace.domain.entity.Worker;
@@ -17,7 +17,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
-import static gymmi.exceptionhandler.message.ErrorCode.*;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.*;

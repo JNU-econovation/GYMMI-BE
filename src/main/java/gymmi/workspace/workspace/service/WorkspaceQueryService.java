@@ -1,9 +1,9 @@
 package gymmi.workspace.workspace.service;
 
-import gymmi.entity.User;
-import gymmi.exceptionhandler.exception.NotHavePermissionException;
-import gymmi.exceptionhandler.message.ErrorCode;
-import gymmi.service.S3Service;
+import gymmi.etc.domain.entity.User;
+import gymmi.global.exceptionhandler.exception.NotHavePermissionException;
+import gymmi.global.exceptionhandler.message.ErrorCode;
+import gymmi.etc.service.S3Service;
 import gymmi.workspace.mission.repository.FavoriteMissionRepository;
 import gymmi.workspace.mission.repository.MissionRepository;
 import gymmi.workspace.objection.repository.ObjectionRepository;

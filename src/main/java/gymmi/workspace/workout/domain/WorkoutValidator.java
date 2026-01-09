@@ -1,7 +1,7 @@
 package gymmi.workspace.workout.domain;
 
-import gymmi.exceptionhandler.exception.InvalidStateException;
-import gymmi.exceptionhandler.message.ErrorCode;
+import gymmi.global.exceptionhandler.exception.InvalidStateException;
+import gymmi.global.exceptionhandler.message.ErrorCode;
 import gymmi.workspace.workout.domain.entity.WorkoutHistory;
 import gymmi.workspace.workout.repository.WorkoutHistoryRepository;
 import gymmi.workspace.workspace.domain.ParticipantValidator;

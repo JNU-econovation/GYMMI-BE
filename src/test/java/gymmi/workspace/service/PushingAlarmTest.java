@@ -1,10 +1,10 @@
 package gymmi.workspace.service;
 
-import gymmi.entity.User;
+import gymmi.etc.domain.entity.User;
 import gymmi.firebase.FirebaseTestConfig;
 import gymmi.global.firebase.FirebaseCloudMessageService;
 import gymmi.helper.Persister;
-import gymmi.service.S3Service;
+import gymmi.etc.service.S3Service;
 import gymmi.workspace.workspace.domain.WorkspaceStatus;
 import gymmi.workspace.mission.domain.entity.Mission;
 import gymmi.workspace.workspace.domain.entity.Worker;

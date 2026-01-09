@@ -1,8 +1,8 @@
 package gymmi.workspace.vote.domain;
 
-import gymmi.exceptionhandler.exception.AlreadyExistException;
-import gymmi.exceptionhandler.exception.InvalidStateException;
-import gymmi.exceptionhandler.message.ErrorCode;
+import gymmi.global.exceptionhandler.exception.AlreadyExistException;
+import gymmi.global.exceptionhandler.exception.InvalidStateException;
+import gymmi.global.exceptionhandler.message.ErrorCode;
 import gymmi.workspace.vote.repository.VoteRepository;
 import gymmi.workspace.objection.domain.entity.Objection;
 import gymmi.workspace.objection.domain.ObjectionInWorkspaceValidator;

@@ -1,6 +1,6 @@
 package gymmi.photoboard.service;
 
-import gymmi.entity.User;
+import gymmi.etc.domain.entity.User;
 import gymmi.photoboard.domain.entity.PhotoFeed;
 import gymmi.photoboard.domain.entity.PhotoFeedImage;
 import gymmi.photoboard.domain.entity.ThumbsUp;
@@ -10,7 +10,7 @@ import gymmi.photoboard.repository.ThumbsUpRepository;
 import gymmi.photoboard.request.CreatePhotoFeedRequest;
 import gymmi.photoboard.response.PhotoFeedDetailResponse;
 import gymmi.photoboard.response.PhotoFeedResponse;
-import gymmi.service.S3Service;
+import gymmi.etc.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

@@ -2,7 +2,7 @@ package gymmi.repository;
 
 import static org.instancio.Select.field;
 
-import gymmi.entity.User;
+import gymmi.etc.domain.entity.User;
 import gymmi.workspace.workspace.domain.entity.Workspace;
 import gymmi.workspace.workspace.repository.WorkspaceRepository;
 import jakarta.persistence.EntityManager;

@@ -1,7 +1,7 @@
 package gymmi.photoboard.repository;
 
-import gymmi.exceptionhandler.exception.NotFoundException;
-import gymmi.exceptionhandler.message.ErrorCode;
+import gymmi.global.exceptionhandler.exception.NotFoundException;
+import gymmi.global.exceptionhandler.message.ErrorCode;
 import gymmi.photoboard.domain.entity.PhotoFeedImage;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

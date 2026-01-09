@@ -1,7 +1,7 @@
 package gymmi.workspace.objection.repository;
 
-import gymmi.exceptionhandler.exception.NotFoundException;
-import gymmi.exceptionhandler.message.ErrorCode;
+import gymmi.global.exceptionhandler.exception.NotFoundException;
+import gymmi.global.exceptionhandler.message.ErrorCode;
 import gymmi.workspace.objection.domain.entity.Objection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

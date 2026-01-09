@@ -1,14 +1,10 @@
 package gymmi.photoboard.domain.entity;
 
-import gymmi.entity.User;
-import gymmi.exceptionhandler.message.ErrorCode;
+import gymmi.etc.domain.entity.User;
+import gymmi.global.exceptionhandler.message.ErrorCode;
 import org.instancio.Instancio;
 import org.instancio.Select;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-
-import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

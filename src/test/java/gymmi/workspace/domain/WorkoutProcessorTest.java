@@ -1,6 +1,6 @@
 package gymmi.workspace.domain;
 
-import gymmi.entity.User;
+import gymmi.etc.domain.entity.User;
 import gymmi.fixture.*;
 import gymmi.workspace.mission.domain.entity.Mission;
 import gymmi.workspace.workspace.domain.entity.Worker;

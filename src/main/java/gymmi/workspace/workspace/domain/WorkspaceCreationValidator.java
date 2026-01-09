@@ -1,10 +1,10 @@
 package gymmi.workspace.workspace.domain;
 
-import gymmi.exceptionhandler.exception.AlreadyExistException;
-import gymmi.exceptionhandler.exception.InvalidNumberException;
-import gymmi.exceptionhandler.exception.InvalidPatternException;
-import gymmi.exceptionhandler.exception.InvalidRangeException;
-import gymmi.exceptionhandler.message.ErrorCode;
+import gymmi.global.exceptionhandler.exception.AlreadyExistException;
+import gymmi.global.exceptionhandler.exception.InvalidNumberException;
+import gymmi.global.exceptionhandler.exception.InvalidPatternException;
+import gymmi.global.exceptionhandler.exception.InvalidRangeException;
+import gymmi.global.exceptionhandler.message.ErrorCode;
 import gymmi.workspace.workspace.repository.WorkspaceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -12,8 +12,8 @@ import org.springframework.util.StringUtils;
 
 import java.util.regex.Pattern;
 
-import static gymmi.utils.Regexpressions.REGEX_영어_한글_숫자_만;
-import static gymmi.utils.Regexpressions.REGEX_영어_한글_쉼표_만;
+import static gymmi.global.utils.Regexpressions.REGEX_영어_한글_숫자_만;
+import static gymmi.global.utils.Regexpressions.REGEX_영어_한글_쉼표_만;
 
 @Component
 @RequiredArgsConstructor

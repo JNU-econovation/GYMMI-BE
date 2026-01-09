@@ -1,7 +1,7 @@
 package gymmi.workspace.workspace.domain.entity;
 
-import gymmi.entity.TimeEntity;
-import gymmi.entity.User;
+import gymmi.etc.domain.entity.TimeEntity;
+import gymmi.etc.domain.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 

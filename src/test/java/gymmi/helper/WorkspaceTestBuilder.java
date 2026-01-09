@@ -1,6 +1,6 @@
 package gymmi.helper;
 
-import gymmi.entity.User;
+import gymmi.etc.domain.entity.User;
 import gymmi.workspace.workspace.domain.entity.Workspace;
 import gymmi.workspace.workspace.domain.WorkspaceStatus;
 import java.time.LocalDateTime;
