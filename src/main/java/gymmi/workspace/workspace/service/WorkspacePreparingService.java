@@ -2,19 +2,15 @@ package gymmi.workspace.workspace.service;
 
 import gymmi.etc.domain.entity.User;
 import gymmi.global.eventlistener.event.WorkspaceStartedEvent;
-import gymmi.workspace.workspace.domain.LeftWorker;
 import gymmi.workspace.mission.domain.Missions;
-import gymmi.workspace.workspace.domain.WorkspacePreparingManager;
-import gymmi.workspace.workspace.domain.entity.Worker;
-import gymmi.workspace.workspace.domain.entity.Workspace;
-import gymmi.workspace.workspace.domain.WorkspaceCreationValidator;
-import gymmi.workspace.workspace.domain.WorkspaceJoinValidator;
-import gymmi.workspace.workspace.domain.WorkspaceStarter;
 import gymmi.workspace.mission.repository.FavoriteMissionRepository;
 import gymmi.workspace.mission.repository.MissionRepository;
+import gymmi.workspace.workspace.controller.request.CreatingWorkspaceRequest;
+import gymmi.workspace.workspace.domain.*;
+import gymmi.workspace.workspace.domain.entity.Worker;
+import gymmi.workspace.workspace.domain.entity.Workspace;
 import gymmi.workspace.workspace.repository.WorkerRepository;
 import gymmi.workspace.workspace.repository.WorkspaceRepository;
-import gymmi.workspace.workspace.controller.request.CreatingWorkspaceRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -26,8 +22,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WorkspacePreparingService {
 
-    private final WorkspaceCreationValidator workspaceCreationValidator;
-    private final WorkspaceJoinValidator workspaceJoinValidator;
     private final WorkspaceRepository workspaceRepository;
     private final MissionRepository missionRepository;
     private final WorkerRepository workerRepository;
@@ -37,14 +31,19 @@ public class WorkspacePreparingService {
     @Transactional
     // 중복 요청
     public Long setUpWorkspace(User loginedUser, CreatingWorkspaceRequest request) {
-        workspaceCreationValidator.validateDuplicateName(request.getName());
+        boolean isExist = workspaceRepository.existsByName(request.getName());
+        WorkspaceCreationValidator.validateDuplicateName(isExist);
+
+        int count = workspaceRepository.countsActivateWorkspace(loginedUser.getId());
+        WorkspaceJoinValidator.validateWorkspaceCountLimit(count);
+
         Workspace workspace = WorkspaceRequestMapper.createFrom(loginedUser, request);
         workspaceRepository.save(workspace);
 
         Missions missions = WorkspaceRequestMapper.createFrom(workspace, request.getMissionBoard());
         missionRepository.saveAll(missions.getMissions());
 
-        workspaceJoinValidator.validateWorkspaceCountLimit(loginedUser.getId());
+
         Worker worker = new Worker(loginedUser, workspace);
         workerRepository.save(worker);
 
@@ -55,7 +54,8 @@ public class WorkspacePreparingService {
     @Transactional
     // 동시 참여 -> 인원수 초과, 중복 요청 -> 중복 참여자 존재
     public void joinWorkspace(User loginedUser, Long workspaceId, String workspacePassword) {
-        workspaceJoinValidator.validateWorkspaceCountLimit(loginedUser.getId());
+        int count = workspaceRepository.countsActivateWorkspace(loginedUser.getId());
+        WorkspaceJoinValidator.validateWorkspaceCountLimit(count);
 
         Workspace workspace = workspaceRepository.findByIdOrThrow(workspaceId);
         List<Worker> workers = workerRepository.getAllByWorkspaceId(workspace.getId());

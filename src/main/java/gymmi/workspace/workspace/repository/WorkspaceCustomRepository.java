@@ -14,5 +14,5 @@ public interface WorkspaceCustomRepository {
 
     Map<Workspace, Integer> getAchievementScoresIn(List<Workspace> workspaces);
 
-    long getCountsOfJoinedWorkspacesExcludeCompleted(Long userId);
+    int countsActivateWorkspace(Long userId);
 }

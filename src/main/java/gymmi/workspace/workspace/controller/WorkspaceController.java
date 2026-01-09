@@ -6,9 +6,7 @@ import gymmi.workspace.workspace.controller.request.EditingIntroductionOfWorkspa
 import gymmi.workspace.workspace.controller.request.MatchingWorkspacePasswordRequest;
 import gymmi.workspace.workspace.controller.response.*;
 import gymmi.workspace.workspace.domain.WorkspaceStatus;
-import gymmi.workspace.workspace.service.WorkspaceProgressService;
-import gymmi.workspace.workspace.service.WorkspaceCommonService;
-import gymmi.workspace.workspace.service.WorkspaceQueryService;
+import gymmi.workspace.workspace.service.WorkspaceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -20,16 +18,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WorkspaceController {
 
-    private final WorkspaceProgressService workspaceProgressService;
-    private final WorkspaceQueryService workspaceQueryService;
-    private final WorkspaceCommonService workspaceCommonService;
+    private final WorkspaceService workspaceService;
 
     @GetMapping("/workspaces/{workspaceId}/introduction")
     public ResponseEntity<WorkspaceIntroductionResponse> seeWorkspaceIntroduction(
             @Logined User user,
             @PathVariable Long workspaceId
     ) {
-        WorkspaceIntroductionResponse response = workspaceQueryService.getWorkspaceIntroduction(user, workspaceId);
+        WorkspaceIntroductionResponse response = workspaceService.getWorkspaceIntroduction(user, workspaceId);
         return ResponseEntity.ok().body(response);
     }
 
@@ -39,7 +35,7 @@ public class WorkspaceController {
             @PathVariable Long workspaceId,
             @Validated @RequestBody MatchingWorkspacePasswordRequest request
     ) {
-        MatchingWorkspacePasswordResponse response = workspaceQueryService.matchesWorkspacePassword(workspaceId,
+        MatchingWorkspacePasswordResponse response = workspaceService.matchesWorkspacePassword(workspaceId,
                 request.getPassword());
         return ResponseEntity.ok().body(response);
     }
@@ -49,7 +45,7 @@ public class WorkspaceController {
             @Logined User user,
             @RequestParam("page") int pageNumber
     ) {
-        List<JoinedWorkspaceResponse> responses = workspaceQueryService.getJoinedAllWorkspaces(user, pageNumber);
+        List<JoinedWorkspaceResponse> responses = workspaceService.getJoinedAllWorkspaces(user, pageNumber);
         return ResponseEntity.ok().body(responses);
     }
 
@@ -60,7 +56,7 @@ public class WorkspaceController {
             @RequestParam(required = false) String keyword,
             @RequestParam(value = "page") int pageNumber
     ) {
-        List<WorkspaceResponse> responses = workspaceQueryService.getAllWorkspaces(status, keyword, pageNumber);
+        List<WorkspaceResponse> responses = workspaceService.getAllWorkspaces(status, keyword, pageNumber);
         return ResponseEntity.ok().body(responses);
     }
 
@@ -69,7 +65,7 @@ public class WorkspaceController {
             @Logined User user,
             @PathVariable Long workspaceId
     ) {
-        InsideWorkspaceResponse response = workspaceQueryService.enterWorkspace(user, workspaceId);
+        InsideWorkspaceResponse response = workspaceService.enterWorkspace(user, workspaceId);
         return ResponseEntity.ok().body(response);
     }
 
@@ -79,7 +75,7 @@ public class WorkspaceController {
             @PathVariable Long workspaceId,
             @RequestBody @Validated EditingIntroductionOfWorkspaceRequest request
     ) {
-        workspaceCommonService.editIntroduction(user, workspaceId, request);
+        workspaceService.editIntroduction(user, workspaceId, request);
         return ResponseEntity.ok().build();
     }
 
@@ -88,7 +84,7 @@ public class WorkspaceController {
             @Logined User user,
             @PathVariable Long workspaceId
     ) {
-        CheckingEntranceOfWorkspaceResponse response = workspaceQueryService.checkEnteringWorkspace(user,
+        CheckingEntranceOfWorkspaceResponse response = workspaceService.checkEnteringWorkspace(user,
                 workspaceId);
         return ResponseEntity.ok().body(response);
     }
@@ -97,17 +93,17 @@ public class WorkspaceController {
     public ResponseEntity<CheckingCreationOfWorkspaceResponse> checkCreatingOfWorkspace(
             @Logined User user
     ) {
-        CheckingCreationOfWorkspaceResponse response = workspaceQueryService.checkCreatingOfWorkspace(user);
+        CheckingCreationOfWorkspaceResponse response = workspaceService.checkCreatingOfWorkspace(user);
         return ResponseEntity.ok().body(response);
     }
 
-    @GetMapping("/workspaces/{workspaceId}/result")
-    public ResponseEntity<WorkspaceResultResponse> readWorkspaceResult(
-            @Logined User user,
-            @PathVariable Long workspaceId
-    ) {
-        WorkspaceResultResponse response = workspaceProgressService.getWorkspaceResult(user, workspaceId);
-        return ResponseEntity.ok().body(response);
-    }
+//    @GetMapping("/workspaces/{workspaceId}/result")
+//    public ResponseEntity<WorkspaceResultResponse> readWorkspaceResult(
+//            @Logined User user,
+//            @PathVariable Long workspaceId
+//    ) {
+//        WorkspaceResultResponse response = workspaceProgressService.getWorkspaceResult(user, workspaceId);
+//        return ResponseEntity.ok().body(response);
+//    }
 
 }

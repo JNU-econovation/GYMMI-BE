@@ -6,22 +6,18 @@ import gymmi.workspace.workspace.repository.WorkspaceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-@Component
 @RequiredArgsConstructor
 public class WorkspaceJoinValidator {
 
     public static final int MAXIMUM_WORKSPACE_COUNT = 5;
 
-    private final WorkspaceRepository workspaceRepository;
-
-    public void validateWorkspaceCountLimit(Long userId) {
-        long countOfJoinedWorkspaces = workspaceRepository.getCountsOfJoinedWorkspacesExcludeCompleted(userId);
+    public static void validateWorkspaceCountLimit(int countOfJoinedWorkspaces) {
         if (hasReachedLimit(countOfJoinedWorkspaces)) {
             throw new InvalidStateException(ErrorCode.EXCEED_MAX_JOINED_WORKSPACE);
         }
     }
 
-    private boolean hasReachedLimit(long countOfJoinedWorkspaces) {
+    private static boolean hasReachedLimit(int countOfJoinedWorkspaces) {
         return countOfJoinedWorkspaces >= MAXIMUM_WORKSPACE_COUNT;
     }
 

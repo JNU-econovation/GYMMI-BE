@@ -5,7 +5,6 @@ import gymmi.global.exceptionhandler.exception.InvalidNumberException;
 import gymmi.global.exceptionhandler.exception.InvalidPatternException;
 import gymmi.global.exceptionhandler.exception.InvalidRangeException;
 import gymmi.global.exceptionhandler.message.ErrorCode;
-import gymmi.workspace.workspace.repository.WorkspaceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -28,8 +27,6 @@ public class WorkspaceCreationValidator {
     private static final Pattern REGEX_WORKSPACE_NAME = REGEX_영어_한글_숫자_만;
     private static final Pattern REGEX_WORKSPACE_TAG = REGEX_영어_한글_쉼표_만;
     public static final int MAX_MISSION_COUNT = 15;
-
-    private final WorkspaceRepository workspaceRepository;
 
     public static Integer validateHeadCount(Integer headCount) {
         if (headCount < MIN_HEAD_COUNT || headCount > MAX_HEAD_COUNT) {
@@ -79,8 +76,8 @@ public class WorkspaceCreationValidator {
         return description;
     }
 
-    public void validateDuplicateName(String workspaceName) {
-        if (workspaceRepository.existsByName(workspaceName)) {
+    public static void validateDuplicateName(boolean isExist) {
+        if (isExist) {
             throw new AlreadyExistException(ErrorCode.ALREADY_USED_WORKSPACE_NAME);
         }
     }
