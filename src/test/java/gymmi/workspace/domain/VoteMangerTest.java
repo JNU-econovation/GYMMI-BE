@@ -1,10 +1,10 @@
 //package gymmi.workspace.domain;
 //
 //import gymmi.exceptionhandler.message.ErrorCode;
-//import gymmi.workspace.service.domain.objection.Objection;
-//import gymmi.workspace.service.domain.vote.Vote;
-//import gymmi.workspace.service.domain.vote.VoteManger;
-//import gymmi.workspace.service.domain.workspace.Worker;
+//import gymmi.workspace.objection.domain.entity.Objection;
+//import gymmi.workspace.vote.domain.entity.Vote;
+//import gymmi.workspace.vote.domain.VoteManger;
+//import gymmi.workspace.workspace.domain.entity.Worker;
 //import org.instancio.Instancio;
 //import org.instancio.Select;
 //import org.junit.jupiter.api.Nested;

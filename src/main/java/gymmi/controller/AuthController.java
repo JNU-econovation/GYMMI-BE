@@ -8,7 +8,7 @@ import gymmi.request.ResignRequest;
 import gymmi.response.LoginResponse;
 import gymmi.response.TokenResponse;
 import gymmi.service.AuthService;
-import gymmi.workspace.request.RegistrationRequest;
+import gymmi.request.RegistrationRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;

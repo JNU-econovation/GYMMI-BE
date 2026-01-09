@@ -1,8 +1,8 @@
 package gymmi.fixture;
 
-import gymmi.workspace.service.domain.mission.Mission;
-import gymmi.workspace.service.domain.workout.WorkoutHistory;
-import gymmi.workspace.service.domain.workout.WorkoutRecord;
+import gymmi.workspace.mission.domain.entity.Mission;
+import gymmi.workspace.workout.domain.entity.WorkoutHistory;
+import gymmi.workspace.workout.domain.entity.WorkoutRecord;
 import org.springframework.test.util.ReflectionTestUtils;
 
 public abstract class WorkoutRecordFixture {

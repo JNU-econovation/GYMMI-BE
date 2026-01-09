@@ -2,8 +2,8 @@ package gymmi.workspace;
 
 import gymmi.exceptionhandler.exception.InvalidStateException;
 import gymmi.exceptionhandler.message.ErrorCode;
-import gymmi.workspace.service.domain.mission.Mission;
-import gymmi.workspace.service.domain.workspace.Workspace;
+import gymmi.workspace.mission.domain.entity.Mission;
+import gymmi.workspace.workspace.domain.entity.Workspace;
 import java.util.List;
 import lombok.Getter;
 

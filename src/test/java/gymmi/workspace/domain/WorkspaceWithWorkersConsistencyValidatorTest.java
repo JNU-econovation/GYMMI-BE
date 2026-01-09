@@ -5,12 +5,12 @@ import static gymmi.workspace.WorkspaceWithWorkersConsistencyValidator.validateW
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import gymmi.exceptionhandler.message.ErrorCode;
-import gymmi.workspace.service.domain.workspace.Worker;
-import gymmi.workspace.service.domain.workspace.Workspace;
+import gymmi.workspace.workspace.domain.entity.Worker;
+import gymmi.workspace.workspace.domain.entity.Workspace;
 import java.util.Collections;
 import java.util.List;
 
-import gymmi.workspace.service.domain.workspace.WorkspaceCreationValidator;
+import gymmi.workspace.workspace.domain.WorkspaceCreationValidator;
 import org.instancio.Instancio;
 import org.instancio.Select;
 import org.junit.jupiter.api.Test;

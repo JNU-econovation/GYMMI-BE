@@ -1,8 +1,8 @@
 package gymmi.exceptionhandler.message;
 
 import gymmi.global.DuplicationCheckType;
-import gymmi.workspace.service.domain.objection.ObjectionStatus;
-import gymmi.workspace.service.domain.workspace.WorkspaceStatus;
+import gymmi.workspace.objection.domain.ObjectionStatus;
+import gymmi.workspace.workspace.domain.WorkspaceStatus;
 
 public enum ErrorCode {
 

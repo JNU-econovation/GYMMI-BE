@@ -2,7 +2,7 @@
 //
 //import gymmi.exceptionhandler.exception.NotFoundException;
 //import gymmi.workspace.request.*;
-//import gymmi.workspace.response.MissionResponse;
+//import gymmi.workspace.mission.controller.response.MissionResponse;
 //import io.restassured.RestAssured;
 //import io.restassured.http.ContentType;
 //import io.restassured.response.Response;

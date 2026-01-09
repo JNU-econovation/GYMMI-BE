@@ -1,6 +1,6 @@
 package gymmi.eventlistener.event;
 
-import gymmi.workspace.service.domain.workspace.WorkspacePhase;
+import gymmi.workspace.workspace.domain.WorkspacePhase;
 import lombok.Getter;
 
 @Getter

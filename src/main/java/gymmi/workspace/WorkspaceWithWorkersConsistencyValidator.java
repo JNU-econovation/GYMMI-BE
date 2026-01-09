@@ -4,11 +4,11 @@ import static gymmi.exceptionhandler.message.ErrorCode.EXIST_NOT_JOINED_WORKER;
 import static gymmi.exceptionhandler.message.ErrorCode.NOT_CONSISTENT_WORKERS_COUNT;
 
 import gymmi.exceptionhandler.exception.InvalidStateException;
-import gymmi.workspace.service.domain.workspace.Worker;
-import gymmi.workspace.service.domain.workspace.Workspace;
+import gymmi.workspace.workspace.domain.entity.Worker;
+import gymmi.workspace.workspace.domain.entity.Workspace;
 import java.util.List;
 
-import gymmi.workspace.service.domain.workspace.WorkspaceCreationValidator;
+import gymmi.workspace.workspace.domain.WorkspaceCreationValidator;
 import lombok.Getter;
 
 @Getter

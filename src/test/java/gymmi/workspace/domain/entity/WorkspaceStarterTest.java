@@ -2,11 +2,11 @@ package gymmi.workspace.domain.entity;
 
 import gymmi.entity.User;
 import gymmi.exceptionhandler.message.ErrorCode;
-import gymmi.workspace.service.domain.workspace.WorkspaceStatus;
-import gymmi.workspace.service.domain.workspace.Worker;
-import gymmi.workspace.service.domain.workspace.Workspace;
-import gymmi.workspace.service.domain.workspace.WorkspaceCreationValidator;
-import gymmi.workspace.service.domain.workspace.WorkspaceStarter;
+import gymmi.workspace.workspace.domain.WorkspaceStatus;
+import gymmi.workspace.workspace.domain.entity.Worker;
+import gymmi.workspace.workspace.domain.entity.Workspace;
+import gymmi.workspace.workspace.domain.WorkspaceCreationValidator;
+import gymmi.workspace.workspace.domain.WorkspaceStarter;
 import org.instancio.Instancio;
 import org.instancio.Select;
 import org.junit.jupiter.api.Test;

@@ -1,9 +1,9 @@
 package gymmi;
 
 import gymmi.entity.User;
-import gymmi.workspace.service.domain.mission.Mission;
-import gymmi.workspace.request.CreatingWorkspaceRequest;
-import gymmi.workspace.request.MissionRequest;
+import gymmi.workspace.mission.domain.entity.Mission;
+import gymmi.workspace.workspace.controller.request.CreatingWorkspaceRequest;
+import gymmi.workspace.mission.controller.request.MissionRequest;
 import java.util.List;
 
 public final class Fixtures {

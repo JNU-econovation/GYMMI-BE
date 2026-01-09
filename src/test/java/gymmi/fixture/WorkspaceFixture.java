@@ -1,9 +1,9 @@
 package gymmi.fixture;
 
 import gymmi.entity.User;
-import gymmi.workspace.service.domain.workspace.WorkspaceStatus;
-import gymmi.workspace.service.domain.workspace.Workspace;
-import gymmi.workspace.service.domain.workspace.WorkspaceCreationValidator;
+import gymmi.workspace.workspace.domain.WorkspaceStatus;
+import gymmi.workspace.workspace.domain.entity.Workspace;
+import gymmi.workspace.workspace.domain.WorkspaceCreationValidator;
 import org.springframework.test.util.ReflectionTestUtils;
 
 public abstract class WorkspaceFixture {

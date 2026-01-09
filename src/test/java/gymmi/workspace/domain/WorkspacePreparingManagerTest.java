@@ -5,15 +5,15 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import gymmi.entity.User;
 import gymmi.exceptionhandler.message.ErrorCode;
-import gymmi.workspace.service.domain.workspace.Worker;
-import gymmi.workspace.service.domain.workspace.LeftWorker;
-import gymmi.workspace.service.domain.workspace.Workspace;
+import gymmi.workspace.workspace.domain.entity.Worker;
+import gymmi.workspace.workspace.domain.LeftWorker;
+import gymmi.workspace.workspace.domain.entity.Workspace;
 import java.util.Arrays;
 import java.util.List;
 
-import gymmi.workspace.service.domain.workspace.WorkspaceCreationValidator;
-import gymmi.workspace.service.domain.workspace.WorkspacePreparingManager;
-import gymmi.workspace.service.domain.workspace.WorkspaceStatus;
+import gymmi.workspace.workspace.domain.WorkspaceCreationValidator;
+import gymmi.workspace.workspace.domain.WorkspacePreparingManager;
+import gymmi.workspace.workspace.domain.WorkspaceStatus;
 import org.instancio.Instancio;
 import org.instancio.Select;
 import org.junit.jupiter.api.Nested;

@@ -2,7 +2,7 @@ package gymmi.global;
 
 import gymmi.exceptionhandler.exception.NotMatchedException;
 import gymmi.exceptionhandler.message.ErrorCode;
-import gymmi.workspace.service.domain.workspace.WorkspaceStatus;
+import gymmi.workspace.workspace.domain.WorkspaceStatus;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.core.convert.converter.Converter;

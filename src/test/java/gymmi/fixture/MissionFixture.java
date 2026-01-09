@@ -1,7 +1,7 @@
 package gymmi.fixture;
 
-import gymmi.workspace.service.domain.mission.Mission;
-import gymmi.workspace.service.domain.workspace.Workspace;
+import gymmi.workspace.mission.domain.entity.Mission;
+import gymmi.workspace.workspace.domain.entity.Workspace;
 import org.springframework.test.util.ReflectionTestUtils;
 
 public abstract class MissionFixture {

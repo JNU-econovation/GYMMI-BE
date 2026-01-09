@@ -17,7 +17,7 @@ import gymmi.request.ReissueRequest;
 import gymmi.request.ResignRequest;
 import gymmi.response.LoginResponse;
 import gymmi.response.TokenResponse;
-import gymmi.workspace.request.RegistrationRequest;
+import gymmi.request.RegistrationRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
