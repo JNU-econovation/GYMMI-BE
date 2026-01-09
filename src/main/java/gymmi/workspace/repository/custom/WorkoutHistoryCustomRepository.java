@@ -1,7 +1,7 @@
 package gymmi.workspace.repository.custom;
 
 
-import gymmi.workspace.domain.entity.WorkoutHistory;
+import gymmi.workspace.service.domain.workout.WorkoutHistory;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;

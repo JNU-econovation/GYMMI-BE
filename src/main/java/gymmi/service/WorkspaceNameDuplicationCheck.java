@@ -1,8 +1,7 @@
 package gymmi.service;
 
 import gymmi.global.DuplicationCheckType;
-import gymmi.workspace.domain.entity.Workspace;
-import gymmi.workspace.domain.entity.WorkspaceCreationValidator;
+import gymmi.workspace.service.domain.workspace.WorkspaceCreationValidator;
 import gymmi.workspace.repository.WorkspaceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

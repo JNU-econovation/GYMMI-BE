@@ -2,8 +2,8 @@ package gymmi.workspace.controller;
 
 import gymmi.entity.User;
 import gymmi.global.Logined;
-import gymmi.workspace.domain.ObjectionStatus;
-import gymmi.workspace.domain.WorkspaceStatus;
+import gymmi.workspace.service.domain.objection.ObjectionStatus;
+import gymmi.workspace.service.domain.workspace.WorkspaceStatus;
 import gymmi.workspace.request.*;
 import gymmi.workspace.response.*;
 import gymmi.workspace.service.WorkspaceProgressService;

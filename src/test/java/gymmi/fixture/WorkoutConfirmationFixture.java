@@ -1,6 +1,6 @@
 package gymmi.fixture;
 
-import gymmi.workspace.domain.entity.WorkoutConfirmation;
+import gymmi.workspace.service.domain.workout.WorkoutConfirmation;
 import org.springframework.test.util.ReflectionTestUtils;
 
 public abstract class WorkoutConfirmationFixture {

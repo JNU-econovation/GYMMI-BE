@@ -1,7 +1,7 @@
 package gymmi.workspace.response;
 
-import gymmi.workspace.domain.WorkoutMetric;
-import gymmi.workspace.domain.entity.WorkoutHistory;
+import gymmi.workspace.service.domain.workout.WorkoutMetric;
+import gymmi.workspace.service.domain.workout.WorkoutHistory;
 import lombok.Getter;
 
 import java.util.List;

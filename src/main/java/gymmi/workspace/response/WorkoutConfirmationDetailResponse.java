@@ -1,7 +1,7 @@
 package gymmi.workspace.response;
 
 import gymmi.entity.User;
-import gymmi.workspace.domain.entity.Objection;
+import gymmi.workspace.service.domain.objection.Objection;
 import lombok.Getter;
 
 @Getter

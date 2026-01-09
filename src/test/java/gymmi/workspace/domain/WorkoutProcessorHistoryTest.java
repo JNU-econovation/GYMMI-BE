@@ -3,16 +3,6 @@ package gymmi.workspace.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import gymmi.entity.User;
-import gymmi.exceptionhandler.message.ErrorCode;
-import gymmi.workspace.domain.entity.*;
-import gymmi.workspace.domain.entity.WorkoutConfirmation;
-
-import java.util.List;
-import org.instancio.Instancio;
-import org.instancio.Select;
-import org.junit.jupiter.api.Test;
-
 //class WorkoutProcessorHistoryTest {
 //
 //    @Test

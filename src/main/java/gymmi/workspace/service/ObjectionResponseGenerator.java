@@ -1,6 +1,11 @@
 package gymmi.workspace.service;
 
-import gymmi.workspace.domain.entity.*;
+import gymmi.workspace.service.domain.objection.Objection;
+import gymmi.workspace.service.domain.vote.Vote;
+import gymmi.workspace.service.domain.vote.VoteResult;
+import gymmi.workspace.service.domain.workspace.Worker;
+import gymmi.workspace.service.domain.workout.WorkoutHistory;
+import gymmi.workspace.service.domain.workspace.Workspace;
 import gymmi.workspace.response.ObjectionResponse;
 
 import java.util.List;
@@ -22,16 +27,15 @@ public class ObjectionResponseGenerator {
     }
 
     public ObjectionResponse generate() {
-        ObjectionWithVotes objectionWithVotes = new ObjectionWithVotes(objection, votes);
         if (objection.isInProgress() && hasVoted()) {
-            return ObjectionResponse.objectionInProgressWithVoteCompletion(objectionWithVotes, workspace.getHeadCount());
+            return ObjectionResponse.objectionInProgressWithVoteCompletion(objection, new VoteResult(votes), workspace.getHeadCount());
         }
 
         if (objection.isInProgress() && !hasVoted()) {
-            return ObjectionResponse.objectionInProgressWithVoteInCompletion(objectionWithVotes, workspace.getHeadCount());
+            return ObjectionResponse.objectionInProgressWithVoteInCompletion(objection, new VoteResult(votes), workspace.getHeadCount());
         }
 
-        return ObjectionResponse.closedObjection(objectionWithVotes, objection.hasVoteBy(worker), workoutHistory.isRejected(), workspace.getHeadCount());
+        return ObjectionResponse.closedObjection(objection, new VoteResult(votes), objection.hasVoteBy(worker), workoutHistory.isRejected(), workspace.getHeadCount());
     }
 
     private boolean hasVoted() {

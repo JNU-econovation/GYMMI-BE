@@ -1,7 +1,7 @@
 package gymmi.workspace.response;
 
-import gymmi.workspace.domain.entity.Mission;
-import gymmi.workspace.domain.WorkoutSummation;
+import gymmi.workspace.service.domain.mission.Mission;
+import gymmi.workspace.service.domain.workout.WorkoutSummation;
 import lombok.Builder;
 import lombok.Getter;
 

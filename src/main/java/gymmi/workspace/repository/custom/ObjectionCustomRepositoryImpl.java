@@ -3,20 +3,21 @@ package gymmi.workspace.repository.custom;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import gymmi.workspace.domain.ObjectionStatus;
-import gymmi.workspace.domain.entity.Objection;
+import gymmi.workspace.service.domain.objection.Objection;
+import gymmi.workspace.service.domain.objection.ObjectionStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static gymmi.workspace.domain.entity.QObjection.objection;
-import static gymmi.workspace.domain.entity.QVote.vote;
-import static gymmi.workspace.domain.entity.QWorker.worker;
+import static gymmi.workspace.domain.objection.QObjection.objection;
+import static gymmi.workspace.domain.vote.QVote.vote;
+import static gymmi.workspace.domain.worker.QWorker.worker;
 
 @RequiredArgsConstructor
 public class ObjectionCustomRepositoryImpl implements ObjectionCustomRepository {
+
 
     private final JPAQueryFactory jpaQueryFactory;
 

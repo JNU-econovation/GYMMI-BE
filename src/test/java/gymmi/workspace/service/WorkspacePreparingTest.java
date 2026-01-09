@@ -2,10 +2,11 @@ package gymmi.workspace.service;
 
 import gymmi.entity.User;
 import gymmi.exceptionhandler.message.ErrorCode;
-import gymmi.photoboard.repository.PhotoFeedRepository;
-import gymmi.service.S3Service;
-import gymmi.workspace.domain.WorkspaceStatus;
-import gymmi.workspace.domain.entity.*;
+import gymmi.workspace.service.domain.workspace.WorkspaceStatus;
+import gymmi.workspace.service.domain.mission.Mission;
+import gymmi.workspace.service.domain.workspace.Worker;
+import gymmi.workspace.service.domain.workspace.Workspace;
+import gymmi.workspace.service.domain.workspace.WorkspaceCreationValidator;
 import gymmi.workspace.repository.*;
 import gymmi.workspace.request.*;
 import jakarta.persistence.EntityManager;
@@ -13,20 +14,14 @@ import org.instancio.Instancio;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.util.ReflectionTestUtils;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 import static gymmi.exceptionhandler.message.ErrorCode.EXCEED_MAX_JOINED_WORKSPACE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.field;
 import static org.mockito.BDDMockito.any;
-import static org.mockito.BDDMockito.given;
 
 class WorkspacePreparingTest extends IntegrationTest {
 

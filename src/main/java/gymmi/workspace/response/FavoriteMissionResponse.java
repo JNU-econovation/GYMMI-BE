@@ -1,6 +1,6 @@
 package gymmi.workspace.response;
 
-import gymmi.workspace.domain.entity.Mission;
+import gymmi.workspace.service.domain.mission.Mission;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

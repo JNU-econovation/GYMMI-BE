@@ -1,16 +1,16 @@
 package gymmi.workspace.domain;
 
-import static gymmi.workspace.domain.WorkspaceWithWorkersConsistencyValidator.validateMeetMinHeadCount;
-import static gymmi.workspace.domain.WorkspaceWithWorkersConsistencyValidator.validateWorkersConsistency;
+import static gymmi.workspace.WorkspaceWithWorkersConsistencyValidator.validateMeetMinHeadCount;
+import static gymmi.workspace.WorkspaceWithWorkersConsistencyValidator.validateWorkersConsistency;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import gymmi.exceptionhandler.message.ErrorCode;
-import gymmi.workspace.domain.entity.Worker;
-import gymmi.workspace.domain.entity.Workspace;
+import gymmi.workspace.service.domain.workspace.Worker;
+import gymmi.workspace.service.domain.workspace.Workspace;
 import java.util.Collections;
 import java.util.List;
 
-import gymmi.workspace.domain.entity.WorkspaceCreationValidator;
+import gymmi.workspace.service.domain.workspace.WorkspaceCreationValidator;
 import org.instancio.Instancio;
 import org.instancio.Select;
 import org.junit.jupiter.api.Test;

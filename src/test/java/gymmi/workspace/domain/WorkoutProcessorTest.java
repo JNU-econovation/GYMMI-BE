@@ -2,8 +2,16 @@ package gymmi.workspace.domain;
 
 import gymmi.entity.User;
 import gymmi.fixture.*;
-import gymmi.workspace.domain.entity.*;
-import gymmi.workspace.service.WorkoutProcessor;
+import gymmi.workspace.service.domain.mission.Mission;
+import gymmi.workspace.service.domain.workspace.Worker;
+import gymmi.workspace.service.domain.workout.WorkoutConfirmation;
+import gymmi.workspace.service.domain.workout.WorkoutHistory;
+import gymmi.workspace.service.domain.workout.WorkoutRecord;
+import gymmi.workspace.service.domain.workout.WorkoutValidator;
+import gymmi.workspace.service.domain.workspace.Workspace;
+import gymmi.workspace.service.domain.workspace.WorkspacePhase;
+import gymmi.workspace.service.domain.workspace.WorkspaceStatus;
+import gymmi.workspace.service.domain.workout.WorkoutProcessor;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

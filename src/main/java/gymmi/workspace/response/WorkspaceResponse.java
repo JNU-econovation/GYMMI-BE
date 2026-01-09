@@ -1,6 +1,6 @@
 package gymmi.workspace.response;
 
-import gymmi.workspace.domain.entity.Workspace;
+import gymmi.workspace.service.domain.workspace.Workspace;
 import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;

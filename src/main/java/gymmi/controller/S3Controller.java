@@ -4,7 +4,7 @@ import gymmi.photoboard.domain.entity.PhotoFeedImage;
 import gymmi.photoboard.response.PhotoPresignedUrlResponse;
 import gymmi.response.PresignedUrlResponse;
 import gymmi.service.S3Service;
-import gymmi.workspace.domain.entity.WorkoutConfirmation;
+import gymmi.workspace.service.domain.workout.WorkoutConfirmation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

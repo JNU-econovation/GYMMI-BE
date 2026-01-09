@@ -2,10 +2,14 @@ package gymmi.workspace.service;
 
 import gymmi.entity.User;
 import gymmi.eventlistener.event.WorkspaceStartedEvent;
-import gymmi.workspace.domain.LeftWorker;
-import gymmi.workspace.domain.Missions;
-import gymmi.workspace.domain.WorkspacePreparingManager;
-import gymmi.workspace.domain.entity.*;
+import gymmi.workspace.service.domain.workspace.LeftWorker;
+import gymmi.workspace.service.domain.mission.Missions;
+import gymmi.workspace.service.domain.workspace.WorkspacePreparingManager;
+import gymmi.workspace.service.domain.workspace.Worker;
+import gymmi.workspace.service.domain.workspace.Workspace;
+import gymmi.workspace.service.domain.workspace.WorkspaceCreationValidator;
+import gymmi.workspace.service.domain.workspace.WorkspaceJoinValidator;
+import gymmi.workspace.service.domain.workspace.WorkspaceStarter;
 import gymmi.workspace.repository.FavoriteMissionRepository;
 import gymmi.workspace.repository.MissionRepository;
 import gymmi.workspace.repository.WorkerRepository;

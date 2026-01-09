@@ -1,6 +1,6 @@
 package gymmi.workspace.repository;
 
-import gymmi.workspace.domain.entity.FavoriteMission;
+import gymmi.workspace.service.domain.mission.FavoriteMission;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

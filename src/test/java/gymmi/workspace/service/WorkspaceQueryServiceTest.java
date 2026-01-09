@@ -2,9 +2,14 @@ package gymmi.workspace.service;
 
 import gymmi.entity.User;
 import gymmi.service.S3Service;
-import gymmi.workspace.domain.ObjectionStatus;
-import gymmi.workspace.domain.WorkspaceStatus;
-import gymmi.workspace.domain.entity.*;
+import gymmi.workspace.service.domain.objection.ObjectionStatus;
+import gymmi.workspace.service.domain.workspace.WorkspaceStatus;
+import gymmi.workspace.service.domain.mission.Mission;
+import gymmi.workspace.service.domain.objection.Objection;
+import gymmi.workspace.service.domain.workspace.Worker;
+import gymmi.workspace.service.domain.workout.WorkoutConfirmation;
+import gymmi.workspace.service.domain.workout.WorkoutHistory;
+import gymmi.workspace.service.domain.workspace.Workspace;
 import gymmi.workspace.repository.WorkoutHistoryRepository;
 import gymmi.workspace.response.*;
 import org.junit.jupiter.api.Nested;

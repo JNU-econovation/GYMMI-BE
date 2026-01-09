@@ -1,13 +1,11 @@
 package gymmi.workspace.service;
 
 import gymmi.entity.User;
-import gymmi.exceptionhandler.exception.NotHavePermissionException;
-import gymmi.exceptionhandler.message.ErrorCode;
-import gymmi.workspace.domain.WorkspaceEditManager;
-import gymmi.workspace.domain.entity.FavoriteMission;
-import gymmi.workspace.domain.entity.Mission;
-import gymmi.workspace.domain.entity.Worker;
-import gymmi.workspace.domain.entity.Workspace;
+import gymmi.workspace.service.domain.workspace.WorkspaceEditManager;
+import gymmi.workspace.service.domain.mission.FavoriteMission;
+import gymmi.workspace.service.domain.mission.Mission;
+import gymmi.workspace.service.domain.workspace.Worker;
+import gymmi.workspace.service.domain.workspace.Workspace;
 import gymmi.workspace.repository.FavoriteMissionRepository;
 import gymmi.workspace.repository.MissionRepository;
 import gymmi.workspace.repository.WorkerRepository;

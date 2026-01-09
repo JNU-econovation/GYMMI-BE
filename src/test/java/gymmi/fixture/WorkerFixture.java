@@ -1,8 +1,8 @@
 package gymmi.fixture;
 
 import gymmi.entity.User;
-import gymmi.workspace.domain.entity.Worker;
-import gymmi.workspace.domain.entity.Workspace;
+import gymmi.workspace.service.domain.workspace.Worker;
+import gymmi.workspace.service.domain.workspace.Workspace;
 import org.springframework.test.util.ReflectionTestUtils;
 
 public abstract class WorkerFixture {

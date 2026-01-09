@@ -1,8 +1,8 @@
 package gymmi.workspace.response;
 
 import gymmi.entity.User;
-import gymmi.workspace.domain.entity.Objection;
-import gymmi.workspace.domain.entity.WorkoutHistory;
+import gymmi.workspace.service.domain.objection.Objection;
+import gymmi.workspace.service.domain.workout.WorkoutHistory;
 import lombok.Builder;
 import lombok.Getter;
 

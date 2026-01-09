@@ -1,8 +1,10 @@
 package gymmi.workspace.domain;
 
-import gymmi.workspace.domain.entity.Worker;
-import gymmi.workspace.domain.entity.Workspace;
-import gymmi.workspace.domain.entity.WorkspaceResult;
+import gymmi.workspace.service.domain.workspace.Worker;
+import gymmi.workspace.service.domain.workspace.Workspace;
+import gymmi.workspace.service.domain.workspace.WorkspaceDrawManger;
+import gymmi.workspace.service.domain.workspace.WorkspaceResult;
+import gymmi.workspace.service.domain.workspace.WorkspaceStatus;
 import org.instancio.Instancio;
 import org.instancio.Select;
 import org.junit.jupiter.api.Nested;

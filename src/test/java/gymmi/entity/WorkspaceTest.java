@@ -8,8 +8,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import gymmi.exceptionhandler.exception.InvalidNumberException;
 import gymmi.exceptionhandler.exception.InvalidPatternException;
-import gymmi.workspace.domain.entity.Workspace;
-import gymmi.workspace.domain.WorkspaceStatus;
+import gymmi.workspace.service.domain.workspace.Workspace;
+import gymmi.workspace.service.domain.workspace.WorkspaceStatus;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 

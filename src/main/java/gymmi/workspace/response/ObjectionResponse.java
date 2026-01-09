@@ -1,7 +1,7 @@
 package gymmi.workspace.response;
 
-import gymmi.workspace.domain.entity.Objection;
-import gymmi.workspace.service.ObjectionWithVotes;
+import gymmi.workspace.service.domain.objection.Objection;
+import gymmi.workspace.service.domain.vote.VoteResult;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -37,29 +37,27 @@ public class ObjectionResponse {
         this.headCount = headCount;
     }
 
-    public static ObjectionResponse closedObjection(ObjectionWithVotes objectionWithVotes, boolean voteCompletion, boolean confirmationCompletion, Integer headCount) {
-        Objection objection = objectionWithVotes.getObjection();
+    public static ObjectionResponse closedObjection(Objection objection, VoteResult voteResult, boolean voteCompletion, boolean confirmationCompletion, Integer headCount) {
         return ObjectionResponse.builder()
                 .deadline(objection.getDeadline())
                 .inInProgress(false)
                 .reason(objection.getReason())
                 .voteCompletion(voteCompletion)
-                .voteParticipationCount(objectionWithVotes.getVoteCount())
-                .approvalCount(objectionWithVotes.getApprovalCount())
-                .rejectionCount(objectionWithVotes.getRejectionCount())
+                .voteParticipationCount(voteResult.voteCount())
+                .approvalCount(voteResult.approvalCount())
+                .rejectionCount(voteResult.rejectionCount())
                 .confirmationCompletion(confirmationCompletion)
                 .headCount(headCount)
                 .build();
     }
 
-    public static ObjectionResponse objectionInProgressWithVoteInCompletion(ObjectionWithVotes objectionWithVotes, Integer headCount) {
-        Objection objection = objectionWithVotes.getObjection();
+    public static ObjectionResponse objectionInProgressWithVoteInCompletion(Objection objection, VoteResult voteResult, Integer headCount) {
         return ObjectionResponse.builder()
                 .deadline(objection.getDeadline())
                 .inInProgress(true)
                 .reason(objection.getReason())
                 .voteCompletion(false)
-                .voteParticipationCount(objectionWithVotes.getVoteCount())
+                .voteParticipationCount(voteResult.voteCount())
                 .approvalCount(null)
                 .rejectionCount(null)
                 .confirmationCompletion(null)
@@ -67,16 +65,15 @@ public class ObjectionResponse {
                 .build();
     }
 
-    public static ObjectionResponse objectionInProgressWithVoteCompletion(ObjectionWithVotes objectionWithVotes, Integer headCount) {
-        Objection objection = objectionWithVotes.getObjection();
+    public static ObjectionResponse objectionInProgressWithVoteCompletion(Objection objection, VoteResult voteResult, Integer headCount) {
         return ObjectionResponse.builder()
                 .deadline(objection.getDeadline())
                 .inInProgress(true)
                 .reason(objection.getReason())
                 .voteCompletion(true)
-                .voteParticipationCount(objectionWithVotes.getVoteCount())
-                .approvalCount(objectionWithVotes.getApprovalCount())
-                .rejectionCount(objectionWithVotes.getRejectionCount())
+                .voteParticipationCount(voteResult.voteCount())
+                .approvalCount(voteResult.approvalCount())
+                .rejectionCount(voteResult.rejectionCount())
                 .confirmationCompletion(null)
                 .headCount(headCount)
                 .build();

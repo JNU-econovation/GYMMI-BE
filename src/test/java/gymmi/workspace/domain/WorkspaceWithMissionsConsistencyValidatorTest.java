@@ -1,12 +1,12 @@
 package gymmi.workspace.domain;
 
-import static gymmi.workspace.domain.WorkspaceWithMissionsConsistencyValidator.validateConsistencyMissionsCount;
-import static gymmi.workspace.domain.WorkspaceWithMissionsConsistencyValidator.validateRegistration;
+import static gymmi.workspace.WorkspaceWithMissionsConsistencyValidator.validateConsistencyMissionsCount;
+import static gymmi.workspace.WorkspaceWithMissionsConsistencyValidator.validateRegistration;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import gymmi.exceptionhandler.message.ErrorCode;
-import gymmi.workspace.domain.entity.Mission;
-import gymmi.workspace.domain.entity.Workspace;
+import gymmi.workspace.service.domain.mission.Mission;
+import gymmi.workspace.service.domain.workspace.Workspace;
 import java.util.List;
 import org.instancio.Instancio;
 import org.instancio.Select;

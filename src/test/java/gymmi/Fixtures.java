@@ -1,7 +1,7 @@
 package gymmi;
 
 import gymmi.entity.User;
-import gymmi.workspace.domain.entity.Mission;
+import gymmi.workspace.service.domain.mission.Mission;
 import gymmi.workspace.request.CreatingWorkspaceRequest;
 import gymmi.workspace.request.MissionRequest;
 import java.util.List;

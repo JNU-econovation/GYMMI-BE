@@ -1,7 +1,7 @@
 package gymmi.workspace.repository.custom;
 
-import gymmi.workspace.domain.ObjectionStatus;
-import gymmi.workspace.domain.entity.Objection;
+import gymmi.workspace.service.domain.objection.ObjectionStatus;
+import gymmi.workspace.service.domain.objection.Objection;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
