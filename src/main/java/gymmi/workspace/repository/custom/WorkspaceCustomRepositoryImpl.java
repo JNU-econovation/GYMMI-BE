@@ -14,8 +14,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static gymmi.workspace.domain.worker.QWorker.worker;
-import static gymmi.workspace.domain.workspace.QWorkspace.workspace;
+import static gymmi.workspace.service.domain.workspace.QWorker.worker;
+import static gymmi.workspace.service.domain.workspace.QWorkspace.workspace;
+
 
 @RequiredArgsConstructor
 public class WorkspaceCustomRepositoryImpl implements WorkspaceCustomRepository {

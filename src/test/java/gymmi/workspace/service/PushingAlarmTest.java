@@ -117,7 +117,7 @@ public class PushingAlarmTest {
         Long workoutConfirmationId = workoutHistory.getWorkoutConfirmation().getId();
 
         // when
-        workspaceProgressService.objectToWorkoutHistory(user, workspace.getId(), workoutConfirmationId, request);
+        workspaceProgressService.objectToWorkoutHistory(user, workspace.getId(), workoutConfirmationId, request.getReason());
 
         // then
         Thread.sleep(1000);

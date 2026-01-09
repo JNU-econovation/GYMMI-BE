@@ -9,9 +9,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static gymmi.workspace.domain.worker.QWorker.worker;
-import static gymmi.workspace.domain.workout.QWorkoutConfirmation.workoutConfirmation;
-import static gymmi.workspace.domain.workout.QWorkoutHistory.workoutHistory;
+import static gymmi.workspace.service.domain.workout.QWorkoutConfirmation.workoutConfirmation;
+import static gymmi.workspace.service.domain.workout.QWorkoutHistory.workoutHistory;
+import static gymmi.workspace.service.domain.workspace.QWorker.worker;
+
 
 @RequiredArgsConstructor
 public class WorkoutHistoryCustomRepositoryImpl implements WorkoutHistoryCustomRepository {

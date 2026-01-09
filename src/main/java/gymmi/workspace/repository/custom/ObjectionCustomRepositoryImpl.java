@@ -11,9 +11,10 @@ import org.springframework.data.domain.Pageable;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static gymmi.workspace.domain.objection.QObjection.objection;
-import static gymmi.workspace.domain.vote.QVote.vote;
-import static gymmi.workspace.domain.worker.QWorker.worker;
+import static gymmi.workspace.service.domain.objection.QObjection.objection;
+import static gymmi.workspace.service.domain.vote.QVote.vote;
+import static gymmi.workspace.service.domain.workspace.QWorker.worker;
+
 
 @RequiredArgsConstructor
 public class ObjectionCustomRepositoryImpl implements ObjectionCustomRepository {

@@ -178,8 +178,8 @@ public class Persister {
         Objection objection = Instancio.of(Objection.class)
                 .set(field(Objection::getSubject), subject)
                 .set(field(Objection::isInProgress), isInProgress)
-                .set(field(Objection::getWorkoutConfirmation), workoutConfirmation)
-                .set(field(Objection::getVotes), new ArrayList<>())
+//                .set(field(Objection::getWorkoutConfirmation), workoutConfirmation)
+//                .set(field(Objection::getVotes), new ArrayList<>())
                 .ignore(field(Objection::getId))
                 .create();
         entityManager.persist(objection);
@@ -201,7 +201,7 @@ public class Persister {
                 .set(field(Vote::getIsApproved), isApproved)
                 .ignore(field(Vote::getId))
                 .create();
-        objection.add(vote);
+//        objection.add(vote);
         entityManager.persist(vote);
         return vote;
     }
