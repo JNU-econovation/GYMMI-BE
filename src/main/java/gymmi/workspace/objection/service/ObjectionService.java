@@ -34,7 +34,6 @@ public class ObjectionService {
     private final WorkerRepository workerRepository;
     private final ObjectionRepository objectionRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
-    private final ObjectionAlreadyOpenValidator objectionAlreadyOpenValidator;
     private final VoteRepository voteRepository;
 
 
@@ -43,8 +42,11 @@ public class ObjectionService {
         Worker worker = workerRepository.findWorkerOrThrow(loginedUser.getId(), workspaceId);
         WorkoutHistory workoutHistory = workoutHistoryRepository.findByWorkoutConfirmationIdOrThrow(workoutConfirmationId);
 
+        boolean isPresent = objectionRepository.findByWorkoutHistoryId(workoutHistory.getId()).isPresent();
+        ObjectionAlreadyOpenValidator.validate(isPresent);
+
         ObjectionStarter objectionStarter = new ObjectionStarter();
-        Objection objection = objectionStarter.execute(workspace, worker, workoutHistory, reason, objectionAlreadyOpenValidator);
+        Objection objection = objectionStarter.execute(workspace, worker, workoutHistory, reason);
 
         objectionRepository.save(objection);
         applicationEventPublisher.publishEvent(new ObjectionOpenEvent(workspace.getId(), objection.getId()));

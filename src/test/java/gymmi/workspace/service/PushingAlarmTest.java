@@ -17,7 +17,6 @@ import gymmi.workspace.objection.controller.request.ObjectionRequest;
 import gymmi.workspace.workout.controller.request.WorkingMissionInWorkspaceRequest;
 import gymmi.workspace.workout.controller.request.WorkoutRequest;
 import gymmi.workspace.workspace.service.WorkspacePreparingService;
-import gymmi.workspace.workspace.service.WorkspaceProgressService;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,8 +40,6 @@ public class PushingAlarmTest {
 
     int WAIT_TIME_MS = 1500;
 
-    @Autowired
-    WorkspaceProgressService workspaceProgressService;
 
     @Autowired
     WorkspacePreparingService workspacePreparingService;

@@ -1,23 +1,27 @@
 package gymmi.workspace.domain;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
 import gymmi.etc.domain.entity.User;
+import gymmi.fixture.UserFixture;
+import gymmi.fixture.WorkerFixture;
+import gymmi.fixture.WorkspaceFixture;
 import gymmi.global.exceptionhandler.message.ErrorCode;
-import gymmi.workspace.workspace.domain.entity.Worker;
 import gymmi.workspace.workspace.domain.LeftWorker;
-import gymmi.workspace.workspace.domain.entity.Workspace;
-import java.util.Arrays;
-import java.util.List;
-
 import gymmi.workspace.workspace.domain.WorkspaceCreationValidator;
 import gymmi.workspace.workspace.domain.WorkspacePreparingManager;
 import gymmi.workspace.workspace.domain.WorkspaceStatus;
+import gymmi.workspace.workspace.domain.entity.Worker;
+import gymmi.workspace.workspace.domain.entity.Workspace;
 import org.instancio.Instancio;
 import org.instancio.Select;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class WorkspacePreparingManagerTest {
 
@@ -25,59 +29,67 @@ class WorkspacePreparingManagerTest {
     class 워크스페이스_참여_허락 {
 
         @Test
-        void 사용자에게_워크스페이스_참가를_허락한다() {
+        void 사용자에게_워크스페이스_참가를_허락하면_새로운_워커가_반환된다() {
             // given
-            Workspace workspace = getWorkspace("1234", WorkspaceStatus.PREPARING, WorkspaceCreationValidator.MIN_HEAD_COUNT);
-            List<Worker> workers = getWorkers(workspace, 1);
-            WorkspacePreparingManager workspacePreparingManager = new WorkspacePreparingManager(workspace, workers);
+            User user = UserFixture.defaultUser();
+            Workspace workspace = WorkspaceFixture.builder(user).workspaceStatus(WorkspaceStatus.PREPARING).build();
+            Worker worker = WorkerFixture.builder(user, workspace).build();
+            WorkspacePreparingManager workspacePreparingManager = new WorkspacePreparingManager(workspace, new ArrayList<>(List.of(worker)));
 
-            User user = Instancio.of(User.class).create();
+            User user1 = UserFixture.builder().id(1L).build();
 
             // when
-            Worker worker = workspacePreparingManager.allow(user, workspace.getPassword());
+            Worker newWorker = workspacePreparingManager.allow(user1, workspace.getPassword());
 
             // then
             assertThat(workspacePreparingManager.getWorkers()).hasSize(2);
-            assertThat(worker.getWorkspace()).isEqualTo(workspace);
+            assertThat(newWorker.getWorkspace()).isEqualTo(workspace);
         }
 
         @Test
         void 워크스페이스_비밀번호가_일치하지_않는_경우_예외가_발생한다() {
             // given
-            Workspace workspace = getWorkspace("1234", WorkspaceStatus.PREPARING, WorkspaceCreationValidator.MIN_HEAD_COUNT);
-            List<Worker> workers = getWorkers(workspace, 1);
-            WorkspacePreparingManager workspacePreparingManager = new WorkspacePreparingManager(workspace, workers);
+            User user = UserFixture.defaultUser();
+            Workspace workspace = WorkspaceFixture.builder(user).password("1234").build();
+            Worker worker = WorkerFixture.builder(user, workspace).build();
+            WorkspacePreparingManager workspacePreparingManager = new WorkspacePreparingManager(workspace, new ArrayList<>(List.of(worker)));
 
-            User user = Instancio.of(User.class).create();
+            User user1 = UserFixture.builder().id(1L).build();
             String wrongPassword = "1235";
 
             // when, then
-            assertThatThrownBy(() -> workspacePreparingManager.allow(user, wrongPassword))
+            assertThatThrownBy(() -> workspacePreparingManager.allow(user1, wrongPassword))
                     .hasMessage(ErrorCode.NOT_MATCHED_PASSWORD.getMessage());
         }
 
         @Test
         void 워크스페이스_인원이_가득_찬_경우_예외가_발생한다() {
             // given
-            Workspace workspace = getWorkspace("1234", WorkspaceStatus.PREPARING, WorkspaceCreationValidator.MIN_HEAD_COUNT);
-            List<Worker> workers = getWorkers(workspace, WorkspaceCreationValidator.MIN_HEAD_COUNT);
-            WorkspacePreparingManager workspacePreparingManager = new WorkspacePreparingManager(workspace, workers);
+            User user = UserFixture.defaultUser();
+            User user1 = UserFixture.builder().id(1L).build();
 
-            User user = Instancio.of(User.class).create();
+            Workspace workspace = WorkspaceFixture.builder(user).headCount(2).build();
+            Worker worker = WorkerFixture.builder(user, workspace).build();
+            Worker worker1 = WorkerFixture.builder(user1, workspace).build();
+            WorkspacePreparingManager workspacePreparingManager = new WorkspacePreparingManager(
+                    workspace, new ArrayList<>(List.of(worker, worker1))
+            );
+
+            User user2 = UserFixture.builder().id(2L).build();
 
             // when, then
-            assertThatThrownBy(() -> workspacePreparingManager.allow(user, workspace.getPassword()))
+            assertThatThrownBy(() -> workspacePreparingManager.allow(user2, workspace.getPassword()))
                     .hasMessage(ErrorCode.FULL_WORKSPACE.getMessage());
         }
 
         @Test
         void 워크스페이스에_이미_참여_한_경우_예외가_발생_한다() {
             // given
-            Workspace workspace = getWorkspace("1234", WorkspaceStatus.PREPARING, WorkspaceCreationValidator.MIN_HEAD_COUNT);
-            List<Worker> workers = getWorkers(workspace, 1);
-            WorkspacePreparingManager workspacePreparingManager = new WorkspacePreparingManager(workspace, workers);
+            User user = UserFixture.defaultUser();
+            Workspace workspace = WorkspaceFixture.builder(user).build();
+            Worker worker = WorkerFixture.builder(user, workspace).build();
 
-            User user = workers.get(0).getUser();
+            WorkspacePreparingManager workspacePreparingManager = new WorkspacePreparingManager(workspace, new ArrayList<>(List.of(worker)));
 
             // when, then
             assertThatThrownBy(() -> workspacePreparingManager.allow(user, workspace.getPassword()))
@@ -90,28 +102,32 @@ class WorkspacePreparingManagerTest {
 
         @Test
         void 워크스페이스_참여자가_아닌_경우_예외가_발생한다() {
-            Workspace workspace = getWorkspace("1234", WorkspaceStatus.PREPARING, WorkspaceCreationValidator.MIN_HEAD_COUNT);
-            Workspace workspace1 = Instancio.of(Workspace.class)
-                    .filter(Select.field(Workspace::getId), (Long id) -> id != workspace.getId())
-                    .create();
-            List<Worker> workers = getWorkers(workspace, 1);
-            Worker worker = getWorker(workspace1, workspace1.getCreator(), workers.get(0).getId());
+            User user = UserFixture.defaultUser();
+            Workspace workspace = WorkspaceFixture.builder(user).build();
+            Worker worker = WorkerFixture.builder(user, workspace).build();
 
-            WorkspacePreparingManager workspacePreparingManager = new WorkspacePreparingManager(workspace, workers);
+            User user1 = UserFixture.builder().id(1L).build();
+            Workspace workspace1 = WorkspaceFixture.builder(user1).id(1L).build();
+            Worker worker1 = WorkerFixture.builder(user1, workspace1).id(1L).build();
+
+            WorkspacePreparingManager workspacePreparingManager = new WorkspacePreparingManager(workspace, new ArrayList<>(List.of(worker)));
 
             // when, then
-            assertThatThrownBy(() -> workspacePreparingManager.release(worker))
+            assertThatThrownBy(() -> workspacePreparingManager.release(worker1))
                     .hasMessage(ErrorCode.NOT_JOINED_WORKSPACE.getMessage());
         }
 
         @Test
         void 방장이_워크스페이스_참여자가_남아있을때_나가는_경우_예외가_발생한다() {
             // given
-            Workspace workspace = getWorkspace("1234", WorkspaceStatus.PREPARING, WorkspaceCreationValidator.MIN_HEAD_COUNT);
-            List<Worker> workers = getWorkers(workspace, 1);
-            Worker creator = getWorker(workspace, workspace.getCreator(), workers.get(0).getId());
-            workers.add(creator);
-            WorkspacePreparingManager workspacePreparingManager = new WorkspacePreparingManager(workspace, workers);
+            User user = UserFixture.defaultUser();
+            Workspace workspace = WorkspaceFixture.builder(user).build();
+            Worker creator = WorkerFixture.builder(user, workspace).build();
+
+            User user1 = UserFixture.builder().id(1L).build();
+            Worker worker1 = WorkerFixture.builder(user1, workspace).id(1L).build();
+
+            WorkspacePreparingManager workspacePreparingManager = new WorkspacePreparingManager(workspace, new ArrayList<>(List.of(creator, worker1)));
 
             // when, then
             assertThatThrownBy(() -> workspacePreparingManager.release(creator))
@@ -119,54 +135,22 @@ class WorkspacePreparingManagerTest {
         }
 
         @Test
-        void 워크스페이스_참여자를_내보낸다() {
+        void 워크스페이스_마지막_남은_참여자를_내보낸다() {
             // given
-            Workspace workspace = getWorkspace("1234", WorkspaceStatus.PREPARING, WorkspaceCreationValidator.MIN_HEAD_COUNT);
-            Worker worker = getWorker(workspace, workspace.getCreator());
-            List<Worker> workers = List.of(worker);
-            WorkspacePreparingManager workspacePreparingManager = new WorkspacePreparingManager(workspace, workers);
+            User user = UserFixture.defaultUser();
+            Workspace workspace = WorkspaceFixture.builder(user).build();
+            Worker creator = WorkerFixture.builder(user, workspace).build();
+
+            WorkspacePreparingManager workspacePreparingManager = new WorkspacePreparingManager(workspace, new ArrayList<>(List.of(creator)));
 
             // when
-            LeftWorker result = workspacePreparingManager.release(worker);
+            LeftWorker result = workspacePreparingManager.release(creator);
 
             // then
             assertThat(workspacePreparingManager.getWorkers()).isEmpty();
-            assertThat(result.getWorker()).isEqualTo(worker);
+            assertThat(result.getWorker()).isEqualTo(creator);
             assertThat(result.isLastLeaver()).isTrue();
         }
     }
 
-    private Worker getWorker(Workspace workspace, User user, Long... excludingWorkerIds) {
-        List<Long> excludingIds = Arrays.stream(excludingWorkerIds).toList();
-        return Instancio.of(Worker.class)
-                .set(Select.field(Worker::getWorkspace), workspace)
-                .set(Select.field(Worker::getUser), user)
-                .filter(Select.field(Worker::getId), (Long id) -> !excludingIds.contains(id))
-                .create();
-    }
-
-    private List<Worker> getWorkers(Workspace workspace, int size) {
-        List<Worker> workers = Instancio.ofList(Worker.class)
-                .size(size)
-                .set(Select.field(Worker::getWorkspace), workspace)
-                .withUnique(Select.field(Worker::getId))
-                .create();
-        return workers;
-    }
-
-    private Workspace getWorkspace(String password, WorkspaceStatus workspaceStatus, int headCount) {
-        Workspace workspace = Instancio.of(Workspace.class)
-                .set(Select.field(Workspace::getStatus), workspaceStatus)
-                .set(Select.field(Workspace::getPassword), password)
-                .set(Select.field(Workspace::getHeadCount), headCount)
-                .create();
-        return workspace;
-    }
-
-    private WorkspaceStatus getWorkspaceStatusExcluding(WorkspaceStatus... workspaceStatus) {
-        return Instancio.gen()
-                .enumOf(WorkspaceStatus.class)
-                .excluding(workspaceStatus)
-                .get();
-    }
 }

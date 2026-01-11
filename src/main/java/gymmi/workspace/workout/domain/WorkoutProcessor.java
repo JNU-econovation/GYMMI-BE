@@ -2,10 +2,12 @@ package gymmi.workspace.workout.domain;
 
 import gymmi.workspace.workout.domain.entity.WorkoutHistory;
 import gymmi.workspace.workout.domain.entity.WorkoutRecord;
-import gymmi.workspace.workspace.domain.entity.Worker;
-import gymmi.workspace.workspace.domain.entity.Workspace;
+import gymmi.workspace.workspace.domain.ParticipantValidator;
 import gymmi.workspace.workspace.domain.WorkspacePhase;
 import gymmi.workspace.workspace.domain.WorkspaceStatus;
+import gymmi.workspace.workspace.domain.WorkspaceStatusValidator;
+import gymmi.workspace.workspace.domain.entity.Worker;
+import gymmi.workspace.workspace.domain.entity.Workspace;
 
 import java.util.Collections;
 import java.util.List;
@@ -20,6 +22,8 @@ public class WorkoutProcessor {
     private boolean isApplied;
 
     public WorkoutProcessor(Workspace workspace, Worker worker, List<WorkoutRecord> workoutRecords) {
+        ParticipantValidator.validateParticipant(workspace, worker);
+        WorkspaceStatusValidator.validateWorkspaceIsInProgress(workspace);
         this.workspace = workspace;
         this.worker = worker;
         this.workoutRecords = Collections.unmodifiableList(workoutRecords);
@@ -28,11 +32,10 @@ public class WorkoutProcessor {
         this.isPhaseChanged = false;
     }
 
-    public void apply(WorkoutValidator validator) {
+    public void apply() {
         if (isApplied) {
             return;
         }
-        validator.validateCanWork(workspace, worker);
         addScore();
         updatePhase();
         completeIfGoalHasReached();

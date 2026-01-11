@@ -10,10 +10,8 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class ObjectionAlreadyOpenValidator {
 
-    private final ObjectionRepository objectionRepository;
-
-    public void validate(Long workoutHistoryId) {
-        if (objectionRepository.findByWorkoutHistoryId(workoutHistoryId).isPresent()) {
+    public static void validate(boolean isPresent) {
+        if (isPresent) {
             throw new AlreadyExistException(ErrorCode.ALREADY_OBJECTED);
         }
     }

@@ -1,27 +1,29 @@
 package gymmi.workspace.workout.service;
 
+import gymmi.etc.domain.ImageUse;
 import gymmi.etc.domain.entity.User;
+import gymmi.etc.service.S3Service;
 import gymmi.global.eventlistener.event.ImageValidationEvent;
 import gymmi.global.eventlistener.event.LinkToPhotoFeedEvent;
 import gymmi.global.eventlistener.event.WorkoutConfirmationCreatedEvent;
 import gymmi.global.eventlistener.event.WorkspacePhaseChangedEvent;
 import gymmi.global.exceptionhandler.exception.NotHavePermissionException;
 import gymmi.global.exceptionhandler.message.ErrorCode;
-import gymmi.etc.domain.ImageUse;
-import gymmi.etc.service.S3Service;
 import gymmi.workspace.objection.domain.entity.Objection;
 import gymmi.workspace.objection.repository.ObjectionRepository;
 import gymmi.workspace.workout.controller.request.WorkoutRequest;
 import gymmi.workspace.workout.controller.response.*;
-import gymmi.workspace.workout.domain.*;
+import gymmi.workspace.workout.domain.WorkoutMetric;
+import gymmi.workspace.workout.domain.WorkoutProcessor;
+import gymmi.workspace.workout.domain.WorkoutValidator;
 import gymmi.workspace.workout.domain.entity.WorkoutConfirmation;
 import gymmi.workspace.workout.domain.entity.WorkoutHistory;
 import gymmi.workspace.workout.domain.entity.WorkoutRecord;
+import gymmi.workspace.workout.repository.WorkoutHistoryRepository;
+import gymmi.workspace.workout.repository.WorkoutRecordRepository;
 import gymmi.workspace.workspace.domain.entity.Worker;
 import gymmi.workspace.workspace.domain.entity.Workspace;
 import gymmi.workspace.workspace.repository.WorkerRepository;
-import gymmi.workspace.workout.repository.WorkoutHistoryRepository;
-import gymmi.workspace.workout.repository.WorkoutRecordRepository;
 import gymmi.workspace.workspace.repository.WorkspaceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -42,10 +44,8 @@ public class WorkoutService {
     private final WorkoutRequestMapper workoutRequestMapper;
     private final WorkoutHistoryRepository workoutHistoryRepository;
     private final WorkoutRecordRepository workoutRecordRepository;
-    private final WorkoutValidator workoutValidator;
     private final S3Service s3Service;
     private final ObjectionRepository objectionRepository;
-
 
 
     @Transactional // 동시성 문제
@@ -57,6 +57,9 @@ public class WorkoutService {
         Workspace workspace = workspaceRepository.findByIdOrThrow(workspaceId);
         Worker worker = workerRepository.findWorkerOrThrow(loginedUser.getId(), workspace.getId());
 
+        int count = workoutHistoryRepository.findTodayByWorkerId(worker.getId()).size();
+        WorkoutValidator.validateDailyWorkoutHistoryCount(count);
+
         // 이미지 검사 다른 방식 필요
         applicationEventPublisher.publishEvent(new ImageValidationEvent(ImageUse.WORKOUT_CONFIRMATION, workoutRequest.getImageUrl()));
 
@@ -67,7 +70,7 @@ public class WorkoutService {
         workoutRecordRepository.saveAll(workoutRecords);
 
         WorkoutProcessor workoutProcessor = new WorkoutProcessor(workspace, worker, workoutRecords);
-        workoutProcessor.apply(workoutValidator);
+        workoutProcessor.apply();
 
         applicationEventPublisher.publishEvent(new WorkoutConfirmationCreatedEvent(workspace.getId(), loginedUser.getId()));
         if (workoutProcessor.isPhaseChanged()) {
@@ -79,7 +82,6 @@ public class WorkoutService {
 
         return workoutProcessor.getSumScore();
     }
-
 
 
     public WorkoutConfirmationDetailResponse getWorkoutConfirmation(User loginedUser, Long workspaceId, Long workoutConfirmationId) {

@@ -20,7 +20,7 @@ public abstract class WorkspaceFixture {
     public static class WorkspaceBuilder {
         private final User creator;
 
-        private Long id = null;
+        private Long id = 0L;
         private String name = "방이름";
         private String description = "워크스페이스 설명";
         private Integer goalScore = WorkspaceCreationValidator.MIN_GOAL_SCORE;
@@ -29,6 +29,7 @@ public abstract class WorkspaceFixture {
         private String task = "치킨 내기";
         private WorkspaceStatus workspaceStatus = WorkspaceStatus.PREPARING;
         private Integer currentScore = 0;
+        private String password = "1234";
 
         private WorkspaceBuilder(User creator) {
             this.creator = creator;
@@ -41,6 +42,11 @@ public abstract class WorkspaceFixture {
 
         public WorkspaceBuilder name(String name) {
             this.name = name;
+            return this;
+        }
+
+        public WorkspaceBuilder password(String password) {
+            this.password = password;
             return this;
         }
 
@@ -95,6 +101,7 @@ public abstract class WorkspaceFixture {
             }
             ReflectionTestUtils.setField(workspace, "status", workspaceStatus);
             ReflectionTestUtils.setField(workspace, "currentScore", currentScore);
+            ReflectionTestUtils.setField(workspace, "password", password);
 
             return workspace;
         }

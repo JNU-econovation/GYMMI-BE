@@ -45,76 +45,8 @@ class WorkspacePreparingTest extends IntegrationTest {
     @Autowired
     EntityManager entityManager;
 
-    @Nested
-    class 워크스페이스_생성 {
-
-        @Test
-        void 참여하면서_완료_되지_않은_워크스페이스가_5개_이상_인_경우_예외가_발생한다() {
-            // given
-            User user = persister.persistUser();
-            persistWorkspacesNotCompletedWithWorker(user, 5);
-
-            CreatingWorkspaceRequest request = CreatingWorkspaceRequest.builder()
-                    .goalScore(WorkspaceCreationValidator.MIN_GOAL_SCORE)
-                    .headCount(WorkspaceCreationValidator.MIN_HEAD_COUNT)
-                    .name("지미")
-                    .task(Instancio.gen().string().get())
-                    .missionBoard(
-                            List.of(new MissionRequest(
-                                    Instancio.gen().string().maxLength(Mission.MAX_NAME_LENGTH).get(),
-                                    Mission.MIN_SCORE)))
-                    .build();
-
-            // when, then
-            assertThatThrownBy(() -> workspacePreparingService.setUpWorkspace(user, request))
-                    .hasMessage(EXCEED_MAX_JOINED_WORKSPACE.getMessage());
-        }
-
-        @Test
-        void 워크스페이스_이름이_이미_존재하는_경우_예외가_발생한다() {
-            // given
-            User user = persister.persistUser();
-            Workspace workspace = persister.persistWorkspace(user);
-            String workspaceName = workspace.getName();
-
-            CreatingWorkspaceRequest request = CreatingWorkspaceRequest.builder()
-                    .goalScore(WorkspaceCreationValidator.MIN_GOAL_SCORE)
-                    .headCount(WorkspaceCreationValidator.MIN_HEAD_COUNT)
-                    .name(workspaceName)
-                    .task(Instancio.gen().string().get())
-                    .missionBoard(
-                            List.of(new MissionRequest(
-                                    Instancio.gen().string().maxLength(Mission.MAX_NAME_LENGTH).get(),
-                                    Mission.MIN_SCORE)))
-                    .build();
-
-            // when, then
-            assertThatThrownBy(() -> workspacePreparingService.setUpWorkspace(user, request))
-                    .hasMessage(ErrorCode.ALREADY_USED_WORKSPACE_NAME.getMessage());
-        }
-
-    }
 
 
-    @Test
-    void 방장이_워크스페이스를_떠나는_경우_워크스페이스와_관련_정보도_삭제된다() {
-        // given
-        User user = persister.persistUser();
-        Workspace workspace = persister.persistWorkspace(user, WorkspaceStatus.PREPARING);
-        Worker worker = persister.persistWorker(user, workspace);
-        List<Mission> missions = persister.persistMissions(workspace, 3);
-        persister.persistFavoriteMission(worker, missions.get(0));
-
-        // when
-        workspacePreparingService.leaveWorkspace(user, workspace.getId());
-
-        // then
-        assertThat(workspaceRepository.findById(workspace.getId())).isEmpty();
-        assertThat(workerRepository.findById(worker.getId())).isEmpty();
-        assertThat(missionRepository.getAllByWorkspaceId(workspace.getId())).isEmpty();
-        assertThat(favoriteMissionRepository.findAll()).isEmpty();
-        assertThat(workerRepository.findById(worker.getId())).isEmpty();
-    }
 
     private List<Workspace> persistWorkspacesNotCompletedWithWorker(User user, int size) {
         List<Workspace> workspaces = Instancio.ofList(Workspace.class)

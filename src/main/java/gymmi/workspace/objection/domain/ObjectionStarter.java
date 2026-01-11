@@ -1,25 +1,19 @@
 package gymmi.workspace.objection.domain;
 
-import gymmi.global.exceptionhandler.exception.InvalidStateException;
-import gymmi.global.exceptionhandler.message.ErrorCode;
 import gymmi.workspace.objection.domain.entity.Objection;
 import gymmi.workspace.workout.domain.entity.WorkoutHistory;
 import gymmi.workspace.workout.domain.WorkoutHistoryInWorkspaceValidator;
 import gymmi.workspace.workspace.domain.ParticipantValidator;
+import gymmi.workspace.workspace.domain.WorkspaceStatusValidator;
 import gymmi.workspace.workspace.domain.entity.Worker;
 import gymmi.workspace.workspace.domain.entity.Workspace;
 
 public class ObjectionStarter {
 
-    public Objection execute(Workspace workspace, Worker subject, WorkoutHistory workoutHistory, String reason, ObjectionAlreadyOpenValidator validator) {
-        validator.validate(workoutHistory.getId());
+    public Objection execute(Workspace workspace, Worker subject, WorkoutHistory workoutHistory, String reason) {
         ParticipantValidator.validateParticipant(workspace, subject);
-
-        if (!workspace.isInProgress()) {
-            throw new InvalidStateException(ErrorCode.INACTIVE_WORKSPACE);
-        }
-
-        WorkoutHistoryInWorkspaceValidator.validate(workspace, workoutHistory);
+        WorkspaceStatusValidator.validateWorkspaceIsInProgress(workspace);
+        WorkoutHistoryInWorkspaceValidator.validateWorkoutHistoryInWorkspace(workspace, workoutHistory);
 
         return Objection.builder()
                 .subject(subject)

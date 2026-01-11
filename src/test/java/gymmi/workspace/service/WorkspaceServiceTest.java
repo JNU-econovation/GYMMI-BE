@@ -19,7 +19,7 @@ import gymmi.workspace.workout.domain.entity.WorkoutConfirmation;
 import gymmi.workspace.workout.domain.entity.WorkoutHistory;
 import gymmi.workspace.workspace.domain.entity.Workspace;
 import gymmi.workspace.workout.repository.WorkoutHistoryRepository;
-import gymmi.workspace.workspace.service.WorkspaceQueryService;
+import gymmi.workspace.workspace.service.WorkspaceService;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,11 +32,11 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-class WorkspaceQueryServiceTest extends IntegrationTest {
+class WorkspaceServiceTest extends IntegrationTest {
 
 
     @Autowired
-    WorkspaceQueryService workspaceQueryService;
+    WorkspaceService workspaceService;
 
     @Autowired
     WorkoutService workoutService;

@@ -21,7 +21,7 @@ public abstract class WorkerFixture {
         private final User user;
         private final Workspace workspace;
 
-        private Long id = null;
+        private Long id = 0L;
         private Integer contributedScore = 0;
 
         private WorkerBuilder(User user, Workspace workspace) {

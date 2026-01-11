@@ -16,7 +16,7 @@ public abstract class UserFixture {
 
     public static class UserBuilder {
 
-        private Long id = null;
+        private Long id = 0L;
         private String loginId = "gymmi123";          // 영어+숫자 포함
         private String plainPassword = "password123!"; // 영어+숫자+특수문자 포함
         private String nickname = "지미닉네임";
