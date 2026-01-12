@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface ObjectionRepository extends JpaRepository<Objection, Long>, ObjectionCustomRepository {
 
-    @Query("select o from Objection o where o.workoutHistoryId =:workoutHistoryId")
+    @Query("select o from Objection o where o.workoutHistory.id =:workoutHistoryId")
     Optional<Objection> findByWorkoutHistoryId(Long workoutHistoryId);
 
     default Objection findByIdOrThrow(Long objectionId) {

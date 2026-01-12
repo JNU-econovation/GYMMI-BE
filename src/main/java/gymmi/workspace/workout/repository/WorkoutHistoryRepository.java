@@ -15,7 +15,7 @@ import java.util.Optional;
 
 public interface WorkoutHistoryRepository extends JpaRepository<WorkoutHistory, Long>, WorkoutHistoryCustomRepository {
 
-    @Query("select w from WorkoutHistory w join fetch w.workoutRecords where w.worker.id =:workerId")
+    @Query("select w from WorkoutHistory w where w.worker.id =:workerId")
     List<WorkoutHistory> getAllByWorkerId(Long workerId);
 
     default WorkoutHistory getByWorkoutHistoryId(Long workoutHistoryId) {

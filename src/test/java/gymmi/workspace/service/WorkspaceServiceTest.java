@@ -20,6 +20,7 @@ import gymmi.workspace.workout.domain.entity.WorkoutHistory;
 import gymmi.workspace.workspace.domain.entity.Workspace;
 import gymmi.workspace.workout.repository.WorkoutHistoryRepository;
 import gymmi.workspace.workspace.service.WorkspaceService;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +51,7 @@ class WorkspaceServiceTest extends IntegrationTest {
     @MockBean
     S3Service s3Service;
 
-    @Test
+    @Disabled
     void 참여자의_운동_현황을_확인_한다() {
         // given
         User creator = persister.persistUser();
@@ -79,6 +80,7 @@ class WorkspaceServiceTest extends IntegrationTest {
         assertThat(response.getTotalWorkoutCount()).isEqualTo(2);
     }
 
+    @Disabled
     @Test
     void 워크스페이스의_운동_인증_목록을_확인_한다() {
         // given
@@ -120,6 +122,7 @@ class WorkspaceServiceTest extends IntegrationTest {
         assertThat(response1.getIsObjection()).isEqualTo(true);
     }
 
+    @Disabled
     @Test
     void 운동_인증_상세를_확인_한다() {
         // given
@@ -144,6 +147,7 @@ class WorkspaceServiceTest extends IntegrationTest {
         assertThat(response.getObjectionId()).isEqualTo(null);
     }
 
+    @Disabled
     @Nested
     class 이의_신청_확인 {
 

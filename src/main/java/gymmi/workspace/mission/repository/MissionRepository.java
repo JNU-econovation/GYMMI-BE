@@ -22,10 +22,10 @@ public interface MissionRepository extends JpaRepository<Mission, Long> {
     @Query("select m from Mission m where m.id = :missionId")
     Optional<Mission> findByMissionId(Long missionId);
 
-    Optional<Mission> findByMissionIdAndWorkspaceId(Long workspaceId, Long missionId);
+    Optional<Mission> findByIdAndWorkspaceId(Long workspaceId, Long missionId);
 
     default Mission findInWorkspace(Long workspaceId, Long missionId) {
-        Mission mission = findByMissionIdAndWorkspaceId(workspaceId, missionId)
+        Mission mission = findByIdAndWorkspaceId(workspaceId, missionId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_REGISTERED_WORKSPACE_MISSION));
         return mission;
     }

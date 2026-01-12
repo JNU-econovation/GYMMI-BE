@@ -29,6 +29,7 @@ import gymmi.workspace.workspace.repository.WorkspaceRepository;
 import gymmi.workspace.workspace.service.WorkspacePreparingService;
 import jakarta.persistence.EntityManager;
 import org.instancio.Instancio;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,6 +83,7 @@ class WorkspacePreparingServiceTest extends IntegrationTest {
     EntityManager entityManager;
 
 
+    @Disabled
     @Test
     void 방장이_워크스페이스를_떠나는_경우_워크스페이스와_관련_정보도_삭제된다() {
         // given

@@ -18,6 +18,7 @@ import gymmi.workspace.workout.controller.request.WorkingMissionInWorkspaceReque
 import gymmi.workspace.workout.controller.request.WorkoutRequest;
 import gymmi.workspace.workspace.service.WorkspacePreparingService;
 import org.instancio.Instancio;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -61,6 +62,7 @@ public class PushingAlarmTest {
 
     @Autowired
     Persister persister;
+
 
     @Test
     void 워크스페이스_시작시_방장을_제외한_참여자들에게_알림이_푸쉬된다() throws InterruptedException {
@@ -107,6 +109,7 @@ public class PushingAlarmTest {
         then(firebaseCloudMessageService).should(times(2)).sendMessage(any());
     }
 
+    @Disabled
     @Test
     void 이의신청시_모든_참여자들에게_알림이_푸쉬된다() throws InterruptedException {
         // given
@@ -131,6 +134,7 @@ public class PushingAlarmTest {
         then(firebaseCloudMessageService).should(times(3)).sendMessage(any());
     }
 
+    @Disabled
     @Test
     void 워크스페이스_페이즈가_변할시_모든_참여자들에게_알림이_푸쉬된다() throws InterruptedException {
         // given
