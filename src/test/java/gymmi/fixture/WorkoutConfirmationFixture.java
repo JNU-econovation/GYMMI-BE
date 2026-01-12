@@ -14,7 +14,7 @@ public abstract class WorkoutConfirmationFixture {
     }
 
     public static class WorkoutConfirmationBuilder {
-        private Long id = null;
+        private Long id = 0L;
         private String filename = "/default_workout_image.png"; // 기본 파일명
         private String comment = "오늘 운동 완료!"; // 기본 코멘트
 

@@ -1,28 +1,21 @@
 package gymmi.workspace.vote.domain;
 
 import gymmi.etc.domain.entity.User;
-import gymmi.workspace.mission.domain.entity.Mission;
+import gymmi.fixture.*;
 import gymmi.workspace.objection.domain.entity.Objection;
-import gymmi.workspace.vote.controller.request.VoteRequest;
+import gymmi.workspace.vote.domain.entity.Vote;
 import gymmi.workspace.workout.domain.entity.WorkoutConfirmation;
-import gymmi.workspace.workout.domain.entity.WorkoutHistory;
-import gymmi.workspace.workspace.domain.WorkspaceStatus;
 import gymmi.workspace.workspace.domain.entity.Worker;
 import gymmi.workspace.workspace.domain.entity.Workspace;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.List;
 
 class VoteReflectorTest {
 
 
-    @Disabled
-    @Test
-    void 이의신청_투표를_통해_이의신청이_찬성되어_점수가_몰수된다() {
+//    @Test
+//    void 이의신청_투표를_통해_이의신청이_찬성되어_점수가_몰수된다() {
 //        // given
 //        User creator = persister.persistUser();
 //        User user = persister.persistUser();
@@ -48,6 +41,6 @@ class VoteReflectorTest {
 //        assertThat(objection.isInProgress()).isEqualTo(false);
 //        assertThat(workoutHistory.isRejected()).isFalse();
 //        assertThat(userWorker.getContributedScore()).isEqualTo(0);
-    }
+//    }
 
 }

@@ -17,12 +17,19 @@ class ParticipantValidatorTest {
     void 워크스페이스_참여자가_아닌_경우_예외가_발생한다() {
         // given
         User user = UserFixture.defaultUser();
+        User user1 = UserFixture.builder().id(1L).build();
         Workspace workspace = WorkspaceFixture.builder(user)
+                .id(0L)
+                .workspaceStatus(WorkspaceStatus.PREPARING)
+                .build();
+
+        Workspace workspace1 = WorkspaceFixture.builder(user)
                 .id(1L)
                 .workspaceStatus(WorkspaceStatus.PREPARING)
                 .build();
 
-        Worker worker = WorkerFixture.defaultWorker();
+
+        Worker worker = WorkerFixture.builder(user1, workspace1).build();
 
         // when, then
         assertThatThrownBy(() -> ParticipantValidator.validateParticipant(workspace, worker))

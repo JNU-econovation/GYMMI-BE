@@ -11,12 +11,6 @@ public abstract class WorkerFixture {
         return new WorkerBuilder(user, workspace);
     }
 
-    public static Worker defaultWorker() {
-        Workspace workspace = WorkspaceFixture.defaultWorkspace();
-        User user = UserFixture.defaultUser();
-        return WorkerFixture.builder(user, workspace).build();
-    }
-
     public static class WorkerBuilder {
         private final User user;
         private final Workspace workspace;
