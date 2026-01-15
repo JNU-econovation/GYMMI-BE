@@ -1,6 +1,6 @@
 package gymmi.fixture;
 
-import gymmi.etc.domain.entity.User;
+import gymmi.user.domain.User;
 import gymmi.workspace.workspace.domain.entity.Worker;
 import gymmi.workspace.workspace.domain.entity.Workspace;
 import org.springframework.test.util.ReflectionTestUtils;

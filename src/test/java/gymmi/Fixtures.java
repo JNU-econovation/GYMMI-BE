@@ -1,6 +1,6 @@
 package gymmi;
 
-import gymmi.etc.domain.entity.User;
+import gymmi.user.domain.User;
 import gymmi.workspace.mission.domain.entity.Mission;
 import gymmi.workspace.workspace.controller.request.CreatingWorkspaceRequest;
 import gymmi.workspace.mission.controller.request.MissionRequest;

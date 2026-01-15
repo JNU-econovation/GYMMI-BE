@@ -1,13 +1,13 @@
 package gymmi.workspace.workspace.domain;
 
-import gymmi.global.exceptionhandler.exception.InvalidStateException;
-import gymmi.global.exceptionhandler.exception.NotHavePermissionException;
+import gymmi.global.exception.exceptiontype.InvalidStateException;
+import gymmi.global.exception.exceptiontype.NotHavePermissionException;
 import gymmi.workspace.workspace.domain.entity.Worker;
 import gymmi.workspace.workspace.domain.entity.Workspace;
 
 import java.util.List;
 
-import static gymmi.global.exceptionhandler.message.ErrorCode.*;
+import static gymmi.global.exception.message.ErrorCode.*;
 
 public class WorkspaceStarter {
 

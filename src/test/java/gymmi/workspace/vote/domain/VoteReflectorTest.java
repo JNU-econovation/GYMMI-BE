@@ -1,16 +1,5 @@
 package gymmi.workspace.vote.domain;
 
-import gymmi.etc.domain.entity.User;
-import gymmi.fixture.*;
-import gymmi.workspace.objection.domain.entity.Objection;
-import gymmi.workspace.vote.domain.entity.Vote;
-import gymmi.workspace.workout.domain.entity.WorkoutConfirmation;
-import gymmi.workspace.workspace.domain.entity.Worker;
-import gymmi.workspace.workspace.domain.entity.Workspace;
-import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
 class VoteReflectorTest {
 
 

@@ -3,7 +3,7 @@ package gymmi.integration;
 import static gymmi.integration.Steps.회원_가입_요청;
 
 import gymmi.Fixtures;
-import gymmi.etc.controller.request.RegistrationRequest;
+import gymmi.auth.controller.request.RegistrationRequest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;

@@ -1,6 +1,6 @@
 package gymmi.fixture;
 
-import gymmi.etc.domain.entity.User;
+import gymmi.user.domain.User;
 import org.springframework.test.util.ReflectionTestUtils;
 
 public abstract class UserFixture {

@@ -1,6 +1,6 @@
 package gymmi.global.eventlistener.event;
 
-import gymmi.etc.domain.ImageUse;
+import gymmi.image.domain.ImageUse;
 import lombok.Getter;
 
 @Getter

@@ -1,10 +1,10 @@
 package gymmi.helper;
 
-import gymmi.etc.domain.entity.User;
+import gymmi.user.domain.User;
 import gymmi.photoboard.domain.entity.PhotoFeed;
 import gymmi.photoboard.domain.entity.PhotoFeedImage;
 import gymmi.photoboard.domain.entity.ThumbsUp;
-import gymmi.etc.repository.UserRepository;
+import gymmi.user.repository.UserRepository;
 import gymmi.workspace.workspace.domain.WorkspaceStatus;
 import gymmi.workspace.mission.domain.entity.FavoriteMission;
 import gymmi.workspace.mission.domain.entity.Mission;

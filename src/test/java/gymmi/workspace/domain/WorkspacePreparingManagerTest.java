@@ -1,23 +1,19 @@
 package gymmi.workspace.domain;
 
-import gymmi.etc.domain.entity.User;
+import gymmi.user.domain.User;
 import gymmi.fixture.UserFixture;
 import gymmi.fixture.WorkerFixture;
 import gymmi.fixture.WorkspaceFixture;
-import gymmi.global.exceptionhandler.message.ErrorCode;
+import gymmi.global.exception.message.ErrorCode;
 import gymmi.workspace.workspace.domain.LeftWorker;
-import gymmi.workspace.workspace.domain.WorkspaceCreationValidator;
 import gymmi.workspace.workspace.domain.WorkspacePreparingManager;
 import gymmi.workspace.workspace.domain.WorkspaceStatus;
 import gymmi.workspace.workspace.domain.entity.Worker;
 import gymmi.workspace.workspace.domain.entity.Workspace;
-import org.instancio.Instancio;
-import org.instancio.Select;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;

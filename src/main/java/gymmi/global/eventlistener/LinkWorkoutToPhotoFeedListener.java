@@ -1,12 +1,13 @@
 package gymmi.global.eventlistener;
 
-import gymmi.etc.domain.entity.User;
+import gymmi.image.service.ImageService;
+import gymmi.user.domain.User;
 import gymmi.global.eventlistener.event.LinkToPhotoFeedEvent;
 import gymmi.photoboard.request.CreatePhotoFeedRequest;
 import gymmi.photoboard.service.PhotoFeedService;
-import gymmi.etc.repository.UserRepository;
-import gymmi.etc.domain.ImageUse;
-import gymmi.etc.service.S3Service;
+import gymmi.user.repository.UserRepository;
+import gymmi.image.domain.ImageUse;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -20,7 +21,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @Async
 public class LinkWorkoutToPhotoFeedListener {
 
-    private final S3Service s3Service;
+    private final ImageService imageService;
     private final PhotoFeedService photoFeedService;
     private final UserRepository userRepository;
 
@@ -28,7 +29,7 @@ public class LinkWorkoutToPhotoFeedListener {
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void upload(LinkToPhotoFeedEvent event) {
         User user = userRepository.findByIdOrThrow(event.getUserId());
-        String filename = s3Service.copy(ImageUse.WORKOUT_CONFIRMATION, event.getImageUrl(), ImageUse.PHOTO_FEED);
+        String filename = imageService.copy(ImageUse.WORKOUT_CONFIRMATION, event.getImageUrl(), ImageUse.PHOTO_FEED);
         photoFeedService.createPhotoFeed(user, new CreatePhotoFeedRequest(filename, event.getComment()));
     }
 }

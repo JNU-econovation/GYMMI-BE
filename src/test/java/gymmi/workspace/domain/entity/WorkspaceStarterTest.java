@@ -1,7 +1,7 @@
 package gymmi.workspace.domain.entity;
 
-import gymmi.etc.domain.entity.User;
-import gymmi.global.exceptionhandler.message.ErrorCode;
+import gymmi.user.domain.User;
+import gymmi.global.exception.message.ErrorCode;
 import gymmi.workspace.workspace.domain.WorkspaceStatus;
 import gymmi.workspace.workspace.domain.entity.Worker;
 import gymmi.workspace.workspace.domain.entity.Workspace;

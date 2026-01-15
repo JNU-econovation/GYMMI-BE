@@ -2,8 +2,8 @@ package gymmi.workspace.domain;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import gymmi.etc.domain.entity.User;
-import gymmi.global.exceptionhandler.message.ErrorCode;
+import gymmi.user.domain.User;
+import gymmi.global.exception.message.ErrorCode;
 import gymmi.workspace.workspace.domain.entity.Worker;
 import gymmi.workspace.workspace.domain.entity.Workspace;
 import gymmi.workspace.workspace.domain.WorkspaceEditManager;

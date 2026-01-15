@@ -1,7 +1,6 @@
 package gymmi.workspace.service;
 
-import gymmi.etc.domain.entity.User;
-import gymmi.etc.service.S3Service;
+import gymmi.user.domain.User;
 import gymmi.workspace.objection.controller.response.ObjectionAlarmResponse;
 import gymmi.workspace.objection.controller.response.ObjectionResponse;
 import gymmi.workspace.objection.domain.ObjectionStatus;
@@ -47,9 +46,6 @@ class WorkspaceServiceTest extends IntegrationTest {
 
     @Autowired
     WorkoutHistoryRepository workoutHistoryRepository;
-
-    @MockBean
-    S3Service s3Service;
 
     @Disabled
     void 참여자의_운동_현황을_확인_한다() {

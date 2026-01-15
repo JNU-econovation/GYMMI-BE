@@ -1,6 +1,6 @@
 package gymmi.workspace.vote.service;
 
-import gymmi.etc.domain.entity.User;
+import gymmi.user.domain.User;
 import gymmi.workspace.objection.domain.entity.Objection;
 import gymmi.workspace.objection.repository.ObjectionRepository;
 import gymmi.workspace.vote.repository.VoteRepository;

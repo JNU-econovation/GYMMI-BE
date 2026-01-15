@@ -1,10 +1,10 @@
 package gymmi.workspace.workspace.domain;
 
-import gymmi.global.exceptionhandler.exception.InvalidStateException;
+import gymmi.global.exception.exceptiontype.InvalidStateException;
 import gymmi.workspace.workspace.domain.entity.Worker;
 import gymmi.workspace.workspace.domain.entity.Workspace;
 
-import static gymmi.global.exceptionhandler.message.ErrorCode.NOT_JOINED_WORKSPACE;
+import static gymmi.global.exception.message.ErrorCode.NOT_JOINED_WORKSPACE;
 
 public class ParticipantValidator {
 

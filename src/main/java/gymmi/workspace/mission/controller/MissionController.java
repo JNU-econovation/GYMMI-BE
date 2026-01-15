@@ -1,7 +1,7 @@
 package gymmi.workspace.mission.controller;
 
-import gymmi.etc.domain.entity.User;
-import gymmi.global.resolver.Logined;
+import gymmi.user.domain.User;
+import gymmi.global.common.resolver.Logined;
 import gymmi.workspace.mission.service.MissionService;
 import gymmi.workspace.mission.controller.response.FavoriteMissionResponse;
 import gymmi.workspace.mission.controller.response.MissionResponse;

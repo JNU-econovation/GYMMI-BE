@@ -1,16 +1,13 @@
 package gymmi.workspace.workspace.domain;
 
-import gymmi.etc.domain.entity.User;
+import gymmi.user.domain.User;
 import gymmi.fixture.UserFixture;
-import gymmi.fixture.WorkerFixture;
 import gymmi.fixture.WorkspaceFixture;
-import gymmi.workspace.workspace.domain.entity.Worker;
 import gymmi.workspace.workspace.domain.entity.Workspace;
 import org.junit.jupiter.api.Test;
 
-import static gymmi.global.exceptionhandler.message.ErrorCode.INACTIVE_WORKSPACE;
+import static gymmi.global.exception.message.ErrorCode.INACTIVE_WORKSPACE;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 class WorkspaceStatusValidatorTest {
 

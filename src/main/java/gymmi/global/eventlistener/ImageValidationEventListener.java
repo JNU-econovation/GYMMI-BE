@@ -1,7 +1,8 @@
 package gymmi.global.eventlistener;
 
 import gymmi.global.eventlistener.event.ImageValidationEvent;
-import gymmi.etc.service.S3Service;
+
+import gymmi.image.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -10,11 +11,11 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class ImageValidationEventListener {
 
-    private final S3Service s3Service;
+    private final ImageService imageService;
 
     @EventListener
     public void validate(ImageValidationEvent event) {
-        s3Service.validateObjectPresence(event.getImageUse(), event.getFilename());
+        imageService.validateObjectPresence(event.getImageUse(), event.getFilename());
     }
 
 }

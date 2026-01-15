@@ -1,14 +1,10 @@
 package gymmi.workspace.workspace.service;
 
-import gymmi.etc.domain.entity.User;
-import gymmi.global.exceptionhandler.exception.InvalidStateException;
-import gymmi.global.exceptionhandler.exception.NotHavePermissionException;
-import gymmi.global.exceptionhandler.message.ErrorCode;
-import gymmi.etc.service.S3Service;
-import gymmi.workspace.mission.repository.FavoriteMissionRepository;
-import gymmi.workspace.mission.repository.MissionRepository;
+import gymmi.user.domain.User;
+import gymmi.global.exception.exceptiontype.InvalidStateException;
+import gymmi.global.exception.exceptiontype.NotHavePermissionException;
+import gymmi.global.exception.message.ErrorCode;
 import gymmi.workspace.objection.repository.ObjectionRepository;
-import gymmi.workspace.vote.repository.VoteRepository;
 import gymmi.workspace.workspace.controller.request.EditingIntroductionOfWorkspaceRequest;
 import gymmi.workspace.workspace.controller.response.*;
 import gymmi.workspace.workspace.domain.WorkspaceDrawManger;
@@ -19,8 +15,6 @@ import gymmi.workspace.workspace.domain.WorkspaceGateChecker;
 import gymmi.workspace.workspace.domain.WorkspaceStatus;
 import gymmi.workspace.workspace.domain.entity.WorkspaceResult;
 import gymmi.workspace.workspace.repository.WorkerRepository;
-import gymmi.workspace.workout.repository.WorkoutHistoryRepository;
-import gymmi.workspace.workout.repository.WorkoutRecordRepository;
 import gymmi.workspace.workspace.repository.WorkspaceRepository;
 import gymmi.workspace.workspace.repository.WorkspaceResultRepository;
 import lombok.RequiredArgsConstructor;

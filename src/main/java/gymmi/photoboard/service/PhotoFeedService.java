@@ -1,6 +1,7 @@
 package gymmi.photoboard.service;
 
-import gymmi.etc.domain.entity.User;
+import gymmi.image.service.ImageService;
+import gymmi.user.domain.User;
 import gymmi.photoboard.domain.entity.PhotoFeed;
 import gymmi.photoboard.domain.entity.PhotoFeedImage;
 import gymmi.photoboard.domain.entity.ThumbsUp;
@@ -10,7 +11,6 @@ import gymmi.photoboard.repository.ThumbsUpRepository;
 import gymmi.photoboard.request.CreatePhotoFeedRequest;
 import gymmi.photoboard.response.PhotoFeedDetailResponse;
 import gymmi.photoboard.response.PhotoFeedResponse;
-import gymmi.etc.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,7 +27,7 @@ public class PhotoFeedService {
 
     public static final int DEFAULT_PAGE_SIZE = 10;
 
-    private final S3Service s3Service;
+    private final ImageService imageService;
     private final PhotoFeedRepository photoFeedRepository;
     private final PhotoFeedImageRepository photoFeedImageRepository;
     private final ThumbsUpRepository thumbsUpRepository;
@@ -36,7 +36,7 @@ public class PhotoFeedService {
     public Long createPhotoFeed(User loginedUser, CreatePhotoFeedRequest request) {
         PhotoFeed photoFeed = new PhotoFeed(loginedUser, request.getComment());
         PhotoFeedImage photoFeedImage = new PhotoFeedImage(photoFeed, request.getFilename());
-        s3Service.validateObjectPresence(PhotoFeedImage.IMAGE_USE, photoFeedImage.getFilename());
+        imageService.validateObjectPresence(PhotoFeedImage.IMAGE_USE, photoFeedImage.getFilename());
         PhotoFeed savedPhotoFeed = photoFeedRepository.save(photoFeed);
         photoFeedImageRepository.save(photoFeedImage);
         return savedPhotoFeed.getId();
@@ -46,7 +46,7 @@ public class PhotoFeedService {
     public PhotoFeedDetailResponse getPhotoFeed(User loginedUser, Long photoFeedId) {
         PhotoFeed photoFeed = photoFeedRepository.getByPhotoFeedId(photoFeedId);
         PhotoFeedImage photoFeedImage = photoFeedImageRepository.getByPhotoFeedId(photoFeedId);
-        String photoImagePresignedUrl = s3Service.getPresignedUrl(PhotoFeedImage.IMAGE_USE, photoFeedImage.getFilename());
+        String photoImagePresignedUrl = imageService.getPresignedUrl(PhotoFeedImage.IMAGE_USE, photoFeedImage.getFilename());
         if (thumbsUpRepository.findByUserIdAndPhotoFeedId(loginedUser.getId(), photoFeed.getId()).isEmpty()) {
             return new PhotoFeedDetailResponse(photoFeed, photoImagePresignedUrl, photoFeed.isWriter(loginedUser), false);
         }
@@ -81,7 +81,7 @@ public class PhotoFeedService {
         thumbsUpRepository.deleteByPhotoFeedId(photoFeed.getId());
         photoFeedRepository.delete(photoFeed);
         // event?
-        s3Service.delete(PhotoFeedImage.IMAGE_USE, photoFeedImage.getFilename());
+        imageService.delete(PhotoFeedImage.IMAGE_USE, photoFeedImage.getFilename());
     }
 
     public List<PhotoFeedResponse> getPhotoFeeds(int pageNumber) {
@@ -89,7 +89,7 @@ public class PhotoFeedService {
         List<PhotoFeedResponse> responses = new ArrayList<>();
         for (PhotoFeed photoFeed : photoFeeds) {
             PhotoFeedImage photoFeedImage = photoFeedImageRepository.getByPhotoFeedId(photoFeed.getId());
-            String photoImagePresignedUrl = s3Service.getPresignedUrl(PhotoFeedImage.IMAGE_USE, photoFeedImage.getFilename());
+            String photoImagePresignedUrl = imageService.getPresignedUrl(PhotoFeedImage.IMAGE_USE, photoFeedImage.getFilename());
             responses.add(new PhotoFeedResponse(photoFeed.getId(), photoImagePresignedUrl, photoFeed.getCreatedAt()));
         }
         return responses;

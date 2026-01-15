@@ -1,7 +1,7 @@
 package gymmi.workspace.objection.controller;
 
-import gymmi.etc.domain.entity.User;
-import gymmi.global.resolver.Logined;
+import gymmi.user.domain.User;
+import gymmi.global.common.resolver.Logined;
 import gymmi.workspace.objection.domain.ObjectionStatus;
 import gymmi.workspace.objection.service.ObjectionService;
 import gymmi.workspace.objection.controller.request.ObjectionRequest;

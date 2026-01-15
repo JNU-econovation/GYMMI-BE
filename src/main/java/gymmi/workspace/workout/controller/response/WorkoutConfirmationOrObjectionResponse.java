@@ -1,6 +1,6 @@
 package gymmi.workspace.workout.controller.response;
 
-import gymmi.etc.domain.entity.User;
+import gymmi.user.domain.User;
 import gymmi.workspace.objection.domain.entity.Objection;
 import gymmi.workspace.workout.domain.entity.WorkoutHistory;
 import lombok.Builder;

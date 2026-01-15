@@ -1,6 +1,6 @@
 package gymmi.workspace.vote.domain.entity;
 
-import gymmi.etc.domain.entity.TimeEntity;
+import gymmi.global.entity.TimeEntity;
 import gymmi.workspace.objection.domain.entity.Objection;
 import gymmi.workspace.workspace.domain.entity.Worker;
 import jakarta.persistence.*;

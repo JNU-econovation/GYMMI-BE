@@ -1,33 +1,24 @@
 package gymmi.workspace.domain;
 
-import gymmi.etc.domain.entity.User;
+import gymmi.user.domain.User;
 import gymmi.fixture.*;
-import gymmi.global.exceptionhandler.message.ErrorCode;
 import gymmi.workspace.mission.domain.entity.Mission;
-import gymmi.workspace.workout.controller.request.WorkingMissionInWorkspaceRequest;
-import gymmi.workspace.workout.controller.request.WorkoutRequest;
 import gymmi.workspace.workspace.domain.entity.Worker;
 import gymmi.workspace.workout.domain.entity.WorkoutConfirmation;
 import gymmi.workspace.workout.domain.entity.WorkoutHistory;
 import gymmi.workspace.workout.domain.entity.WorkoutRecord;
-import gymmi.workspace.workout.domain.WorkoutValidator;
 import gymmi.workspace.workspace.domain.entity.Workspace;
 import gymmi.workspace.workspace.domain.WorkspacePhase;
 import gymmi.workspace.workspace.domain.WorkspaceStatus;
 import gymmi.workspace.workout.domain.WorkoutProcessor;
-import org.instancio.Instancio;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.field;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 
 class WorkoutProcessorTest {
 

@@ -1,10 +1,8 @@
 package gymmi.workspace.workspace.domain;
 
-import gymmi.global.exceptionhandler.exception.InvalidStateException;
-import gymmi.global.exceptionhandler.message.ErrorCode;
-import gymmi.workspace.workspace.repository.WorkspaceRepository;
+import gymmi.global.exception.exceptiontype.InvalidStateException;
+import gymmi.global.exception.message.ErrorCode;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
 public class WorkspaceJoinValidator {

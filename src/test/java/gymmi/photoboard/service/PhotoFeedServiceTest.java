@@ -1,6 +1,7 @@
 package gymmi.photoboard.service;
 
-import gymmi.etc.domain.entity.User;
+import gymmi.image.service.ImageService;
+import gymmi.user.domain.User;
 import gymmi.photoboard.domain.entity.PhotoFeed;
 import gymmi.photoboard.domain.entity.PhotoFeedImage;
 import gymmi.photoboard.repository.PhotoFeedImageRepository;
@@ -9,7 +10,7 @@ import gymmi.photoboard.repository.ThumbsUpRepository;
 import gymmi.photoboard.request.CreatePhotoFeedRequest;
 import gymmi.photoboard.response.PhotoFeedDetailResponse;
 import gymmi.photoboard.response.PhotoFeedResponse;
-import gymmi.etc.service.S3Service;
+
 import gymmi.workspace.service.IntegrationTest;
 import jakarta.persistence.EntityManager;
 import org.instancio.Instancio;
@@ -40,7 +41,7 @@ class PhotoFeedServiceTest extends IntegrationTest {
     EntityManager entityManager;
 
     @MockBean
-    S3Service s3Service;
+    ImageService imageService;
 
     @Test
     void 사진_등록을_한다() {

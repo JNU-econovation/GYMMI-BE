@@ -1,7 +1,7 @@
 package gymmi.workspace.workout.domain;
 
-import gymmi.global.exceptionhandler.exception.NotFoundException;
-import gymmi.global.exceptionhandler.message.ErrorCode;
+import gymmi.global.exception.exceptiontype.NotFoundException;
+import gymmi.global.exception.message.ErrorCode;
 import gymmi.workspace.workout.domain.entity.WorkoutHistory;
 import gymmi.workspace.workspace.domain.entity.Workspace;
 

@@ -1,7 +1,7 @@
 package gymmi.workspace.workspace.repository;
 
-import gymmi.global.exceptionhandler.exception.NotFoundException;
-import gymmi.global.exceptionhandler.message.ErrorCode;
+import gymmi.global.exception.exceptiontype.NotFoundException;
+import gymmi.global.exception.message.ErrorCode;
 import gymmi.workspace.workspace.domain.entity.Worker;
 import java.util.List;
 import java.util.Optional;

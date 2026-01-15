@@ -1,6 +1,6 @@
 package gymmi.workspace.workout.domain.entity;
 
-import gymmi.etc.domain.ImageUse;
+import gymmi.image.domain.ImageUse;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;

@@ -2,7 +2,7 @@ package gymmi.workspace.workspace.domain;
 
 import org.junit.jupiter.api.Test;
 
-import static gymmi.global.exceptionhandler.message.ErrorCode.EXCEED_MAX_JOINED_WORKSPACE;
+import static gymmi.global.exception.message.ErrorCode.EXCEED_MAX_JOINED_WORKSPACE;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 

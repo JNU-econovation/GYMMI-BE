@@ -1,10 +1,10 @@
 package gymmi.workspace.workspace.domain;
 
-import gymmi.global.exceptionhandler.exception.AlreadyExistException;
-import gymmi.global.exceptionhandler.exception.InvalidNumberException;
-import gymmi.global.exceptionhandler.exception.InvalidPatternException;
-import gymmi.global.exceptionhandler.exception.InvalidRangeException;
-import gymmi.global.exceptionhandler.message.ErrorCode;
+import gymmi.global.exception.exceptiontype.AlreadyExistException;
+import gymmi.global.exception.exceptiontype.InvalidNumberException;
+import gymmi.global.exception.exceptiontype.InvalidPatternException;
+import gymmi.global.exception.exceptiontype.InvalidRangeException;
+import gymmi.global.exception.message.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;

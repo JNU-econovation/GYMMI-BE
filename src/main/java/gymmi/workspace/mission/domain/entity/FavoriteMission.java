@@ -1,6 +1,6 @@
 package gymmi.workspace.mission.domain.entity;
 
-import gymmi.etc.domain.entity.TimeEntity;
+import gymmi.global.entity.TimeEntity;
 import gymmi.workspace.workspace.domain.entity.Worker;
 import jakarta.persistence.*;
 import lombok.AccessLevel;

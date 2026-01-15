@@ -13,13 +13,13 @@ import static io.restassured.RestAssured.config;
 import static io.restassured.config.MultiPartConfig.multiPartConfig;
 
 import gymmi.Fixtures;
-import gymmi.etc.controller.request.LoginRequest;
-import gymmi.etc.controller.request.ReissueRequest;
+import gymmi.auth.controller.request.LoginRequest;
+import gymmi.auth.controller.request.ReissueRequest;
 import gymmi.workspace.workspace.controller.request.CreatingWorkspaceRequest;
 import gymmi.workspace.workspace.controller.request.EditingIntroductionOfWorkspaceRequest;
 import gymmi.workspace.workspace.controller.request.JoiningWorkspaceRequest;
 import gymmi.workspace.mission.controller.request.MissionRequest;
-import gymmi.etc.controller.request.RegistrationRequest;
+import gymmi.auth.controller.request.RegistrationRequest;
 import gymmi.workspace.workout.controller.request.WorkingMissionInWorkspaceRequest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;

@@ -1,8 +1,7 @@
 package gymmi.workspace.objection.domain;
 
-import gymmi.global.exceptionhandler.exception.AlreadyExistException;
-import gymmi.global.exceptionhandler.message.ErrorCode;
-import gymmi.workspace.objection.repository.ObjectionRepository;
+import gymmi.global.exception.exceptiontype.AlreadyExistException;
+import gymmi.global.exception.message.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

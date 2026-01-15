@@ -1,7 +1,7 @@
 package gymmi.workspace.workspace.controller;
 
-import gymmi.etc.domain.entity.User;
-import gymmi.global.resolver.Logined;
+import gymmi.user.domain.User;
+import gymmi.global.common.resolver.Logined;
 import gymmi.workspace.workspace.controller.request.EditingIntroductionOfWorkspaceRequest;
 import gymmi.workspace.workspace.controller.request.MatchingWorkspacePasswordRequest;
 import gymmi.workspace.workspace.controller.response.*;

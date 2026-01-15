@@ -1,7 +1,7 @@
 package gymmi.workspace.vote.controller;
 
-import gymmi.etc.domain.entity.User;
-import gymmi.global.resolver.Logined;
+import gymmi.user.domain.User;
+import gymmi.global.common.resolver.Logined;
 import gymmi.workspace.vote.controller.request.VoteRequest;
 import gymmi.workspace.vote.service.VoteService;
 import lombok.RequiredArgsConstructor;

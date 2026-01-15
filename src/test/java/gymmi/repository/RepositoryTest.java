@@ -1,6 +1,6 @@
 package gymmi.repository;
 
-import gymmi.global.config.QuerydslConfig;
+import gymmi.global.infra.config.QuerydslConfig;
 import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;

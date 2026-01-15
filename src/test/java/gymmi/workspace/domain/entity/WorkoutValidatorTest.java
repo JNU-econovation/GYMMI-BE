@@ -3,7 +3,7 @@ package gymmi.workspace.domain.entity;
 import gymmi.workspace.workout.domain.WorkoutValidator;
 import org.junit.jupiter.api.Test;
 
-import static gymmi.global.exceptionhandler.message.ErrorCode.EXCEED_MAX_DAILY_WORKOUT_HISTORY_COUNT;
+import static gymmi.global.exception.message.ErrorCode.EXCEED_MAX_DAILY_WORKOUT_HISTORY_COUNT;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class WorkoutValidatorTest {

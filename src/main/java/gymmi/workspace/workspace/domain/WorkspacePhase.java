@@ -1,7 +1,7 @@
 package gymmi.workspace.workspace.domain;
 
-import gymmi.global.exceptionhandler.exception.InvalidStateException;
-import gymmi.global.exceptionhandler.message.ErrorCode;
+import gymmi.global.exception.exceptiontype.InvalidStateException;
+import gymmi.global.exception.message.ErrorCode;
 
 import java.util.Arrays;
 import java.util.Comparator;

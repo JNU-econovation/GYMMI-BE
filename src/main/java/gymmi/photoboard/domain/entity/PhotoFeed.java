@@ -1,9 +1,9 @@
 package gymmi.photoboard.domain.entity;
 
-import gymmi.etc.domain.entity.TimeEntity;
-import gymmi.etc.domain.entity.User;
-import gymmi.global.exceptionhandler.exception.NotHavePermissionException;
-import gymmi.global.exceptionhandler.message.ErrorCode;
+import gymmi.global.entity.TimeEntity;
+import gymmi.user.domain.User;
+import gymmi.global.exception.exceptiontype.NotHavePermissionException;
+import gymmi.global.exception.message.ErrorCode;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;

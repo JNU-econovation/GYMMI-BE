@@ -1,10 +1,10 @@
 package gymmi.workspace.workspace.domain;
 
-import gymmi.etc.domain.entity.User;
-import gymmi.global.exceptionhandler.exception.AlreadyExistException;
-import gymmi.global.exceptionhandler.exception.InvalidStateException;
-import gymmi.global.exceptionhandler.exception.NotMatchedException;
-import gymmi.global.exceptionhandler.message.ErrorCode;
+import gymmi.user.domain.User;
+import gymmi.global.exception.exceptiontype.AlreadyExistException;
+import gymmi.global.exception.exceptiontype.InvalidStateException;
+import gymmi.global.exception.exceptiontype.NotMatchedException;
+import gymmi.global.exception.message.ErrorCode;
 import gymmi.workspace.workspace.domain.entity.Worker;
 import gymmi.workspace.workspace.domain.entity.Workspace;
 import lombok.Getter;
@@ -12,7 +12,7 @@ import lombok.Getter;
 import java.util.ArrayList;
 import java.util.List;
 
-import static gymmi.global.exceptionhandler.message.ErrorCode.*;
+import static gymmi.global.exception.message.ErrorCode.*;
 
 @Getter
 public class WorkspacePreparingManager {

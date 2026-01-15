@@ -1,26 +1,17 @@
 package gymmi.workspace.service;
 
-import gymmi.etc.domain.entity.User;
-import gymmi.global.exceptionhandler.message.ErrorCode;
+import gymmi.user.domain.User;
 import gymmi.photoboard.repository.PhotoFeedRepository;
-import gymmi.etc.service.S3Service;
 import gymmi.workspace.mission.repository.FavoriteMissionRepository;
 import gymmi.workspace.mission.repository.MissionRepository;
-import gymmi.workspace.objection.controller.request.ObjectionRequest;
 import gymmi.workspace.objection.repository.ObjectionRepository;
 import gymmi.workspace.objection.service.ObjectionService;
-import gymmi.workspace.vote.controller.request.VoteRequest;
 import gymmi.workspace.vote.repository.VoteRepository;
 import gymmi.workspace.vote.service.VoteService;
-import gymmi.workspace.workout.controller.request.WorkingMissionInWorkspaceRequest;
-import gymmi.workspace.workout.controller.request.WorkoutRequest;
 import gymmi.workspace.workout.service.WorkoutService;
 import gymmi.workspace.workspace.domain.WorkspaceStatus;
 import gymmi.workspace.mission.domain.entity.Mission;
-import gymmi.workspace.objection.domain.entity.Objection;
 import gymmi.workspace.workspace.domain.entity.Worker;
-import gymmi.workspace.workout.domain.entity.WorkoutConfirmation;
-import gymmi.workspace.workout.domain.entity.WorkoutHistory;
 import gymmi.workspace.workspace.domain.entity.Workspace;
 import gymmi.workspace.workspace.domain.WorkspaceCreationValidator;
 import gymmi.workspace.workspace.repository.WorkerRepository;
@@ -30,20 +21,16 @@ import gymmi.workspace.workspace.service.WorkspacePreparingService;
 import jakarta.persistence.EntityManager;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.field;
 import static org.mockito.BDDMockito.any;
-import static org.mockito.BDDMockito.given;
 
 class WorkspacePreparingServiceTest extends IntegrationTest {
 
@@ -76,8 +63,6 @@ class WorkspacePreparingServiceTest extends IntegrationTest {
     @Autowired
     PhotoFeedRepository photoFeedRepository;
 
-    @MockBean
-    S3Service s3Service;
 
     @Autowired
     EntityManager entityManager;

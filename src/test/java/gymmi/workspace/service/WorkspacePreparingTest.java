@@ -1,13 +1,9 @@
 package gymmi.workspace.service;
 
-import gymmi.etc.domain.entity.User;
-import gymmi.global.exceptionhandler.message.ErrorCode;
-import gymmi.workspace.mission.controller.request.MissionRequest;
+import gymmi.user.domain.User;
 import gymmi.workspace.mission.repository.FavoriteMissionRepository;
 import gymmi.workspace.mission.repository.MissionRepository;
-import gymmi.workspace.workspace.controller.request.CreatingWorkspaceRequest;
 import gymmi.workspace.workspace.domain.WorkspaceStatus;
-import gymmi.workspace.mission.domain.entity.Mission;
 import gymmi.workspace.workspace.domain.entity.Worker;
 import gymmi.workspace.workspace.domain.entity.Workspace;
 import gymmi.workspace.workspace.domain.WorkspaceCreationValidator;
@@ -16,13 +12,10 @@ import gymmi.workspace.workspace.repository.WorkspaceRepository;
 import gymmi.workspace.workspace.service.WorkspacePreparingService;
 import jakarta.persistence.EntityManager;
 import org.instancio.Instancio;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-import static gymmi.global.exceptionhandler.message.ErrorCode.EXCEED_MAX_JOINED_WORKSPACE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Select.field;

@@ -1,14 +1,15 @@
 package gymmi.workspace.workout.service;
 
-import gymmi.etc.domain.ImageUse;
-import gymmi.etc.domain.entity.User;
-import gymmi.etc.service.S3Service;
+import gymmi.image.domain.ImageUse;
+import gymmi.image.service.ImageService;
+import gymmi.user.domain.User;
+
 import gymmi.global.eventlistener.event.ImageValidationEvent;
 import gymmi.global.eventlistener.event.LinkToPhotoFeedEvent;
 import gymmi.global.eventlistener.event.WorkoutConfirmationCreatedEvent;
 import gymmi.global.eventlistener.event.WorkspacePhaseChangedEvent;
-import gymmi.global.exceptionhandler.exception.NotHavePermissionException;
-import gymmi.global.exceptionhandler.message.ErrorCode;
+import gymmi.global.exception.exceptiontype.NotHavePermissionException;
+import gymmi.global.exception.message.ErrorCode;
 import gymmi.workspace.objection.domain.entity.Objection;
 import gymmi.workspace.objection.repository.ObjectionRepository;
 import gymmi.workspace.workout.controller.request.WorkoutRequest;
@@ -44,7 +45,7 @@ public class WorkoutService {
     private final WorkoutRequestMapper workoutRequestMapper;
     private final WorkoutHistoryRepository workoutHistoryRepository;
     private final WorkoutRecordRepository workoutRecordRepository;
-    private final S3Service s3Service;
+    private final ImageService imageService;
     private final ObjectionRepository objectionRepository;
 
 
@@ -92,7 +93,7 @@ public class WorkoutService {
 //        workoutHistory.canBeReadIn(workspace);
         WorkoutConfirmation workoutConfirmation = workoutHistory.getWorkoutConfirmation();
 
-        String imagePresignedUrl = s3Service.getPresignedUrl(ImageUse.WORKOUT_CONFIRMATION, workoutConfirmation.getFilename());
+        String imagePresignedUrl = imageService.getPresignedUrl(ImageUse.WORKOUT_CONFIRMATION, workoutConfirmation.getFilename());
         Objection objection = objectionRepository.findByWorkoutHistoryId(workoutConfirmationId)
                 .orElseGet(() -> null);
 
@@ -116,7 +117,7 @@ public class WorkoutService {
             if (dto.getType().equals("workoutHistory")) {
                 WorkoutHistory workoutHistory = workoutHistoryRepository.getByWorkoutHistoryId(dto.getId());
                 WorkoutConfirmation workoutConfirmation = workoutHistory.getWorkoutConfirmation();
-                String imagePresignedUrl = s3Service.getPresignedUrl(ImageUse.WORKOUT_CONFIRMATION, workoutConfirmation.getFilename());
+                String imagePresignedUrl = imageService.getPresignedUrl(ImageUse.WORKOUT_CONFIRMATION, workoutConfirmation.getFilename());
                 Objection objection = objectionRepository.findByWorkoutHistoryId(workoutConfirmation.getId()).orElseGet(() -> null);
                 responses.add(WorkoutConfirmationOrObjectionResponse.workoutConfirmation(loginedUser, objection, workoutHistory, imagePresignedUrl));
             }

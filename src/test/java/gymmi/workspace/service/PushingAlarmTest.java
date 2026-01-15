@@ -1,10 +1,11 @@
 package gymmi.workspace.service;
 
-import gymmi.etc.domain.entity.User;
+import gymmi.image.service.ImageService;
+import gymmi.user.domain.User;
 import gymmi.firebase.FirebaseTestConfig;
-import gymmi.global.firebase.FirebaseCloudMessageService;
+import gymmi.global.infra.firebase.FirebaseCloudMessageService;
 import gymmi.helper.Persister;
-import gymmi.etc.service.S3Service;
+
 import gymmi.workspace.objection.service.ObjectionService;
 import gymmi.workspace.workout.service.WorkoutService;
 import gymmi.workspace.workspace.domain.WorkspaceStatus;
@@ -58,7 +59,7 @@ public class PushingAlarmTest {
     FirebaseCloudMessageService firebaseCloudMessageService;
 
     @MockBean
-    S3Service s3Service;
+    ImageService imageService;
 
     @Autowired
     Persister persister;
@@ -99,7 +100,7 @@ public class PushingAlarmTest {
                 .set(field(WorkoutRequest::getMissions), requests)
                 .set(field(WorkoutRequest::getWillLink), false)
                 .create();
-        given(s3Service.copy(any(), any(), any())).willReturn(UUID.randomUUID().toString());
+        given(imageService.copy(any(), any(), any())).willReturn(UUID.randomUUID().toString());
 
         // when
         workoutService.workMissionsInWorkspace(user, workspace.getId(), request);
@@ -155,7 +156,7 @@ public class PushingAlarmTest {
                 .set(field(WorkoutRequest::getMissions), requests)
                 .set(field(WorkoutRequest::getWillLink), false)
                 .create();
-        given(s3Service.copy(any(), any(), any())).willReturn(UUID.randomUUID().toString());
+        given(imageService.copy(any(), any(), any())).willReturn(UUID.randomUUID().toString());
 
         // when
         workoutService.workMissionsInWorkspace(user, workspace.getId(), request);

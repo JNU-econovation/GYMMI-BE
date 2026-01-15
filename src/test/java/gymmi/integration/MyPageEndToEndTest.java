@@ -6,8 +6,8 @@ import static gymmi.integration.Steps.회원_가입__DEFAULT_USER_REQUEST;
 import static gymmi.integration.Steps.회원_가입__USER_1_REQUEST;
 import static gymmi.integration.Steps.회원가입_및_로그인_요청;
 
-import gymmi.etc.controller.request.EditingMyPageRequest;
-import gymmi.etc.controller.request.RegistrationRequest;
+import gymmi.user.controller.request.EditingMyPageRequest;
+import gymmi.auth.controller.request.RegistrationRequest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;

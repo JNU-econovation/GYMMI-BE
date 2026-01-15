@@ -3,11 +3,11 @@ package gymmi.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import gymmi.etc.service.LocalImageFileUploader;
-import gymmi.global.exceptionhandler.exception.FileIOFailException;
-import gymmi.global.exceptionhandler.exception.InvalidFileException;
-import gymmi.global.exceptionhandler.exception.NotFoundException;
-import gymmi.global.exceptionhandler.message.ErrorCode;
+import gymmi.image.domain.LocalImageFileUploader;
+import gymmi.global.exception.exceptiontype.FileIOFailException;
+import gymmi.global.exception.exceptiontype.InvalidFileException;
+import gymmi.global.exception.exceptiontype.NotFoundException;
+import gymmi.global.exception.message.ErrorCode;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;

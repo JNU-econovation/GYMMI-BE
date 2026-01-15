@@ -6,9 +6,9 @@ import static gymmi.Fixtures.WORKSPACE__SATISFIED_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import gymmi.etc.domain.entity.User;
-import gymmi.global.exceptionhandler.exception.InvalidNumberException;
-import gymmi.global.exceptionhandler.exception.InvalidPatternException;
+import gymmi.user.domain.User;
+import gymmi.global.exception.exceptiontype.InvalidNumberException;
+import gymmi.global.exception.exceptiontype.InvalidPatternException;
 import gymmi.workspace.workspace.domain.entity.Workspace;
 import gymmi.workspace.workspace.domain.WorkspaceStatus;
 import org.instancio.Instancio;

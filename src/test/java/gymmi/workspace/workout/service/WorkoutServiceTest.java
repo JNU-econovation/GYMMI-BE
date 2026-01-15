@@ -1,24 +1,10 @@
 package gymmi.workspace.workout.service;
 
-import gymmi.etc.domain.entity.User;
-import gymmi.workspace.mission.domain.entity.Mission;
 import gymmi.workspace.service.IntegrationTest;
-import gymmi.workspace.workout.controller.request.WorkingMissionInWorkspaceRequest;
-import gymmi.workspace.workout.controller.request.WorkoutRequest;
-import gymmi.workspace.workspace.domain.WorkspaceStatus;
-import gymmi.workspace.workspace.domain.entity.Worker;
-import gymmi.workspace.workspace.domain.entity.Workspace;
-import org.instancio.Instancio;
-import org.junit.jupiter.api.Test;
-
-import java.util.List;
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.instancio.Select.field;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 
 class WorkoutServiceTest extends IntegrationTest {
 

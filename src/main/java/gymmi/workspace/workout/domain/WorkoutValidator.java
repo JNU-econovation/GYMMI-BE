@@ -1,16 +1,8 @@
 package gymmi.workspace.workout.domain;
 
-import gymmi.global.exceptionhandler.exception.InvalidStateException;
-import gymmi.global.exceptionhandler.message.ErrorCode;
-import gymmi.workspace.workout.domain.entity.WorkoutHistory;
-import gymmi.workspace.workout.repository.WorkoutHistoryRepository;
-import gymmi.workspace.workspace.domain.ParticipantValidator;
-import gymmi.workspace.workspace.domain.entity.Worker;
-import gymmi.workspace.workspace.domain.entity.Workspace;
+import gymmi.global.exception.exceptiontype.InvalidStateException;
+import gymmi.global.exception.message.ErrorCode;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 public class WorkoutValidator {
