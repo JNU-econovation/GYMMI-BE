@@ -1,6 +1,6 @@
 package gymmi.workspace.workspace.domain.entity;
 
-import gymmi.global.entity.TimeEntity;
+import gymmi.global.common.entity.TimeEntity;
 import gymmi.user.domain.User;
 import gymmi.global.exception.exceptiontype.InvalidStateException;
 import gymmi.global.exception.message.ErrorCode;

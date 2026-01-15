@@ -1,4 +1,4 @@
-package gymmi.global.eventlistener.event;
+package gymmi.global.common.eventlistener.event;
 
 import gymmi.image.domain.ImageUse;
 import lombok.Getter;

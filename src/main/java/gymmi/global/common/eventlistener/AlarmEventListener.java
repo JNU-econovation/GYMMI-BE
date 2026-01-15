@@ -1,10 +1,10 @@
-package gymmi.global.eventlistener;
+package gymmi.global.common.eventlistener;
 
 import gymmi.user.domain.User;
-import gymmi.global.eventlistener.event.ObjectionOpenEvent;
-import gymmi.global.eventlistener.event.WorkoutConfirmationCreatedEvent;
-import gymmi.global.eventlistener.event.WorkspacePhaseChangedEvent;
-import gymmi.global.eventlistener.event.WorkspaceStartedEvent;
+import gymmi.global.common.eventlistener.event.ObjectionOpenEvent;
+import gymmi.global.common.eventlistener.event.WorkoutConfirmationCreatedEvent;
+import gymmi.global.common.eventlistener.event.WorkspacePhaseChangedEvent;
+import gymmi.global.common.eventlistener.event.WorkspaceStartedEvent;
 import gymmi.global.infra.firebase.FirebaseCloudMessageService;
 import gymmi.global.infra.firebase.SendingRequest;
 import gymmi.workspace.objection.domain.entity.Objection;

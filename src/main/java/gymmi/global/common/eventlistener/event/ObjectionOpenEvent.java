@@ -1,12 +1,13 @@
-package gymmi.global.eventlistener.event;
+package gymmi.global.common.eventlistener.event;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Getter
-public class WorkspaceStartedEvent {
+public class ObjectionOpenEvent {
 
     private final Long workspaceId;
+    private final Long objectionId;
 
 }

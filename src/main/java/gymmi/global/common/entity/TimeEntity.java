@@ -1,4 +1,4 @@
-package gymmi.global.entity;
+package gymmi.global.common.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

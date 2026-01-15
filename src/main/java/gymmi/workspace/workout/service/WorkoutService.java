@@ -4,10 +4,10 @@ import gymmi.image.domain.ImageUse;
 import gymmi.image.service.ImageService;
 import gymmi.user.domain.User;
 
-import gymmi.global.eventlistener.event.ImageValidationEvent;
-import gymmi.global.eventlistener.event.LinkToPhotoFeedEvent;
-import gymmi.global.eventlistener.event.WorkoutConfirmationCreatedEvent;
-import gymmi.global.eventlistener.event.WorkspacePhaseChangedEvent;
+import gymmi.global.common.eventlistener.event.ImageValidationEvent;
+import gymmi.global.common.eventlistener.event.LinkToPhotoFeedEvent;
+import gymmi.global.common.eventlistener.event.WorkoutConfirmationCreatedEvent;
+import gymmi.global.common.eventlistener.event.WorkspacePhaseChangedEvent;
 import gymmi.global.exception.exceptiontype.NotHavePermissionException;
 import gymmi.global.exception.message.ErrorCode;
 import gymmi.workspace.objection.domain.entity.Objection;

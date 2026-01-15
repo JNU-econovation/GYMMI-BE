@@ -1,6 +1,6 @@
 package gymmi.workspace.workout.domain.entity;
 
-import gymmi.global.entity.TimeEntity;
+import gymmi.global.common.entity.TimeEntity;
 import gymmi.workspace.workspace.domain.entity.Worker;
 import gymmi.workspace.workspace.domain.entity.Workspace;
 import jakarta.persistence.*;

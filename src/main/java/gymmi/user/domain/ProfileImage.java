@@ -1,6 +1,6 @@
 package gymmi.user.domain;
 
-import gymmi.global.entity.TimeEntity;
+import gymmi.global.common.entity.TimeEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

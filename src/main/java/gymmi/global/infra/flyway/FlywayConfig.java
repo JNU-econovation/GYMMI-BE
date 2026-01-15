@@ -1,4 +1,4 @@
-package gymmi.global.infra.config;
+package gymmi.global.infra.flyway;
 
 import org.springframework.boot.autoconfigure.flyway.FlywayMigrationStrategy;
 import org.springframework.context.annotation.Bean;

@@ -1,4 +1,4 @@
-package gymmi.global.utils;
+package gymmi.global.common.utils;
 
 import java.util.regex.Pattern;
 

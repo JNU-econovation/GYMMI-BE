@@ -1,7 +1,7 @@
 package gymmi.user.domain;
 
 import gymmi.fcm.domain.FcmToken;
-import gymmi.global.entity.TimeEntity;
+import gymmi.global.common.entity.TimeEntity;
 import gymmi.global.exception.exceptiontype.InvalidPatternException;
 import gymmi.global.exception.message.ErrorCode;
 import jakarta.persistence.*;
@@ -11,8 +11,6 @@ import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.util.StringUtils;
 
 import java.util.regex.Pattern;
-
-import static gymmi.global.utils.Regexpressions.*;
 
 @Entity
 @Table(name = "uuser")

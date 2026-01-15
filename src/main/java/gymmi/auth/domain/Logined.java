@@ -1,6 +1,6 @@
 package gymmi.auth.domain;
 
-import gymmi.global.entity.TimeEntity;
+import gymmi.global.common.entity.TimeEntity;
 import gymmi.user.domain.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;

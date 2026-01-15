@@ -1,4 +1,4 @@
-package gymmi.global.eventlistener;
+package gymmi.global.common.eventlistener;
 
 
 import org.springframework.context.annotation.Configuration;

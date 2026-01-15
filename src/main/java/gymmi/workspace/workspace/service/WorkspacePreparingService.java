@@ -1,7 +1,7 @@
 package gymmi.workspace.workspace.service;
 
 import gymmi.user.domain.User;
-import gymmi.global.eventlistener.event.WorkspaceStartedEvent;
+import gymmi.global.common.eventlistener.event.WorkspaceStartedEvent;
 import gymmi.workspace.mission.domain.Missions;
 import gymmi.workspace.mission.repository.FavoriteMissionRepository;
 import gymmi.workspace.mission.repository.MissionRepository;

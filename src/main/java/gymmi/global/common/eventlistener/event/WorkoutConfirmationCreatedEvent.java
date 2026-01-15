@@ -1,4 +1,4 @@
-package gymmi.global.eventlistener.event;
+package gymmi.global.common.eventlistener.event;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

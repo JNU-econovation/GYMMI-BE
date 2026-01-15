@@ -1,6 +1,6 @@
 package gymmi.feedback.domain;
 
-import gymmi.global.entity.TimeEntity;
+import gymmi.global.common.entity.TimeEntity;
 import gymmi.user.domain.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

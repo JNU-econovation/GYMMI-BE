@@ -1,4 +1,4 @@
-package gymmi.global.eventlistener.event;
+package gymmi.global.common.eventlistener.event;
 
 import gymmi.workspace.workspace.domain.WorkspacePhase;
 import lombok.Getter;

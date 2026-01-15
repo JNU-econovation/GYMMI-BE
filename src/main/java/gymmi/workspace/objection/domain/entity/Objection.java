@@ -1,6 +1,6 @@
 package gymmi.workspace.objection.domain.entity;
 
-import gymmi.global.entity.TimeEntity;
+import gymmi.global.common.entity.TimeEntity;
 import gymmi.workspace.workout.domain.entity.WorkoutHistory;
 import gymmi.workspace.workspace.domain.entity.Worker;
 import gymmi.workspace.workspace.domain.entity.Workspace;

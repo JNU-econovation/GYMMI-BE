@@ -1,7 +1,7 @@
 package gymmi.workspace.objection.service;
 
 import gymmi.user.domain.User;
-import gymmi.global.eventlistener.event.ObjectionOpenEvent;
+import gymmi.global.common.eventlistener.event.ObjectionOpenEvent;
 import gymmi.global.exception.exceptiontype.NotHavePermissionException;
 import gymmi.global.exception.message.ErrorCode;
 import gymmi.workspace.objection.domain.*;

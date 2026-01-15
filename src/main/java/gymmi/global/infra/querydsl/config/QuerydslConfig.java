@@ -1,4 +1,4 @@
-package gymmi.global.infra.config;
+package gymmi.global.infra.querydsl.config;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;

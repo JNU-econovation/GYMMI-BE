@@ -11,8 +11,8 @@ import org.springframework.util.StringUtils;
 
 import java.util.regex.Pattern;
 
-import static gymmi.global.utils.Regexpressions.REGEX_영어_한글_숫자_만;
-import static gymmi.global.utils.Regexpressions.REGEX_영어_한글_쉼표_만;
+import static gymmi.global.common.utils.Regexpressions.REGEX_영어_한글_숫자_만;
+import static gymmi.global.common.utils.Regexpressions.REGEX_영어_한글_쉼표_만;
 
 @Component
 @RequiredArgsConstructor

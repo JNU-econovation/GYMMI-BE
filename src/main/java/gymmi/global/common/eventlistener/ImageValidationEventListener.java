@@ -1,6 +1,6 @@
-package gymmi.global.eventlistener;
+package gymmi.global.common.eventlistener;
 
-import gymmi.global.eventlistener.event.ImageValidationEvent;
+import gymmi.global.common.eventlistener.event.ImageValidationEvent;
 
 import gymmi.image.service.ImageService;
 import lombok.RequiredArgsConstructor;

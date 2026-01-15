@@ -1,8 +1,8 @@
-package gymmi.global.eventlistener;
+package gymmi.global.common.eventlistener;
 
 import gymmi.image.service.ImageService;
 import gymmi.user.domain.User;
-import gymmi.global.eventlistener.event.LinkToPhotoFeedEvent;
+import gymmi.global.common.eventlistener.event.LinkToPhotoFeedEvent;
 import gymmi.photoboard.request.CreatePhotoFeedRequest;
 import gymmi.photoboard.service.PhotoFeedService;
 import gymmi.user.repository.UserRepository;
