@@ -1,10 +1,10 @@
-package gymmi.fcm.service;
+package gymmi.fcmtoken.service;
 
-import gymmi.fcm.domain.FcmToken;
+import gymmi.fcmtoken.domain.FcmToken;
 import gymmi.user.domain.User;
 import gymmi.global.exception.exceptiontype.NotFoundException;
 import gymmi.global.exception.message.ErrorCode;
-import gymmi.fcm.repository.FcmTokenRepository;
+import gymmi.fcmtoken.repository.FcmTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

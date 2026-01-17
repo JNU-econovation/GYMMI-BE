@@ -1,4 +1,4 @@
-package gymmi.fcm.controller.request;
+package gymmi.fcmtoken.controller.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;

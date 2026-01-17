@@ -1,9 +1,9 @@
-package gymmi.fcm.controller;
+package gymmi.fcmtoken.controller;
 
 import gymmi.user.domain.User;
 import gymmi.global.common.resolver.Logined;
-import gymmi.fcm.controller.request.FCMRefreshRequest;
-import gymmi.fcm.service.FcmTokenService;
+import gymmi.fcmtoken.controller.request.FCMRefreshRequest;
+import gymmi.fcmtoken.service.FcmTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;

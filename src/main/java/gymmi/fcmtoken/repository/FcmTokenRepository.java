@@ -1,6 +1,6 @@
-package gymmi.fcm.repository;
+package gymmi.fcmtoken.repository;
 
-import gymmi.fcm.domain.FcmToken;
+import gymmi.fcmtoken.domain.FcmToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

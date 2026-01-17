@@ -1,4 +1,4 @@
-package gymmi.fcm.domain;
+package gymmi.fcmtoken.domain;
 
 import gymmi.global.common.entity.TimeEntity;
 import gymmi.user.domain.User;

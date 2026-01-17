@@ -2,7 +2,7 @@ package gymmi.auth.service;
 
 import gymmi.global.infra.file.ImageFileUploader;
 import gymmi.auth.domain.TokenProcessor;
-import gymmi.fcm.domain.FcmToken;
+import gymmi.fcmtoken.domain.FcmToken;
 import gymmi.auth.domain.Logined;
 import gymmi.user.domain.ProfileImage;
 import gymmi.user.domain.User;
@@ -10,7 +10,7 @@ import gymmi.global.exception.exceptiontype.AlreadyExistException;
 import gymmi.global.exception.exceptiontype.AuthenticationFailException;
 import gymmi.global.exception.exceptiontype.NotMatchedException;
 import gymmi.global.exception.message.ErrorCode;
-import gymmi.fcm.repository.FcmTokenRepository;
+import gymmi.fcmtoken.repository.FcmTokenRepository;
 import gymmi.auth.repository.LoginedRepository;
 import gymmi.image.repository.ProfileImageRepository;
 import gymmi.user.repository.UserRepository;

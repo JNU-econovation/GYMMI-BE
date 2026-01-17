@@ -1,6 +1,6 @@
 package gymmi.user.domain;
 
-import gymmi.fcm.domain.FcmToken;
+import gymmi.fcmtoken.domain.FcmToken;
 import gymmi.global.common.entity.TimeEntity;
 import gymmi.global.exception.exceptiontype.InvalidPatternException;
 import gymmi.global.exception.message.ErrorCode;
@@ -11,6 +11,8 @@ import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.util.StringUtils;
 
 import java.util.regex.Pattern;
+
+import static gymmi.global.common.utils.Regexpressions.*;
 
 @Entity
 @Table(name = "uuser")
