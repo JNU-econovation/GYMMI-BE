@@ -1,6 +1,6 @@
 package gymmi.photoboard.domain.entity;
 
-import gymmi.service.ImageUse;
+import gymmi.image.domain.ImageUse;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;

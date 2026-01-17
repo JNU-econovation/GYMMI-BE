@@ -1,14 +1,24 @@
 package gymmi.helper;
 
-import gymmi.entity.User;
+import gymmi.user.domain.User;
 import gymmi.photoboard.domain.entity.PhotoFeed;
 import gymmi.photoboard.domain.entity.PhotoFeedImage;
 import gymmi.photoboard.domain.entity.ThumbsUp;
-import gymmi.repository.UserRepository;
-import gymmi.workspace.domain.WorkspaceStatus;
-import gymmi.workspace.domain.entity.*;
-import gymmi.workspace.repository.WorkerRepository;
-import gymmi.workspace.repository.WorkspaceRepository;
+import gymmi.user.repository.UserRepository;
+import gymmi.workspace.workspace.domain.WorkspaceStatus;
+import gymmi.workspace.mission.domain.entity.FavoriteMission;
+import gymmi.workspace.mission.domain.entity.Mission;
+import gymmi.workspace.objection.domain.entity.Objection;
+import gymmi.workspace.vote.domain.entity.Vote;
+import gymmi.workspace.workspace.domain.entity.Worker;
+import gymmi.workspace.workout.domain.entity.WorkoutConfirmation;
+import gymmi.workspace.workout.domain.entity.WorkoutHistory;
+import gymmi.workspace.workout.domain.entity.WorkoutRecord;
+import gymmi.workspace.workspace.domain.entity.Workspace;
+import gymmi.workspace.workspace.domain.WorkspaceCreationValidator;
+import gymmi.workspace.workspace.repository.WorkerRepository;
+import gymmi.workspace.workspace.repository.WorkspaceRepository;
+import gymmi.workspace.workout.domain.WorkoutProcessor;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import org.instancio.Instancio;
@@ -16,7 +26,6 @@ import org.instancio.Select;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -103,8 +112,8 @@ public class Persister {
     public Workspace persistWorkspace(User creator) {
         Workspace workspace = Instancio.of(Workspace.class)
                 .generate(field(Workspace::getStatus), gen -> gen.enumOf(WorkspaceStatus.class))
-                .set(field(Workspace::getGoalScore), Workspace.MIN_GOAL_SCORE)
-                .set(field(Workspace::getHeadCount), Workspace.MIN_HEAD_COUNT)
+                .set(field(Workspace::getGoalScore), WorkspaceCreationValidator.MIN_GOAL_SCORE)
+                .set(field(Workspace::getHeadCount), WorkspaceCreationValidator.MIN_HEAD_COUNT)
                 .set(field(Workspace::getCreator), creator)
                 .ignore(field(Workspace::getId))
                 .create();
@@ -116,8 +125,8 @@ public class Persister {
     public Workspace persistWorkspace(User creator, WorkspaceStatus workspaceStatus) {
         Workspace workspace = Instancio.of(Workspace.class)
                 .set(field(Workspace::getStatus), workspaceStatus)
-                .set(field(Workspace::getGoalScore), Workspace.MIN_GOAL_SCORE)
-                .set(field(Workspace::getHeadCount), Workspace.MIN_HEAD_COUNT)
+                .set(field(Workspace::getGoalScore), WorkspaceCreationValidator.MIN_GOAL_SCORE)
+                .set(field(Workspace::getHeadCount), WorkspaceCreationValidator.MIN_HEAD_COUNT)
                 .set(field(Workspace::getCreator), creator)
                 .ignore(field(Workspace::getId))
                 .create();
@@ -133,33 +142,34 @@ public class Persister {
 
     //todo 지연로딩
     public WorkoutHistory persistWorkoutHistoryAndApply(Worker worker, Map<Mission, Integer> workouts) {
-        List<WorkoutRecord> workoutRecords = workouts.entrySet().stream()
-                .map(workout -> new WorkoutRecord(workout.getKey(), workout.getValue()))
-                .toList();
         Worker managedWorker = entityManager.find(Worker.class, worker.getId());
         WorkoutConfirmation workoutConfirmation = Instancio.of(WorkoutConfirmation.class)
                 .ignore(Select.field(WorkoutConfirmation::getId))
                 .create();
+        WorkoutHistory workoutHistory = new WorkoutHistory(managedWorker, workoutConfirmation);
+
+        List<WorkoutRecord> workoutRecords = workouts.entrySet().stream()
+                .map(workout -> new WorkoutRecord(workoutHistory, workout.getKey(), workout.getValue()))
+                .toList();
         entityManager.persist(workoutConfirmation);
-        WorkoutHistory workoutHistory = new WorkoutHistory(
-                managedWorker, workoutRecords, workoutConfirmation
-        );
         entityManager.persist(workoutHistory);
-        workoutHistory.apply();
+        WorkoutProcessor workoutProcessor = new WorkoutProcessor(worker.getWorkspace(), worker, workoutRecords);
+//        workoutProcessor.apply();
         return workoutHistory;
     }
 
     //todo workout confirmation id 값 오류?
     public WorkoutHistory persistWorkoutHistoryAndApply(Worker worker, Map<Mission, Integer> workouts, WorkoutConfirmation workoutConfirmation) {
-        List<WorkoutRecord> workoutRecords = workouts.entrySet().stream()
-                .map(workout -> new WorkoutRecord(workout.getKey(), workout.getValue()))
-                .toList();
         Worker managedWorker = entityManager.find(Worker.class, worker.getId());
-        WorkoutHistory workoutHistory = new WorkoutHistory(
-                managedWorker, workoutRecords, workoutConfirmation
-        );
+        WorkoutHistory workoutHistory = new WorkoutHistory(managedWorker, workoutConfirmation);
+
+        List<WorkoutRecord> workoutRecords = workouts.entrySet().stream()
+                .map(workout -> new WorkoutRecord(workoutHistory, workout.getKey(), workout.getValue()))
+                .toList();
+        entityManager.persist(workoutConfirmation);
         entityManager.persist(workoutHistory);
-        workoutHistory.apply();
+        WorkoutProcessor workoutProcessor = new WorkoutProcessor(worker.getWorkspace(), worker, workoutRecords);
+//        workoutProcessor.apply();
         return workoutHistory;
     }
 
@@ -167,8 +177,8 @@ public class Persister {
         Objection objection = Instancio.of(Objection.class)
                 .set(field(Objection::getSubject), subject)
                 .set(field(Objection::isInProgress), isInProgress)
-                .set(field(Objection::getWorkoutConfirmation), workoutConfirmation)
-                .set(field(Objection::getVotes), new ArrayList<>())
+//                .set(field(Objection::getWorkoutConfirmation), workoutConfirmation)
+//                .set(field(Objection::getVotes), new ArrayList<>())
                 .ignore(field(Objection::getId))
                 .create();
         entityManager.persist(objection);
@@ -190,7 +200,7 @@ public class Persister {
                 .set(field(Vote::getIsApproved), isApproved)
                 .ignore(field(Vote::getId))
                 .create();
-        objection.add(vote);
+//        objection.add(vote);
         entityManager.persist(vote);
         return vote;
     }

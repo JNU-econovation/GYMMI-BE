@@ -1,12 +1,12 @@
 package gymmi.workspace.domain;
 
-import static gymmi.workspace.domain.WorkspaceWithMissionsConsistencyValidator.validateConsistencyMissionsCount;
-import static gymmi.workspace.domain.WorkspaceWithMissionsConsistencyValidator.validateRegistration;
+import static gymmi.workspace.WorkspaceWithMissionsConsistencyValidator.validateConsistencyMissionsCount;
+import static gymmi.workspace.WorkspaceWithMissionsConsistencyValidator.validateRegistration;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import gymmi.exceptionhandler.message.ErrorCode;
-import gymmi.workspace.domain.entity.Mission;
-import gymmi.workspace.domain.entity.Workspace;
+import gymmi.global.exception.message.ErrorCode;
+import gymmi.workspace.mission.domain.entity.Mission;
+import gymmi.workspace.workspace.domain.entity.Workspace;
 import java.util.List;
 import org.instancio.Instancio;
 import org.instancio.Select;
@@ -33,7 +33,7 @@ class WorkspaceWithMissionsConsistencyValidatorTest {
         // given
         Workspace workspace = Instancio.of(Workspace.class)
                 .create();
-        List<Mission> missions = getMissions(workspace, WorkspaceInitializer.MAX_MISSIONS_SIZE + 1);
+        List<Mission> missions = getMissions(workspace, 15 + 1);
 
         // when, then
         assertThatThrownBy(() -> validateConsistencyMissionsCount(missions))

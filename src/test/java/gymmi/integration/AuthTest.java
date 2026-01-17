@@ -10,10 +10,10 @@ import static gymmi.integration.Steps.재발급_요청;
 import static gymmi.integration.Steps.회원_가입_요청;
 
 import gymmi.Fixtures;
-import gymmi.request.LoginRequest;
-import gymmi.request.ReissueRequest;
-import gymmi.service.TokenProcessor;
-import gymmi.workspace.request.RegistrationRequest;
+import gymmi.auth.controller.request.LoginRequest;
+import gymmi.auth.controller.request.ReissueRequest;
+import gymmi.auth.domain.TokenProcessor;
+import gymmi.auth.controller.request.RegistrationRequest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;

@@ -1,7 +1,7 @@
 package gymmi.photoboard.domain.entity;
 
-import gymmi.entity.TimeEntity;
-import gymmi.entity.User;
+import gymmi.global.common.entity.TimeEntity;
+import gymmi.user.domain.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;

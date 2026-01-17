@@ -2,7 +2,8 @@ package gymmi.service;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import gymmi.exceptionhandler.exception.AuthenticationFailException;
+import gymmi.auth.domain.TokenProcessor;
+import gymmi.global.exception.exceptiontype.AuthenticationFailException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

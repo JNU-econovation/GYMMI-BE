@@ -1,14 +1,16 @@
 package gymmi.workspace.domain;
 
-import static gymmi.workspace.domain.WorkspaceWithWorkersConsistencyValidator.validateMeetMinHeadCount;
-import static gymmi.workspace.domain.WorkspaceWithWorkersConsistencyValidator.validateWorkersConsistency;
+import static gymmi.workspace.WorkspaceWithWorkersConsistencyValidator.validateMeetMinHeadCount;
+import static gymmi.workspace.WorkspaceWithWorkersConsistencyValidator.validateWorkersConsistency;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import gymmi.exceptionhandler.message.ErrorCode;
-import gymmi.workspace.domain.entity.Worker;
-import gymmi.workspace.domain.entity.Workspace;
+import gymmi.global.exception.message.ErrorCode;
+import gymmi.workspace.workspace.domain.entity.Worker;
+import gymmi.workspace.workspace.domain.entity.Workspace;
 import java.util.Collections;
 import java.util.List;
+
+import gymmi.workspace.workspace.domain.WorkspaceCreationValidator;
 import org.instancio.Instancio;
 import org.instancio.Select;
 import org.junit.jupiter.api.Test;
@@ -22,7 +24,7 @@ class WorkspaceWithWorkersConsistencyValidatorTest {
                 .set(Select.field(Workspace::getHeadCount), 3)
                 .create();
         List<Worker> workers = Instancio.ofList(Worker.class)
-                .size(Workspace.MIN_HEAD_COUNT - 1)
+                .size(WorkspaceCreationValidator.MIN_HEAD_COUNT - 1)
                 .set(Select.field(Worker::getWorkspace), workspace)
                 .create();
 

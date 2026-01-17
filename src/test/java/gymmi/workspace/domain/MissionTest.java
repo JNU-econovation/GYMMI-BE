@@ -3,9 +3,9 @@ package gymmi.workspace.domain;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.instancio.Instancio.gen;
 
-import gymmi.exceptionhandler.message.ErrorCode;
-import gymmi.workspace.domain.entity.Mission;
-import gymmi.workspace.domain.entity.Workspace;
+import gymmi.global.exception.message.ErrorCode;
+import gymmi.workspace.mission.domain.entity.Mission;
+import gymmi.workspace.workspace.domain.entity.Workspace;
 import java.util.List;
 import org.instancio.Instancio;
 import org.instancio.Select;

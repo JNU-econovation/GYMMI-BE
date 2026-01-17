@@ -1,8 +1,10 @@
 package gymmi.workspace.domain;
 
-import gymmi.workspace.domain.entity.Worker;
-import gymmi.workspace.domain.entity.Workspace;
-import gymmi.workspace.domain.entity.WorkspaceResult;
+import gymmi.workspace.workspace.domain.entity.Worker;
+import gymmi.workspace.workspace.domain.entity.Workspace;
+import gymmi.workspace.workspace.domain.WorkspaceDrawManger;
+import gymmi.workspace.workspace.domain.entity.WorkspaceResult;
+import gymmi.workspace.workspace.domain.WorkspaceStatus;
 import org.instancio.Instancio;
 import org.instancio.Select;
 import org.junit.jupiter.api.Nested;
@@ -11,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static gymmi.exceptionhandler.message.ErrorCode.NOT_COMPLETED_WORKSPACE;
+import static gymmi.global.exception.message.ErrorCode.NOT_COMPLETED_WORKSPACE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 

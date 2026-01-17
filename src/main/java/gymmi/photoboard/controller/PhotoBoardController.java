@@ -1,12 +1,12 @@
 package gymmi.photoboard.controller;
 
-import gymmi.entity.User;
-import gymmi.global.Logined;
+import gymmi.user.domain.User;
+import gymmi.global.common.resolver.Logined;
 import gymmi.photoboard.request.CreatePhotoFeedRequest;
 import gymmi.photoboard.response.PhotoFeedDetailResponse;
 import gymmi.photoboard.response.PhotoFeedResponse;
 import gymmi.photoboard.service.PhotoFeedService;
-import gymmi.response.IdResponse;
+import gymmi.global.web.response.IdResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
